@@ -1,0 +1,130 @@
+<html><head><title>html模版</title></head><body>Unity - Manual: Audio in Unity 5.0</br>
+<div class="breadcrumbs clear"><ul>
+<li><a href="UnityManual.html">Unity User Manual (2018.1 beta)</a></li>
+<li><a href="UnityOverview.html">Working in Unity</a></li>
+<li><a href="UpgradeGuides.html">Upgrade Guides</a></li>
+<li><a href="UpgradeGuide5.html">Upgrading to Unity 5.0</a></li>
+<li>Audio in Unity 5.0</li>
+</ul></div>
+<div class="mb20"><div class="nextprev clear">
+<div class="icon tt left mr1" data-distance="-40|-30|top">
+<span class="prev"><a href="UpgradeGuide5-Animation.html"></a></span><div class="tip">Animation in Unity 5.0</div>
+</div>
+<div class="icon tt right" data-distance="-40|-30|top">
+<span class="next"><a href="UpgradeGuide5-BakedDataFormats.html"></a></span><div class="tip">Baked Data in Unity 5.0</div>
+</div>
+</div></div>
+<div class="otherversionswrapper" onmouseover="setOtherVersionsDisplay(true)" onmouseout="setOtherVersionsDisplay(false)">
+<a>Other Versions</a><div class="otherversionscontent" id="OtherVersionsContent" style="display: none;">Cannot access other versions offline!</div>
+</div>
+<div class="scrollToFeedback"><a id="scrollToFeedback">Leave feedback</a></div>
+<h2>Audio in Unity 5.0</h2>
+
+<p>These are notes to be aware of when upgrading projects from Unity 4 to Unity 5, if your project uses audio features.</p>
+
+<h3>AudioClips</h3>
+
+<p>A number of things has changed in the AudioClip. First, there is no longer a 3D flag on the asset. This flag has been moved into the AudioSource in form of the Spatial Blend slider allowing you to, at runtime, morphing sounds from 2D to 3D. Old projects will get imported in such a way that AudioSource’s on GameObjects in the scene that have a clip assigned will get their Spatial Blend parameter set up according to the old 3D flag of the AudioClip. For obvious reasons this is not possible for scripts that dynamically assign clips to sources, so this requires manual fixing.</p>
+
+<p>While the default setting for the old 3D property was true, by default in the new system, the default of the Spatial Blend parameter is set to 2D.</p>
+
+<p>Finally, AudioClips can now be multi-edited.</p>
+
+<h3>Format</h3>
+
+<p>The naming of the Format property has changed so that it reflects the method by which the data is stored rather than particular file format which deviates from platform to platform. So from now on Uncompressed refers to raw sample data, Compressed refers to a lossy compression method best suited to the platform and ADPCM refers to a lightweight (in terms of CPU) compression method that is best suited to natural audio signals which contain a fair amount of noise (footsteps, impacts, weapons etc) and are to be played in large amounts.</p>
+
+<h3>Preloading and loading audio data in the background</h3>
+
+<p>A new feature of AudioClips is that they provide support for an option for determining whether to preload the audio data or not. Any property of the AudioClip is detached from the actual audio data loading state and can be queried at any time, so having the possibility to load on demand now helps keeping the memory usage of AudioClips low. Additionally to this AudioClips can load their audio data in the background without blocking the main game thread and causing frame drops. The load process can of course be controlled via the scripting API.</p>
+
+<h3>Multi-editing</h3>
+
+<p>All AudioClips now support multi-editing.</p>
+
+<h3>Force to Mono</h3>
+
+<p>The Force To Mono option now performs peak-normalization on the resulting down mix.</p>
+
+<h3>GetData/SetData</h3>
+
+<p>These API calls are only supported by clips that are either storing the audio data uncompressed as PCM or perform the decompression at on load. In the past more clips supported this, but the pattern wasn’t very clear since it depended both on the target platform and had different behavior in the editor and standalone players. As a new thing, tracker files can be decompressed as PCM data into memory too, so GetData/SetData can also be used on these.</p>
+
+<h3>AudioSource pause behaviour</h3>
+
+<p>Pausing in Unity5 is now consistent between Play calls and PlayOneShots calls. Pausing an AudioSource pauses voices played both ways, and calling Play or PlayOneShot unpauses the AudioSource for voices played both ways too.</p>
+
+<p>To assist with unpausing an AudioSource without playing the assigned clip, (useful for when there are oneshot voices playing), we have added a new function AudioSource.Unpause ().</p>
+
+<h3>Audio mixer</h3>
+
+<p>The AudioMixer is a new feature of Unity 5 allowing complex routing of the audio data from AudioSource’s to mix groups where effects can be applied. One key difference from the Audio Filter components is that audio filters get instantiated per AudioSource and therefore are more costly in terms of CPU if a game has a large number of AudioSources with filters or if a script simply creates many instances of a GameObject containing . With the mixer it is now possible to set up a group with the same effects and simply routing the audio from the AudioSource through the shared effects resulting in lower CPU usage.</p>
+
+<p>The mixer does not currently support script-based effects, but it does have a new native audio plugin API allowing developers to write high-performance effects that integrate seamlessly with the other built-in effects.</p>
+
+<h3>AudioSettings</h3>
+
+<p>The way the audio system is configured has changed. The overall settings for setting speaker mode and DSP buffer size (i.e. latency) should still be configured in the audio project settings, and additional to these it is now also possible to configure the real and virtual voices counts. The real voice count specifies how many voices can be heard concurrently and therefore has a strong impact on the overall CPU consumption of the game. Previously this was hardcoded to 32 with some platform-specific exceptions. When the number of playing voices exceeds this number, those that are least audible will be put on hold until these voices become dominant or some of the dominant voices stop playing. These voices are simply bypassed from playing. They are not stopped, simply made inactive until there is bandwidth again. The virtual voice count defines how many voices can be managed in total, so if the number of voices playing exceeds this, the least audible voices will be stopped.</p>
+
+<p>AudioSettings.outputSampleRate and AudioSettings.speakerMode can still be read from, but the setters are now deprecated, as is the SetDSPBufferSize function. As a replacement for these for audio configuration changes that need to happen at runtime there is now a structure called AudioConfiguration. This can be obtained via AudioSettings.GetConfiguration() which will return the active settings on the audio output device. Changes can be made to this structure and applied via AudioSettings.Reset() which will return a boolean result depending on the successful or failed attempt of applying the changes.</p>
+
+<p>Whenever changes to the audio configuration happen, either caused by scripts via AudioSettings.Reset() or because of external events such as plugging in HDMI monitors with audio support, external sound cards or USB headsets, a user-defined callback AudioSettings.OnAudioConfigurationChanged(bool deviceChanged) will be invoked. Its argument deviceChanged will be false if the change was caused by an AudioSettings.Reset() call, and true if it was caused by an external device change (this could also be changing the sample rate of the audio device in use). The callback allows you to recreate any volatile sounds such as generated PCM clips, restore any audio state, or further adapt the audio settings through a call to AudioSettings.Reset().</p>
+<div class="feedbackbox" id="feedbackbox">
+<div id="rating"><p>Did you find this page useful? Please give it a rating:<br><div id="ratecontent" class="c-rating"></div>
+</p></div>
+<div id="ratingThanks" style="display:none"><p>Thanks for rating this page!</p></div>
+<div id="problem"><p><a name="problem" onclick="document.getElementById('problemType').style.display = '';document.getElementById('problem').style.display = 'none';">Report a problem on this page</a></p></div>
+<div id="problemType" style="display:none"><p>What kind of problem would you like to report?<ul type="problems">
+<li><a name="needcode" onclick="                                                             document.getElementById('problemType').style.display = 'none';                                                             document.getElementById('problemThanks').style.display = '';                                                             SendFeedback('problem-needcode',window.location.href,0);                                                             document.getElementById('problemFormDescription').value='Needs code samples.';                                                             document.getElementById('problemNeedCodeForm').style.display = ''                                                         ">This page needs code samples</a></li>
+<li><a name="code" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-brokencode',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Code samples do not work.';                                                         document.getElementById('problemCodeForm').style.display = ''                                                         ">Code samples do not work</a></li>
+<li><a name="missing" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-missing',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Missing information';                                                         document.getElementById('problemMissingForm').style.display = ''                                                         ">Information is missing</a></li>
+<li><a name="incorrect" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-incorrect',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Incorrect information';                                                         document.getElementById('problemIncorrectForm').style.display = ''                                                         ">Information is incorrect</a></li>
+<li><a name="unclear" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-unclear',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Unclear or confusing information';                                                         document.getElementById('problemUnclearForm').style.display = ''                                                         ">Information is unclear or confusing</a></li>
+<li><a name="language" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-language',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Spelling or grammar error';                                                         document.getElementById('problemLanguageForm').style.display = ''                                                         ">There is a spelling/grammar error on this page</a></li>
+<li><a name="other" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-other',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='This page has a problem';                                                         document.getElementById('problemOtherForm').style.display = ''                                                         ">Something else</a></li>
+</ul>
+<p><known_issues><p>Is something described here not working as you expect it to? It might be a <b>Known Issue</b>. Please check with the Issue Tracker at <a href="https://issuetracker.unity3d.com">issuetracker.unity3d.com</a>.</p></known_issues></p>
+</p></div>
+<div id="problemThanks" style="display:none"><p>Thanks for letting us know! This page has been marked for review based on your feedback.<br><br>If you have time, you can provide more information to help us fix the problem faster.<br><br><a onclick="document.getElementById('problemMoreInfo').style.display = '';document.getElementById('problemThanks').style.display = 'none';">Provide more information</a><br>
+</p></div>
+<div id="problemMoreInfo" style="display:none">
+<p id="problemNeedCodeForm" style="display:none">You've told us this page needs code samples. If you'd like to help us further, you could provide a code sample, or tell us about what kind of code sample you'd like to see:</p>
+<p id="problemCodeForm" style="display:none">You've told us there are code samples on this page which don't work. If you know how to fix it, or have something better we could use instead, please let us know:</p>
+<p id="problemMissingForm" style="display:none">You've told us there is information missing from this page. Please tell us more about what's missing:</p>
+<p id="problemIncorrectForm" style="display:none">You've told us there is incorrect information on this page. If you know what we should change to make it correct, please tell us:</p>
+<p id="problemUnclearForm" style="display:none">You've told us this page has unclear or confusing information. Please tell us more about what you found unclear or confusing, or let us know how we could make it clearer:</p>
+<p id="problemLanguageForm" style="display:none">You've told us there is a spelling or grammar error on this page. Please tell us what's wrong:</p>
+<p id="problemOtherForm" style="display:none">You've told us this page has a problem. Please tell us more about what's wrong:</p>
+<form>
+<textarea id="problemFormSuggestionField" cols="40" rows="5"></textarea><input type="hidden" id="problemFormDescription"><input type="submit" id="problemFormDescriptionSubmit" value="Submit" onclick="                                             document.getElementById('problemMoreInfo').style.display = 'none';                                             document.getElementById('problemMoreInfoThanks').style.display = '';                                             return false;                                             ">
+</form>
+</div>
+<div id="problemMoreInfoThanks" style="display:none"><p>Thanks for helping to make the Unity documentation better!</p></div>
+<script>
+
+                                            var ratecontent = document.querySelector('#ratecontent'); // target element
+                                            var currentRating = 0; // initial rating
+                                            var maxRating= 5; // max rating
+
+                                            // callback to run after setting the rating
+                                            var callback = function(rating) {
+                                                document.getElementById('ratingThanks').style.display = '';
+                                                document.getElementById('ratecontent').style.display = 'none';
+                                                document.getElementById('rating').style.display = 'none';
+                                                SendFeedback("rating",window.location.href,rating);
+                                            };
+
+                                            // rating instance
+                                            var myRating = rating(ratecontent, currentRating, maxRating, callback);
+                                        </script>
+</div>
+<div class="nextprev clear">
+<div class="icon tt left mr1" data-distance="-40|-30|top">
+<span class="prev"><a href="UpgradeGuide5-Animation.html"></a></span><div class="tip">Animation in Unity 5.0</div>
+</div>
+<div class="icon tt right" data-distance="-40|-30|top">
+<span class="next"><a href="UpgradeGuide5-BakedDataFormats.html"></a></span><div class="tip">Baked Data in Unity 5.0</div>
+</div>
+</div>
+</div>
+</body></html>

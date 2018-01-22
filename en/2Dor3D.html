@@ -1,0 +1,158 @@
+<html><head><title>html模版</title></head><body>Unity - Manual: 2D or 3D projects</br>
+<div class="breadcrumbs clear"><ul>
+<li><a href="UnityManual.html">Unity User Manual (2018.1 beta)</a></li>
+<li><a href="UnityOverview.html">Working in Unity</a></li>
+<li><a href="UnityBasics.html">Basics</a></li>
+<li>2D or 3D projects</li>
+</ul></div>
+<div class="mb20"><div class="nextprev clear">
+<div class="icon tt left mr1" data-distance="-40|-30|top">
+<span class="prev"><a href="DeployingUnityOffline.html"></a></span><div class="tip"> Deploying Unity offline</div>
+</div>
+<div class="icon tt right" data-distance="-40|-30|top">
+<span class="next"><a href="GettingStarted.html"></a></span><div class="tip"> Getting started</div>
+</div>
+</div></div>
+<div class="otherversionswrapper" onmouseover="setOtherVersionsDisplay(true)" onmouseout="setOtherVersionsDisplay(false)">
+<a>Other Versions</a><div class="otherversionscontent" id="OtherVersionsContent" style="display: none;">Cannot access other versions offline!</div>
+</div>
+<div class="scrollToFeedback"><a id="scrollToFeedback">Leave feedback</a></div>
+<h1>2D or 3D projects</h1>
+<!--BeginSwitchLink--><!--EndSwitchLink-->
+<div class="clear"></div>
+
+<p>Unity is equally suited to creating both 2D and 3D games. When you create a new project in Unity, you have the choice to start in 2D or 3D mode. You may already know what you want to build, but there are a few subtle points that may affect which mode you choose.</p>
+
+<p>The choice between starting in 2D or 3D mode determines some settings for the Unity Editor, such as whether images are imported as textures or sprites. You can swap between 2D or 3D mode at any time regardless of the mode you set when you created your project (see <a href="2DAnd3DModeSettings.html">2D and 3D Mode Settings</a>). Here are some guidelines which should help you choose.</p>
+
+<h3>Full 3D</h3>
+
+<figure>
+<img src="../uploads/Main/3dGames.jpg" alt="Some 3D scenes from Unitys sample projects on the Asset Store">
+<figcaption>Some 3D scenes from Unity’s sample projects on the Asset Store</figcaption>
+</figure>
+
+<p>3D games usually make use of three-dimensional geometry, with Materials and Textures rendered on the surface of GameObjects to make them appear as solid environments, characters and objects that make up your game world. The Camera can move in and around the Scene freely, with light and shadows cast around the world in a realistic way. 3D games usually render the Scene using perspective, so objects appear larger on screen as they get closer to the camera. For all games that fit this description, start in <strong>3D</strong> mode.</p>
+
+<h3>Orthographic 3D</h3>
+
+<figure>
+<img src="../uploads/Main/3dOrthographicGames.jpg" alt="Some 3D games using an Orthographic view">
+<figcaption>Some 3D games using an Orthographic view</figcaption>
+</figure>
+
+<p>Sometimes games use 3D geometry, but use an orthographic camera instead of perspective. This is a common technique used in games which give you a bird’s-eye view of the action, and is sometimes called “2.5D”. If you’re making a game like this, you should also use the Editor in <strong>3D</strong> mode, because even though there is no <em>perspective</em>, you will still be working with 3D models and Assets. You’ll need to switch your <a href="CamerasOverview.html">Camera</a> and <a href="SceneViewNavigation.html">Scene view</a> to <strong>Orthographic</strong> though.</p>
+
+<p><em>Scenes above from <a href="https://www.assetstore.unity3d.com/en/#!/publisher/5217">Synty Studios</a> and <a href="https://www.assetstore.unity3d.com/en/#!/publisher/1299">BITGEM</a>.</em></p>
+
+<h3>Full 2D</h3>
+
+<figure>
+<img src="../uploads/Main/2dGames.jpg" alt="Some examples of typical 2D game types">
+<figcaption>Some examples of typical 2D game types</figcaption>
+</figure>
+
+<p>Many 2D games use flat graphics, sometimes called sprites, which have no three-dimensional geometry at all. They are drawn to the screen as flat images, and the game’s camera has no perspective. For this type of game, you should start the editor in <strong>2D</strong> mode.</p>
+
+<h3>2D gameplay with 3D graphics</h3>
+
+<figure>
+<img src="../uploads/Main/2dGame3dSceneSideScroll.jpg" alt="A side scrolling game with 2D gameplay, but 3d graphics">
+<figcaption>A side scrolling game with 2D gameplay, but 3d graphics</figcaption>
+</figure>
+
+<p>Some 2D games use 3D geometry for the environment and characters, but restrict the <em>gameplay</em> to two dimensions. For example, the camera may show a side-scrolling view, and the player can only move in two dimensions, but the game itself still uses 3D models for the obstacles and a 3D perspective for the camera. For these games, the 3D effect may serve a stylistic rather than functional purpose. This type of game is <em>also</em> sometimes referred to as “2.5D”. Although the gameplay is 2D, you are mostly manipulating 3D models to build the game, so you should start the editor in <strong>3D</strong> mode.</p>
+
+<h3>2D gameplay and graphics, with a perspective camera</h3>
+
+<figure>
+<img src="../uploads/Main/2dParallaxScroller.png" alt="A 2D cardboard theatre style game, giving a parallax movement effect">
+<figcaption>A 2D “cardboard theatre” style game, giving a parallax movement effect</figcaption>
+</figure>
+
+<p>This is another popular style of 2D game, using 2D graphics but with a perspective camera to get a parallax scrolling effect. This is a “cardboard theater”-style scene, where all graphics are flat, but arranged at different distances from the camera. It’s most likely that <strong>2D</strong> mode will suit your development in this case. However, you should change your <a href="CamerasOverview.html">Camera’s</a> projection mode to <strong>Perspective</strong> and the <a href="SceneViewNavigation.html">Scene view</a> mode to <strong>3D</strong>.</p>
+
+<p><em>Scene above from <a href="https://www.assetstore.unity3d.com/en/#!/publisher/8138">One Point Six Studio</a>.</em></p>
+
+<h3>Other styles</h3>
+
+<p>You may have plans for a project that fits one of the above descriptions, or you may have something else entirely different or unique in mind. Whatever your plans are, hopefully the above will give you an idea of which mode to start the Editor in. Remember, you can switch modes at any time later.</p>
+
+<p>See <a href="2DAnd3DModeSettings.html">2D and 3D Mode Settings</a> to learn more about how to change the 2D/3D mode, and find more detail about how the modes differ. </p>
+
+<h2>Useful 2D project information</h2>
+
+<p>Whichever type of project you are working in, there are some useful pages to help you get started. There are also many specific pages for 2D features. See the <a href="Unity2D.html">Unity 2D</a> section of the Unity User Manual.</p>
+
+<h3>Getting started with Unity</h3>
+
+<ul>
+<li><a href="UnityBasics.html">Unity Basics</a></li>
+<li><a href="CreatingScenes.html">Creating Scenes</a></li>
+<li><a href="CreatingGameplay.html">Creating Gameplay</a></li>
+</ul>
+
+<h3>2D Development with Unity</h3>
+
+<ul>
+<li><a href="Unity2D.html">Unity 2D Manual Documentation</a></li>
+</ul>
+<div class="feedbackbox" id="feedbackbox">
+<div id="rating"><p>Did you find this page useful? Please give it a rating:<br><div id="ratecontent" class="c-rating"></div>
+</p></div>
+<div id="ratingThanks" style="display:none"><p>Thanks for rating this page!</p></div>
+<div id="problem"><p><a name="problem" onclick="document.getElementById('problemType').style.display = '';document.getElementById('problem').style.display = 'none';">Report a problem on this page</a></p></div>
+<div id="problemType" style="display:none"><p>What kind of problem would you like to report?<ul type="problems">
+<li><a name="needcode" onclick="                                                             document.getElementById('problemType').style.display = 'none';                                                             document.getElementById('problemThanks').style.display = '';                                                             SendFeedback('problem-needcode',window.location.href,0);                                                             document.getElementById('problemFormDescription').value='Needs code samples.';                                                             document.getElementById('problemNeedCodeForm').style.display = ''                                                         ">This page needs code samples</a></li>
+<li><a name="code" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-brokencode',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Code samples do not work.';                                                         document.getElementById('problemCodeForm').style.display = ''                                                         ">Code samples do not work</a></li>
+<li><a name="missing" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-missing',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Missing information';                                                         document.getElementById('problemMissingForm').style.display = ''                                                         ">Information is missing</a></li>
+<li><a name="incorrect" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-incorrect',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Incorrect information';                                                         document.getElementById('problemIncorrectForm').style.display = ''                                                         ">Information is incorrect</a></li>
+<li><a name="unclear" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-unclear',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Unclear or confusing information';                                                         document.getElementById('problemUnclearForm').style.display = ''                                                         ">Information is unclear or confusing</a></li>
+<li><a name="language" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-language',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Spelling or grammar error';                                                         document.getElementById('problemLanguageForm').style.display = ''                                                         ">There is a spelling/grammar error on this page</a></li>
+<li><a name="other" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-other',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='This page has a problem';                                                         document.getElementById('problemOtherForm').style.display = ''                                                         ">Something else</a></li>
+</ul>
+<p><known_issues><p>Is something described here not working as you expect it to? It might be a <b>Known Issue</b>. Please check with the Issue Tracker at <a href="https://issuetracker.unity3d.com">issuetracker.unity3d.com</a>.</p></known_issues></p>
+</p></div>
+<div id="problemThanks" style="display:none"><p>Thanks for letting us know! This page has been marked for review based on your feedback.<br><br>If you have time, you can provide more information to help us fix the problem faster.<br><br><a onclick="document.getElementById('problemMoreInfo').style.display = '';document.getElementById('problemThanks').style.display = 'none';">Provide more information</a><br>
+</p></div>
+<div id="problemMoreInfo" style="display:none">
+<p id="problemNeedCodeForm" style="display:none">You've told us this page needs code samples. If you'd like to help us further, you could provide a code sample, or tell us about what kind of code sample you'd like to see:</p>
+<p id="problemCodeForm" style="display:none">You've told us there are code samples on this page which don't work. If you know how to fix it, or have something better we could use instead, please let us know:</p>
+<p id="problemMissingForm" style="display:none">You've told us there is information missing from this page. Please tell us more about what's missing:</p>
+<p id="problemIncorrectForm" style="display:none">You've told us there is incorrect information on this page. If you know what we should change to make it correct, please tell us:</p>
+<p id="problemUnclearForm" style="display:none">You've told us this page has unclear or confusing information. Please tell us more about what you found unclear or confusing, or let us know how we could make it clearer:</p>
+<p id="problemLanguageForm" style="display:none">You've told us there is a spelling or grammar error on this page. Please tell us what's wrong:</p>
+<p id="problemOtherForm" style="display:none">You've told us this page has a problem. Please tell us more about what's wrong:</p>
+<form>
+<textarea id="problemFormSuggestionField" cols="40" rows="5"></textarea><input type="hidden" id="problemFormDescription"><input type="submit" id="problemFormDescriptionSubmit" value="Submit" onclick="                                             document.getElementById('problemMoreInfo').style.display = 'none';                                             document.getElementById('problemMoreInfoThanks').style.display = '';                                             return false;                                             ">
+</form>
+</div>
+<div id="problemMoreInfoThanks" style="display:none"><p>Thanks for helping to make the Unity documentation better!</p></div>
+<script>
+
+                                            var ratecontent = document.querySelector('#ratecontent'); // target element
+                                            var currentRating = 0; // initial rating
+                                            var maxRating= 5; // max rating
+
+                                            // callback to run after setting the rating
+                                            var callback = function(rating) {
+                                                document.getElementById('ratingThanks').style.display = '';
+                                                document.getElementById('ratecontent').style.display = 'none';
+                                                document.getElementById('rating').style.display = 'none';
+                                                SendFeedback("rating",window.location.href,rating);
+                                            };
+
+                                            // rating instance
+                                            var myRating = rating(ratecontent, currentRating, maxRating, callback);
+                                        </script>
+</div>
+<div class="nextprev clear">
+<div class="icon tt left mr1" data-distance="-40|-30|top">
+<span class="prev"><a href="DeployingUnityOffline.html"></a></span><div class="tip"> Deploying Unity offline</div>
+</div>
+<div class="icon tt right" data-distance="-40|-30|top">
+<span class="next"><a href="GettingStarted.html"></a></span><div class="tip"> Getting started</div>
+</div>
+</div>
+</div>
+</body></html>

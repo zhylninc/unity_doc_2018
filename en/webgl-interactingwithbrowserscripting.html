@@ -1,0 +1,228 @@
+<html><head><title>html模版</title></head><body>Unity - Manual:  WebGL: Interacting with browser scripting</br>
+<div class="breadcrumbs clear"><ul>
+<li><a href="UnityManual.html">Unity User Manual (2018.1 beta)</a></li>
+<li><a href="PlatformSpecific.html">Platform-specific</a></li>
+<li><a href="webgl.html">WebGL</a></li>
+<li><a href="webgl-gettingstarted.html">Getting started with WebGL development</a></li>
+<li> WebGL: Interacting with browser scripting</li>
+</ul></div>
+<div class="mb20"><div class="nextprev clear">
+<div class="icon tt left mr1" data-distance="-40|-30|top">
+<span class="prev"><a href="webgl-memory.html"></a></span><div class="tip">Memory Considerations when targeting WebGL</div>
+</div>
+<div class="icon tt right" data-distance="-40|-30|top">
+<span class="next"><a href="webgl-templates.html"></a></span><div class="tip"> Using WebGL Templates</div>
+</div>
+</div></div>
+<div class="otherversionswrapper" onmouseover="setOtherVersionsDisplay(true)" onmouseout="setOtherVersionsDisplay(false)">
+<a>Other Versions</a><div class="otherversionscontent" id="OtherVersionsContent" style="display: none;">Cannot access other versions offline!</div>
+</div>
+<div class="scrollToFeedback"><a id="scrollToFeedback">Leave feedback</a></div>
+<h1>WebGL: Interacting with browser scripting</h1>
+<!--BeginSwitchLink--><!--EndSwitchLink-->
+<div class="clear"></div>
+
+<p>When building content for the web, you might need to communicate with other elements on your web page. Or you might want to implement functionality using Web APIs which Unity does not currently expose by default. In both cases, you need to directly interface with the browser’s JavaScript engine. Unity WebGL provides different methods to do this.</p>
+
+<h2>Calling JavaScript functions from Unity scripts</h2>
+
+<p>The recommended way of using browser JavaScript in your project is to add your JavaScript sources to your project, and then call those functions directly from your script code. To do so, place files with JavaScript code using the .jslib extension (as the normal .js would be picked up by the UnityScript compiler) under a “Plugins” subfolder in your Assets folder. The plugin file needs to have a syntax like this:</p>
+
+<pre><code>mergeInto(LibraryManager.library, {
+
+  Hello: function () {
+    window.alert(&quot;Hello, world!&quot;);
+  },
+
+  HelloString: function (str) {
+    window.alert(Pointer_stringify(str));
+  },
+
+  PrintFloatArray: function (array, size) {
+    for(var i = 0; i &lt; size; i++)
+    console.log(HEAPF32[(array &gt;&gt; 2) + i]);
+  },
+
+  AddNumbers: function (x, y) {
+    return x + y;
+  },
+
+  StringReturnValueFunction: function () {
+    var returnStr = &quot;bla&quot;;
+    var bufferSize = lengthBytesUTF8(returnStr) + 1;
+    var buffer = _malloc(bufferSize);
+    stringToUTF8(returnStr, buffer, bufferSize);
+    return buffer;
+  },
+
+  BindWebGLTexture: function (texture) {
+    GLctx.bindTexture(GLctx.TEXTURE_2D, GL.textures[texture]);
+  },
+
+});
+</code></pre>
+
+<p>Then you can call these functions from your C# scripts like this:</p>
+
+<pre><code>using UnityEngine;
+using System.Runtime.InteropServices;
+
+public class NewBehaviourScript : MonoBehaviour {
+
+    [DllImport(&quot;__Internal&quot;)]
+    private static extern void Hello();
+
+    [DllImport(&quot;__Internal&quot;)]
+    private static extern void HelloString(string str);
+
+    [DllImport(&quot;__Internal&quot;)]
+    private static extern void PrintFloatArray(float[] array, int size);
+
+    [DllImport(&quot;__Internal&quot;)]
+    private static extern int AddNumbers(int x, int y);
+
+    [DllImport(&quot;__Internal&quot;)]
+    private static extern string StringReturnValueFunction();
+
+    [DllImport(&quot;__Internal&quot;)]
+    private static extern void BindWebGLTexture(int texture);
+
+    void Start() {
+        Hello();
+        
+        HelloString(&quot;This is a string.&quot;);
+        
+        float[] myArray = new float[10];
+        PrintFloatArray(myArray, myArray.Length);
+        
+        int result = AddNumbers(5, 7);
+        Debug.Log(result);
+        
+        Debug.Log(StringReturnValueFunction());
+        
+        var texture = new Texture2D(0, 0, TextureFormat.ARGB32, false);
+        BindWebGLTexture(texture.GetNativeTextureID());
+    }
+}
+</code></pre>
+
+<p>Simple numeric types can be passed to JavaScript in function parameters without requiring any conversion. Other data types will be passed as a pointer in the emscripten heap (which is really just a big array in JavaScript). For strings, you can use the <code>Pointer_stringify</code> helper function to convert to a JavaScript string. To return a string value you need to call <code>_malloc_</code> to allocate some memory and the <code>stringToUTF8</code> helper function to write a JavaScript string to it. If the string is a return value, then the il2cpp runtime will take care of freeing the memory for you. For arrays of primitive types, <code>emscripten</code> provides different <code>ArrayBufferViews</code> into it’s heap for different sizes of integer, unsigned integer or floating point representations of memory: <strong>HEAP8, HEAPU8, HEAP16, HEAPU16, HEAP32, HEAPU32, HEAPF32, HEAPF64</strong>. To access a texture in WebGL, emscripten provides the <code>GL.textures</code> array which maps native texture IDs from Unity to WebGL texture objects. WebGL functions can be called on emscripten’s WebGL context, <code>GLctx</code>.</p>
+
+<h3>Legacy ways of calling JavaScript code from Unity</h3>
+
+<p><em>Note: Starting from Unity 5.6 the recommended way of calling JavaScript code from Unity is through a .jslib plugin. The method described below is only supported for compatibility reasons and might become deprecated in the future versions of Unity.</em></p>
+
+<p>You can use the <a href="../ScriptReference/Application.ExternalCall.html">Application.ExternalCall()</a> and <a href="../ScriptReference/Application.ExternalEval.html">Application.ExternalEval()</a> functions to invoke JavaScript code on the embedding web page. Note that expressions are evaluated in the local scope of the build. If you would like to execute JavaScript code in the global scope, see the <em>Code Visibility</em> section below.</p>
+
+<h2>Calling Unity scripts functions from JavaScript</h2>
+
+<p>Sometimes you need to send some data or notification to the Unity script from the browser’s JavaScript. The recommended way of doing it is to call methods on GameObjects in your content. If you are making the call from a JavaScript plugin, embedded in your project, you can use the following code:</p>
+
+<p><code>SendMessage(objectName, methodName, value);</code></p>
+
+<p>Where <strong>objectName </strong>is the name of an object in your scene; <strong>methodName </strong>is the name of a method in the script, currently attached to that object; <strong>value </strong>can be a string, a number, or can be empty. For example:</p>
+
+<pre><code>SendMessage('MyGameObject', 'MyFunction');
+SendMessage('MyGameObject', 'MyFunction', 5);
+
+SendMessage('MyGameObject', 'MyFunction', 'MyString');
+</code></pre>
+
+<p>If you would like to make a call from the global scope of the embedding page, see the <em>Code Visibility</em> section below.</p>
+
+<h2>Calling C++ functions from Unity scripts</h2>
+
+<p>Since Unity compiles your sources into JavaScript from C++ code using emscripten, you can also write plugins in C or C++ code, and call these functions from C#. So, instead of the jslib file in the example above, you could have a c file like below in your project - it will automatically get compiled with your scripts, and you can call functions from it, just like in the JavaScript example above.</p>
+
+<p>If you are using C++ (.cpp) to implement the plugin then you must ensure the functions are declared with C linkage to avoid name mangling issues.</p>
+
+<pre><code>#include &lt;stdio.h&gt;
+void Hello ()
+{
+    printf(&quot;Hello, world!\n&quot;);
+}
+int AddNumbers (int x, int y)
+{
+    return x + y;
+}
+</code></pre>
+
+<h3>Code visibility</h3>
+
+<p>Starting from Unity 5.6 all the build code is executed in its own scope. This approach makes it possible to embed your game on an arbitrary page without causing conflicts with the embedding page code, as well as makes it possible to embed more than one build on the same page.</p>
+
+<p>If you have all your JavaScript code in the form of <em>.jslib</em> plugins inside your project, then this JavaScript code will run inside the same scope as the compiled build and your code should work pretty much the same way as in previous versions of Unity (for example, the following objects and functions should be directly visible from the JavaScript plugin code: <em>Module, SendMessage, HEAP8, ccall etc.</em>).</p>
+
+<p>However, if you are planning to call the internal JavaScript functions from the global scope of the embedding page, you should always assume that there are multiple builds embedded on the page, so you should explicitly specify which build you are referencing to. For example, if your game has been instantiated as:</p>
+
+<p><code>var gameInstance = UnityLoader.instantiate(&quot;gameContainer&quot;, &quot;Build/build.json&quot;, {onProgress: UnityProgress});</code></p>
+
+<p>Then you can send a message to the build using <em>gameInstance.SendMessage()</em>, or access the build Module object like this <em>gameInstance.Module</em>.</p>
+
+<hr>
+
+<ul>
+<li><p><span class="page-edit">2017–11–14 Page amended with no <a href="DocumentationEditorialReview.html">editorial review</a>
+</span></p></li>
+<li><p><span class="page-history">Fixed error in code example.</span></p></li>
+<li><p><span class="page-history">Updated in 5.6</span></p></li>
+</ul>
+<div class="feedbackbox" id="feedbackbox">
+<div id="rating"><p>Did you find this page useful? Please give it a rating:<br><div id="ratecontent" class="c-rating"></div>
+</p></div>
+<div id="ratingThanks" style="display:none"><p>Thanks for rating this page!</p></div>
+<div id="problem"><p><a name="problem" onclick="document.getElementById('problemType').style.display = '';document.getElementById('problem').style.display = 'none';">Report a problem on this page</a></p></div>
+<div id="problemType" style="display:none"><p>What kind of problem would you like to report?<ul type="problems">
+<li><a name="needcode" onclick="                                                             document.getElementById('problemType').style.display = 'none';                                                             document.getElementById('problemThanks').style.display = '';                                                             SendFeedback('problem-needcode',window.location.href,0);                                                             document.getElementById('problemFormDescription').value='Needs code samples.';                                                             document.getElementById('problemNeedCodeForm').style.display = ''                                                         ">This page needs code samples</a></li>
+<li><a name="code" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-brokencode',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Code samples do not work.';                                                         document.getElementById('problemCodeForm').style.display = ''                                                         ">Code samples do not work</a></li>
+<li><a name="missing" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-missing',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Missing information';                                                         document.getElementById('problemMissingForm').style.display = ''                                                         ">Information is missing</a></li>
+<li><a name="incorrect" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-incorrect',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Incorrect information';                                                         document.getElementById('problemIncorrectForm').style.display = ''                                                         ">Information is incorrect</a></li>
+<li><a name="unclear" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-unclear',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Unclear or confusing information';                                                         document.getElementById('problemUnclearForm').style.display = ''                                                         ">Information is unclear or confusing</a></li>
+<li><a name="language" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-language',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Spelling or grammar error';                                                         document.getElementById('problemLanguageForm').style.display = ''                                                         ">There is a spelling/grammar error on this page</a></li>
+<li><a name="other" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-other',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='This page has a problem';                                                         document.getElementById('problemOtherForm').style.display = ''                                                         ">Something else</a></li>
+</ul>
+<p><known_issues><p>Is something described here not working as you expect it to? It might be a <b>Known Issue</b>. Please check with the Issue Tracker at <a href="https://issuetracker.unity3d.com">issuetracker.unity3d.com</a>.</p></known_issues></p>
+</p></div>
+<div id="problemThanks" style="display:none"><p>Thanks for letting us know! This page has been marked for review based on your feedback.<br><br>If you have time, you can provide more information to help us fix the problem faster.<br><br><a onclick="document.getElementById('problemMoreInfo').style.display = '';document.getElementById('problemThanks').style.display = 'none';">Provide more information</a><br>
+</p></div>
+<div id="problemMoreInfo" style="display:none">
+<p id="problemNeedCodeForm" style="display:none">You've told us this page needs code samples. If you'd like to help us further, you could provide a code sample, or tell us about what kind of code sample you'd like to see:</p>
+<p id="problemCodeForm" style="display:none">You've told us there are code samples on this page which don't work. If you know how to fix it, or have something better we could use instead, please let us know:</p>
+<p id="problemMissingForm" style="display:none">You've told us there is information missing from this page. Please tell us more about what's missing:</p>
+<p id="problemIncorrectForm" style="display:none">You've told us there is incorrect information on this page. If you know what we should change to make it correct, please tell us:</p>
+<p id="problemUnclearForm" style="display:none">You've told us this page has unclear or confusing information. Please tell us more about what you found unclear or confusing, or let us know how we could make it clearer:</p>
+<p id="problemLanguageForm" style="display:none">You've told us there is a spelling or grammar error on this page. Please tell us what's wrong:</p>
+<p id="problemOtherForm" style="display:none">You've told us this page has a problem. Please tell us more about what's wrong:</p>
+<form>
+<textarea id="problemFormSuggestionField" cols="40" rows="5"></textarea><input type="hidden" id="problemFormDescription"><input type="submit" id="problemFormDescriptionSubmit" value="Submit" onclick="                                             document.getElementById('problemMoreInfo').style.display = 'none';                                             document.getElementById('problemMoreInfoThanks').style.display = '';                                             return false;                                             ">
+</form>
+</div>
+<div id="problemMoreInfoThanks" style="display:none"><p>Thanks for helping to make the Unity documentation better!</p></div>
+<script>
+
+                                            var ratecontent = document.querySelector('#ratecontent'); // target element
+                                            var currentRating = 0; // initial rating
+                                            var maxRating= 5; // max rating
+
+                                            // callback to run after setting the rating
+                                            var callback = function(rating) {
+                                                document.getElementById('ratingThanks').style.display = '';
+                                                document.getElementById('ratecontent').style.display = 'none';
+                                                document.getElementById('rating').style.display = 'none';
+                                                SendFeedback("rating",window.location.href,rating);
+                                            };
+
+                                            // rating instance
+                                            var myRating = rating(ratecontent, currentRating, maxRating, callback);
+                                        </script>
+</div>
+<div class="nextprev clear">
+<div class="icon tt left mr1" data-distance="-40|-30|top">
+<span class="prev"><a href="webgl-memory.html"></a></span><div class="tip">Memory Considerations when targeting WebGL</div>
+</div>
+<div class="icon tt right" data-distance="-40|-30|top">
+<span class="next"><a href="webgl-templates.html"></a></span><div class="tip"> Using WebGL Templates</div>
+</div>
+</div>
+</div>
+</body></html>

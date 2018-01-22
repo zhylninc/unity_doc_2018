@@ -1,0 +1,297 @@
+<html><head><title>html模版</title></head><body>Unity - Manual:  Debug Views</br>
+<div class="breadcrumbs clear"><ul>
+<li><a href="UnityManual.html">Unity User Manual (2018.1 beta)</a></li>
+<li><a href="Graphics.html">Graphics</a></li>
+<li><a href="GraphicsOverview.html">Graphics Overview</a></li>
+<li><a href="PostProcessingOverview.html"> Post-processing overview</a></li>
+<li> Debug Views</li>
+</ul></div>
+<div class="mb20"><div class="nextprev clear">
+<div class="icon tt left mr1" data-distance="-40|-30|top">
+<span class="prev"><a href="PostProcessing-Dithering.html"></a></span><div class="tip"> Dithering</div>
+</div>
+<div class="icon tt right" data-distance="-40|-30|top">
+<span class="next"><a href="PostProcessing-Monitors.html"></a></span><div class="tip"> Monitors</div>
+</div>
+</div></div>
+<div class="otherversionswrapper" onmouseover="setOtherVersionsDisplay(true)" onmouseout="setOtherVersionsDisplay(false)">
+<a>Other Versions</a><div class="otherversionscontent" id="OtherVersionsContent" style="display: none;">Cannot access other versions offline!</div>
+</div>
+<div class="scrollToFeedback"><a id="scrollToFeedback">Leave feedback</a></div>
+<h2>Debug Views</h2>
+
+<p>The <a href="PostProcessing-Stack.html">post-processing stack</a> comes with a selection of debug views to view specific effects or passes such as depth, normals and motion vectors. These can be found at the top of the post-processing profile. Debug views will affect the application of other effects on the Game view.</p>
+
+<p>The debug views included in the post-processing stack are:</p>
+
+<ul>
+<li><p>Depth</p></li>
+<li><p>Normals</p></li>
+<li><p>Motion Vectors</p></li>
+<li><p>Ambient Occlusion</p></li>
+<li><p>Eye Adaptation</p></li>
+<li><p>Focus Plane</p></li>
+<li><p>Pre Grading Log</p></li>
+<li><p>Log Lut</p></li>
+<li><p>User Lut</p></li>
+</ul>
+
+<h3>Properties</h3>
+
+<table>
+<colgroup>
+<col style="text-align:left;">
+<col style="text-align:left;">
+</colgroup>
+
+<thead>
+<tr>
+	<th style="text-align:left;"><strong>Property:</strong></th>
+	<th style="text-align:left;"><strong>Function:</strong></th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+	<td style="text-align:left;"><strong>Mode</strong></td>
+	<td style="text-align:left;">The currently selected debug view</td>
+</tr>
+</tbody>
+</table>
+
+<h3>Depth</h3>
+
+<p>The Depth Debug View displays the depth values of the pixels on screen. These values can be shifted for easier viewing by adjusting the Scale value. </p>
+
+<p>The Debug View can be used to identify issues in all effects that use the <a href="SL-DepthTextures.html">depth texture</a>, such as <a href="PostProcessing-AmbientOcclusion.html">Ambient Occlusion</a> and <a href="PostProcessing-DepthOfField.html">Depth of Field</a>.</p>
+
+<figure>
+<img src="../uploads/Main/PostProcessing-DebugViews-0.png" alt="The Depth Debug View">
+<figcaption>The Depth Debug View</figcaption>
+</figure>
+
+<h3>Properties</h3>
+
+<table>
+<colgroup>
+<col style="text-align:left;">
+<col style="text-align:left;">
+</colgroup>
+
+<thead>
+<tr>
+	<th style="text-align:left;"><strong>Property:</strong></th>
+	<th style="text-align:left;"><strong>Function:</strong></th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+	<td style="text-align:left;"><strong>Scale</strong></td>
+	<td style="text-align:left;">Scales the camera far plane before displaying the depth map.</td>
+</tr>
+</tbody>
+</table>
+
+<h3>Normals</h3>
+
+<p>The Normals Debug View displays the normals texture used for various effects. This Debug View differs between rendering paths. In the <a href="RenderTech-DeferredShading.html">Deferred rendering path</a> it displays the G-Buffer Normals texture, this includes details from object’s normal maps. In the Forward rendering path it just displays object’s vertex normals.</p>
+
+<p>This Debug View can be used to identify issues in all effects that use the normals texture such as <a href="PostProcessing-ScreenSpaceReflection.html">Screen Space Reflection</a> and <a href="PostProcessing-AmbientOcclusion.html">Ambient Occlusion</a>.</p>
+
+<figure>
+<img src="../uploads/Main/PostProcessing-DebugViews-1.png" alt="The Normals Debug View in the Deferred rendering path">
+<figcaption>The Normals Debug View in the Deferred rendering path</figcaption>
+</figure>
+
+<figure>
+<img src="../uploads/Main/PostProcessing-DebugViews-2.png" alt="The Normals Debug View in the Forward rendering path">
+<figcaption>The Normals Debug View in the Forward rendering path</figcaption>
+</figure>
+
+<h3>Motion Vectors</h3>
+
+<p>The Motion Vectors Debug View displays visualizations of the <a href="../ScriptReference/DepthTextureMode.MotionVectors.html">motion vector</a> texture. There are two types of visualizations in the Motion Vectors Debug View.</p>
+
+<p>The overlay visualization displays motion vector colors of each pixel on screen. Different colors show different movement directions and more saturated values indicate higher velocities. The arrows visualization draws arrows on screen indicating direction and velocity of movement, this is less precise but easier to read.</p>
+
+<p>This Debug View can be used to identify issues with temporal effects such as <a href="PostProcessing-MotionBlur.html">Motion Blur</a> and <a href="PostProcessing-Antialiasing.html">Temporal Anti-aliasing</a>.</p>
+
+<figure>
+<img src="../uploads/Main/PostProcessing-DebugViews-3.png" alt="The Motion Vectors Debug View">
+<figcaption>The Motion Vectors Debug View</figcaption>
+</figure>
+
+<h3>Properties</h3>
+
+<table>
+<colgroup>
+<col style="text-align:left;">
+<col style="text-align:left;">
+</colgroup>
+
+<thead>
+<tr>
+	<th style="text-align:left;"><strong>Property:</strong></th>
+	<th style="text-align:left;"><strong>Function:</strong></th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+	<td style="text-align:left;"><strong>(Source Image) Opacity</strong></td>
+	<td style="text-align:left;">Opacity of the source render.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>(Motion Vectors (overlay)) Opacity</strong></td>
+	<td style="text-align:left;">Opacity of the per-pixel motion vectors</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>(Motion Vectors (overlay)) Amplitude</strong></td>
+	<td style="text-align:left;">Because motion vectors are mainly very small vectors, you can use this setting to make them more visible.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>(Motion Vectors (arrows)) Opacity</strong></td>
+	<td style="text-align:left;">Opacity for the motion vector arrows.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>(Motion Vectors (arrows)) Resolution</strong></td>
+	<td style="text-align:left;">The arrow density on screen.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>(Motion Vectors (arrows)) Amplitude</strong></td>
+	<td style="text-align:left;">Tweaks the arrows length.</td>
+</tr>
+</tbody>
+</table>
+
+<h3>Ambient Occlusion</h3>
+
+<p>The Ambient Occlusion Debug View displays the final result of the <a href="PostProcessing-AmbientOcclusion.html">Ambient Occlusion</a> effect without multiplying it on top of the scene. This can be useful for identifying problems in Ambient Occlusion.</p>
+
+<figure>
+<img src="../uploads/Main/PostProcessing-DebugViews-4.png" alt="The Ambient Occlusion Debug View.">
+<figcaption>The Ambient Occlusion Debug View.</figcaption>
+</figure>
+
+<h3>Eye Adaptation</h3>
+
+<p>The Eye Adaptation Debug View displays a representation of the histogram used for <a href="PostProcessing-EyeAdaptation.html">Eye Adaptation</a>. This indicates the minimum and maximum for Histogram log and Luminance as well as the current average luminance computed by the effect. These are overlaid onto the luminance values of the screen, updated in real time to indicate the Eye Adaptation effect.</p>
+
+<p>This is useful for fine tuning the Eye Adaptation effect.</p>
+
+<figure>
+<img src="../uploads/Main/PostProcessing-DebugViews-5.png" alt="The Eye Adaptation Debug View.">
+<figcaption>The Eye Adaptation Debug View.</figcaption>
+</figure>
+
+<h3>Focus Plane</h3>
+
+<p>The Focus Plane Debug View displays the focus distance and aperture range used for <a href="PostProcessing-DepthOfField.html">Depth of Field</a>.</p>
+
+<p>This is useful for setting up the Depth of Field effect.</p>
+
+<figure>
+<img src="../uploads/Main/PostProcessing-DebugViews-6.png" alt="The Focus Plane Debug View.">
+<figcaption>The Focus Plane Debug View.</figcaption>
+</figure>
+
+<h3>Pre Grading Log</h3>
+
+<p>The Pre Grading Log Debug View displays the source image in Log space. This is the input used for most controls of <a href="PostProcessing-ColorGrading.html">Color Grading</a>. It displays a log/compressed view of the current HDR view.</p>
+
+<p>This is useful for identifying problems in Color Grading.</p>
+
+<figure>
+<img src="../uploads/Main/PostProcessing-DebugViews-7.png" alt="The Pre Grading Log Debug View.">
+<figcaption>The Pre Grading Log Debug View.</figcaption>
+</figure>
+
+<h3>Log Lut</h3>
+
+<p>The Log Lut Debug View displays the output Lut for <a href="PostProcessing-ColorGrading.html">Color Grading</a>. This is the Lut generated by the Color Grading effect based on parameters set by the user.</p>
+
+<p>This is useful for identifying problems in Color Grading.</p>
+
+<figure>
+<img src="../uploads/Main/PostProcessing-DebugViews-8.png" alt="The Log Lut Debug View.">
+<figcaption>The Log Lut Debug View.</figcaption>
+</figure>
+
+<h3>User Lut</h3>
+
+<p>The User Lut Debug View displays the output Lut for <a href="PostProcessing-UserLut.html">User Lut</a>. This is the texture set in the Lut field adjusted by the <strong>Contribution </strong>parameter.</p>
+
+<p>This is useful for identifying problems in User Lut.</p>
+
+<figure>
+<img src="../uploads/Main/PostProcessing-DebugViews-9.png" alt="The User Lut Debug View.">
+<figcaption>The User Lut Debug View.</figcaption>
+</figure>
+
+<hr>
+
+<ul>
+<li><p><span class="page-edit"> 2017–05–24 Page published with no <a href="DocumentationEditorialReview.html">editorial review</a>
+</span></p></li>
+<li><p><span class="page-history">New feature in 5.6</span></p></li>
+</ul>
+<div class="feedbackbox" id="feedbackbox">
+<div id="rating"><p>Did you find this page useful? Please give it a rating:<br><div id="ratecontent" class="c-rating"></div>
+</p></div>
+<div id="ratingThanks" style="display:none"><p>Thanks for rating this page!</p></div>
+<div id="problem"><p><a name="problem" onclick="document.getElementById('problemType').style.display = '';document.getElementById('problem').style.display = 'none';">Report a problem on this page</a></p></div>
+<div id="problemType" style="display:none"><p>What kind of problem would you like to report?<ul type="problems">
+<li><a name="needcode" onclick="                                                             document.getElementById('problemType').style.display = 'none';                                                             document.getElementById('problemThanks').style.display = '';                                                             SendFeedback('problem-needcode',window.location.href,0);                                                             document.getElementById('problemFormDescription').value='Needs code samples.';                                                             document.getElementById('problemNeedCodeForm').style.display = ''                                                         ">This page needs code samples</a></li>
+<li><a name="code" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-brokencode',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Code samples do not work.';                                                         document.getElementById('problemCodeForm').style.display = ''                                                         ">Code samples do not work</a></li>
+<li><a name="missing" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-missing',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Missing information';                                                         document.getElementById('problemMissingForm').style.display = ''                                                         ">Information is missing</a></li>
+<li><a name="incorrect" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-incorrect',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Incorrect information';                                                         document.getElementById('problemIncorrectForm').style.display = ''                                                         ">Information is incorrect</a></li>
+<li><a name="unclear" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-unclear',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Unclear or confusing information';                                                         document.getElementById('problemUnclearForm').style.display = ''                                                         ">Information is unclear or confusing</a></li>
+<li><a name="language" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-language',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Spelling or grammar error';                                                         document.getElementById('problemLanguageForm').style.display = ''                                                         ">There is a spelling/grammar error on this page</a></li>
+<li><a name="other" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-other',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='This page has a problem';                                                         document.getElementById('problemOtherForm').style.display = ''                                                         ">Something else</a></li>
+</ul>
+<p><known_issues><p>Is something described here not working as you expect it to? It might be a <b>Known Issue</b>. Please check with the Issue Tracker at <a href="https://issuetracker.unity3d.com">issuetracker.unity3d.com</a>.</p></known_issues></p>
+</p></div>
+<div id="problemThanks" style="display:none"><p>Thanks for letting us know! This page has been marked for review based on your feedback.<br><br>If you have time, you can provide more information to help us fix the problem faster.<br><br><a onclick="document.getElementById('problemMoreInfo').style.display = '';document.getElementById('problemThanks').style.display = 'none';">Provide more information</a><br>
+</p></div>
+<div id="problemMoreInfo" style="display:none">
+<p id="problemNeedCodeForm" style="display:none">You've told us this page needs code samples. If you'd like to help us further, you could provide a code sample, or tell us about what kind of code sample you'd like to see:</p>
+<p id="problemCodeForm" style="display:none">You've told us there are code samples on this page which don't work. If you know how to fix it, or have something better we could use instead, please let us know:</p>
+<p id="problemMissingForm" style="display:none">You've told us there is information missing from this page. Please tell us more about what's missing:</p>
+<p id="problemIncorrectForm" style="display:none">You've told us there is incorrect information on this page. If you know what we should change to make it correct, please tell us:</p>
+<p id="problemUnclearForm" style="display:none">You've told us this page has unclear or confusing information. Please tell us more about what you found unclear or confusing, or let us know how we could make it clearer:</p>
+<p id="problemLanguageForm" style="display:none">You've told us there is a spelling or grammar error on this page. Please tell us what's wrong:</p>
+<p id="problemOtherForm" style="display:none">You've told us this page has a problem. Please tell us more about what's wrong:</p>
+<form>
+<textarea id="problemFormSuggestionField" cols="40" rows="5"></textarea><input type="hidden" id="problemFormDescription"><input type="submit" id="problemFormDescriptionSubmit" value="Submit" onclick="                                             document.getElementById('problemMoreInfo').style.display = 'none';                                             document.getElementById('problemMoreInfoThanks').style.display = '';                                             return false;                                             ">
+</form>
+</div>
+<div id="problemMoreInfoThanks" style="display:none"><p>Thanks for helping to make the Unity documentation better!</p></div>
+<script>
+
+                                            var ratecontent = document.querySelector('#ratecontent'); // target element
+                                            var currentRating = 0; // initial rating
+                                            var maxRating= 5; // max rating
+
+                                            // callback to run after setting the rating
+                                            var callback = function(rating) {
+                                                document.getElementById('ratingThanks').style.display = '';
+                                                document.getElementById('ratecontent').style.display = 'none';
+                                                document.getElementById('rating').style.display = 'none';
+                                                SendFeedback("rating",window.location.href,rating);
+                                            };
+
+                                            // rating instance
+                                            var myRating = rating(ratecontent, currentRating, maxRating, callback);
+                                        </script>
+</div>
+<div class="nextprev clear">
+<div class="icon tt left mr1" data-distance="-40|-30|top">
+<span class="prev"><a href="PostProcessing-Dithering.html"></a></span><div class="tip"> Dithering</div>
+</div>
+<div class="icon tt right" data-distance="-40|-30|top">
+<span class="next"><a href="PostProcessing-Monitors.html"></a></span><div class="tip"> Monitors</div>
+</div>
+</div>
+</div>
+</body></html>

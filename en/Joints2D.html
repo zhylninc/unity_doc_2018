@@ -1,0 +1,140 @@
+<html><head><title>html模版</title></head><body>Unity - Manual:  2D Joints</br>
+<div class="breadcrumbs clear"><ul>
+<li><a href="UnityManual.html">Unity User Manual (2018.1 beta)</a></li>
+<li><a href="Unity2D.html">2D</a></li>
+<li><a href="Physics2DReference.html">Physics Reference 2D</a></li>
+<li> 2D Joints</li>
+</ul></div>
+<div class="mb20"><div class="nextprev clear">
+<div class="icon tt left mr1" data-distance="-40|-30|top">
+<span class="prev"><a href="class-PhysicsMaterial2D.html"></a></span><div class="tip">Physics Material 2D</div>
+</div>
+<div class="icon tt right" data-distance="-40|-30|top">
+<span class="next"><a href="class-DistanceJoint2D.html"></a></span><div class="tip">Distance Joint 2D</div>
+</div>
+</div></div>
+<div class="otherversionswrapper" onmouseover="setOtherVersionsDisplay(true)" onmouseout="setOtherVersionsDisplay(false)">
+<a>Other Versions</a><div class="otherversionscontent" id="OtherVersionsContent" style="display: none;">Cannot access other versions offline!</div>
+</div>
+<div class="scrollToFeedback"><a id="scrollToFeedback">Leave feedback</a></div>
+<h1>2D Joints</h1>
+<!--BeginSwitchLink--><!--EndSwitchLink-->
+<div class="clear"></div>
+
+<p>As the name implies, joints attach GameObjects together. You can only attach 2D joints to GameObjects which have a Rigidbody 2D component attached, or to a fixed position in world space.</p>
+
+<p>2D joints all have names ending ‘2D’. A joint named without a ‘2D’ ending is a 3D joint. 2D joints work with game objects in 2D and 3D joints work with game objects in 3D.</p>
+
+<p>(See <strong>Details and Hints</strong>, below, for useful background information on all 2D joints.)</p>
+
+<p>There are different types of 2D joints. See each joint reference page for detailed information about their properties:</p>
+
+<ul>
+<li><p>
+<a href="class-DistanceJoint2D.html">Distance Joint 2D</a> - attaches two game objects controlled by rigidbody physics together and keeps them a certain distance apart.</p></li>
+<li><p>
+<a href="class-FixedJoint2D.html">Fixed Joint 2D</a> - keeps two objects in a position relative to each other, so the objects are always offset at a given position and angle. For example, objects that need to react as if they are rigidly connected: They can’t move away from each other, they can’t move closer together, and they can’t rotate with respect to each other. You can also use this joint to create a less rigid connection that flexes.</p></li>
+<li><p>
+<a href="class-FrictionJoint2D.html">Friction Joint 2D</a> - reduces both the linear and angular velocities between two game objects controlled by rigidbody physics to zero (ie: it slows them down and stops them). For example; a platform that rotates but resists that movement. </p></li>
+<li><p>
+<a href="class-HingeJoint2D.html">Hinge Joint 2D</a>- allows a game object controlled by rigidbody physics to be attached to a point in space around which it can rotate. For example; the pivot on a pair of scissors.</p></li>
+<li><p>
+<a href="class-RelativeJoint2D.html">Relative Joint 2D</a> - allows two game objects controlled by rigidbody physics to maintain a position based on each other’s location. Use this joint to keep two objects offset from each other. For example; a space-shooter game where the player has extra gun batteries that follow them.</p></li>
+<li><p>
+<a href="class-SliderJoint2D.html">Slider Joint 2D</a> - allows a game object controlled by rigidbody physics to slide along a line in space, like sliding doors, for example.</p></li>
+<li><p>
+<a href="class-SpringJoint2D.html">Spring Joint 2D</a> - allows two game objects controlled by rigidbody physics to be attached together as if by a spring.</p></li>
+<li><p>
+<a href="class-TargetJoint2D.html">Target Joint 2D</a> - connects to a specified target, rather than another rigid body object, as other joints do. It is a spring type joint, which you could use for picking up and moving an object acting under gravity, for example.</p></li>
+<li><p>
+<a href="class-WheelJoint2D.html">Wheel Joint 2D</a> - simulates wheels and suspension.</p></li>
+</ul>
+
+<h2>Details and Hints</h2>
+
+<h3>Constraints</h3>
+
+<p>All joints provide one or more constraints that apply to Rigidbody 2D behaviour. A constraint is a ‘rule’ which the joint will try to ensure isn’t permanently broken. There are different types of constraints available but usually a joint will only provide a few of them, sometimes only one. Some constraints limit behaviour such as ensuring a rigid body stays on a line, or in a certain position. Some are ‘driving’ constraints such as a motor that rotates or moves a rigid body object, trying to maintain a certain speed.</p>
+
+<h3>Temporarily breaking constraints</h3>
+
+<p>The physics system expects that constraints do become temporarily broken; the objects may move further apart than their distance constraint tells them, or objects may move faster than their motor-speed constraint. When a constraint isn’t broken, the joint doesn’t apply any forces and does little work. It is when a constraint is broken that the joint applies forces to fix the constraint: So for the ‘driving’ constraints mentioned above, it maintains a distance or ensures a motor-speed. This force, however, doesn’t always instantaneously fix the constraint. Although it usually happens very fast, it can happen over time. </p>
+
+<p>This time lag can lead to joints ‘stretching’ or seeming ‘soft’. The lag happens because the physics system is trying to apply joint-forces to fix constraints, whilst at the same time other game physics forces are acting to break constraints. In addition to the conflicting forces acting on game objects, some joints are more stable and react faster than others. </p>
+
+<p>Whatever constraints the joint provides, the joint only uses forces to fix the constraint. These are either a linear (straight line) force or angular (torque) force. </p>
+
+<p>
+<strong>HINT:</strong> Given the conflicing forces acting on joints, it is always good to be cautious when applying large forces to rigid body objects that have joints attached, especially those with large masses. </p>
+
+<h2>Permanently breaking joints</h2>
+
+<p>All joints have the ability to stop working completely (that is break) when a force exceeds a specified limit. The limit that causes breaking due to excessive linear force is called the “break force”. The limit that causes breaking due to excessive torque force is called the “break torque”.</p>
+
+<ul>
+<li>If a joint applies linear force, then it has a <strong>Break Force</strong> option.</li>
+<li>If a joint applies an angular (rotation) force then it has a <strong>Break Torque</strong> option.</li>
+</ul>
+
+<p>Both these limits are pre-set to <strong>Infinity</strong>: This means that they have no limit. </p>
+
+<p>When a <strong>Break Force</strong> or <strong>Break Torque</strong> limit is exceeded, the joint breaks and the component deletes itself from its GameObject.</p>
+<div class="feedbackbox" id="feedbackbox">
+<div id="rating"><p>Did you find this page useful? Please give it a rating:<br><div id="ratecontent" class="c-rating"></div>
+</p></div>
+<div id="ratingThanks" style="display:none"><p>Thanks for rating this page!</p></div>
+<div id="problem"><p><a name="problem" onclick="document.getElementById('problemType').style.display = '';document.getElementById('problem').style.display = 'none';">Report a problem on this page</a></p></div>
+<div id="problemType" style="display:none"><p>What kind of problem would you like to report?<ul type="problems">
+<li><a name="needcode" onclick="                                                             document.getElementById('problemType').style.display = 'none';                                                             document.getElementById('problemThanks').style.display = '';                                                             SendFeedback('problem-needcode',window.location.href,0);                                                             document.getElementById('problemFormDescription').value='Needs code samples.';                                                             document.getElementById('problemNeedCodeForm').style.display = ''                                                         ">This page needs code samples</a></li>
+<li><a name="code" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-brokencode',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Code samples do not work.';                                                         document.getElementById('problemCodeForm').style.display = ''                                                         ">Code samples do not work</a></li>
+<li><a name="missing" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-missing',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Missing information';                                                         document.getElementById('problemMissingForm').style.display = ''                                                         ">Information is missing</a></li>
+<li><a name="incorrect" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-incorrect',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Incorrect information';                                                         document.getElementById('problemIncorrectForm').style.display = ''                                                         ">Information is incorrect</a></li>
+<li><a name="unclear" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-unclear',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Unclear or confusing information';                                                         document.getElementById('problemUnclearForm').style.display = ''                                                         ">Information is unclear or confusing</a></li>
+<li><a name="language" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-language',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Spelling or grammar error';                                                         document.getElementById('problemLanguageForm').style.display = ''                                                         ">There is a spelling/grammar error on this page</a></li>
+<li><a name="other" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-other',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='This page has a problem';                                                         document.getElementById('problemOtherForm').style.display = ''                                                         ">Something else</a></li>
+</ul>
+<p><known_issues><p>Is something described here not working as you expect it to? It might be a <b>Known Issue</b>. Please check with the Issue Tracker at <a href="https://issuetracker.unity3d.com">issuetracker.unity3d.com</a>.</p></known_issues></p>
+</p></div>
+<div id="problemThanks" style="display:none"><p>Thanks for letting us know! This page has been marked for review based on your feedback.<br><br>If you have time, you can provide more information to help us fix the problem faster.<br><br><a onclick="document.getElementById('problemMoreInfo').style.display = '';document.getElementById('problemThanks').style.display = 'none';">Provide more information</a><br>
+</p></div>
+<div id="problemMoreInfo" style="display:none">
+<p id="problemNeedCodeForm" style="display:none">You've told us this page needs code samples. If you'd like to help us further, you could provide a code sample, or tell us about what kind of code sample you'd like to see:</p>
+<p id="problemCodeForm" style="display:none">You've told us there are code samples on this page which don't work. If you know how to fix it, or have something better we could use instead, please let us know:</p>
+<p id="problemMissingForm" style="display:none">You've told us there is information missing from this page. Please tell us more about what's missing:</p>
+<p id="problemIncorrectForm" style="display:none">You've told us there is incorrect information on this page. If you know what we should change to make it correct, please tell us:</p>
+<p id="problemUnclearForm" style="display:none">You've told us this page has unclear or confusing information. Please tell us more about what you found unclear or confusing, or let us know how we could make it clearer:</p>
+<p id="problemLanguageForm" style="display:none">You've told us there is a spelling or grammar error on this page. Please tell us what's wrong:</p>
+<p id="problemOtherForm" style="display:none">You've told us this page has a problem. Please tell us more about what's wrong:</p>
+<form>
+<textarea id="problemFormSuggestionField" cols="40" rows="5"></textarea><input type="hidden" id="problemFormDescription"><input type="submit" id="problemFormDescriptionSubmit" value="Submit" onclick="                                             document.getElementById('problemMoreInfo').style.display = 'none';                                             document.getElementById('problemMoreInfoThanks').style.display = '';                                             return false;                                             ">
+</form>
+</div>
+<div id="problemMoreInfoThanks" style="display:none"><p>Thanks for helping to make the Unity documentation better!</p></div>
+<script>
+
+                                            var ratecontent = document.querySelector('#ratecontent'); // target element
+                                            var currentRating = 0; // initial rating
+                                            var maxRating= 5; // max rating
+
+                                            // callback to run after setting the rating
+                                            var callback = function(rating) {
+                                                document.getElementById('ratingThanks').style.display = '';
+                                                document.getElementById('ratecontent').style.display = 'none';
+                                                document.getElementById('rating').style.display = 'none';
+                                                SendFeedback("rating",window.location.href,rating);
+                                            };
+
+                                            // rating instance
+                                            var myRating = rating(ratecontent, currentRating, maxRating, callback);
+                                        </script>
+</div>
+<div class="nextprev clear">
+<div class="icon tt left mr1" data-distance="-40|-30|top">
+<span class="prev"><a href="class-PhysicsMaterial2D.html"></a></span><div class="tip">Physics Material 2D</div>
+</div>
+<div class="icon tt right" data-distance="-40|-30|top">
+<span class="next"><a href="class-DistanceJoint2D.html"></a></span><div class="tip">Distance Joint 2D</div>
+</div>
+</div>
+</div>
+</body></html>

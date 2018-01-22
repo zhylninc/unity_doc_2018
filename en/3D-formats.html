@@ -1,0 +1,138 @@
+<html><head><title>html模版</title></head><body>Unity - Manual: 3D formats</br>
+<div class="breadcrumbs clear"><ul>
+<li><a href="UnityManual.html">Unity User Manual (2018.1 beta)</a></li>
+<li><a href="AnimationSection.html">Animation</a></li>
+<li><a href="comp-AnimationGroup.html">Animation Reference</a></li>
+<li><a href="class-FBXImporter.html"> Importing models</a></li>
+<li>3D formats</li>
+</ul></div>
+<div class="mb20"><div class="nextprev clear">
+<div class="icon tt left mr1" data-distance="-40|-30|top">
+<span class="prev"><a href="FBXImporter-Materials.html"></a></span><div class="tip"> Model Importer: Materials</div>
+</div>
+<div class="icon tt right" data-distance="-40|-30|top">
+<span class="next"><a href="MecanimFAQ.html"></a></span><div class="tip">Animation FAQ</div>
+</div>
+</div></div>
+<div class="otherversionswrapper" onmouseover="setOtherVersionsDisplay(true)" onmouseout="setOtherVersionsDisplay(false)">
+<a>Other Versions</a><div class="otherversionscontent" id="OtherVersionsContent" style="display: none;">Cannot access other versions offline!</div>
+</div>
+<div class="scrollToFeedback"><a id="scrollToFeedback">Leave feedback</a></div>
+<h1>3D formats</h1>
+<!--BeginSwitchLink--><!--EndSwitchLink-->
+<div class="clear"></div>
+
+<p>Unity supports importing <a href="class-Mesh.html">Meshes</a> from two different types of files:</p>
+
+<ol>
+<li>
+<strong>Exported 3D file formats</strong>, such as .fbx or .obj. You can export files from 3D modeling software in generic formats that can be imported and edited by a wide variety of different software.</li>
+<li>
+<strong>Proprietary 3D or DCC (Digital Content Creation) application files</strong>, such as .max and .blend file formats from <a href="http://www.autodesk.co.uk/products/3ds-max/overview">3D Studio Max</a> or <a href="https://www.blender.org/">Blender</a>, for example. You can only edit proprietary files in the software that created them. Proprietary files are generally not directly editable by other software without first being converted and imported. An exception to this is <a href="https://www.sketchup.com/">SketchUp</a> .skp files, which both by SketchUp and Unity can read.</li>
+</ol>
+
+<p>Unity can import and use both types of files, and each come with their own advantages and disadvantages.</p>
+
+<h2>Exported 3D files</h2>
+
+<p>Unity can read <a href="HOWTO-exportFBX.html">.fbx</a>, .dae (<a href="https://www.khronos.org/collada/">Collada</a>), .3ds, .dxf, .obj, and .skp files. Refer to your 3D modeling software documentation for information about exporting 3D files.</p>
+
+<p><strong>Advantages:</strong></p>
+
+<ul>
+<li>Instead of importing the whole model into Unity, you can import only the parts of the model you need.</li>
+<li>Exported generic files are often smaller than the proprietary equivalent.</li>
+<li>Using exported generic files encourages a modular approach (for example, using different components for collision types or interactivity).</li>
+<li>You can import these files from software that Unity does not directly support.</li>
+<li>Exported 3D files (.fbx, .obj) can be reimported into 3D modeling software after exporting, to ensure that all of the information has been exported correctly.</li>
+</ul>
+
+<p><strong>Disadvantages:</strong></p>
+
+<ul>
+<li>Models must be re-exported manually if changes are made to the original file.</li>
+<li>Extra care must be taken to keep track of versions between the source file and the files imported into Unity.</li>
+</ul>
+
+<h2>Proprietary 3D application files</h2>
+
+<p>Unity can import proprietary files from the following DCC software: <strong>Max</strong>, <strong>Maya</strong>, <strong>Blender</strong>, <strong>Cinema4D</strong>, <strong>Modo</strong>, <strong>Lightwave</strong> &amp; <strong>Cheetah3D</strong>. Files imported this way are converted into .fbx files by Unity during the import process.</p>
+
+<p><strong>Advantages:</strong></p>
+
+<ul>
+<li>Updates made to the original model are automatically imported into Unity.</li>
+<li>This is initially simple - but it can become more complex later in development.</li>
+</ul>
+
+<p><strong>Disadvantages:</strong></p>
+
+<ul>
+<li>A licensed copy of the software used must be installed on all machines using the Unity project.</li>
+<li>Software versions should be the same on each machine using the Unity project. Using a different software version can cause errors or unexpected behavior when importing 3D models.</li>
+<li>Files can become bloated with unnecessary data.</li>
+<li>Big files can slow down Unity project imports or Asset re-imports, because you have to run the DCC software you use as a background process when you import the model into Unity.</li>
+<li>Unity exports proprietary files to .fbx internally, during the import process. This makes it difficult to verify the .fbx data and troubleshoot problems.</li>
+</ul>
+
+<p>
+<strong>Note</strong>: Assets saved as .ma, .mb, .max, .c4d, or .blend files fail to import unless you have the corresponding DCC software installed in your computer. This means that everybody working on your Unity project must have the correct software installed. For example, if you use <a href="http://www.autodesk.com/education/free-software/maya">Maya</a> to create <em>ExampleModel.mb</em> and copy it into your project, anyone else opening that project also needs to have Maya installed on their computer. </p>
+<div class="feedbackbox" id="feedbackbox">
+<div id="rating"><p>Did you find this page useful? Please give it a rating:<br><div id="ratecontent" class="c-rating"></div>
+</p></div>
+<div id="ratingThanks" style="display:none"><p>Thanks for rating this page!</p></div>
+<div id="problem"><p><a name="problem" onclick="document.getElementById('problemType').style.display = '';document.getElementById('problem').style.display = 'none';">Report a problem on this page</a></p></div>
+<div id="problemType" style="display:none"><p>What kind of problem would you like to report?<ul type="problems">
+<li><a name="needcode" onclick="                                                             document.getElementById('problemType').style.display = 'none';                                                             document.getElementById('problemThanks').style.display = '';                                                             SendFeedback('problem-needcode',window.location.href,0);                                                             document.getElementById('problemFormDescription').value='Needs code samples.';                                                             document.getElementById('problemNeedCodeForm').style.display = ''                                                         ">This page needs code samples</a></li>
+<li><a name="code" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-brokencode',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Code samples do not work.';                                                         document.getElementById('problemCodeForm').style.display = ''                                                         ">Code samples do not work</a></li>
+<li><a name="missing" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-missing',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Missing information';                                                         document.getElementById('problemMissingForm').style.display = ''                                                         ">Information is missing</a></li>
+<li><a name="incorrect" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-incorrect',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Incorrect information';                                                         document.getElementById('problemIncorrectForm').style.display = ''                                                         ">Information is incorrect</a></li>
+<li><a name="unclear" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-unclear',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Unclear or confusing information';                                                         document.getElementById('problemUnclearForm').style.display = ''                                                         ">Information is unclear or confusing</a></li>
+<li><a name="language" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-language',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Spelling or grammar error';                                                         document.getElementById('problemLanguageForm').style.display = ''                                                         ">There is a spelling/grammar error on this page</a></li>
+<li><a name="other" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-other',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='This page has a problem';                                                         document.getElementById('problemOtherForm').style.display = ''                                                         ">Something else</a></li>
+</ul>
+<p><known_issues><p>Is something described here not working as you expect it to? It might be a <b>Known Issue</b>. Please check with the Issue Tracker at <a href="https://issuetracker.unity3d.com">issuetracker.unity3d.com</a>.</p></known_issues></p>
+</p></div>
+<div id="problemThanks" style="display:none"><p>Thanks for letting us know! This page has been marked for review based on your feedback.<br><br>If you have time, you can provide more information to help us fix the problem faster.<br><br><a onclick="document.getElementById('problemMoreInfo').style.display = '';document.getElementById('problemThanks').style.display = 'none';">Provide more information</a><br>
+</p></div>
+<div id="problemMoreInfo" style="display:none">
+<p id="problemNeedCodeForm" style="display:none">You've told us this page needs code samples. If you'd like to help us further, you could provide a code sample, or tell us about what kind of code sample you'd like to see:</p>
+<p id="problemCodeForm" style="display:none">You've told us there are code samples on this page which don't work. If you know how to fix it, or have something better we could use instead, please let us know:</p>
+<p id="problemMissingForm" style="display:none">You've told us there is information missing from this page. Please tell us more about what's missing:</p>
+<p id="problemIncorrectForm" style="display:none">You've told us there is incorrect information on this page. If you know what we should change to make it correct, please tell us:</p>
+<p id="problemUnclearForm" style="display:none">You've told us this page has unclear or confusing information. Please tell us more about what you found unclear or confusing, or let us know how we could make it clearer:</p>
+<p id="problemLanguageForm" style="display:none">You've told us there is a spelling or grammar error on this page. Please tell us what's wrong:</p>
+<p id="problemOtherForm" style="display:none">You've told us this page has a problem. Please tell us more about what's wrong:</p>
+<form>
+<textarea id="problemFormSuggestionField" cols="40" rows="5"></textarea><input type="hidden" id="problemFormDescription"><input type="submit" id="problemFormDescriptionSubmit" value="Submit" onclick="                                             document.getElementById('problemMoreInfo').style.display = 'none';                                             document.getElementById('problemMoreInfoThanks').style.display = '';                                             return false;                                             ">
+</form>
+</div>
+<div id="problemMoreInfoThanks" style="display:none"><p>Thanks for helping to make the Unity documentation better!</p></div>
+<script>
+
+                                            var ratecontent = document.querySelector('#ratecontent'); // target element
+                                            var currentRating = 0; // initial rating
+                                            var maxRating= 5; // max rating
+
+                                            // callback to run after setting the rating
+                                            var callback = function(rating) {
+                                                document.getElementById('ratingThanks').style.display = '';
+                                                document.getElementById('ratecontent').style.display = 'none';
+                                                document.getElementById('rating').style.display = 'none';
+                                                SendFeedback("rating",window.location.href,rating);
+                                            };
+
+                                            // rating instance
+                                            var myRating = rating(ratecontent, currentRating, maxRating, callback);
+                                        </script>
+</div>
+<div class="nextprev clear">
+<div class="icon tt left mr1" data-distance="-40|-30|top">
+<span class="prev"><a href="FBXImporter-Materials.html"></a></span><div class="tip"> Model Importer: Materials</div>
+</div>
+<div class="icon tt right" data-distance="-40|-30|top">
+<span class="next"><a href="MecanimFAQ.html"></a></span><div class="tip">Animation FAQ</div>
+</div>
+</div>
+</div>
+</body></html>

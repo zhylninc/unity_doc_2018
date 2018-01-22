@@ -1,0 +1,142 @@
+<html><head><title>html模版</title></head><body>Unity - Manual:  Real-time lighting</br>
+<div class="breadcrumbs clear"><ul>
+<li><a href="UnityManual.html">Unity User Manual (2018.1 beta)</a></li>
+<li><a href="Graphics.html">Graphics</a></li>
+<li><a href="GraphicsOverview.html">Graphics Overview</a></li>
+<li><a href="LightingOverview.html">Lighting</a></li>
+<li><a href="LightModes.html"> Lighting Modes</a></li>
+<li> Real-time lighting</li>
+</ul></div>
+<div class="mb20"><div class="nextprev clear">
+<div class="icon tt left mr1" data-distance="-40|-30|top">
+<span class="prev"><a href="LightModes-TechnicalInformation.html"></a></span><div class="tip"> Lighting: Technical information and terminology</div>
+</div>
+<div class="icon tt right" data-distance="-40|-30|top">
+<span class="next"><a href="LightMode-Mixed.html"></a></span><div class="tip"> Mixed lighting</div>
+</div>
+</div></div>
+<div class="otherversionswrapper" onmouseover="setOtherVersionsDisplay(true)" onmouseout="setOtherVersionsDisplay(false)">
+<a>Other Versions</a><div class="otherversionscontent" id="OtherVersionsContent" style="display: none;">Cannot access other versions offline!</div>
+</div>
+<div class="scrollToFeedback"><a id="scrollToFeedback">Leave feedback</a></div>
+<h1>Real-time lighting</h1>
+<!--BeginSwitchLink--><!--EndSwitchLink-->
+<div class="clear"></div>
+
+<p>Real-time Lights are <a href="class-Light.html">Light components</a> which have their <strong>Mode</strong> property set to <strong>Realtime</strong>. </p>
+
+<p>Use <strong>Realtime</strong> mode for Lights that need to change their properties or which are spawned via scripts during gameplay. Unity calculates and updates the lighting of these Lights every frame at run time. They can change in response to actions taken by the player, or events which take place in the Scene. For example, you can set them to switch on and off (like a flickering light), change their Transforms (like a torch being carried through a dark room), or change their visual properties, like their color and intensity. </p>
+
+<p>Real-time Lights illuminate and cast realistic shadows on both static and dynamic GameObjects. They cast shadows up to the <strong>Shadow Distance</strong> (defined in <strong>Edit</strong> &gt; <strong>Project Settings</strong> &gt; <strong>Quality</strong>). </p>
+
+<p>You can also combine real-time Lights with <strong>Realtime Global Illumination</strong> (<strong>Realtime GI</strong>), so that they contribute indirect lighting to static and dynamic GameObjects.</p>
+
+<h2>Using real-time lighting with Realtime GI</h2>
+
+<p>The combination of real-time lighting with <strong>Realtime GI</strong> is the most flexible and realistic lighting option in Unity. To enable Realtime GI, open the <a href="GlobalIllumination.html">Lighting window</a> (menu: <strong>Window</strong> &gt; <strong>Lighting</strong> &gt; <strong>Settings</strong>) and tick <strong>Realtime Global Illumination</strong>.</p>
+
+<p>When <strong>Realtime GI</strong> is enabled, real-time Lights contribute indirect lighting into the Scene, as well as direct lighting. Use this combination for light sources which change slowly and have a high visual impact on your Scene, such as the sun moving across the sky, or a slowly pulsating light in a closed corridor. You don’t need to use <strong>Realtime GI</strong> for Lights that change quickly, or for special effects, because tehe latency of the system does not make it worth the overhead. </p>
+
+<p>Note that <strong>Realtime GI</strong> uses significant system resources compared to the less complex <strong>Baked GI</strong>. Global Illumination is managed in Unity by a piece of middleware called Enlighten, which has its own overheads (system memory and CPU cycles). See documentation on <a href="GlobalIllumination.html">Global Illumination</a> for more information.</p>
+
+<p>
+<strong>Realtime GI</strong> is suitable for games targeting mid-level to high-end PC systems, and games targeting current-gen consoles such as the PS4 and Xbox One. Some high-end mobile devices might also be powerful enough to make use of this feature, but you should keep Scenes small and the resolution for real-time light maps low to conserve system resources.</p>
+
+<p>To disable the effect of <strong>Realtime GI</strong> on a specific light, select the Light GameObject and, in the Light component, set the <strong>Indirect Multiplier</strong> to 0. This means that the Light does not contribute any indirect light. To disable <strong>Realtime GI</strong> altogether, open the Lighting window (menu: <strong>Window</strong> &gt; <strong>Lighting</strong> &gt; <strong>Settings</strong>) and untick <strong>Realtime Global Illumination</strong>.</p>
+
+<h3>Disadvantages of using real-time lighting with Realtime GI</h3>
+
+<ul>
+<li><p>Increased memory requirements, due to the additional set of low resolution real-time light maps used to store the real-time indirect bounces computed by the Enlighten lighting system.</p></li>
+<li><p>Increased shader calculation requirements, due to sampling of the additional set of real-time light maps and probes used to store the real-time indirect bounces computed by the Enlighten lighting system.</p></li>
+<li><p>Indirect lighting converges over time, so property changes cannot be too abrupt. Adaptive HDR tone mapping might help you hide this; to learn more, see the Unity Post Processing Stack (<a href="https://www.assetstore.unity3d.com/en/#!/content/83912">Asset Store</a>).</p></li>
+</ul>
+
+<h2>Technical details</h2>
+
+<p>In the case of real-time Lights (that is, Light components with their <strong>Mode</strong> set to <strong>Realtime</strong>), the last emission (or path segment) from the surface to the Light is not precomputed. This means that Lights can move around the Scene, and change visual properties like color and intensity. See documentation on <a href="../uploads/ExpertGuides/Using_Enlighten_with_Unity.pdf">Using Enlighten in Unity</a> for more information on path segments.</p>
+
+<p>If the Light also casts shadows, both dynamic and static GameObjects in the Scene are rendered into the Light’s <a href="Shadows.html">shadow map</a>. This shadow map is sampled by the <a href="Shaders.html">Material Shaders</a> of both static and dynamic GameObjects, so that they cast real-time shadows on each other. The <strong>Shadow Distance</strong> (menu: <strong>Edit</strong> &gt; <strong>Project Settings</strong> &gt; <strong>Quality</strong> &gt; <strong>Shadows</strong>) controls the maximum distance at which shadows start to fade out and disappear entirely, which in turn affects performance and image quality. </p>
+
+<p>If <strong>Realtime GI</strong> is not enabled, real-time Lights only calculate direct lighting on dynamic and static GameObjects. If <strong>Realtime GI</strong> is enabled, Unity uses Enlighten to precompute the surface-to-surface light paths for static GameObjects.</p>
+
+<figure>
+<img src="../uploads/Main/LightMode-Realtime-0.png" alt="">
+</figure>
+
+<p>Precomputed <strong>Realtime GI</strong> mode: Unity only precomputes surface-to-surface information </p>
+
+<p>The last path segment (that is, the segment from the surface to the Light emitter) is not part of the precomputation. The only information stored is that if the surface is illuminated, then the following surfaces and probes are also illuminated, and the intensities of the various illuminations. There is a separate set of low-resolution real-time light maps, which Enlighten iteratively updates on the CPU at run time with the information of real-time Lights. Because this iterative process is computationally intensive, it is split across several frames. In other words, it takes a couple of frames until the light has fully bounced across the static elements in the Scene, and the real-time light maps and <a href="LightProbes.html">Light Probes</a> have converged to the final result. </p>
+
+<p>For Lights with properties that change slowly (such as a light-emitting sun moving across the sky), this does not pose a problem. However, for Lights with properties that change quickly (such as a flickering lightbulb), the iterative nature of <strong>Realtime GI</strong> may prove unsuitable. Fast property changes do not register significantly with the bounced light system, so there is no point in including them in the calculations.</p>
+
+<p>There are several ways to address this problem. One way is to reduce the real-time light map resolution. Because this results in less calculation at run time, the lighting converges faster. Another option is to increase the <a href="https://docs.google.com/document/d/1SEkozSX298iM6N1MONyss8IA2B5rtrfTStE72Tul2Y0/edit">CPU Usage</a> setting for the <strong>Realtime GI</strong> runtime. By dedicating more CPU time, the runtime converges faster. The tradeoff is of course that other systems receive less CPU time to do their work. Whether this is acceptable depends on each individual project. Note that as this is a per-Scene setting, you can dedicate more or less CPU time based on the complexity of each individual Scene in the project. </p>
+
+<p>Even though <strong>Realtime GI</strong> is enabled on a per-Scene basis for all real-time Lights, it is still possible to prevent individual real-time Lights from being considered by <strong>Realtime GI</strong>. To achieve this, set the Light component’s <strong>Mode</strong> to <strong>Realtime</strong> and its <a href="https://docs.google.com/document/d/1vmBiK2Ez-A7Z1OpJjWB1IJ4_OSDIVwPgmq8xNhMUMfk/edit">indirect multiplier</a> to 0, removing all indirect light contributions.</p>
+
+<hr>
+
+<ul>
+<li><p><span class="page-edit"> 2017–06–08 Page published with limited <a href="DocumentationEditorialReview.html">editorial review</a>
+</span></p></li>
+<li><p><span class="page-history">Light Modes added in 5.6</span></p></li>
+</ul>
+<div class="feedbackbox" id="feedbackbox">
+<div id="rating"><p>Did you find this page useful? Please give it a rating:<br><div id="ratecontent" class="c-rating"></div>
+</p></div>
+<div id="ratingThanks" style="display:none"><p>Thanks for rating this page!</p></div>
+<div id="problem"><p><a name="problem" onclick="document.getElementById('problemType').style.display = '';document.getElementById('problem').style.display = 'none';">Report a problem on this page</a></p></div>
+<div id="problemType" style="display:none"><p>What kind of problem would you like to report?<ul type="problems">
+<li><a name="needcode" onclick="                                                             document.getElementById('problemType').style.display = 'none';                                                             document.getElementById('problemThanks').style.display = '';                                                             SendFeedback('problem-needcode',window.location.href,0);                                                             document.getElementById('problemFormDescription').value='Needs code samples.';                                                             document.getElementById('problemNeedCodeForm').style.display = ''                                                         ">This page needs code samples</a></li>
+<li><a name="code" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-brokencode',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Code samples do not work.';                                                         document.getElementById('problemCodeForm').style.display = ''                                                         ">Code samples do not work</a></li>
+<li><a name="missing" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-missing',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Missing information';                                                         document.getElementById('problemMissingForm').style.display = ''                                                         ">Information is missing</a></li>
+<li><a name="incorrect" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-incorrect',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Incorrect information';                                                         document.getElementById('problemIncorrectForm').style.display = ''                                                         ">Information is incorrect</a></li>
+<li><a name="unclear" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-unclear',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Unclear or confusing information';                                                         document.getElementById('problemUnclearForm').style.display = ''                                                         ">Information is unclear or confusing</a></li>
+<li><a name="language" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-language',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Spelling or grammar error';                                                         document.getElementById('problemLanguageForm').style.display = ''                                                         ">There is a spelling/grammar error on this page</a></li>
+<li><a name="other" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-other',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='This page has a problem';                                                         document.getElementById('problemOtherForm').style.display = ''                                                         ">Something else</a></li>
+</ul>
+<p><known_issues><p>Is something described here not working as you expect it to? It might be a <b>Known Issue</b>. Please check with the Issue Tracker at <a href="https://issuetracker.unity3d.com">issuetracker.unity3d.com</a>.</p></known_issues></p>
+</p></div>
+<div id="problemThanks" style="display:none"><p>Thanks for letting us know! This page has been marked for review based on your feedback.<br><br>If you have time, you can provide more information to help us fix the problem faster.<br><br><a onclick="document.getElementById('problemMoreInfo').style.display = '';document.getElementById('problemThanks').style.display = 'none';">Provide more information</a><br>
+</p></div>
+<div id="problemMoreInfo" style="display:none">
+<p id="problemNeedCodeForm" style="display:none">You've told us this page needs code samples. If you'd like to help us further, you could provide a code sample, or tell us about what kind of code sample you'd like to see:</p>
+<p id="problemCodeForm" style="display:none">You've told us there are code samples on this page which don't work. If you know how to fix it, or have something better we could use instead, please let us know:</p>
+<p id="problemMissingForm" style="display:none">You've told us there is information missing from this page. Please tell us more about what's missing:</p>
+<p id="problemIncorrectForm" style="display:none">You've told us there is incorrect information on this page. If you know what we should change to make it correct, please tell us:</p>
+<p id="problemUnclearForm" style="display:none">You've told us this page has unclear or confusing information. Please tell us more about what you found unclear or confusing, or let us know how we could make it clearer:</p>
+<p id="problemLanguageForm" style="display:none">You've told us there is a spelling or grammar error on this page. Please tell us what's wrong:</p>
+<p id="problemOtherForm" style="display:none">You've told us this page has a problem. Please tell us more about what's wrong:</p>
+<form>
+<textarea id="problemFormSuggestionField" cols="40" rows="5"></textarea><input type="hidden" id="problemFormDescription"><input type="submit" id="problemFormDescriptionSubmit" value="Submit" onclick="                                             document.getElementById('problemMoreInfo').style.display = 'none';                                             document.getElementById('problemMoreInfoThanks').style.display = '';                                             return false;                                             ">
+</form>
+</div>
+<div id="problemMoreInfoThanks" style="display:none"><p>Thanks for helping to make the Unity documentation better!</p></div>
+<script>
+
+                                            var ratecontent = document.querySelector('#ratecontent'); // target element
+                                            var currentRating = 0; // initial rating
+                                            var maxRating= 5; // max rating
+
+                                            // callback to run after setting the rating
+                                            var callback = function(rating) {
+                                                document.getElementById('ratingThanks').style.display = '';
+                                                document.getElementById('ratecontent').style.display = 'none';
+                                                document.getElementById('rating').style.display = 'none';
+                                                SendFeedback("rating",window.location.href,rating);
+                                            };
+
+                                            // rating instance
+                                            var myRating = rating(ratecontent, currentRating, maxRating, callback);
+                                        </script>
+</div>
+<div class="nextprev clear">
+<div class="icon tt left mr1" data-distance="-40|-30|top">
+<span class="prev"><a href="LightModes-TechnicalInformation.html"></a></span><div class="tip"> Lighting: Technical information and terminology</div>
+</div>
+<div class="icon tt right" data-distance="-40|-30|top">
+<span class="next"><a href="LightMode-Mixed.html"></a></span><div class="tip"> Mixed lighting</div>
+</div>
+</div>
+</div>
+</body></html>

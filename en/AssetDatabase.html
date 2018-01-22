@@ -1,0 +1,188 @@
+<html><head><title>html模版</title></head><body>Unity - Manual: AssetDatabase</br>
+<div class="breadcrumbs clear"><ul>
+<li><a href="UnityManual.html">Unity User Manual (2018.1 beta)</a></li>
+<li><a href="UnityOverview.html">Working in Unity</a></li>
+<li><a href="AdvancedEditor.html">Advanced Editor Topics</a></li>
+<li>AssetDatabase</li>
+</ul></div>
+<div class="mb20"><div class="nextprev clear">
+<div class="icon tt left mr1" data-distance="-40|-30|top">
+<span class="prev"><a href="BehindtheScenes.html"></a></span><div class="tip">Behind the Scenes</div>
+</div>
+<div class="icon tt right" data-distance="-40|-30|top">
+<span class="next"><a href="TextSceneFormat.html"></a></span><div class="tip">Text-Based Scene Files</div>
+</div>
+</div></div>
+<div class="otherversionswrapper" onmouseover="setOtherVersionsDisplay(true)" onmouseout="setOtherVersionsDisplay(false)">
+<a>Other Versions</a><div class="otherversionscontent" id="OtherVersionsContent" style="display: none;">Cannot access other versions offline!</div>
+</div>
+<div class="scrollToFeedback"><a id="scrollToFeedback">Leave feedback</a></div>
+<h1>AssetDatabase</h1>
+<!--BeginSwitchLink--><!--EndSwitchLink-->
+<div class="clear"></div>
+
+<p>AssetDatabase is an API which allows you to access the assets contained in your project. Among other things, it provides methods to find and load assets and also to create, delete and modify them. The Unity Editor uses the AssetDatabase internally to keep track of asset files and maintain the linkage between assets and objects that reference them. Since Unity needs to keep track of all changes to the project folder, you should always use the AssetDatabase API rather than the filesystem if you want to access or modify asset data.</p>
+
+<p>The AssetDatabase interface is only available in the editor and has no function in the built player. Like all other editor classes, it is only available to scripts placed in the Editor folder (just create a folder named “Editor” in the main Assets folder of your project if there isn’t one already).</p>
+
+<h2>Importing an Asset</h2>
+
+<p>Unity normally imports assets automatically when they are dragged into the project but it is also possible to import them under script control. To do this you can use the <a href="../ScriptReference/AssetDatabase.ImportAsset.html">AssetDatabase.ImportAsset</a> method as in the example below.</p>
+
+<pre><code>using UnityEngine;
+using UnityEditor;
+
+public class ImportAsset {
+    [MenuItem (&quot;AssetDatabase/ImportExample&quot;)]
+    static void ImportExample ()
+    {
+        AssetDatabase.ImportAsset(&quot;Assets/Textures/texture.jpg&quot;, ImportAssetOptions.Default);
+    }
+}
+
+</code></pre>
+
+<p>You can also pass an extra parameter of type <a href="../ScriptReference/ImportAssetOptions.html">AssetDatabase.ImportAssetOptions</a> to the AssetDatabase.ImportAsset call. The scripting reference page documents the different options and their effects on the function’s behaviour.</p>
+
+<h2>Loading an Asset</h2>
+
+<p>The editor loads assets only as needed, say if they are added to the scene or edited from the Inspector panel. However, you can load and access assets from a script using <a href="../ScriptReference/AssetDatabase.LoadAssetAtPath.html">AssetDatabase.LoadAssetAtPath</a>, <a href="../ScriptReference/AssetDatabase.LoadMainAssetAtPath.html">AssetDatabase.LoadMainAssetAtPath</a>, <a href="../ScriptReference/AssetDatabase.LoadAllAssetRepresentationsAtPath.html">AssetDatabase.LoadAllAssetRepresentationsAtPath</a> and <a href="../ScriptReference/AssetDatabase.LoadAllAssetsAtPath.html">AssetDatabase.LoadAllAssetsAtPath</a>. See the scripting documentation for further details.</p>
+
+<pre><code>using UnityEngine;
+using UnityEditor;
+
+public class ImportAsset {
+    [MenuItem (&quot;AssetDatabase/LoadAssetExample&quot;)]
+    static void ImportExample ()
+    {
+        Texture2D t = AssetDatabase.LoadAssetAtPath(&quot;Assets/Textures/texture.jpg&quot;, typeof(Texture2D)) as Texture2D;
+    }
+}
+
+</code></pre>
+
+<h2>File Operations using the AssetDatabase</h2>
+
+<p>Since Unity keeps metadata about asset files, you should never create, move or delete them using the filesystem. Instead, you can use <a href="../ScriptReference/AssetDatabase.Contains.html">AssetDatabase.Contains</a>, <a href="../ScriptReference/AssetDatabase.CreateAsset.html">AssetDatabase.CreateAsset</a>, <a href="../ScriptReference/AssetDatabase.CreateFolder.html">AssetDatabase.CreateFolder</a>, <a href="../ScriptReference/AssetDatabase.RenameAsset.html">AssetDatabase.RenameAsset</a>, <a href="../ScriptReference/AssetDatabase.CopyAsset.html">AssetDatabase.CopyAsset</a>, <a href="../ScriptReference/AssetDatabase.MoveAsset.html">AssetDatabase.MoveAsset</a>, <a href="../ScriptReference/AssetDatabase.MoveAssetToTrash.html">AssetDatabase.MoveAssetToTrash</a> and <a href="../ScriptReference/AssetDatabase.DeleteAsset.html">AssetDatabase.DeleteAsset</a>.</p>
+
+<pre><code>public class AssetDatabaseIOExample {
+    [MenuItem (&quot;AssetDatabase/FileOperationsExample&quot;)]
+    static void Example ()
+    {
+        string ret;
+        
+        // Create
+        Material material = new Material (Shader.Find(&quot;Specular&quot;));
+        AssetDatabase.CreateAsset(material, &quot;Assets/MyMaterial.mat&quot;);
+        if(AssetDatabase.Contains(material))
+            Debug.Log(&quot;Material asset created&quot;);
+        
+        // Rename
+        ret = AssetDatabase.RenameAsset(&quot;Assets/MyMaterial.mat&quot;, &quot;MyMaterialNew&quot;);
+        if(ret == &quot;&quot;)
+            Debug.Log(&quot;Material asset renamed to MyMaterialNew&quot;);
+        else
+            Debug.Log(ret);
+        
+        // Create a Folder
+        ret = AssetDatabase.CreateFolder(&quot;Assets&quot;, &quot;NewFolder&quot;);
+        if(AssetDatabase.GUIDToAssetPath(ret) != &quot;&quot;)
+            Debug.Log(&quot;Folder asset created&quot;);
+        else
+            Debug.Log(&quot;Couldn't find the GUID for the path&quot;);
+        
+        // Move
+        ret = AssetDatabase.MoveAsset(AssetDatabase.GetAssetPath(material), &quot;Assets/NewFolder/MyMaterialNew.mat&quot;);
+        if(ret == &quot;&quot;)
+            Debug.Log(&quot;Material asset moved to NewFolder/MyMaterialNew.mat&quot;);
+        else
+            Debug.Log(ret);
+        
+        // Copy
+        if(AssetDatabase.CopyAsset(AssetDatabase.GetAssetPath(material), &quot;Assets/MyMaterialNew.mat&quot;))
+            Debug.Log(&quot;Material asset copied as Assets/MyMaterialNew.mat&quot;);
+        else
+            Debug.Log(&quot;Couldn't copy the material&quot;);
+        // Manually refresh the Database to inform of a change
+        AssetDatabase.Refresh();
+        Material MaterialCopy = AssetDatabase.LoadAssetAtPath(&quot;Assets/MyMaterialNew.mat&quot;, typeof(Material)) as Material;
+        
+        // Move to Trash
+        if(AssetDatabase.MoveAssetToTrash(AssetDatabase.GetAssetPath(MaterialCopy)))
+            Debug.Log(&quot;MaterialCopy asset moved to trash&quot;);
+        
+        // Delete
+        if(AssetDatabase.DeleteAsset(AssetDatabase.GetAssetPath(material)))
+            Debug.Log(&quot;Material asset deleted&quot;);
+        if(AssetDatabase.DeleteAsset(&quot;Assets/NewFolder&quot;))
+            Debug.Log(&quot;NewFolder deleted&quot;);
+        
+        // Refresh the AssetDatabase after all the changes
+        AssetDatabase.Refresh();
+    }
+}
+
+</code></pre>
+
+<h2>Using AssetDatabase.Refresh</h2>
+
+<p>When you have finished modifying assets, you should call AssetDatabase.Refresh to commit your changes to the database and make them visible in the project.</p>
+<div class="feedbackbox" id="feedbackbox">
+<div id="rating"><p>Did you find this page useful? Please give it a rating:<br><div id="ratecontent" class="c-rating"></div>
+</p></div>
+<div id="ratingThanks" style="display:none"><p>Thanks for rating this page!</p></div>
+<div id="problem"><p><a name="problem" onclick="document.getElementById('problemType').style.display = '';document.getElementById('problem').style.display = 'none';">Report a problem on this page</a></p></div>
+<div id="problemType" style="display:none"><p>What kind of problem would you like to report?<ul type="problems">
+<li><a name="needcode" onclick="                                                             document.getElementById('problemType').style.display = 'none';                                                             document.getElementById('problemThanks').style.display = '';                                                             SendFeedback('problem-needcode',window.location.href,0);                                                             document.getElementById('problemFormDescription').value='Needs code samples.';                                                             document.getElementById('problemNeedCodeForm').style.display = ''                                                         ">This page needs code samples</a></li>
+<li><a name="code" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-brokencode',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Code samples do not work.';                                                         document.getElementById('problemCodeForm').style.display = ''                                                         ">Code samples do not work</a></li>
+<li><a name="missing" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-missing',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Missing information';                                                         document.getElementById('problemMissingForm').style.display = ''                                                         ">Information is missing</a></li>
+<li><a name="incorrect" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-incorrect',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Incorrect information';                                                         document.getElementById('problemIncorrectForm').style.display = ''                                                         ">Information is incorrect</a></li>
+<li><a name="unclear" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-unclear',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Unclear or confusing information';                                                         document.getElementById('problemUnclearForm').style.display = ''                                                         ">Information is unclear or confusing</a></li>
+<li><a name="language" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-language',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Spelling or grammar error';                                                         document.getElementById('problemLanguageForm').style.display = ''                                                         ">There is a spelling/grammar error on this page</a></li>
+<li><a name="other" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-other',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='This page has a problem';                                                         document.getElementById('problemOtherForm').style.display = ''                                                         ">Something else</a></li>
+</ul>
+<p><known_issues><p>Is something described here not working as you expect it to? It might be a <b>Known Issue</b>. Please check with the Issue Tracker at <a href="https://issuetracker.unity3d.com">issuetracker.unity3d.com</a>.</p></known_issues></p>
+</p></div>
+<div id="problemThanks" style="display:none"><p>Thanks for letting us know! This page has been marked for review based on your feedback.<br><br>If you have time, you can provide more information to help us fix the problem faster.<br><br><a onclick="document.getElementById('problemMoreInfo').style.display = '';document.getElementById('problemThanks').style.display = 'none';">Provide more information</a><br>
+</p></div>
+<div id="problemMoreInfo" style="display:none">
+<p id="problemNeedCodeForm" style="display:none">You've told us this page needs code samples. If you'd like to help us further, you could provide a code sample, or tell us about what kind of code sample you'd like to see:</p>
+<p id="problemCodeForm" style="display:none">You've told us there are code samples on this page which don't work. If you know how to fix it, or have something better we could use instead, please let us know:</p>
+<p id="problemMissingForm" style="display:none">You've told us there is information missing from this page. Please tell us more about what's missing:</p>
+<p id="problemIncorrectForm" style="display:none">You've told us there is incorrect information on this page. If you know what we should change to make it correct, please tell us:</p>
+<p id="problemUnclearForm" style="display:none">You've told us this page has unclear or confusing information. Please tell us more about what you found unclear or confusing, or let us know how we could make it clearer:</p>
+<p id="problemLanguageForm" style="display:none">You've told us there is a spelling or grammar error on this page. Please tell us what's wrong:</p>
+<p id="problemOtherForm" style="display:none">You've told us this page has a problem. Please tell us more about what's wrong:</p>
+<form>
+<textarea id="problemFormSuggestionField" cols="40" rows="5"></textarea><input type="hidden" id="problemFormDescription"><input type="submit" id="problemFormDescriptionSubmit" value="Submit" onclick="                                             document.getElementById('problemMoreInfo').style.display = 'none';                                             document.getElementById('problemMoreInfoThanks').style.display = '';                                             return false;                                             ">
+</form>
+</div>
+<div id="problemMoreInfoThanks" style="display:none"><p>Thanks for helping to make the Unity documentation better!</p></div>
+<script>
+
+                                            var ratecontent = document.querySelector('#ratecontent'); // target element
+                                            var currentRating = 0; // initial rating
+                                            var maxRating= 5; // max rating
+
+                                            // callback to run after setting the rating
+                                            var callback = function(rating) {
+                                                document.getElementById('ratingThanks').style.display = '';
+                                                document.getElementById('ratecontent').style.display = 'none';
+                                                document.getElementById('rating').style.display = 'none';
+                                                SendFeedback("rating",window.location.href,rating);
+                                            };
+
+                                            // rating instance
+                                            var myRating = rating(ratecontent, currentRating, maxRating, callback);
+                                        </script>
+</div>
+<div class="nextprev clear">
+<div class="icon tt left mr1" data-distance="-40|-30|top">
+<span class="prev"><a href="BehindtheScenes.html"></a></span><div class="tip">Behind the Scenes</div>
+</div>
+<div class="icon tt right" data-distance="-40|-30|top">
+<span class="next"><a href="TextSceneFormat.html"></a></span><div class="tip">Text-Based Scene Files</div>
+</div>
+</div>
+</div>
+</body></html>

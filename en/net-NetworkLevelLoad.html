@@ -1,0 +1,237 @@
+<html><head><title>html模版</title></head><body>Unity - Manual: Network Level Loading (Legacy)</br>
+<div class="breadcrumbs clear"><ul>
+<li><a href="UnityManual.html">Unity User Manual (2018.1 beta)</a></li>
+<li><a href="LegacyTopics.html">Legacy Topics</a></li>
+<li><a href="NetworkReferenceGuide.html">Legacy Network Reference Guide</a></li>
+<li>Network Level Loading (Legacy)</li>
+</ul></div>
+<div class="mb20"><div class="nextprev clear">
+<div class="icon tt left mr1" data-distance="-40|-30|top">
+<span class="prev"><a href="net-NetworkInstantiate.html"></a></span><div class="tip">Network Instantiate (Legacy)</div>
+</div>
+<div class="icon tt right" data-distance="-40|-30|top">
+<span class="next"><a href="net-MasterServer.html"></a></span><div class="tip">Master Server (Legacy)</div>
+</div>
+</div></div>
+<div class="otherversionswrapper" onmouseover="setOtherVersionsDisplay(true)" onmouseout="setOtherVersionsDisplay(false)">
+<a>Other Versions</a><div class="otherversionscontent" id="OtherVersionsContent" style="display: none;">Cannot access other versions offline!</div>
+</div>
+<div class="scrollToFeedback"><a id="scrollToFeedback">Leave feedback</a></div>
+<h1>Network Level Loading (Legacy)</h1>
+<!--BeginSwitchLink--><!--EndSwitchLink-->
+<div class="clear"></div>
+
+<p><em>(For new projects, you should use the <a href="UNet.html">new networking system introduced in 5.1</a>. This information is for legacy projects using the old networking system.)</em></p>
+
+<p>Below is a simple example of a way to load a level in a multiplayer game. It makes sure no network messages are being processed while the level is being loaded. It also makes sure no messages are sent, until everything is ready. Lastly, when the level is loaded it sends a message to all scripts so that they know the level is loaded and can react to that. The <strong>SetLevelPrefix</strong> function helps with keeping unwanted networks updates out of a new loaded level. Unwanted updates might be updates from the previous level for example. The example also uses groups to separate game data and level load communication into groups. Group 0 is used for game data traffic and group 1 for level loading. Group 0 is blocked while the level is being loaded but group 1 kept open, it could also ferry chat communication so that can stay open during level loading.</p>
+
+<pre><code>using UnityEngine;
+using UnityEngine.Network;
+using System.Collections;
+
+[RequireComponent(NetworkView)]
+public class ExampleScript : MonoBehaviour {
+    string[] supportedNetworkLevels  = new[]{ &quot;mylevel&quot; };
+    string disconnectedLevel = &quot;loader&quot;;
+    int lastLevelPrefix = 0;
+    NetworkView networkView;    
+
+    void Awake ()
+    {
+        // Network level loading is done in a separate channel.
+        DontDestroyOnLoad(this);
+        networkView = new NetworkView ();
+        networkView.group = 1;
+        Application.LoadLevel(disconnectedLevel);
+    }
+    
+    void OnGUI ()
+    {
+        if (Network.peerType != NetworkPeerType.Disconnected)
+        {
+            GUILayout.BeginArea(Rect(0, Screen.height - 30, Screen.width, 30));
+            GUILayout.BeginHorizontal();
+            
+            foreach (var level in supportedNetworkLevels)
+            {
+                if (GUILayout.Button(level))
+                {
+                    Network.RemoveRPCsInGroup(0);
+                    Network.RemoveRPCsInGroup(1);
+                    networkView.RPC( &quot;LoadLevel&quot;, RPCMode.AllBuffered, level, lastLevelPrefix + 1);
+                }
+            }
+            GUILayout.FlexibleSpace();
+            GUILayout.EndHorizontal();
+            GUILayout.EndArea();
+        }
+    }
+    
+    [RPC]
+    IEnumerator LoadLevel (string level, int levelPrefix)
+    {
+        lastLevelPrefix = levelPrefix;
+        
+        // There is no reason to send any more data over the network on the default channel,
+        // because we are about to load the level, thus all those objects will get deleted anyway
+        Network.SetSendingEnabled(0, false);    
+        
+        // We need to stop receiving because first the level must be loaded first.
+        // Once the level is loaded, rpc's and other state update attached to objects in the level are allowed to fire
+        Network.isMessageQueueRunning = false;
+        
+        // All network views loaded from a level will get a prefix into their NetworkViewID.
+        // This will prevent old updates from clients leaking into a newly created scene.
+        Network.SetLevelPrefix(levelPrefix);
+        Application.LoadLevel(level);
+        yield return;
+
+        // Allow receiving data again
+        Network.isMessageQueueRunning = true;
+        // Now the level has been loaded and we can start sending out data to clients
+        Network.SetSendingEnabled(0, true);
+
+        var gameObjects = FindObjectsOfType(GameObject) as GameObject[];
+        foreach (var go in gameObjects)
+            go.SendMessage(&quot;OnNetworkLoadedLevel&quot;, SendMessageOptions.DontRequireReceiver); 
+    }
+    
+    void OnDisconnectedFromServer ()
+    {
+        Application.LoadLevel(disconnectedLevel);
+    }
+}
+</code></pre>
+
+<p><em>C# example script</em></p>
+
+<pre><code>var supportedNetworkLevels : String[] = [ &quot;mylevel&quot; ];
+var disconnectedLevel : String = &quot;loader&quot;;
+private var lastLevelPrefix = 0;
+
+function Awake ()
+{
+    // Network level loading is done in a separate channel.
+    DontDestroyOnLoad(this);
+    networkView.group = 1;
+    Application.LoadLevel(disconnectedLevel);
+}
+
+function OnGUI ()
+{
+    if (Network.peerType != NetworkPeerType.Disconnected)
+    {
+        GUILayout.BeginArea(Rect(0, Screen.height - 30, Screen.width, 30));
+        GUILayout.BeginHorizontal();
+        
+        for (var level in supportedNetworkLevels)
+        {
+            if (GUILayout.Button(level))
+            {
+                Network.RemoveRPCsInGroup(0);
+                Network.RemoveRPCsInGroup(1);
+                networkView.RPC( &quot;LoadLevel&quot;, RPCMode.AllBuffered, level, lastLevelPrefix + 1);
+            }
+        }
+        GUILayout.FlexibleSpace();
+        GUILayout.EndHorizontal();
+        GUILayout.EndArea();
+    }
+}
+
+@RPC
+function LoadLevel (level : String, levelPrefix : int)
+{
+    lastLevelPrefix = levelPrefix;
+
+        // There is no reason to send any more data over the network on the default channel,
+        // because we are about to load the level, thus all those objects will get deleted anyway
+        Network.SetSendingEnabled(0, false);    
+
+        // We need to stop receiving because first the level must be loaded first.
+        // Once the level is loaded, rpc's and other state update attached to objects in the level are allowed to fire
+        Network.isMessageQueueRunning = false;
+        
+        // All network views loaded from a level will get a prefix into their NetworkViewID.
+        // This will prevent old updates from clients leaking into a newly created scene.
+        Network.SetLevelPrefix(levelPrefix);
+        Application.LoadLevel(level);
+        yield;
+
+        // Allow receiving data again
+        Network.isMessageQueueRunning = true;
+        // Now the level has been loaded and we can start sending out data to clients
+        Network.SetSendingEnabled(0, true);
+
+        for (var go in FindObjectsOfType(GameObject))
+            go.SendMessage(&quot;OnNetworkLoadedLevel&quot;, SendMessageOptions.DontRequireReceiver); 
+}
+
+function OnDisconnectedFromServer ()
+{
+    Application.LoadLevel(disconnectedLevel);
+}
+
+@script RequireComponent(NetworkView)
+</code></pre>
+
+<p><em>JS example script</em></p>
+<div class="feedbackbox" id="feedbackbox">
+<div id="rating"><p>Did you find this page useful? Please give it a rating:<br><div id="ratecontent" class="c-rating"></div>
+</p></div>
+<div id="ratingThanks" style="display:none"><p>Thanks for rating this page!</p></div>
+<div id="problem"><p><a name="problem" onclick="document.getElementById('problemType').style.display = '';document.getElementById('problem').style.display = 'none';">Report a problem on this page</a></p></div>
+<div id="problemType" style="display:none"><p>What kind of problem would you like to report?<ul type="problems">
+<li><a name="needcode" onclick="                                                             document.getElementById('problemType').style.display = 'none';                                                             document.getElementById('problemThanks').style.display = '';                                                             SendFeedback('problem-needcode',window.location.href,0);                                                             document.getElementById('problemFormDescription').value='Needs code samples.';                                                             document.getElementById('problemNeedCodeForm').style.display = ''                                                         ">This page needs code samples</a></li>
+<li><a name="code" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-brokencode',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Code samples do not work.';                                                         document.getElementById('problemCodeForm').style.display = ''                                                         ">Code samples do not work</a></li>
+<li><a name="missing" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-missing',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Missing information';                                                         document.getElementById('problemMissingForm').style.display = ''                                                         ">Information is missing</a></li>
+<li><a name="incorrect" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-incorrect',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Incorrect information';                                                         document.getElementById('problemIncorrectForm').style.display = ''                                                         ">Information is incorrect</a></li>
+<li><a name="unclear" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-unclear',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Unclear or confusing information';                                                         document.getElementById('problemUnclearForm').style.display = ''                                                         ">Information is unclear or confusing</a></li>
+<li><a name="language" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-language',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Spelling or grammar error';                                                         document.getElementById('problemLanguageForm').style.display = ''                                                         ">There is a spelling/grammar error on this page</a></li>
+<li><a name="other" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-other',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='This page has a problem';                                                         document.getElementById('problemOtherForm').style.display = ''                                                         ">Something else</a></li>
+</ul>
+<p><known_issues><p>Is something described here not working as you expect it to? It might be a <b>Known Issue</b>. Please check with the Issue Tracker at <a href="https://issuetracker.unity3d.com">issuetracker.unity3d.com</a>.</p></known_issues></p>
+</p></div>
+<div id="problemThanks" style="display:none"><p>Thanks for letting us know! This page has been marked for review based on your feedback.<br><br>If you have time, you can provide more information to help us fix the problem faster.<br><br><a onclick="document.getElementById('problemMoreInfo').style.display = '';document.getElementById('problemThanks').style.display = 'none';">Provide more information</a><br>
+</p></div>
+<div id="problemMoreInfo" style="display:none">
+<p id="problemNeedCodeForm" style="display:none">You've told us this page needs code samples. If you'd like to help us further, you could provide a code sample, or tell us about what kind of code sample you'd like to see:</p>
+<p id="problemCodeForm" style="display:none">You've told us there are code samples on this page which don't work. If you know how to fix it, or have something better we could use instead, please let us know:</p>
+<p id="problemMissingForm" style="display:none">You've told us there is information missing from this page. Please tell us more about what's missing:</p>
+<p id="problemIncorrectForm" style="display:none">You've told us there is incorrect information on this page. If you know what we should change to make it correct, please tell us:</p>
+<p id="problemUnclearForm" style="display:none">You've told us this page has unclear or confusing information. Please tell us more about what you found unclear or confusing, or let us know how we could make it clearer:</p>
+<p id="problemLanguageForm" style="display:none">You've told us there is a spelling or grammar error on this page. Please tell us what's wrong:</p>
+<p id="problemOtherForm" style="display:none">You've told us this page has a problem. Please tell us more about what's wrong:</p>
+<form>
+<textarea id="problemFormSuggestionField" cols="40" rows="5"></textarea><input type="hidden" id="problemFormDescription"><input type="submit" id="problemFormDescriptionSubmit" value="Submit" onclick="                                             document.getElementById('problemMoreInfo').style.display = 'none';                                             document.getElementById('problemMoreInfoThanks').style.display = '';                                             return false;                                             ">
+</form>
+</div>
+<div id="problemMoreInfoThanks" style="display:none"><p>Thanks for helping to make the Unity documentation better!</p></div>
+<script>
+
+                                            var ratecontent = document.querySelector('#ratecontent'); // target element
+                                            var currentRating = 0; // initial rating
+                                            var maxRating= 5; // max rating
+
+                                            // callback to run after setting the rating
+                                            var callback = function(rating) {
+                                                document.getElementById('ratingThanks').style.display = '';
+                                                document.getElementById('ratecontent').style.display = 'none';
+                                                document.getElementById('rating').style.display = 'none';
+                                                SendFeedback("rating",window.location.href,rating);
+                                            };
+
+                                            // rating instance
+                                            var myRating = rating(ratecontent, currentRating, maxRating, callback);
+                                        </script>
+</div>
+<div class="nextprev clear">
+<div class="icon tt left mr1" data-distance="-40|-30|top">
+<span class="prev"><a href="net-NetworkInstantiate.html"></a></span><div class="tip">Network Instantiate (Legacy)</div>
+</div>
+<div class="icon tt right" data-distance="-40|-30|top">
+<span class="next"><a href="net-MasterServer.html"></a></span><div class="tip">Master Server (Legacy)</div>
+</div>
+</div>
+</div>
+</body></html>

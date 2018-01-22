@@ -1,0 +1,167 @@
+<html><head><title>html模版</title></head><body>Unity - Manual: Importing Assets</br>
+<div class="breadcrumbs clear"><ul>
+<li><a href="UnityManual.html">Unity User Manual (2018.1 beta)</a></li>
+<li><a href="UnityOverview.html">Working in Unity</a></li>
+<li><a href="AssetWorkflow.html">Asset Workflow</a></li>
+<li>Importing Assets</li>
+</ul></div>
+<div class="mb20"><div class="nextprev clear">
+<div class="icon tt left mr1" data-distance="-40|-30|top">
+<span class="prev"><a href="PrimitiveObjects.html"></a></span><div class="tip">Primitive and Placeholder Objects</div>
+</div>
+<div class="icon tt right" data-distance="-40|-30|top">
+<span class="next"><a href="ImportSettings.html"></a></span><div class="tip">Import Settings</div>
+</div>
+</div></div>
+<div class="otherversionswrapper" onmouseover="setOtherVersionsDisplay(true)" onmouseout="setOtherVersionsDisplay(false)">
+<a>Other Versions</a><div class="otherversionscontent" id="OtherVersionsContent" style="display: none;">Cannot access other versions offline!</div>
+</div>
+<div class="scrollToFeedback"><a id="scrollToFeedback">Leave feedback</a></div>
+<h1>Importing Assets</h1>
+<!--BeginSwitchLink--><!--EndSwitchLink-->
+<div class="clear"></div>
+
+<p>Assets created outside of Unity must be brought in to Unity by having the file either saved directly into the “Assets” folder of your project, or copied into that folder. For many common formats, you can save your source file directly into your project’s Assets folder and Unity will be able to read it. Unity will notice when you save new changes to the file and will re-import as necessary.</p>
+
+<p>When you create a Unity Project, you are creating a folder - named after your project - which contains the following subfolders:</p>
+
+<figure>
+<img src="../uploads/Main/ProjectFileStructure.png" alt="The basic file structure of a Unity Project">
+<figcaption>The basic file structure of a Unity Project</figcaption>
+</figure>
+
+<p>The <strong>Assets</strong> folder is where you should save or copy files that you want to use in your project.</p>
+
+<p>The contents of the <strong>Project Window</strong> in Unity shows the items in your Assets folder. So if you save or copy a file to your Assets folder, it will be imported and become visible in your Project Window.</p>
+
+<p>Unity will automatically detect files as they are added to <strong>Assets</strong> folder, or if they are modified. When you put any asset into your Assets folder, you will see the asset appear in your <strong>Project View</strong>.</p>
+
+<figure>
+<img src="../uploads/Main/ProjectBrowser.png" alt="The Project Window shows assets that have been imported into your project">
+<figcaption>The Project Window shows assets that have been imported into your project</figcaption>
+</figure>
+
+<p>If you drag a file into Unity’s Project Window from your computer (eg, from the Finder on Mac, or from Explorer on Windows), it will be <em>copied</em> into your Assets folder, and will appear in the Project window.</p>
+
+<p>The items you see in your Project window represent (in most cases) actual files on your computer, and if you delete them within Unity, you are deleting them from your computer too.</p>
+
+<figure>
+<img src="../uploads/Main/AssetWorkflowFolderAndProjectWindow.png" alt="The relationship between the Assets Folder in your Unity Project on your computer, and the Project Window within Unity">
+<figcaption>The relationship between the Assets Folder in your Unity Project on your computer, and the Project Window within Unity</figcaption>
+</figure>
+
+<p>The above image shows an example of a few files and folders inside the Assets folder of a Unity project. You can create as many folders as you like and use them to organise your Assets.</p>
+
+<p>You’ll notice in the image above that there are <strong>.meta</strong> files listed in the file system, but not visible in Unity’s Project Window. Unity creates these .meta files for each asset and folder, but they are <a href="https://en.wikipedia.org/wiki/Hidden_file_and_hidden_directory">hidden</a> by default, so you may not see them in your Explorer/Finder either.</p>
+
+<p>They contain important information about how the asset is used in the project and they must stay with the asset file they relate to, so if you move or rename an asset file in Explorer/Finder, you must also move/rename the meta file to match. </p>
+
+<p>The simplest way to safely move or rename your assets is to always do it from within Unity’s project folder. This way, Unity will automatically move or rename the corresponding meta file. If you like, you can read more about .meta files and what goes on <a href="BehindtheScenes.html">behind-the-scenes during the import process</a>.</p>
+
+<p>If you want to bring collections of assets into your project, you can use <strong>Asset Packages</strong>. See <a href="AssetPackages.html">Asset Packages</a> for more details.</p>
+
+<hr>
+
+<h2>Some common types of Asset</h2>
+
+<h3>Image Files</h3>
+
+<p>Most common image file types are supported, such as BMP, TIF, TGA, JPG, and PSD. If you save your layered Photoshop (.psd) files into your Assets folder, they will be imported as flattened images. You can find out more about <a href="HOWTO-alphamaps.html">importing images with alpha channels from photoshop</a>, or <a href="SpriteEditor.html">importing your images as sprites</a>
+</p>
+
+<h3>3D Model Files</h3>
+
+<p>If you save your 3D files from most common 3D software packages in their native format (eg, .max, .blend, .mb, .ma) into your Assets folder, they will be imported by calling back to your 3D package’s FBX export plugin (*). Alternatively you can export as FBX from your 3D app into your Unity project. Read more about <a href="HOWTO-importObject.html">importing 3D files from your 3D app</a>.</p>
+
+<h3>Meshes &amp; Animations</h3>
+
+<p>Whichever 3D package you are using, Unity will import the meshes and animations from each file. For a list of applications that are supported by Unity, please see <a href="HOWTO-importObject.html">this page</a>.</p>
+
+<p>Your mesh file does not need to have an animation to be imported. If you do use animations, you have your choice of importing all animations from a single file, or importing separate files, each with one animation. For more information about importing animations, please see <a href="AnimationsImport.html">Importing animations</a>.</p>
+
+<h3>Audio Files</h3>
+
+<p>If you save uncompressed audio files into your Assets folder, they will be imported according to the compression settings specified. Read more about <a href="AudioFiles.html">importing audio files</a>.</p>
+
+<h3>Other Asset Types</h3>
+
+<p>In all cases, your original source file is never modified by Unity, even though within Unity you can often choose between various ways to compress, modify, or otherwise process the asset. The import process reads your source file, and creates a game-ready representation of your asset internally, matching your chosen import settings. If you modify the import settings for an asset, or make a change to the source file in the Asset folder, will cause Unity to re-import the asset again to reflect your new changes.</p>
+
+<p>
+<strong>Note</strong>: <em>Importing native 3D formats requires the 3D application to be installed on the same computer as Unity. This is because Unity uses the 3D application’s FBX exporter plug-in to read the file. Alternatively, you can directly export as FBX from your application and save into the Projects folder.</em>
+</p>
+
+<p>See also:</p>
+
+<ul>
+<li><a href="AssetPackages.html">Asset Packages</a></li>
+<li><a href="class-FBXImporter.html">Importing Meshes</a></li>
+<li><a href="3D-formats.html">3D formats</a></li>
+<li><a href="AnimationsImport.html">Animation Import</a></li>
+<li><a href="Materials.html">Materials and Shaders</a></li>
+<li><a href="Textures.html">Textures and Videos</a></li>
+<li><a href="SpriteEditor.html">Sprite Editor</a></li>
+<li><a href="SpritePacker.html">Sprite Packer</a></li>
+<li><a href="ProceduralMaterials.html">Procedural Materials</a></li>
+<li><a href="AudioFiles.html">Audio Files</a></li>
+<li><a href="TrackerModules.html">Tracker Modules</a></li>
+</ul>
+<div class="feedbackbox" id="feedbackbox">
+<div id="rating"><p>Did you find this page useful? Please give it a rating:<br><div id="ratecontent" class="c-rating"></div>
+</p></div>
+<div id="ratingThanks" style="display:none"><p>Thanks for rating this page!</p></div>
+<div id="problem"><p><a name="problem" onclick="document.getElementById('problemType').style.display = '';document.getElementById('problem').style.display = 'none';">Report a problem on this page</a></p></div>
+<div id="problemType" style="display:none"><p>What kind of problem would you like to report?<ul type="problems">
+<li><a name="needcode" onclick="                                                             document.getElementById('problemType').style.display = 'none';                                                             document.getElementById('problemThanks').style.display = '';                                                             SendFeedback('problem-needcode',window.location.href,0);                                                             document.getElementById('problemFormDescription').value='Needs code samples.';                                                             document.getElementById('problemNeedCodeForm').style.display = ''                                                         ">This page needs code samples</a></li>
+<li><a name="code" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-brokencode',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Code samples do not work.';                                                         document.getElementById('problemCodeForm').style.display = ''                                                         ">Code samples do not work</a></li>
+<li><a name="missing" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-missing',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Missing information';                                                         document.getElementById('problemMissingForm').style.display = ''                                                         ">Information is missing</a></li>
+<li><a name="incorrect" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-incorrect',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Incorrect information';                                                         document.getElementById('problemIncorrectForm').style.display = ''                                                         ">Information is incorrect</a></li>
+<li><a name="unclear" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-unclear',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Unclear or confusing information';                                                         document.getElementById('problemUnclearForm').style.display = ''                                                         ">Information is unclear or confusing</a></li>
+<li><a name="language" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-language',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Spelling or grammar error';                                                         document.getElementById('problemLanguageForm').style.display = ''                                                         ">There is a spelling/grammar error on this page</a></li>
+<li><a name="other" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-other',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='This page has a problem';                                                         document.getElementById('problemOtherForm').style.display = ''                                                         ">Something else</a></li>
+</ul>
+<p><known_issues><p>Is something described here not working as you expect it to? It might be a <b>Known Issue</b>. Please check with the Issue Tracker at <a href="https://issuetracker.unity3d.com">issuetracker.unity3d.com</a>.</p></known_issues></p>
+</p></div>
+<div id="problemThanks" style="display:none"><p>Thanks for letting us know! This page has been marked for review based on your feedback.<br><br>If you have time, you can provide more information to help us fix the problem faster.<br><br><a onclick="document.getElementById('problemMoreInfo').style.display = '';document.getElementById('problemThanks').style.display = 'none';">Provide more information</a><br>
+</p></div>
+<div id="problemMoreInfo" style="display:none">
+<p id="problemNeedCodeForm" style="display:none">You've told us this page needs code samples. If you'd like to help us further, you could provide a code sample, or tell us about what kind of code sample you'd like to see:</p>
+<p id="problemCodeForm" style="display:none">You've told us there are code samples on this page which don't work. If you know how to fix it, or have something better we could use instead, please let us know:</p>
+<p id="problemMissingForm" style="display:none">You've told us there is information missing from this page. Please tell us more about what's missing:</p>
+<p id="problemIncorrectForm" style="display:none">You've told us there is incorrect information on this page. If you know what we should change to make it correct, please tell us:</p>
+<p id="problemUnclearForm" style="display:none">You've told us this page has unclear or confusing information. Please tell us more about what you found unclear or confusing, or let us know how we could make it clearer:</p>
+<p id="problemLanguageForm" style="display:none">You've told us there is a spelling or grammar error on this page. Please tell us what's wrong:</p>
+<p id="problemOtherForm" style="display:none">You've told us this page has a problem. Please tell us more about what's wrong:</p>
+<form>
+<textarea id="problemFormSuggestionField" cols="40" rows="5"></textarea><input type="hidden" id="problemFormDescription"><input type="submit" id="problemFormDescriptionSubmit" value="Submit" onclick="                                             document.getElementById('problemMoreInfo').style.display = 'none';                                             document.getElementById('problemMoreInfoThanks').style.display = '';                                             return false;                                             ">
+</form>
+</div>
+<div id="problemMoreInfoThanks" style="display:none"><p>Thanks for helping to make the Unity documentation better!</p></div>
+<script>
+
+                                            var ratecontent = document.querySelector('#ratecontent'); // target element
+                                            var currentRating = 0; // initial rating
+                                            var maxRating= 5; // max rating
+
+                                            // callback to run after setting the rating
+                                            var callback = function(rating) {
+                                                document.getElementById('ratingThanks').style.display = '';
+                                                document.getElementById('ratecontent').style.display = 'none';
+                                                document.getElementById('rating').style.display = 'none';
+                                                SendFeedback("rating",window.location.href,rating);
+                                            };
+
+                                            // rating instance
+                                            var myRating = rating(ratecontent, currentRating, maxRating, callback);
+                                        </script>
+</div>
+<div class="nextprev clear">
+<div class="icon tt left mr1" data-distance="-40|-30|top">
+<span class="prev"><a href="PrimitiveObjects.html"></a></span><div class="tip">Primitive and Placeholder Objects</div>
+</div>
+<div class="icon tt right" data-distance="-40|-30|top">
+<span class="next"><a href="ImportSettings.html"></a></span><div class="tip">Import Settings</div>
+</div>
+</div>
+</div>
+</body></html>

@@ -1,0 +1,174 @@
+<html><head><title>html模版</title></head><body>Unity - Manual:  Physics Manager</br>
+<div class="breadcrumbs clear"><ul>
+<li><a href="UnityManual.html">Unity User Manual (2018.1 beta)</a></li>
+<li><a href="UnityOverview.html">Working in Unity</a></li>
+<li><a href="EditorFeatures.html">Editor Features</a></li>
+<li><a href="comp-ManagerGroup.html">Settings Managers</a></li>
+<li> Physics Manager</li>
+</ul></div>
+<div class="mb20"><div class="nextprev clear">
+<div class="icon tt left mr1" data-distance="-40|-30|top">
+<span class="prev"><a href="class-NetworkManager.html"></a></span><div class="tip">Network Manager</div>
+</div>
+<div class="icon tt right" data-distance="-40|-30|top">
+<span class="next"><a href="class-PlayerSettings.html"></a></span><div class="tip">Player Settings</div>
+</div>
+</div></div>
+<div class="otherversionswrapper" onmouseover="setOtherVersionsDisplay(true)" onmouseout="setOtherVersionsDisplay(false)">
+<a>Other Versions</a><div class="otherversionscontent" id="OtherVersionsContent" style="display: none;">Cannot access other versions offline!</div>
+</div>
+<div class="scrollToFeedback"><a id="scrollToFeedback">Leave feedback</a></div>
+<h1>Physics Manager</h1>
+<!--BeginSwitchLink--><!--EndSwitchLink-->
+<div class="clear"></div>
+
+<p>Use the Physics Manager to apply global settings for 3D physics. To access it, go to <strong>Edit</strong> &gt; <strong>Project Settings</strong> &gt; <strong>Physics</strong>. To manage global settings for 2D physics, use the <a href="class-Physics2DManager.html">Physics 2D Manager</a>.</p>
+
+<p>The settings of the PhysicsManager define limits on the accuracy of the physical simulation. Generally speaking, a more accurate simulation requires more processing overhead, so these settings offer a way to trade off accuracy against performance. See the <a href="PhysicsSection.html">Physics</a> section of the manual for further information.</p>
+
+<figure>
+<img src="../uploads/Main/PhysicsSet.png" alt="The PhysicsManager, shown in the Inspector window.">
+<figcaption>The PhysicsManager, shown in the Inspector window.</figcaption>
+</figure>
+
+<table>
+<colgroup>
+<col style="text-align:left;">
+<col style="text-align:left;">
+</colgroup>
+
+<thead>
+<tr>
+	<th style="text-align:left;"><strong>Property:</strong></th>
+	<th style="text-align:left;"><strong>Function:</strong></th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+	<td style="text-align:left;"><strong>Gravity</strong></td>
+	<td style="text-align:left;">Use the x, y and z axes to set the amount of gravity applied to all Rigidbody components. For realistic gravity settings, apply a negative number to the y axis. Gravity is defined in world units per seconds squared. <br><strong>Note</strong>: If you increase the gravity, you might need to also increase the <strong>Default Solver Iterations</strong> value to maintain stable contacts.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>Default Material</strong></td>
+	<td style="text-align:left;">Use this field to define the default Physics Material that is used if none has been assigned to an individual Collider.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>Bounce Threshold</strong></td>
+	<td style="text-align:left;">Use this to set a velocity value. If two colliding objects have a relative velocity below this value, they do not bounce off each other. This value also reduces jitter, so it is not recommended to set it to a very low value.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>Sleep Threshold</strong></td>
+	<td style="text-align:left;">Use this to set a global energy threshold, below which a non-kinematic Rigidbody (that is, one that is not controlled by the physics system) may go to sleep. When a Rigidbody is sleeping, it is not updated every frame, making it less resource-intensive. If a Rigidbody’s kinetic energy divided by its mass is below this threshold, it is a candidate for sleeping.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>Default Contact Offset</strong></td>
+	<td style="text-align:left;">Use this to set the distance the collision detection system uses to generate collision contacts. The value must be positive, and if set too close to zero, it can cause jitter. This is set to 0.01 by default. Colliders only generate collision contacts if their distance is less than the sum of their contact offset values.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>Default Solver Iterations</strong></td>
+	<td style="text-align:left;">Solvers are small physics engine tasks which determine a number of physics interactions, such as the movements of joints or managing contact between overlapping Rigidbody components. Use <strong>Default Solver Iterations</strong> to define how many solver processes Unity runs on every physics frame. This affects the quality of the solver output and it’s advisable to change the property in case non-default <code>Time.fixedDeltaTime</code> is used, or the configuration is extra demanding. Typically, it’s used to reduce the jitter resulting from joints or contacts.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>Default Solver Velocity Iterations</strong></td>
+	<td style="text-align:left;">Use this to set how many velocity processes a solver performs in each physics frame. The more processes the solver performs, the higher the accuracy of the resulting exit velocity after a Rigidbody bounce. If you experience problems with jointed Rigidbody components or Ragdolls moving too much after collisions, try increasing this value.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>Queries Hit Backfaces</strong></td>
+	<td style="text-align:left;">Tick the checkbox if you want physics queries (such as <code>Physics.Raycast</code>) to detect hits with the backface triangles of MeshColliders. This setting is unticked by default.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>Queries Hit Triggers</strong></td>
+	<td style="text-align:left;">Tick the checkbox if you want physics hit tests (such as Raycasts, SphereCasts and SphereTests) to return a hit when they intersect with a Collider marked as a Trigger. Individual raycasts can override this behavior. This setting is ticked by default.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>Enable Adaptive Force</strong></td>
+	<td style="text-align:left;">The adaptive force affects the way forces are transmitted through a pile or stack of objects, to give more realistic behaviour. Tick this box to enable the adaptive force. This setting is unticked by default.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>Enable PCM</strong></td>
+	<td style="text-align:left;">Tick this checkbox to enable the persistent contacts manifold (PCM) contacts generation method of the physics engine. This means that fewer contacts are regenerated every physics frame, and more contact data is shared across frames. The PCM contacts generation path is also more accurate, and usually produces better collision feedback in most of the cases. See <a href="http://docs.nvidia.com/gameworks/content/gameworkslibrary/physx/guide/Manual/AdvancedCollisionDetection.html#persistent-contact-manifold-pcm">Nvidia documentation on Persistent Contact Manifold</a> for more information. <br><strong>Note</strong>: Before Unity 5.5, Unity used a contacts generation method called SAT, based on the separating axis theorem (see <a href="http://www.dyn4j.org/2010/01/sat/">dyn4j.org’s guide to SAT</a>). PCM is more efficient, but for older projects, you might find it easier to continue using SAT, to avoid needing to retweak physics slightly. PCM can result in a slightly different bounce, and fewer useless contacts end up in the contacts buffers (that is, the arrays you get in the Collision instance passed to <code>OnCollisionEnter</code>, <code>OnCollisionStay</code>, <code>OnCollisionExit</code>).</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>Auto Simulation</strong></td>
+	<td style="text-align:left;">Run the physics simulation automatically or allow explicit control over it</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>Auto Sync Transforms</strong></td>
+	<td style="text-align:left;">Automatically sync transform changes with the physics system whenever a Transform component changes.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>Layer Collision Matrix</strong></td>
+	<td style="text-align:left;">Use this to define how the <a href="LayerBasedCollision.html">layer-based collision</a> detection system behaves.</td>
+</tr>
+</tbody>
+</table>
+
+<p><br></p>
+
+<hr>
+
+<ul>
+<li><p><span class="page-edit"> 2017–05–18 Page amended with limited <a href="DocumentationEditorialReview.html">editorial review</a>
+</span></p></li>
+<li><p><span class="page-history">Settings added in 5.5: Default Solver Iterations, Default Solver Velocity Iterations, Queries Hit Backfaces, Enable PCM</span></p></li>
+</ul>
+<div class="feedbackbox" id="feedbackbox">
+<div id="rating"><p>Did you find this page useful? Please give it a rating:<br><div id="ratecontent" class="c-rating"></div>
+</p></div>
+<div id="ratingThanks" style="display:none"><p>Thanks for rating this page!</p></div>
+<div id="problem"><p><a name="problem" onclick="document.getElementById('problemType').style.display = '';document.getElementById('problem').style.display = 'none';">Report a problem on this page</a></p></div>
+<div id="problemType" style="display:none"><p>What kind of problem would you like to report?<ul type="problems">
+<li><a name="needcode" onclick="                                                             document.getElementById('problemType').style.display = 'none';                                                             document.getElementById('problemThanks').style.display = '';                                                             SendFeedback('problem-needcode',window.location.href,0);                                                             document.getElementById('problemFormDescription').value='Needs code samples.';                                                             document.getElementById('problemNeedCodeForm').style.display = ''                                                         ">This page needs code samples</a></li>
+<li><a name="code" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-brokencode',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Code samples do not work.';                                                         document.getElementById('problemCodeForm').style.display = ''                                                         ">Code samples do not work</a></li>
+<li><a name="missing" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-missing',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Missing information';                                                         document.getElementById('problemMissingForm').style.display = ''                                                         ">Information is missing</a></li>
+<li><a name="incorrect" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-incorrect',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Incorrect information';                                                         document.getElementById('problemIncorrectForm').style.display = ''                                                         ">Information is incorrect</a></li>
+<li><a name="unclear" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-unclear',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Unclear or confusing information';                                                         document.getElementById('problemUnclearForm').style.display = ''                                                         ">Information is unclear or confusing</a></li>
+<li><a name="language" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-language',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Spelling or grammar error';                                                         document.getElementById('problemLanguageForm').style.display = ''                                                         ">There is a spelling/grammar error on this page</a></li>
+<li><a name="other" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-other',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='This page has a problem';                                                         document.getElementById('problemOtherForm').style.display = ''                                                         ">Something else</a></li>
+</ul>
+<p><known_issues><p>Is something described here not working as you expect it to? It might be a <b>Known Issue</b>. Please check with the Issue Tracker at <a href="https://issuetracker.unity3d.com">issuetracker.unity3d.com</a>.</p></known_issues></p>
+</p></div>
+<div id="problemThanks" style="display:none"><p>Thanks for letting us know! This page has been marked for review based on your feedback.<br><br>If you have time, you can provide more information to help us fix the problem faster.<br><br><a onclick="document.getElementById('problemMoreInfo').style.display = '';document.getElementById('problemThanks').style.display = 'none';">Provide more information</a><br>
+</p></div>
+<div id="problemMoreInfo" style="display:none">
+<p id="problemNeedCodeForm" style="display:none">You've told us this page needs code samples. If you'd like to help us further, you could provide a code sample, or tell us about what kind of code sample you'd like to see:</p>
+<p id="problemCodeForm" style="display:none">You've told us there are code samples on this page which don't work. If you know how to fix it, or have something better we could use instead, please let us know:</p>
+<p id="problemMissingForm" style="display:none">You've told us there is information missing from this page. Please tell us more about what's missing:</p>
+<p id="problemIncorrectForm" style="display:none">You've told us there is incorrect information on this page. If you know what we should change to make it correct, please tell us:</p>
+<p id="problemUnclearForm" style="display:none">You've told us this page has unclear or confusing information. Please tell us more about what you found unclear or confusing, or let us know how we could make it clearer:</p>
+<p id="problemLanguageForm" style="display:none">You've told us there is a spelling or grammar error on this page. Please tell us what's wrong:</p>
+<p id="problemOtherForm" style="display:none">You've told us this page has a problem. Please tell us more about what's wrong:</p>
+<form>
+<textarea id="problemFormSuggestionField" cols="40" rows="5"></textarea><input type="hidden" id="problemFormDescription"><input type="submit" id="problemFormDescriptionSubmit" value="Submit" onclick="                                             document.getElementById('problemMoreInfo').style.display = 'none';                                             document.getElementById('problemMoreInfoThanks').style.display = '';                                             return false;                                             ">
+</form>
+</div>
+<div id="problemMoreInfoThanks" style="display:none"><p>Thanks for helping to make the Unity documentation better!</p></div>
+<script>
+
+                                            var ratecontent = document.querySelector('#ratecontent'); // target element
+                                            var currentRating = 0; // initial rating
+                                            var maxRating= 5; // max rating
+
+                                            // callback to run after setting the rating
+                                            var callback = function(rating) {
+                                                document.getElementById('ratingThanks').style.display = '';
+                                                document.getElementById('ratecontent').style.display = 'none';
+                                                document.getElementById('rating').style.display = 'none';
+                                                SendFeedback("rating",window.location.href,rating);
+                                            };
+
+                                            // rating instance
+                                            var myRating = rating(ratecontent, currentRating, maxRating, callback);
+                                        </script>
+</div>
+<div class="nextprev clear">
+<div class="icon tt left mr1" data-distance="-40|-30|top">
+<span class="prev"><a href="class-NetworkManager.html"></a></span><div class="tip">Network Manager</div>
+</div>
+<div class="icon tt right" data-distance="-40|-30|top">
+<span class="next"><a href="class-PlayerSettings.html"></a></span><div class="tip">Player Settings</div>
+</div>
+</div>
+</div>
+</body></html>

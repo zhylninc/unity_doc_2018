@@ -1,0 +1,213 @@
+<html><head><title>html模版</title></head><body>Unity - Manual:  WebGL: Deploying compressed builds</br>
+<div class="breadcrumbs clear"><ul>
+<li><a href="UnityManual.html">Unity User Manual (2018.1 beta)</a></li>
+<li><a href="PlatformSpecific.html">Platform-specific</a></li>
+<li><a href="webgl.html">WebGL</a></li>
+<li><a href="webgl-gettingstarted.html">Getting started with WebGL development</a></li>
+<li> WebGL: Deploying compressed builds</li>
+</ul></div>
+<div class="mb20"><div class="nextprev clear">
+<div class="icon tt left mr1" data-distance="-40|-30|top">
+<span class="prev"><a href="webgl-building.html"></a></span><div class="tip">Building and running a WebGL project</div>
+</div>
+<div class="icon tt right" data-distance="-40|-30|top">
+<span class="next"><a href="webgl-debugging.html"></a></span><div class="tip">Debugging and trouble shooting WebGL builds</div>
+</div>
+</div></div>
+<div class="otherversionswrapper" onmouseover="setOtherVersionsDisplay(true)" onmouseout="setOtherVersionsDisplay(false)">
+<a>Other Versions</a><div class="otherversionscontent" id="OtherVersionsContent" style="display: none;">Cannot access other versions offline!</div>
+</div>
+<div class="scrollToFeedback"><a id="scrollToFeedback">Leave feedback</a></div>
+<h1>WebGL: Deploying compressed builds</h1>
+<!--BeginSwitchLink--><!--EndSwitchLink-->
+<div class="clear"></div>
+
+<p>When you build a WebGL project in release mode (see <a href="PublishingBuilds.html">Publishing builds</a>), Unity compresses your build output files to reduce the download size of your build. You can choose the type of compression it uses from the Compression Format options in Publishing Settings (menu: <strong>Edit</strong> &gt; <strong>Project Settings</strong> &gt; <strong>Player</strong> &gt; <strong>Publishing Settings</strong>):</p>
+
+<ul>
+<li><p>
+<strong>gzip</strong>: This is the default option. gzip files are bigger than Brotli files, but faster to build, and natively supported by all browsers over both http and https.</p></li>
+<li><p>
+<strong>Brotli</strong>: Brotli compression offers the best compression ratios. Brotli compressed files are significantly smaller than gzip, but take a long time to compress, increasing your iteration times on release builds. Brotli compression is natively supported by Chrome and Firefox over https (see <a href="webgl-browsercompatibility.html">WebGL browser compatibility</a> for more information).</p></li>
+<li><p>
+<strong>Disabled</strong>: This disables compression. Use this if you want to implement your own compression in post-processing scripts.</p></li>
+</ul>
+
+<p>Compression-built Unity builds work on any browser. Unity contains a software decompressor written in JavaScript, which it falls back to when compression on the http transfer level is not enabled by the server.</p>
+
+<h2>Advanced: Native browser decompression</h2>
+
+<p>The browser can handle decompression of Unity builds natively while it downloads the build data. This has the advantage of avoiding the additional delay caused by decompressing your files in JavaScript, therefore reducing your startup time. To let the browser handle decompression natively, you need to configure your web server to serve the compressed files with the appropriate http headers: These tell the browser that the data is compressed with gzip or Brotli so it decompresses the data while it is being transferred. Brotli compression is supported by Firefox and Chrome on https only, while gzip compression is supported by all browsers. See <a href="webgl-browsercompatibility.html">WebGL browser compatibility</a> for more information.</p>
+
+<h2>Setting up web servers</h2>
+
+<p>The setup process for native browser decompression depends on your web server. The instructions on this page apply to the two most common web servers, <strong>Apache</strong> and <strong>IIS</strong>. Note that these are designed to work on a default setup, but may need adjustments to match your specific configuration. In particular, there may be issues if you already have other server-side configuration to compress hosted files, which may interfere with this setup. The basic idea is to append a <em>Content-Encoding</em> header to the server response, corresponding to the type of compression used at build time. This will allow the browser to perform decompression natively and asynchronously during download.</p>
+
+<h3>Apache</h3>
+
+<p>Apache server uses invisible <em>.htaccess</em> files for server configuration. The code below shows examples of <em>.htaccess</em> files which can be used to enforce native browser decompression. Note that Apache server configuration setup is optional.</p>
+
+<p>For gzip-compressed builds put the following <em>.htaccess</em> file into your <em>Build</em> subfolder:</p>
+
+<pre><code>&lt;IfModule mod_mime.c&gt;
+
+  AddEncoding gzip .unityweb
+
+&lt;/IfModule&gt;
+</code></pre>
+
+<p>For brotli-compressed builds put the following <em>.htaccess</em> file into your <em>Build</em> subfolder:</p>
+
+<pre><code>&lt;IfModule mod_mime.c&gt;
+  AddEncoding br .unityweb
+&lt;/IfModule&gt;
+</code></pre>
+
+<h2>IIS</h2>
+
+<p><strong>Necessary IIS server configuration steps:</strong></p>
+
+<p>By default IIS server does not serve static content of unknown MIME type. In order to make Unity build work on IIS, you first need to associate the <em>.unityweb</em> extension with the <em>application/octet-stream</em> content typ. There are two ways to achieve that:</p>
+
+<p>
+<em>Using IIS Manager interface:</em>
+Select your website in the IIS Manager panel, open the <em>MIME Types</em> feature and select <em>Add…</em> action. Set <em>.unityweb</em> as file name extension and <em>application/octet-stream</em> as MIME type, click <em>OK</em>.</p>
+
+<p>
+<em>Using server configuration file:</em>
+IIS uses <em>web.config</em> files for server configuration. Those configuration files reflect all the changes made in IIS Manager for a specific folder. In order to associate <em>application/octet-stream</em> MIME type with <em>.unityweb</em> extension, you can use the following <em>web.config</em> file:</p>
+
+<pre><code>&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;
+&lt;configuration&gt;
+    &lt;system.webServer&gt;
+            &lt;staticContent&gt;
+            &lt;remove fileExtension=&quot;.unityweb&quot; /&gt;
+&lt;mimeMap fileExtension=&quot;.unityweb&quot; mimeType=&quot;application/octet-stream&quot; /&gt;
+            &lt;/staticContent&gt;
+    &lt;/system.webServer&gt;
+&lt;/configuration&gt;
+</code></pre>
+
+<p>Note that configuration file affects all the server subfolders, therefore it is sufficient to set the MIME type for the <em>.unityweb</em> extension just once in the server root folder.</p>
+
+<p>Optional IIS server configuration steps:</p>
+
+<p>In order to speed up the build startup times, you may optionally use the following configuration files. Note that in order to use this setup, you need to have Microsoft’s <a href="http://www.iis.net/downloads/microsoft/url-rewrite">IIS URL Rewrite IIS module</a> installed; otherwise, the browser will throw a 500 Internal Server Error.</p>
+
+<p>For gzip-compressed builds put the following <em>web.config</em> file into the <em>Build</em> subfolder:</p>
+
+<pre><code>&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;
+&lt;configuration&gt;
+    &lt;system.webServer&gt;
+            &lt;staticContent&gt;
+                    &lt;remove fileExtension=&quot;.unityweb&quot; /&gt;
+                    &lt;mimeMap fileExtension=&quot;.unityweb&quot; mimeType=&quot;application/octet-stream&quot; /&gt;
+            &lt;/staticContent&gt;
+            &lt;rewrite&gt;
+                    &lt;outboundRules&gt;
+                        &lt;rule name=&quot;Append gzip Content-Encoding header&quot;&gt;
+                            &lt;match serverVariable=&quot;RESPONSE_Content-Encoding&quot; pattern=&quot;.*&quot; /&gt;
+                            &lt;conditions&gt;
+                                    &lt;add input=&quot;{REQUEST_FILENAME}&quot; pattern=&quot;\.unityweb$&quot; /&gt;
+                            &lt;/conditions&gt;
+                            &lt;action type=&quot;Rewrite&quot; value=&quot;gzip&quot; /&gt;
+                        &lt;/rule&gt;
+                    &lt;/outboundRules&gt;
+            &lt;/rewrite&gt;
+    &lt;/system.webServer&gt;
+&lt;/configuration&gt;
+</code></pre>
+
+<p>For brotli-compressed builds put the following <em>web.config</em> file into the <em>Build</em> subfolder:</p>
+
+<pre><code>&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;
+&lt;configuration&gt;
+    &lt;system.webServer&gt;
+            &lt;staticContent&gt;
+                    &lt;remove fileExtension=&quot;.unityweb&quot; /&gt;
+                    &lt;mimeMap fileExtension=&quot;.unityweb&quot; mimeType=&quot;application/octet-stream&quot; /&gt;
+            &lt;/staticContent&gt;
+            &lt;rewrite&gt;
+                    &lt;outboundRules&gt;
+                        &lt;rule name=&quot;Append br Content-Encoding header&quot;&gt;
+                            &lt;match serverVariable=&quot;RESPONSE_Content-Encoding&quot; pattern=&quot;.*&quot; /&gt;
+                            &lt;conditions&gt;
+                                    &lt;add input=&quot;{REQUEST_FILENAME}&quot; pattern=&quot;\.unityweb$&quot; /&gt;
+                            &lt;/conditions&gt;
+                            &lt;action type=&quot;Rewrite&quot; value=&quot;br&quot; /&gt;
+                        &lt;/rule&gt;
+                    &lt;/outboundRules&gt;
+            &lt;/rewrite&gt;
+    &lt;/system.webServer&gt;
+&lt;/configuration&gt;
+
+</code></pre>
+
+<p>Note that the <code>&lt;remove fileExtension=&quot;.unityweb&quot; /&gt;</code> lines are required to handle a situation when content type is already overridden at a higher level in the server directory’s hierarchy, which could otherwise cause a server exception.</p>
+
+<hr>
+
+<ul>
+<li><p><span class="page-edit">2017–05–24 Page amended with no <a href="DocumentationEditorialReview.html">editorial review</a>
+</span></p></li>
+<li><p><span class="page-history">Updated in 5.6</span></p></li>
+</ul>
+<div class="feedbackbox" id="feedbackbox">
+<div id="rating"><p>Did you find this page useful? Please give it a rating:<br><div id="ratecontent" class="c-rating"></div>
+</p></div>
+<div id="ratingThanks" style="display:none"><p>Thanks for rating this page!</p></div>
+<div id="problem"><p><a name="problem" onclick="document.getElementById('problemType').style.display = '';document.getElementById('problem').style.display = 'none';">Report a problem on this page</a></p></div>
+<div id="problemType" style="display:none"><p>What kind of problem would you like to report?<ul type="problems">
+<li><a name="needcode" onclick="                                                             document.getElementById('problemType').style.display = 'none';                                                             document.getElementById('problemThanks').style.display = '';                                                             SendFeedback('problem-needcode',window.location.href,0);                                                             document.getElementById('problemFormDescription').value='Needs code samples.';                                                             document.getElementById('problemNeedCodeForm').style.display = ''                                                         ">This page needs code samples</a></li>
+<li><a name="code" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-brokencode',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Code samples do not work.';                                                         document.getElementById('problemCodeForm').style.display = ''                                                         ">Code samples do not work</a></li>
+<li><a name="missing" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-missing',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Missing information';                                                         document.getElementById('problemMissingForm').style.display = ''                                                         ">Information is missing</a></li>
+<li><a name="incorrect" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-incorrect',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Incorrect information';                                                         document.getElementById('problemIncorrectForm').style.display = ''                                                         ">Information is incorrect</a></li>
+<li><a name="unclear" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-unclear',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Unclear or confusing information';                                                         document.getElementById('problemUnclearForm').style.display = ''                                                         ">Information is unclear or confusing</a></li>
+<li><a name="language" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-language',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Spelling or grammar error';                                                         document.getElementById('problemLanguageForm').style.display = ''                                                         ">There is a spelling/grammar error on this page</a></li>
+<li><a name="other" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-other',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='This page has a problem';                                                         document.getElementById('problemOtherForm').style.display = ''                                                         ">Something else</a></li>
+</ul>
+<p><known_issues><p>Is something described here not working as you expect it to? It might be a <b>Known Issue</b>. Please check with the Issue Tracker at <a href="https://issuetracker.unity3d.com">issuetracker.unity3d.com</a>.</p></known_issues></p>
+</p></div>
+<div id="problemThanks" style="display:none"><p>Thanks for letting us know! This page has been marked for review based on your feedback.<br><br>If you have time, you can provide more information to help us fix the problem faster.<br><br><a onclick="document.getElementById('problemMoreInfo').style.display = '';document.getElementById('problemThanks').style.display = 'none';">Provide more information</a><br>
+</p></div>
+<div id="problemMoreInfo" style="display:none">
+<p id="problemNeedCodeForm" style="display:none">You've told us this page needs code samples. If you'd like to help us further, you could provide a code sample, or tell us about what kind of code sample you'd like to see:</p>
+<p id="problemCodeForm" style="display:none">You've told us there are code samples on this page which don't work. If you know how to fix it, or have something better we could use instead, please let us know:</p>
+<p id="problemMissingForm" style="display:none">You've told us there is information missing from this page. Please tell us more about what's missing:</p>
+<p id="problemIncorrectForm" style="display:none">You've told us there is incorrect information on this page. If you know what we should change to make it correct, please tell us:</p>
+<p id="problemUnclearForm" style="display:none">You've told us this page has unclear or confusing information. Please tell us more about what you found unclear or confusing, or let us know how we could make it clearer:</p>
+<p id="problemLanguageForm" style="display:none">You've told us there is a spelling or grammar error on this page. Please tell us what's wrong:</p>
+<p id="problemOtherForm" style="display:none">You've told us this page has a problem. Please tell us more about what's wrong:</p>
+<form>
+<textarea id="problemFormSuggestionField" cols="40" rows="5"></textarea><input type="hidden" id="problemFormDescription"><input type="submit" id="problemFormDescriptionSubmit" value="Submit" onclick="                                             document.getElementById('problemMoreInfo').style.display = 'none';                                             document.getElementById('problemMoreInfoThanks').style.display = '';                                             return false;                                             ">
+</form>
+</div>
+<div id="problemMoreInfoThanks" style="display:none"><p>Thanks for helping to make the Unity documentation better!</p></div>
+<script>
+
+                                            var ratecontent = document.querySelector('#ratecontent'); // target element
+                                            var currentRating = 0; // initial rating
+                                            var maxRating= 5; // max rating
+
+                                            // callback to run after setting the rating
+                                            var callback = function(rating) {
+                                                document.getElementById('ratingThanks').style.display = '';
+                                                document.getElementById('ratecontent').style.display = 'none';
+                                                document.getElementById('rating').style.display = 'none';
+                                                SendFeedback("rating",window.location.href,rating);
+                                            };
+
+                                            // rating instance
+                                            var myRating = rating(ratecontent, currentRating, maxRating, callback);
+                                        </script>
+</div>
+<div class="nextprev clear">
+<div class="icon tt left mr1" data-distance="-40|-30|top">
+<span class="prev"><a href="webgl-building.html"></a></span><div class="tip">Building and running a WebGL project</div>
+</div>
+<div class="icon tt right" data-distance="-40|-30|top">
+<span class="next"><a href="webgl-debugging.html"></a></span><div class="tip">Debugging and trouble shooting WebGL builds</div>
+</div>
+</div>
+</div>
+</body></html>

@@ -1,0 +1,195 @@
+<html><head><title>html模版</title></head><body>Unity - Manual:  AssetBundle Manager</br>
+<div class="breadcrumbs clear"><ul>
+<li><a href="UnityManual.html">Unity User Manual (2018.1 beta)</a></li>
+<li><a href="UnityOverview.html">Working in Unity</a></li>
+<li><a href="AdvancedDevelopment.html">Advanced Development</a></li>
+<li><a href="AssetBundlesIntro.html"> AssetBundles</a></li>
+<li> AssetBundle Manager</li>
+</ul></div>
+<div class="mb20"><div class="nextprev clear">
+<div class="icon tt left mr1" data-distance="-40|-30|top">
+<span class="prev"><a href="AssetBundles-Native.html"></a></span><div class="tip"> Using AssetBundles Natively</div>
+</div>
+<div class="icon tt right" data-distance="-40|-30|top">
+<span class="next"><a href="AssetBundles-Patching.html"></a></span><div class="tip"> Patching with AssetBundles</div>
+</div>
+</div></div>
+<div class="otherversionswrapper" onmouseover="setOtherVersionsDisplay(true)" onmouseout="setOtherVersionsDisplay(false)">
+<a>Other Versions</a><div class="otherversionscontent" id="OtherVersionsContent" style="display: none;">Cannot access other versions offline!</div>
+</div>
+<div class="scrollToFeedback"><a id="scrollToFeedback">Leave feedback</a></div>
+<h1>AssetBundle Manager</h1>
+<!--BeginSwitchLink--><!--EndSwitchLink-->
+<div class="clear"></div>
+
+<p>The AssetBundle Manager, which can be downloaded <a href="https://www.assetstore.unity3d.com/en/#!/content/45836">here</a>, is a tool made by Unity to make using AssetBundles more streamlined.</p>
+
+<p>Downloading and importing the AssetBundle Manager package not only adds a new API calls for loading and using AssetBundles but it adds some Editor functionality to streamline the workflow as well. This functionality can be found under the Assets menu option. </p>
+
+<p>This new section will contain the following options:</p>
+
+<h2>Simulation Mode</h2>
+
+<p>Enabling Simulation Mode allows the AssetBundle Manager to work with AssetBundles but does not require the bundles themselves actually be built. The editor looks to see what Assets have been assigned to AssetBundles and uses the Assets directly, instead of actually pulling them from an AssetBundle.</p>
+
+<p>The main advantage of using Simulation Mode is that Assets can be modified, updated, added, and deleted without the need to re-build and deploy the AssetBundles every time. </p>
+
+<p>It is worth noting that AssetBundle Variants do not work with Simulation Mode. If you need to use variants, Local AssetBundle Server is the option you need.</p>
+
+<h2>Local AssetBundle Server</h2>
+
+<p>The AssetBundle Manager can also start a Local AssetBundle Server which can be used to test AssetBundles in the editor or in local builds (including Mobile).</p>
+
+<p>The stipulation to getting the Local AssetBundle Server to work is that you must create a folder called AssetBundles in the root directory of your project which is the same level as the Assets folder. Such as:</p>
+
+<figure>
+<img src="../uploads/Main/AssetBundles-Manager-4.png" alt="">
+</figure>
+
+<p>After you create the folder you’ll need to build your AssetBundles to this folder. To do this, select Build AssetBundles from the new menu options. This will build them to that directory for you.</p>
+
+<p>Now you have your AssetBundles built (or have decided to use Simulation Mode) and are ready to start loading AssetBundles. Let’s look at the new API calls available to us through the AssetBundle Manager.</p>
+
+<h2>AssetBundleManager.Initialize()</h2>
+
+<p>This function loads the AssetBundleManifest object. You’ll need to call this before you start loading in Assets using the AssetBundle Manager. In a very simplified example, initializing the AssetBundle Manager could look like this:</p>
+
+<pre><code>IEnumerator Start()
+
+{
+    yield return StartCoroutine(Initialize());
+}
+IEnumerator Initialize()
+{
+    var request = AssetBundleManager.Initialize();
+if (request != null)
+    yield return StartCoroutine(request);
+}
+</code></pre>
+
+<p>The AssetBundle Manager uses this manifest you load during the Initialize() to help with a number of features behind the scenes, including dependency management.</p>
+
+<h2>Loading Assets</h2>
+
+<p>Let’s get right down to it. You’re using the AssetBundle Manager, you’ve initialized it, and now you’re ready to load some Assets. Let’s take a look at how to load the AssetBundle and instantiate an object from that bundle:</p>
+
+<pre><code>IEnumerator InstantiateGameObjectAsync (string assetBundleName, string assetName)
+
+{
+    // Load asset from assetBundle.
+    AssetBundleLoadAssetOperation request = AssetBundleManager.LoadAssetAsync(assetBundleName, assetName, typeof(GameObject) );
+    if (request == null)
+        yield break;
+    yield return StartCoroutine(request);
+    // Get the asset.
+    GameObject prefab = request.GetAsset&lt;GameObject&gt; ();
+    if (prefab != null)
+        GameObject.Instantiate(prefab);
+}
+</code></pre>
+
+<p>The AssetBundle Manager performs all of it’s load operation asynchronously so it returns a load operation request that loads the bundle upon calling yield return StartCoroutine(request); From there all we need to do is call the GetAsset&lt;T&gt;() to load a game object from the AssetBundle.</p>
+
+<h2>Loading Scenes</h2>
+
+<p>If you’ve got an AssetBundle name assigned to a scene and you need to load that scene in you’ll need to follow a slightly different code path. The pattern is relatively the same, but with slight differences. Here’s how to load a scene from an AssetBundle:</p>
+
+<pre><code>IEnumerator InitializeLevelAsync (string levelName, bool isAdditive)
+
+{
+    // Load level from assetBundle.
+    AssetBundleLoadOperation request = AssetBundleManager.LoadLevelAsync(sceneAssetBundle, levelName, isAdditive);
+    if (request == null)
+        yield break;
+    yield return StartCoroutine(request);
+}
+</code></pre>
+
+<p>As you can see, loading scenes is also an asynchronous and LoadLevelAsync returns a load operation request which will need to be passed to a StartCoroutine in order to load the scene.</p>
+
+<h2>Load Variants</h2>
+
+<p>Loading variants using the AssetBundle Manager doesn’t actually change the code need to load in the scenes or assets. All that needs to be done is set the ActiveVariants property of the AssetBundleManager.</p>
+
+<p>The ActiveVariants property is an array of strings. Simply build an array of strings containing the names of the variants you created during assigning them to the Assets. Here’s how to load a scene AssetBundle with the hd variant.</p>
+
+<pre><code>IEnumerator InitializeLevelAsync (string levelName, bool isAdditive, string[] variants)
+
+{
+    //Set the activeVariants.
+    AssetBundleManager.ActiveVariants = variants;
+    // Load level from assetBundle.
+    AssetBundleLoadOperation request = AssetBundleManager.LoadLevelAsync(variantSceneAssetBundle, levelName, isAdditive);
+    if (request == null)
+        yield break;
+    yield return StartCoroutine(request);
+}
+</code></pre>
+
+<p>Where you’d pass in the string array you built up elsewhere in your code (perhaps from a button click or some other circumstances). This will load the bundles that match the set active variants if it is available. </p>
+
+<hr>
+
+<ul>
+<li><span class="page-edit">2017–05–15 Page published with no <a href="DocumentationEditorialReview.html">editorial review</a>
+</span></li>
+</ul>
+<div class="feedbackbox" id="feedbackbox">
+<div id="rating"><p>Did you find this page useful? Please give it a rating:<br><div id="ratecontent" class="c-rating"></div>
+</p></div>
+<div id="ratingThanks" style="display:none"><p>Thanks for rating this page!</p></div>
+<div id="problem"><p><a name="problem" onclick="document.getElementById('problemType').style.display = '';document.getElementById('problem').style.display = 'none';">Report a problem on this page</a></p></div>
+<div id="problemType" style="display:none"><p>What kind of problem would you like to report?<ul type="problems">
+<li><a name="needcode" onclick="                                                             document.getElementById('problemType').style.display = 'none';                                                             document.getElementById('problemThanks').style.display = '';                                                             SendFeedback('problem-needcode',window.location.href,0);                                                             document.getElementById('problemFormDescription').value='Needs code samples.';                                                             document.getElementById('problemNeedCodeForm').style.display = ''                                                         ">This page needs code samples</a></li>
+<li><a name="code" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-brokencode',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Code samples do not work.';                                                         document.getElementById('problemCodeForm').style.display = ''                                                         ">Code samples do not work</a></li>
+<li><a name="missing" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-missing',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Missing information';                                                         document.getElementById('problemMissingForm').style.display = ''                                                         ">Information is missing</a></li>
+<li><a name="incorrect" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-incorrect',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Incorrect information';                                                         document.getElementById('problemIncorrectForm').style.display = ''                                                         ">Information is incorrect</a></li>
+<li><a name="unclear" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-unclear',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Unclear or confusing information';                                                         document.getElementById('problemUnclearForm').style.display = ''                                                         ">Information is unclear or confusing</a></li>
+<li><a name="language" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-language',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Spelling or grammar error';                                                         document.getElementById('problemLanguageForm').style.display = ''                                                         ">There is a spelling/grammar error on this page</a></li>
+<li><a name="other" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-other',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='This page has a problem';                                                         document.getElementById('problemOtherForm').style.display = ''                                                         ">Something else</a></li>
+</ul>
+<p><known_issues><p>Is something described here not working as you expect it to? It might be a <b>Known Issue</b>. Please check with the Issue Tracker at <a href="https://issuetracker.unity3d.com">issuetracker.unity3d.com</a>.</p></known_issues></p>
+</p></div>
+<div id="problemThanks" style="display:none"><p>Thanks for letting us know! This page has been marked for review based on your feedback.<br><br>If you have time, you can provide more information to help us fix the problem faster.<br><br><a onclick="document.getElementById('problemMoreInfo').style.display = '';document.getElementById('problemThanks').style.display = 'none';">Provide more information</a><br>
+</p></div>
+<div id="problemMoreInfo" style="display:none">
+<p id="problemNeedCodeForm" style="display:none">You've told us this page needs code samples. If you'd like to help us further, you could provide a code sample, or tell us about what kind of code sample you'd like to see:</p>
+<p id="problemCodeForm" style="display:none">You've told us there are code samples on this page which don't work. If you know how to fix it, or have something better we could use instead, please let us know:</p>
+<p id="problemMissingForm" style="display:none">You've told us there is information missing from this page. Please tell us more about what's missing:</p>
+<p id="problemIncorrectForm" style="display:none">You've told us there is incorrect information on this page. If you know what we should change to make it correct, please tell us:</p>
+<p id="problemUnclearForm" style="display:none">You've told us this page has unclear or confusing information. Please tell us more about what you found unclear or confusing, or let us know how we could make it clearer:</p>
+<p id="problemLanguageForm" style="display:none">You've told us there is a spelling or grammar error on this page. Please tell us what's wrong:</p>
+<p id="problemOtherForm" style="display:none">You've told us this page has a problem. Please tell us more about what's wrong:</p>
+<form>
+<textarea id="problemFormSuggestionField" cols="40" rows="5"></textarea><input type="hidden" id="problemFormDescription"><input type="submit" id="problemFormDescriptionSubmit" value="Submit" onclick="                                             document.getElementById('problemMoreInfo').style.display = 'none';                                             document.getElementById('problemMoreInfoThanks').style.display = '';                                             return false;                                             ">
+</form>
+</div>
+<div id="problemMoreInfoThanks" style="display:none"><p>Thanks for helping to make the Unity documentation better!</p></div>
+<script>
+
+                                            var ratecontent = document.querySelector('#ratecontent'); // target element
+                                            var currentRating = 0; // initial rating
+                                            var maxRating= 5; // max rating
+
+                                            // callback to run after setting the rating
+                                            var callback = function(rating) {
+                                                document.getElementById('ratingThanks').style.display = '';
+                                                document.getElementById('ratecontent').style.display = 'none';
+                                                document.getElementById('rating').style.display = 'none';
+                                                SendFeedback("rating",window.location.href,rating);
+                                            };
+
+                                            // rating instance
+                                            var myRating = rating(ratecontent, currentRating, maxRating, callback);
+                                        </script>
+</div>
+<div class="nextprev clear">
+<div class="icon tt left mr1" data-distance="-40|-30|top">
+<span class="prev"><a href="AssetBundles-Native.html"></a></span><div class="tip"> Using AssetBundles Natively</div>
+</div>
+<div class="icon tt right" data-distance="-40|-30|top">
+<span class="next"><a href="AssetBundles-Patching.html"></a></span><div class="tip"> Patching with AssetBundles</div>
+</div>
+</div>
+</div>
+</body></html>

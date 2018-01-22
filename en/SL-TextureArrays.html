@@ -1,0 +1,187 @@
+<html><head><title>html模版</title></head><body>Unity - Manual: Texture arrays</br>
+<div class="breadcrumbs clear"><ul>
+<li><a href="UnityManual.html">Unity User Manual (2018.1 beta)</a></li>
+<li><a href="Graphics.html">Graphics</a></li>
+<li><a href="GraphicsReference.html">Graphics Reference</a></li>
+<li><a href="SL-Reference.html"> Shader Reference</a></li>
+<li><a href="SL-AdvancedTopics.html">Advanced ShaderLab topics</a></li>
+<li>Texture arrays</li>
+</ul></div>
+<div class="mb20"><div class="nextprev clear">
+<div class="icon tt left mr1" data-distance="-40|-30|top">
+<span class="prev"><a href="SL-ShaderLOD.html"></a></span><div class="tip">Shader Level of Detail</div>
+</div>
+<div class="icon tt right" data-distance="-40|-30|top">
+<span class="next"><a href="SL-DebuggingD3D11ShadersWithVS.html"></a></span><div class="tip">Debugging DirectX 11 shaders with Visual Studio</div>
+</div>
+</div></div>
+<div class="otherversionswrapper" onmouseover="setOtherVersionsDisplay(true)" onmouseout="setOtherVersionsDisplay(false)">
+<a>Other Versions</a><div class="otherversionscontent" id="OtherVersionsContent" style="display: none;">Cannot access other versions offline!</div>
+</div>
+<div class="scrollToFeedback"><a id="scrollToFeedback">Leave feedback</a></div>
+<h1>Texture arrays</h1>
+<!--BeginSwitchLink--><!--EndSwitchLink-->
+<div class="clear"></div>
+
+<p>Similar to regular 2D textures (<a href="class-TextureImporter.html">Texture2D</a> class, <strong>sampler2D</strong> in shaders), cube maps (<a href="class-Cubemap.html">Cubemap</a> class, <strong>samplerCUBE</strong> in shaders), and 3D textures (<a href="class-Texture3D.html">Texture3D</a> class, <strong>sampler3D</strong> in shaders), Unity also supports 2D texture arrays.</p>
+
+<p>A texture array is a collection of same size/format/flags 2D textures that look like a single object to the GPU, and can be sampled in the shader with a texture element index. They are useful for implementing custom terrain rendering systems or other special effects where you need an efficient way of accessing many textures of the same size and format. Elements of a 2D texture array are also known as slices, or layers.</p>
+
+<h2>Platform Support</h2>
+
+<p>Texture arrays need to be supported by the underlying graphics API and the GPU. They are available on:</p>
+
+<ul>
+<li>Direct3D 11/12 (Windows, Xbox One)</li>
+<li>OpenGL Core (Mac OS X, Linux)</li>
+<li>Metal (iOS, Mac OS X)</li>
+<li>OpenGL ES 3.0 (Android, iOS, WebGL 2.0)</li>
+<li>PlayStation 4</li>
+</ul>
+
+<p>Other platforms do not support texture arrays (OpenGL ES 2.0 or WebGL 1.0). Use <a href="../ScriptReference/SystemInfo-supports2DArrayTextures.html">SystemInfo.supports2DArrayTextures</a> to determine texture array support at runtime.</p>
+
+<h2>Creating and manipulating texture arrays</h2>
+
+<p>As there is no texture import pipeline for texture arrays, they must be created from within your scripts. Use the <a href="../ScriptReference/Texture2DArray.html">Texture2DArray</a> class to create and manipulate them. Note that texture arrays can be serialized as assets, so it is possible to create and fill them with data from editor scripts.</p>
+
+<p>Normally, texture arrays are used purely within GPU memory, but you can use <a href="../ScriptReference/Graphics.CopyTexture.html">Graphics.CopyTexture</a>, <a href="../ScriptReference/Texture2DArray.GetPixels.html">Texture2DArray.GetPixels</a> and <a href="../ScriptReference/Texture2DArray.SetPixels.html">Texture2DArray.SetPixels</a> to transfer pixels to and from system memory.</p>
+
+<h2>Using texture arrays as render targets</h2>
+
+<p>Texture array elements may also be used as render targets. Use <a href="../ScriptReference/RenderTexture-dimension.html">RenderTexture.dimension</a> to specify in advance whether the render target is to be a 2D texture array. The <strong>depthSlice</strong> argument to <a href="../ScriptReference/Graphics.SetRenderTarget.html">Graphics.SetRenderTarget</a> specifies which mipmap level or cube map face to render to. On platforms that support “layered rendering” (i.e. geometry shaders), you can set the <strong>depthSlice</strong> argument to –1 to set the whole texture array as a render target. You can also use a geometry shader to render into individual elements.</p>
+
+<h2>Using texture arrays in shaders</h2>
+
+<p>Since texture arrays do not work on all platforms, shaders need to use an appropriate <a href="SL-ShaderCompileTargets.html">compilation target</a> to access them. The minimum shader model compilation target that supports texture arrays is 3.5.</p>
+
+<p>Use these <a href="SL-BuiltinMacros.html">macros</a> to declare and sample texture arrays:</p>
+
+<ul>
+<li>UNITY_DECLARE_TEX2DARRAY(name) declares a texture array sampler variable inside HLSL code.</li>
+<li>UNITY_SAMPLE_TEX2DARRAY(name,uv) samples a texture array with a <strong>float3</strong> UV; the z component of the coordinate is an array element index.</li>
+<li>UNITY_SAMPLE_TEX2DARRAY_LOD(name,uv,lod) samples a texture array with an explicit mipmap level.</li>
+</ul>
+
+<h2>Examples</h2>
+
+<p>The following shader example samples a texture array using object space vertex positions as coordinates:</p>
+
+<pre><code>Shader &quot;Example/Sample2DArrayTexture&quot;
+{
+    Properties
+    {
+        _MyArr (&quot;Tex&quot;, 2DArray) = &quot;&quot; {}
+        _SliceRange (&quot;Slices&quot;, Range(0,16)) = 6
+        _UVScale (&quot;UVScale&quot;, Float) = 1.0
+    }
+    SubShader
+    {
+        Pass
+        {
+            CGPROGRAM
+            #pragma vertex vert
+            #pragma fragment frag
+            // to use texture arrays we need to target DX10/OpenGLES3 which
+            // is shader model 3.5 minimum
+            #pragma target 3.5
+            
+            #include &quot;UnityCG.cginc&quot;
+
+            struct v2f
+            {
+                float3 uv : TEXCOORD0;
+                float4 vertex : SV_POSITION;
+            };
+
+            float _SliceRange;
+            float _UVScale;
+
+            v2f vert (float4 vertex : POSITION)
+            {
+                v2f o;
+                o.vertex = mul(UNITY_MATRIX_MVP, vertex);
+                o.uv.xy = (vertex.xy + 0.5) * _UVScale;
+                o.uv.z = (vertex.z + 0.5) * _SliceRange;
+                return o;
+            }
+            
+            UNITY_DECLARE_TEX2DARRAY(_MyArr);
+
+            half4 frag (v2f i) : SV_Target
+            {
+                return UNITY_SAMPLE_TEX2DARRAY(_MyArr, i.uv);
+            }
+            ENDCG
+        }
+    }
+}
+</code></pre>
+
+<h2>See Also</h2>
+
+<ul>
+<li>
+<a href="https://msdn.microsoft.com/en-us/library/windows/desktop/ff476906.aspx#Texture2D_Resource">Introduction To Textures</a> in Direct3D documentation.</li>
+<li>
+<a href="https://www.opengl.org/wiki/Array_Texture">Array Textures</a> in OpenGL Wiki.</li>
+</ul>
+<div class="feedbackbox" id="feedbackbox">
+<div id="rating"><p>Did you find this page useful? Please give it a rating:<br><div id="ratecontent" class="c-rating"></div>
+</p></div>
+<div id="ratingThanks" style="display:none"><p>Thanks for rating this page!</p></div>
+<div id="problem"><p><a name="problem" onclick="document.getElementById('problemType').style.display = '';document.getElementById('problem').style.display = 'none';">Report a problem on this page</a></p></div>
+<div id="problemType" style="display:none"><p>What kind of problem would you like to report?<ul type="problems">
+<li><a name="needcode" onclick="                                                             document.getElementById('problemType').style.display = 'none';                                                             document.getElementById('problemThanks').style.display = '';                                                             SendFeedback('problem-needcode',window.location.href,0);                                                             document.getElementById('problemFormDescription').value='Needs code samples.';                                                             document.getElementById('problemNeedCodeForm').style.display = ''                                                         ">This page needs code samples</a></li>
+<li><a name="code" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-brokencode',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Code samples do not work.';                                                         document.getElementById('problemCodeForm').style.display = ''                                                         ">Code samples do not work</a></li>
+<li><a name="missing" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-missing',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Missing information';                                                         document.getElementById('problemMissingForm').style.display = ''                                                         ">Information is missing</a></li>
+<li><a name="incorrect" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-incorrect',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Incorrect information';                                                         document.getElementById('problemIncorrectForm').style.display = ''                                                         ">Information is incorrect</a></li>
+<li><a name="unclear" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-unclear',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Unclear or confusing information';                                                         document.getElementById('problemUnclearForm').style.display = ''                                                         ">Information is unclear or confusing</a></li>
+<li><a name="language" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-language',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Spelling or grammar error';                                                         document.getElementById('problemLanguageForm').style.display = ''                                                         ">There is a spelling/grammar error on this page</a></li>
+<li><a name="other" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-other',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='This page has a problem';                                                         document.getElementById('problemOtherForm').style.display = ''                                                         ">Something else</a></li>
+</ul>
+<p><known_issues><p>Is something described here not working as you expect it to? It might be a <b>Known Issue</b>. Please check with the Issue Tracker at <a href="https://issuetracker.unity3d.com">issuetracker.unity3d.com</a>.</p></known_issues></p>
+</p></div>
+<div id="problemThanks" style="display:none"><p>Thanks for letting us know! This page has been marked for review based on your feedback.<br><br>If you have time, you can provide more information to help us fix the problem faster.<br><br><a onclick="document.getElementById('problemMoreInfo').style.display = '';document.getElementById('problemThanks').style.display = 'none';">Provide more information</a><br>
+</p></div>
+<div id="problemMoreInfo" style="display:none">
+<p id="problemNeedCodeForm" style="display:none">You've told us this page needs code samples. If you'd like to help us further, you could provide a code sample, or tell us about what kind of code sample you'd like to see:</p>
+<p id="problemCodeForm" style="display:none">You've told us there are code samples on this page which don't work. If you know how to fix it, or have something better we could use instead, please let us know:</p>
+<p id="problemMissingForm" style="display:none">You've told us there is information missing from this page. Please tell us more about what's missing:</p>
+<p id="problemIncorrectForm" style="display:none">You've told us there is incorrect information on this page. If you know what we should change to make it correct, please tell us:</p>
+<p id="problemUnclearForm" style="display:none">You've told us this page has unclear or confusing information. Please tell us more about what you found unclear or confusing, or let us know how we could make it clearer:</p>
+<p id="problemLanguageForm" style="display:none">You've told us there is a spelling or grammar error on this page. Please tell us what's wrong:</p>
+<p id="problemOtherForm" style="display:none">You've told us this page has a problem. Please tell us more about what's wrong:</p>
+<form>
+<textarea id="problemFormSuggestionField" cols="40" rows="5"></textarea><input type="hidden" id="problemFormDescription"><input type="submit" id="problemFormDescriptionSubmit" value="Submit" onclick="                                             document.getElementById('problemMoreInfo').style.display = 'none';                                             document.getElementById('problemMoreInfoThanks').style.display = '';                                             return false;                                             ">
+</form>
+</div>
+<div id="problemMoreInfoThanks" style="display:none"><p>Thanks for helping to make the Unity documentation better!</p></div>
+<script>
+
+                                            var ratecontent = document.querySelector('#ratecontent'); // target element
+                                            var currentRating = 0; // initial rating
+                                            var maxRating= 5; // max rating
+
+                                            // callback to run after setting the rating
+                                            var callback = function(rating) {
+                                                document.getElementById('ratingThanks').style.display = '';
+                                                document.getElementById('ratecontent').style.display = 'none';
+                                                document.getElementById('rating').style.display = 'none';
+                                                SendFeedback("rating",window.location.href,rating);
+                                            };
+
+                                            // rating instance
+                                            var myRating = rating(ratecontent, currentRating, maxRating, callback);
+                                        </script>
+</div>
+<div class="nextprev clear">
+<div class="icon tt left mr1" data-distance="-40|-30|top">
+<span class="prev"><a href="SL-ShaderLOD.html"></a></span><div class="tip">Shader Level of Detail</div>
+</div>
+<div class="icon tt right" data-distance="-40|-30|top">
+<span class="next"><a href="SL-DebuggingD3D11ShadersWithVS.html"></a></span><div class="tip">Debugging DirectX 11 shaders with Visual Studio</div>
+</div>
+</div>
+</div>
+</body></html>

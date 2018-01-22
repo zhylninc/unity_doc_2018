@@ -1,0 +1,181 @@
+<html><head><title>html模版</title></head><body>Unity - Manual:  Unity Performance Reporting</br>
+<div class="breadcrumbs clear"><ul>
+<li><a href="UnityManual.html">Unity User Manual (2018.1 beta)</a></li>
+<li><a href="UnityServices.html">Unity Services &amp; Dashboard</a></li>
+<li> Unity Performance Reporting</li>
+</ul></div>
+<div class="mb20"><div class="nextprev clear">
+<div class="icon tt left mr1" data-distance="-40|-30|top">
+<span class="prev"><a href="UnityCollaborateTroubleShooting.html"></a></span><div class="tip">Collaborate troubleshooting tips</div>
+</div>
+<div class="icon tt right" data-distance="-40|-30|top">
+<span class="next"><a href="UnityPerformanceReportingSettingUp.html"></a></span><div class="tip"> Setting up Performance Reporting</div>
+</div>
+</div></div>
+<div class="otherversionswrapper" onmouseover="setOtherVersionsDisplay(true)" onmouseout="setOtherVersionsDisplay(false)">
+<a>Other Versions</a><div class="otherversionscontent" id="OtherVersionsContent" style="display: none;">Cannot access other versions offline!</div>
+</div>
+<div class="scrollToFeedback"><a id="scrollToFeedback">Leave feedback</a></div>
+<h1>Unity Performance Reporting</h1>
+<!--BeginSwitchLink--><!--EndSwitchLink-->
+<div class="clear"></div>
+
+<p>Unity Performance Reporting captures and aggregates exception data, to help you understand what’s happening during run time and to optimize your project faster. Exceptions are updated to the Services Dashboard while the game is running as a completed build, and while in Play Mode within the Editor.</p>
+
+<figure>
+<img src="../uploads/Main/UnityPerformanceReporting.png" alt="Services Dashboard">
+<figcaption>Services Dashboard</figcaption>
+</figure>
+
+<h2>iOS crash reporting</h2>
+
+<p>iOS crash reporting is available to Unity Plus and Pro users as part of the <a href="https://unity3d.com/unity/features/performance-reporting">Unity Performance Reporting</a> service. Turn on Performance Reporting to track crashes on iOS, including crashes in native user code, engine code, and plug-ins.</p>
+
+<p>See Unity documentation for guidance on <a href="UnityPerformanceReportingSettingUp.html">setting up Performance Reporting</a>.</p>
+
+<p>When you use <a href="IL2CPP.html">IL2CPP</a> and have the <a href="class-PlayerSettingsiOS.html">iOS Player Settings</a> <strong>Script Call Optimization</strong> setting set to <strong>Fast but no exceptions</strong>, iOS crash reporting captures crashes due to uncaught managed exceptions.</p>
+
+<p>See documentation on <a href="iphone-iOS-Optimization.html">iPhone Optimization</a> for more information on the <strong>Script Call Optimization</strong> settings.</p>
+
+<h2>Reports</h2>
+
+<p>Reports show the native stack trace of the crashed thread. If the crash is caused by an uncaught managed exception, the reports also show the managed stack trace of where the exception originates from, along with the native stack trace.</p>
+
+<p>Note that iOS crash reporting cannot capture crashes caused by the application running out of memory and then being closed by the operating system.</p>
+
+<p>View your crashes in the <a href="http://developer.cloud.unity3d.com">Unity Cloud Developer Dashboard</a>. Here, select your game and select <strong>Enable Game Performance</strong> (see Image A).</p>
+
+<figure>
+<img src="../uploads/Main/UnityPerformanceReportingGamePerformance.png" alt="Image A: The Game Performance option on the Unity Cloud Developer Dashboard">
+<figcaption>Image A: The Game Performance option on the Unity Cloud Developer Dashboard</figcaption>
+</figure>
+
+<h2>Example</h2>
+
+<p>The example report below demonstrates what a report for a crash due to a managed exception looks like:</p>
+
+<pre><code>
+Managed Stack Trace:
+
+at CrashTests.CrashNextUpdate () [0x00000] in &lt;filename unknown&gt;:0
+
+at CrashTests.Update () [0x00000] in &lt;filename unknown&gt;:0
+
+Native StackTrace:
+
+Thread 0 (crashed)
+
+0 crashreporttest CrashedCheckBelowForHintsWhy() (CrashReporter.mm:106)
+
+1 crashreporttest UnhandledExceptionEventHandler_Invoke_m689053609 (mscorlib_System_Delegate3660574010.h:79)
+
+2 crashreporttest RuntimeInvoker_Void_t2779279689_Il2CppObject_Il2CppObject(MethodInfo const*, void*, void**) (Il2CppInvokerTable.cpp:405)
+
+3 crashreporttest il2cpp::vm::Runtime::CallUnhandledExceptionDelegate(Il2CppDomain*, Il2CppDelegate*, Il2CppObject*) (Runtime.cpp:350)
+
+4 crashreporttest il2cpp::vm::Runtime::UnhandledException(Il2CppObject*) (Runtime.cpp:440)
+
+5 crashreporttest ScriptingInvocationNoArgs::Invoke(ScriptingException**) (ScriptingInvocationNoArgs.cpp:131)
+
+6 crashreporttest ScriptingInvocationNoArgs::Invoke() (ScriptingInvocationNoArgs.cpp:95)
+
+7 crashreporttest MonoBehaviour::CallUpdateMethod(int) (MonoBehaviour.cpp:541)
+
+8 crashreporttest void BaseBehaviourManager::CommonUpdate&lt;BehaviourManager&gt;() (Behaviour.cpp:169)
+
+9 crashreporttest PlayerLoop(bool, bool, IHookEvent*) (Player.cpp:1721)
+
+10 crashreporttest UnityPlayerLoopImpl(bool) (LibEntryPoint.mm:240)
+
+11 crashreporttest UnityRepaint (UnityAppController+Rendering.mm:238)
+
+12 crashreporttest -[UnityAppController(Rendering) repaintDisplayLink] (UnityAppController+Rendering.mm:54)
+
+13 QuartzCore CA::Display::DisplayLinkItem::dispatch()
+
+14 QuartzCore CA::Display::DisplayLink::dispatch_items(unsigned long long, unsigned long long, unsigned long long)
+
+15 IOKit IODispatchCalloutFromCFMessage
+
+16 CoreFoundation __CFMachPortPerform
+
+17 CoreFoundation __CFRUNLOOP_IS_CALLING_OUT_TO_A_SOURCE1_PERFORM_FUNCTION__
+
+18 CoreFoundation __CFRunLoopDoSource1
+
+19 CoreFoundation __CFRunLoopRun
+
+20 CoreFoundation CFRunLoopRunSpecific
+
+21 GraphicsServices GSEventRunModal
+
+22 UIKit UIApplicationMain
+
+23 crashreporttest main (main.mm:32)
+
+</code></pre>
+
+<ul>
+<li><span class="page-edit">2017–09–04 Page amended with limited <a href="DocumentationEditorialReview.html">editorial review</a>
+</span></li>
+<li><span class="page-history"><strong>Capture Editor Exceptions</strong> setting added and <strong>Optimize game performance</strong> toggle label renamed to <strong>Discover app errors</strong> in Unity 5.5</span></li>
+</ul>
+<div class="feedbackbox" id="feedbackbox">
+<div id="rating"><p>Did you find this page useful? Please give it a rating:<br><div id="ratecontent" class="c-rating"></div>
+</p></div>
+<div id="ratingThanks" style="display:none"><p>Thanks for rating this page!</p></div>
+<div id="problem"><p><a name="problem" onclick="document.getElementById('problemType').style.display = '';document.getElementById('problem').style.display = 'none';">Report a problem on this page</a></p></div>
+<div id="problemType" style="display:none"><p>What kind of problem would you like to report?<ul type="problems">
+<li><a name="needcode" onclick="                                                             document.getElementById('problemType').style.display = 'none';                                                             document.getElementById('problemThanks').style.display = '';                                                             SendFeedback('problem-needcode',window.location.href,0);                                                             document.getElementById('problemFormDescription').value='Needs code samples.';                                                             document.getElementById('problemNeedCodeForm').style.display = ''                                                         ">This page needs code samples</a></li>
+<li><a name="code" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-brokencode',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Code samples do not work.';                                                         document.getElementById('problemCodeForm').style.display = ''                                                         ">Code samples do not work</a></li>
+<li><a name="missing" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-missing',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Missing information';                                                         document.getElementById('problemMissingForm').style.display = ''                                                         ">Information is missing</a></li>
+<li><a name="incorrect" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-incorrect',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Incorrect information';                                                         document.getElementById('problemIncorrectForm').style.display = ''                                                         ">Information is incorrect</a></li>
+<li><a name="unclear" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-unclear',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Unclear or confusing information';                                                         document.getElementById('problemUnclearForm').style.display = ''                                                         ">Information is unclear or confusing</a></li>
+<li><a name="language" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-language',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Spelling or grammar error';                                                         document.getElementById('problemLanguageForm').style.display = ''                                                         ">There is a spelling/grammar error on this page</a></li>
+<li><a name="other" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-other',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='This page has a problem';                                                         document.getElementById('problemOtherForm').style.display = ''                                                         ">Something else</a></li>
+</ul>
+<p><known_issues><p>Is something described here not working as you expect it to? It might be a <b>Known Issue</b>. Please check with the Issue Tracker at <a href="https://issuetracker.unity3d.com">issuetracker.unity3d.com</a>.</p></known_issues></p>
+</p></div>
+<div id="problemThanks" style="display:none"><p>Thanks for letting us know! This page has been marked for review based on your feedback.<br><br>If you have time, you can provide more information to help us fix the problem faster.<br><br><a onclick="document.getElementById('problemMoreInfo').style.display = '';document.getElementById('problemThanks').style.display = 'none';">Provide more information</a><br>
+</p></div>
+<div id="problemMoreInfo" style="display:none">
+<p id="problemNeedCodeForm" style="display:none">You've told us this page needs code samples. If you'd like to help us further, you could provide a code sample, or tell us about what kind of code sample you'd like to see:</p>
+<p id="problemCodeForm" style="display:none">You've told us there are code samples on this page which don't work. If you know how to fix it, or have something better we could use instead, please let us know:</p>
+<p id="problemMissingForm" style="display:none">You've told us there is information missing from this page. Please tell us more about what's missing:</p>
+<p id="problemIncorrectForm" style="display:none">You've told us there is incorrect information on this page. If you know what we should change to make it correct, please tell us:</p>
+<p id="problemUnclearForm" style="display:none">You've told us this page has unclear or confusing information. Please tell us more about what you found unclear or confusing, or let us know how we could make it clearer:</p>
+<p id="problemLanguageForm" style="display:none">You've told us there is a spelling or grammar error on this page. Please tell us what's wrong:</p>
+<p id="problemOtherForm" style="display:none">You've told us this page has a problem. Please tell us more about what's wrong:</p>
+<form>
+<textarea id="problemFormSuggestionField" cols="40" rows="5"></textarea><input type="hidden" id="problemFormDescription"><input type="submit" id="problemFormDescriptionSubmit" value="Submit" onclick="                                             document.getElementById('problemMoreInfo').style.display = 'none';                                             document.getElementById('problemMoreInfoThanks').style.display = '';                                             return false;                                             ">
+</form>
+</div>
+<div id="problemMoreInfoThanks" style="display:none"><p>Thanks for helping to make the Unity documentation better!</p></div>
+<script>
+
+                                            var ratecontent = document.querySelector('#ratecontent'); // target element
+                                            var currentRating = 0; // initial rating
+                                            var maxRating= 5; // max rating
+
+                                            // callback to run after setting the rating
+                                            var callback = function(rating) {
+                                                document.getElementById('ratingThanks').style.display = '';
+                                                document.getElementById('ratecontent').style.display = 'none';
+                                                document.getElementById('rating').style.display = 'none';
+                                                SendFeedback("rating",window.location.href,rating);
+                                            };
+
+                                            // rating instance
+                                            var myRating = rating(ratecontent, currentRating, maxRating, callback);
+                                        </script>
+</div>
+<div class="nextprev clear">
+<div class="icon tt left mr1" data-distance="-40|-30|top">
+<span class="prev"><a href="UnityCollaborateTroubleShooting.html"></a></span><div class="tip">Collaborate troubleshooting tips</div>
+</div>
+<div class="icon tt right" data-distance="-40|-30|top">
+<span class="next"><a href="UnityPerformanceReportingSettingUp.html"></a></span><div class="tip"> Setting up Performance Reporting</div>
+</div>
+</div>
+</div>
+</body></html>

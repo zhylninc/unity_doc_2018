@@ -1,0 +1,197 @@
+<html><head><title>html模版</title></head><body>Unity - Manual: Sprite Renderer</br>
+<div class="breadcrumbs clear"><ul>
+<li><a href="UnityManual.html">Unity User Manual (2018.1 beta)</a></li>
+<li><a href="Graphics.html">Graphics</a></li>
+<li><a href="GraphicsReference.html">Graphics Reference</a></li>
+<li>Sprite Renderer</li>
+</ul></div>
+<div class="mb20"><div class="nextprev clear">
+<div class="icon tt left mr1" data-distance="-40|-30|top">
+<span class="prev"><a href="RenderTech-HardwareRequirements.html"></a></span><div class="tip">Hardware Requirements for Unity's Graphics Features</div>
+</div>
+<div class="icon tt right" data-distance="-40|-30|top">
+<span class="next"><a href="GraphicsHowTos.html"></a></span><div class="tip">Graphics HOWTOs</div>
+</div>
+</div></div>
+<div class="otherversionswrapper" onmouseover="setOtherVersionsDisplay(true)" onmouseout="setOtherVersionsDisplay(false)">
+<a>Other Versions</a><div class="otherversionscontent" id="OtherVersionsContent" style="display: none;">Cannot access other versions offline!</div>
+</div>
+<div class="scrollToFeedback"><a id="scrollToFeedback">Leave feedback</a></div>
+<h2>Sprite Renderer</h2>
+
+<p>The <strong>Sprite Renderer</strong> component lets you display images as <strong>Sprites</strong> for use in both 2D and 3D scenes.</p>
+
+<p>Add it to a GameObject via the Components menu (<strong>Component &gt; Rendering &gt; Sprite Renderer</strong> or alternatively, you can just create a GameObject directly with a Sprite Renderer already attached (menu: <strong>GameObject &gt; 2D Object &gt; Sprite</strong>).</p>
+
+<figure>
+<img src="../uploads/Main/SpriteRenderInspector.png" alt="">
+</figure>
+
+<table>
+<colgroup>
+<col style="text-align:left;">
+<col style="text-align:left;">
+</colgroup>
+
+<thead>
+<tr>
+	<th style="text-align:left;"><strong><em>Property:</em></strong></th>
+	<th style="text-align:left;"><strong><em>Function:</em></strong></th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+	<td style="text-align:left;"><strong>Sprite</strong></td>
+	<td style="text-align:left;">The Sprite object to render. Sprite objects can be generated from textures by using the Sprite setting on the <a href="class-TextureImporter.html">Texture importer</a>.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>Color</strong></td>
+	<td style="text-align:left;">Vertex color of the rendered mesh.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>Flip</strong></td>
+	<td style="text-align:left;">Flip the sprite in the X or Y planes.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>Material</strong></td>
+	<td style="text-align:left;">Material used to render the sprite.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>Draw Mode</strong></td>
+	<td style="text-align:left;">Select an option from the Draw Mode drop-down box to define how the Sprite scales when you change its dimensions.</td>
+</tr>
+<tr>
+	<td style="text-align:left;">    Simple</td>
+	<td style="text-align:left;">This is the default Sprite Renderer behavior. The image scales in all directions when its dimensions change.</td>
+</tr>
+<tr>
+	<td style="text-align:left;">    Sliced</td>
+	<td style="text-align:left;">Use Sliced if you intend to apply 9-slicing to an image, and you want the sections to stretch. In Sliced mode, the corners stay the same size, the top and bottom of the Sprite stretch horizontally, the sides of the Sprite stretch vertically, and the centre of the Sprite stretches horizontally and vertically to fit the Sprite’s size. See documentation on <a href="9SliceSprites.html">9-slicing Sprites</a> for more information.</td>
+</tr>
+<tr>
+	<td style="text-align:left;">    Size</td>
+	<td style="text-align:left;">Use this to change the horizontal and vertical size of the Sprite. You must use this to change the size of the Sprite if you want the 9-slicing to work; the default Transform component only applies a default scale.</td>
+</tr>
+<tr>
+	<td style="text-align:left;">    Tiled</td>
+	<td style="text-align:left;">Use Tiled if you intend to apply 9-slicing to an image, and you want the sections to repeat. In Tiled mode, the sprite stay the same size, and does not scale. Instead, the top and bottom of the Sprite repeat horizontally, the sides repeat vertically, and the centre of the Sprite repeats in a tile formation to fit the Sprite’s size. See documentation on <a href="9SliceSprites.html">9-slicing Sprites</a> for more information.</td>
+</tr>
+<tr>
+	<td style="text-align:left;">        Size</td>
+	<td style="text-align:left;">Use this to change the horizontal and vertical size of the Sprite. You must use this to change the size of the Sprite if you want the 9-slicing to work; the default Transform component only applies a default scale.</td>
+</tr>
+<tr>
+	<td style="text-align:left;">    Tile Mode</td>
+	<td style="text-align:left;">When the Draw Mode is set to Tiled, use the Tile Mode property to control how the sections repeat when the dimensions of the Sprite change.</td>
+</tr>
+<tr>
+	<td style="text-align:left;">        Continuous</td>
+	<td style="text-align:left;">Tile Mode is set to Continuous by default. When the size of the Sprite changes, the repeating sections repeat evenly in the Sprite.</td>
+</tr>
+<tr>
+	<td style="text-align:left;">        Adaptive</td>
+	<td style="text-align:left;">When Tile Mode is set to Adaptive, the repeating sections only repeat when the dimensions of the Sprite reach the Stretch Value.</td>
+</tr>
+<tr>
+	<td style="text-align:left;">    Stretch Value</td>
+	<td style="text-align:left;">Use the Stretch Value slider to set the value between 0 and 1. Note that 1 represents an image resized to twice its original dimensions, so if the Stretch Value is set at 1, the section repeats when the image is stretched to twice its original size.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>Sorting Layer</strong></td>
+	<td style="text-align:left;">The <a href="Layers.html">layer</a> used to define this sprite’s overlay priority during rendering.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>Order In Layer</strong></td>
+	<td style="text-align:left;">The overlay priority of this sprite within its layer. Lower numbers are rendered first and subsequent numbers overlay those below.</td>
+</tr>
+</tbody>
+</table>
+
+<h2>Details</h2>
+
+<p>In 3D graphics, an object’s appearance will vary according to lighting and the position from which it is viewed. In 2D, by contrast, an image is simply displayed onscreen with no transformations other than basic position, scale and rotation. A sprite’s position is given by a 2D coordinate, so there is no concept of “depth” or distance from camera when rendering.</p>
+
+<p>However, it is still very important to have some way to determine the overlay priority of different sprites (ie, which sprites will obscure others when they cross paths). For example, in a driving game, a car should be seen to pass over flat objects on the road surface. Unity uses the concept of <strong>sorting layers</strong> to allow you to divide sprites into groups for overlay priority. Sprites with a sorting layer lower in the order will be overlaid by those in a higher sorting layer.</p>
+
+<p>Sometimes, two or more objects in the same sorting layer can overlap (eg, two player characters in a side scrolling game). The <em>order in layer</em> property can be used to apply consistent priorities to sprites in the same layer. As with sorting layers, the rule is that lower numbers are rendered first and can be obscured by the higher numbers rendered later. See the <a href="class-TagManager.html">layer manager page</a> for details of editing sorting layers. If sorting layers are not used, standard depth-based sorting can be used.</p>
+
+<h3>Rendering</h3>
+
+<p>A Sprite Renderer uses the texture supplied in the <em>Sprite</em> property but uses the shader and other properties from the <em>Material</em> property (this is actually accomplished using a <a href="../ScriptReference/MaterialPropertyBlock.html">MaterialPropertyBlock</a> behind the scenes). This means that you can use the same material to render different sprites without worrying about which texture is assigned on the material.</p>
+
+<p>The sprite is rendered on a mesh that uses position, color and UV at each vertex but no normal vector. If your material requires normal vectors then you can calculate them using a vertex shader (see the <a href="SL-SurfaceShaderExamples.html">Surface Shader Examples</a> page for further details).</p>
+
+<p>The default shaders used for sprites are:</p>
+
+<ul>
+<li><p>
+<strong>Sprites/Default</strong> - a simple alpha blended shader that does not interact with lights in the scene.</p></li>
+<li><p>
+<strong>Sprites/Diffuse</strong> - a simple alpha-blended surface shader that <em>does</em> interact with lights. This generates a front-facing normal vector (0,0,–1).</p></li>
+</ul>
+
+<h3>Flipping</h3>
+
+<p>While Sprites can be flipped by setting negative <code>transform.scale</code>, this has the side effect of also flipping the child GameObjects and also flipping the colliders, which can be performance intensive or otherwise not preferred.</p>
+
+<p>The SpriteRenderer flipping feature provides a lightweight alternative which doesn’t affect any other components or GameObjects. It simply flips the rendered sprite on x or y axis and nothing else.</p>
+<div class="feedbackbox" id="feedbackbox">
+<div id="rating"><p>Did you find this page useful? Please give it a rating:<br><div id="ratecontent" class="c-rating"></div>
+</p></div>
+<div id="ratingThanks" style="display:none"><p>Thanks for rating this page!</p></div>
+<div id="problem"><p><a name="problem" onclick="document.getElementById('problemType').style.display = '';document.getElementById('problem').style.display = 'none';">Report a problem on this page</a></p></div>
+<div id="problemType" style="display:none"><p>What kind of problem would you like to report?<ul type="problems">
+<li><a name="needcode" onclick="                                                             document.getElementById('problemType').style.display = 'none';                                                             document.getElementById('problemThanks').style.display = '';                                                             SendFeedback('problem-needcode',window.location.href,0);                                                             document.getElementById('problemFormDescription').value='Needs code samples.';                                                             document.getElementById('problemNeedCodeForm').style.display = ''                                                         ">This page needs code samples</a></li>
+<li><a name="code" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-brokencode',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Code samples do not work.';                                                         document.getElementById('problemCodeForm').style.display = ''                                                         ">Code samples do not work</a></li>
+<li><a name="missing" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-missing',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Missing information';                                                         document.getElementById('problemMissingForm').style.display = ''                                                         ">Information is missing</a></li>
+<li><a name="incorrect" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-incorrect',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Incorrect information';                                                         document.getElementById('problemIncorrectForm').style.display = ''                                                         ">Information is incorrect</a></li>
+<li><a name="unclear" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-unclear',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Unclear or confusing information';                                                         document.getElementById('problemUnclearForm').style.display = ''                                                         ">Information is unclear or confusing</a></li>
+<li><a name="language" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-language',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Spelling or grammar error';                                                         document.getElementById('problemLanguageForm').style.display = ''                                                         ">There is a spelling/grammar error on this page</a></li>
+<li><a name="other" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-other',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='This page has a problem';                                                         document.getElementById('problemOtherForm').style.display = ''                                                         ">Something else</a></li>
+</ul>
+<p><known_issues><p>Is something described here not working as you expect it to? It might be a <b>Known Issue</b>. Please check with the Issue Tracker at <a href="https://issuetracker.unity3d.com">issuetracker.unity3d.com</a>.</p></known_issues></p>
+</p></div>
+<div id="problemThanks" style="display:none"><p>Thanks for letting us know! This page has been marked for review based on your feedback.<br><br>If you have time, you can provide more information to help us fix the problem faster.<br><br><a onclick="document.getElementById('problemMoreInfo').style.display = '';document.getElementById('problemThanks').style.display = 'none';">Provide more information</a><br>
+</p></div>
+<div id="problemMoreInfo" style="display:none">
+<p id="problemNeedCodeForm" style="display:none">You've told us this page needs code samples. If you'd like to help us further, you could provide a code sample, or tell us about what kind of code sample you'd like to see:</p>
+<p id="problemCodeForm" style="display:none">You've told us there are code samples on this page which don't work. If you know how to fix it, or have something better we could use instead, please let us know:</p>
+<p id="problemMissingForm" style="display:none">You've told us there is information missing from this page. Please tell us more about what's missing:</p>
+<p id="problemIncorrectForm" style="display:none">You've told us there is incorrect information on this page. If you know what we should change to make it correct, please tell us:</p>
+<p id="problemUnclearForm" style="display:none">You've told us this page has unclear or confusing information. Please tell us more about what you found unclear or confusing, or let us know how we could make it clearer:</p>
+<p id="problemLanguageForm" style="display:none">You've told us there is a spelling or grammar error on this page. Please tell us what's wrong:</p>
+<p id="problemOtherForm" style="display:none">You've told us this page has a problem. Please tell us more about what's wrong:</p>
+<form>
+<textarea id="problemFormSuggestionField" cols="40" rows="5"></textarea><input type="hidden" id="problemFormDescription"><input type="submit" id="problemFormDescriptionSubmit" value="Submit" onclick="                                             document.getElementById('problemMoreInfo').style.display = 'none';                                             document.getElementById('problemMoreInfoThanks').style.display = '';                                             return false;                                             ">
+</form>
+</div>
+<div id="problemMoreInfoThanks" style="display:none"><p>Thanks for helping to make the Unity documentation better!</p></div>
+<script>
+
+                                            var ratecontent = document.querySelector('#ratecontent'); // target element
+                                            var currentRating = 0; // initial rating
+                                            var maxRating= 5; // max rating
+
+                                            // callback to run after setting the rating
+                                            var callback = function(rating) {
+                                                document.getElementById('ratingThanks').style.display = '';
+                                                document.getElementById('ratecontent').style.display = 'none';
+                                                document.getElementById('rating').style.display = 'none';
+                                                SendFeedback("rating",window.location.href,rating);
+                                            };
+
+                                            // rating instance
+                                            var myRating = rating(ratecontent, currentRating, maxRating, callback);
+                                        </script>
+</div>
+<div class="nextprev clear">
+<div class="icon tt left mr1" data-distance="-40|-30|top">
+<span class="prev"><a href="RenderTech-HardwareRequirements.html"></a></span><div class="tip">Hardware Requirements for Unity's Graphics Features</div>
+</div>
+<div class="icon tt right" data-distance="-40|-30|top">
+<span class="next"><a href="GraphicsHowTos.html"></a></span><div class="tip">Graphics HOWTOs</div>
+</div>
+</div>
+</div>
+</body></html>

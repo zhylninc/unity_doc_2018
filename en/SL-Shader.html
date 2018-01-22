@@ -1,0 +1,162 @@
+<html><head><title>html模版</title></head><body>Unity - Manual: ShaderLab Syntax</br>
+<div class="breadcrumbs clear"><ul>
+<li><a href="UnityManual.html">Unity User Manual (2018.1 beta)</a></li>
+<li><a href="Graphics.html">Graphics</a></li>
+<li><a href="GraphicsReference.html">Graphics Reference</a></li>
+<li><a href="SL-Reference.html"> Shader Reference</a></li>
+<li>ShaderLab Syntax</li>
+</ul></div>
+<div class="mb20"><div class="nextprev clear">
+<div class="icon tt left mr1" data-distance="-40|-30|top">
+<span class="prev"><a href="SL-SamplerStates.html"></a></span><div class="tip"> Using sampler states</div>
+</div>
+<div class="icon tt right" data-distance="-40|-30|top">
+<span class="next"><a href="SL-Properties.html"></a></span><div class="tip">ShaderLab: Properties</div>
+</div>
+</div></div>
+<div class="otherversionswrapper" onmouseover="setOtherVersionsDisplay(true)" onmouseout="setOtherVersionsDisplay(false)">
+<a>Other Versions</a><div class="otherversionscontent" id="OtherVersionsContent" style="display: none;">Cannot access other versions offline!</div>
+</div>
+<div class="scrollToFeedback"><a id="scrollToFeedback">Leave feedback</a></div>
+<h1>ShaderLab Syntax</h1>
+<!--BeginSwitchLink--><!--EndSwitchLink-->
+<div class="clear"></div>
+
+<p>All <a href="class-Shader.html">Shaders</a> files in Unity are written in a declarative language called “ShaderLab”. In the file, a nested-braces
+syntax declares various things that describe the shader – for example which shader properties should be shown in material inspector;
+what kind of hardware fallbacks to do; what kind of blending modes to use etc.; and actual “shader code” is written in
+<code>CGPROGRAM</code> snippets inside the same shader file (see <a href="SL-SurfaceShaders.html">surface shaders</a> and <a href="SL-ShaderPrograms.html">vertex and fragment shaders</a>).</p>
+
+<p>This page and the child pages describes the nested-braces “ShaderLab” syntax. The <code>CGPROGRAM</code> snippets are written in regular
+HLSL/Cg shading language, see <a href="SL-ShaderPrograms.html">their documentation pages</a>.</p>
+
+<p>
+<strong>Shader</strong> is the root command of a shader file. Each file must define one (and only one) Shader. It specifies how any objects whose material uses this shader are rendered.</p>
+
+<h2>Syntax</h2>
+
+<pre><code>Shader &quot;name&quot; { [Properties] Subshaders [Fallback] [CustomEditor] }
+</code></pre>
+
+<p>Defines a shader. It will appear in the material inspector listed under <strong>name</strong>. Shaders optionally can define a list of <strong>properties</strong> that show up in material inspector. After this comes a list of SubShaders, and optionally a fallback and/or a custom editor declaration.</p>
+
+<h2>Details</h2>
+
+<h3>Properties</h3>
+
+<p>Shaders can have a list of <a href="SL-Properties.html">properties</a>. Any properties declared in a shader are shown in the <a href="class-Material.html">material inspector</a> inside Unity. Typical properties are the object color, textures, or just arbitrary values to be used by the shader.</p>
+
+<h3>SubShaders &amp; Fallback</h3>
+
+<p>Each shader is comprised of a list of <a href="SL-SubShader.html">sub-shaders</a>. You must have at least one. When loading a shader, Unity will go through the list of subshaders, and pick the first one that is supported by the end user’s machine. If no subshaders are supported, Unity will try to use <a href="SL-Fallback.html">fallback shader</a>.</p>
+
+<p>Different graphic cards have different capabilities. This raises an eternal issue for game developers; you want your game to look great on the latest hardware, but don’t want it to be available only to those 3% of the population. This is where subshaders come in. Create one subshader that has all the fancy graphic effects you can dream of, then add more subshaders for older cards. These subshaders may implement the effect you want in a slower way, or they may choose not to implement some details.</p>
+
+<p>Shader “level of detail” (LOD) and “shader replacement” are two techniques that also build upon subshaders, see <a href="SL-ShaderLOD.html">Shader LOD</a> and <a href="SL-ShaderReplacement.html">Shader Replacemement</a> for details.</p>
+
+<h2>Examples</h2>
+
+<p>Here is one of the simplest shaders possible:</p>
+
+<pre><code>// colored vertex lighting
+Shader &quot;Simple colored lighting&quot;
+{
+    // a single color property
+    Properties {
+        _Color (&quot;Main Color&quot;, Color) = (1,.5,.5,1)
+    }
+    // define one subshader
+    SubShader
+    {
+        // a single pass in our subshader
+        Pass
+        {
+            // use fixed function per-vertex lighting
+            Material
+            {
+                Diffuse [_Color]
+            }
+            Lighting On
+        }
+    }
+}
+</code></pre>
+
+<p>This shader defines a color property <strong>_Color</strong> (that shows up in material inspector as <em>Main Color</em>) with a default value of <strong>(1,0.5,0.5,1)</strong>. Then a single subshader is defined. The subshader consists of one <a href="SL-Pass.html">Pass</a> that turns on fixed-function vertex lighting and sets up basic material for it.</p>
+
+<p>See more complex examples at <a href="SL-SurfaceShaderExamples.html">Surface Shader Examples</a> or
+<a href="SL-VertexFragmentShaderExamples.html">Vertex and Fragment Shader Examples</a>.</p>
+
+<h2>See Also</h2>
+
+<ul>
+<li>
+<a href="SL-Properties.html">Properties Syntax</a>.</li>
+<li>
+<a href="SL-SubShader.html">SubShader Syntax</a>.</li>
+<li>
+<a href="SL-Pass.html">Pass Syntax</a>.</li>
+<li>
+<a href="SL-Fallback.html">Fallback Syntax</a>.</li>
+<li>
+<a href="SL-CustomEditor.html">CustomEditor Syntax</a>.</li>
+</ul>
+<div class="feedbackbox" id="feedbackbox">
+<div id="rating"><p>Did you find this page useful? Please give it a rating:<br><div id="ratecontent" class="c-rating"></div>
+</p></div>
+<div id="ratingThanks" style="display:none"><p>Thanks for rating this page!</p></div>
+<div id="problem"><p><a name="problem" onclick="document.getElementById('problemType').style.display = '';document.getElementById('problem').style.display = 'none';">Report a problem on this page</a></p></div>
+<div id="problemType" style="display:none"><p>What kind of problem would you like to report?<ul type="problems">
+<li><a name="needcode" onclick="                                                             document.getElementById('problemType').style.display = 'none';                                                             document.getElementById('problemThanks').style.display = '';                                                             SendFeedback('problem-needcode',window.location.href,0);                                                             document.getElementById('problemFormDescription').value='Needs code samples.';                                                             document.getElementById('problemNeedCodeForm').style.display = ''                                                         ">This page needs code samples</a></li>
+<li><a name="code" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-brokencode',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Code samples do not work.';                                                         document.getElementById('problemCodeForm').style.display = ''                                                         ">Code samples do not work</a></li>
+<li><a name="missing" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-missing',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Missing information';                                                         document.getElementById('problemMissingForm').style.display = ''                                                         ">Information is missing</a></li>
+<li><a name="incorrect" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-incorrect',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Incorrect information';                                                         document.getElementById('problemIncorrectForm').style.display = ''                                                         ">Information is incorrect</a></li>
+<li><a name="unclear" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-unclear',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Unclear or confusing information';                                                         document.getElementById('problemUnclearForm').style.display = ''                                                         ">Information is unclear or confusing</a></li>
+<li><a name="language" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-language',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Spelling or grammar error';                                                         document.getElementById('problemLanguageForm').style.display = ''                                                         ">There is a spelling/grammar error on this page</a></li>
+<li><a name="other" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-other',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='This page has a problem';                                                         document.getElementById('problemOtherForm').style.display = ''                                                         ">Something else</a></li>
+</ul>
+<p><known_issues><p>Is something described here not working as you expect it to? It might be a <b>Known Issue</b>. Please check with the Issue Tracker at <a href="https://issuetracker.unity3d.com">issuetracker.unity3d.com</a>.</p></known_issues></p>
+</p></div>
+<div id="problemThanks" style="display:none"><p>Thanks for letting us know! This page has been marked for review based on your feedback.<br><br>If you have time, you can provide more information to help us fix the problem faster.<br><br><a onclick="document.getElementById('problemMoreInfo').style.display = '';document.getElementById('problemThanks').style.display = 'none';">Provide more information</a><br>
+</p></div>
+<div id="problemMoreInfo" style="display:none">
+<p id="problemNeedCodeForm" style="display:none">You've told us this page needs code samples. If you'd like to help us further, you could provide a code sample, or tell us about what kind of code sample you'd like to see:</p>
+<p id="problemCodeForm" style="display:none">You've told us there are code samples on this page which don't work. If you know how to fix it, or have something better we could use instead, please let us know:</p>
+<p id="problemMissingForm" style="display:none">You've told us there is information missing from this page. Please tell us more about what's missing:</p>
+<p id="problemIncorrectForm" style="display:none">You've told us there is incorrect information on this page. If you know what we should change to make it correct, please tell us:</p>
+<p id="problemUnclearForm" style="display:none">You've told us this page has unclear or confusing information. Please tell us more about what you found unclear or confusing, or let us know how we could make it clearer:</p>
+<p id="problemLanguageForm" style="display:none">You've told us there is a spelling or grammar error on this page. Please tell us what's wrong:</p>
+<p id="problemOtherForm" style="display:none">You've told us this page has a problem. Please tell us more about what's wrong:</p>
+<form>
+<textarea id="problemFormSuggestionField" cols="40" rows="5"></textarea><input type="hidden" id="problemFormDescription"><input type="submit" id="problemFormDescriptionSubmit" value="Submit" onclick="                                             document.getElementById('problemMoreInfo').style.display = 'none';                                             document.getElementById('problemMoreInfoThanks').style.display = '';                                             return false;                                             ">
+</form>
+</div>
+<div id="problemMoreInfoThanks" style="display:none"><p>Thanks for helping to make the Unity documentation better!</p></div>
+<script>
+
+                                            var ratecontent = document.querySelector('#ratecontent'); // target element
+                                            var currentRating = 0; // initial rating
+                                            var maxRating= 5; // max rating
+
+                                            // callback to run after setting the rating
+                                            var callback = function(rating) {
+                                                document.getElementById('ratingThanks').style.display = '';
+                                                document.getElementById('ratecontent').style.display = 'none';
+                                                document.getElementById('rating').style.display = 'none';
+                                                SendFeedback("rating",window.location.href,rating);
+                                            };
+
+                                            // rating instance
+                                            var myRating = rating(ratecontent, currentRating, maxRating, callback);
+                                        </script>
+</div>
+<div class="nextprev clear">
+<div class="icon tt left mr1" data-distance="-40|-30|top">
+<span class="prev"><a href="SL-SamplerStates.html"></a></span><div class="tip"> Using sampler states</div>
+</div>
+<div class="icon tt right" data-distance="-40|-30|top">
+<span class="next"><a href="SL-Properties.html"></a></span><div class="tip">ShaderLab: Properties</div>
+</div>
+</div>
+</div>
+</body></html>

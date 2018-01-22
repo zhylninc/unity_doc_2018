@@ -1,0 +1,210 @@
+<html><head><title>html模版</title></head><body>Unity - Manual:  Panoramic video</br>
+<div class="breadcrumbs clear"><ul>
+<li><a href="UnityManual.html">Unity User Manual (2018.1 beta)</a></li>
+<li><a href="Graphics.html">Graphics</a></li>
+<li><a href="GraphicsOverview.html">Graphics Overview</a></li>
+<li><a href="VideoPlayer.html"> Video overview</a></li>
+<li> Panoramic video</li>
+</ul></div>
+<div class="mb20"><div class="nextprev clear">
+<div class="icon tt left mr1" data-distance="-40|-30|top">
+<span class="prev"><a href="VideoTransparency.html"></a></span><div class="tip"> Video transparency support</div>
+</div>
+<div class="icon tt right" data-distance="-40|-30|top">
+<span class="next"><a href="script-Terrain.html"></a></span><div class="tip">Terrain Engine</div>
+</div>
+</div></div>
+<div class="otherversionswrapper" onmouseover="setOtherVersionsDisplay(true)" onmouseout="setOtherVersionsDisplay(false)">
+<a>Other Versions</a><div class="otherversionscontent" id="OtherVersionsContent" style="display: none;">Cannot access other versions offline!</div>
+</div>
+<div class="scrollToFeedback"><a id="scrollToFeedback">Leave feedback</a></div>
+<h1>Panoramic video</h1>
+<!--BeginSwitchLink--><!--EndSwitchLink-->
+<div class="clear"></div>
+
+<p>Unity’s panoramic video feature enables you to:</p>
+
+<ul>
+<li>Easily include real-world video shot in 360 degrees.</li>
+<li>Reduce Scene complexity in VR by including a pre-rendered backdrop video instead of real geometry.</li>
+</ul>
+
+<p>Unity supports 180 and 360 degree videos in either an <a href="https://en.wikipedia.org/wiki/Equirectangular_projection">equirectangular</a> layout (longitude and latitude) or a <a href="https://docs.unity3d.com/2017.2/Documentation/Manual/class-Cubemap.html">cubemap</a> layout (6 frames). </p>
+
+<p>Equirectangular 2D videos should have an aspect ratio of exactly 2:1 for 360 content, or 1:1 for 180 content.</p>
+
+<figure>
+<img src="../uploads/Main/Equirectangular2D.png" alt="Equirectangular 2D video">
+<figcaption>Equirectangular 2D video</figcaption>
+</figure>
+
+<p>Cubemap 2D videos should have an aspect ratio of 1:6, 3:4, 4:3, or 6:1, depending on face layout:</p>
+
+<figure>
+<img src="../uploads/Main/Cubemap2D.png" alt="Cubemap 2D video">
+<figcaption>Cubemap 2D video</figcaption>
+</figure>
+
+<p>To use the panoramic video features in the Unity Editor, you must have access to panoramic video clips, or know how to author them.</p>
+
+<p>This page describes the following steps to display any panoramic video in the Editor:</p>
+
+<ol>
+<li><p>Set up a <a href="class-VideoPlayer.html">Video Player</a> to play the video source to a <a href="class-RenderTexture.html">Render Texture</a>.</p></li>
+<li><p>Set up a <a href="class-Skybox.html">Skybox</a> Material that receives the Render Texture.</p></li>
+<li><p>Set the Scene to use the Skybox Material.</p></li>
+</ol>
+
+<p>
+<strong>Note</strong>: This is a resource-intensive feature. For best visual results, use panoramic videos in the highest possible resolution (often 4K or 8K). Large videos require more computing power and resources for decoding. Most systems have specific limits on maximum video decoding resolutions (for example, many mobiles are limited to HD or 2K, and older desktops might be limited to 2K or 4K).</p>
+
+<h2>1. Video player setup</h2>
+
+<p>Import your video into Unity as an <a href="ImportingAssets.html">Asset</a>. To create a Video Player, drag the video Asset from the Project view to an empty area of Unity’s Hierarchy view. By default, this sets up the component to play the video full-screen for the default Camera. Press <strong>Play</strong> to view this.</p>
+
+<p>You should change this behaviour so that it renders to a Render Texture. That way, you can control exactly how it is displayed. To do this, go to <strong>Assets</strong> &gt; <strong>Create</strong> &gt; <strong>Render Texture</strong>. </p>
+
+<p>Set the Render Texture’s <strong>Size</strong> to match your video exactly. To check the dimensions of your video, select the video in your Assets folder and view the Inspector window. Scroll to the section where Unity previews your video, select your video’s name in the preview window, and change it to <strong>Source Info</strong>.</p>
+
+<p>Next, set your Render Texture’s <strong>Depth Buffer</strong> option to <strong>No depth buffer</strong>.</p>
+
+<figure>
+<img src="../uploads/Main/DepthBuffer.png" alt="Render Texture set to No depth buffer">
+<figcaption>Render Texture set to <strong>No depth buffer</strong></figcaption>
+</figure>
+
+<p>Now, open the <strong>Video Player</strong> Inspector and switch the <strong>Render Mode</strong> to <strong>Render Texture</strong>. Drag your new Render Texture from the Asset view to the <strong>Target Texture</strong> slot.</p>
+
+<p>Enter Play mode to verify that this is functioning correctly.</p>
+
+<p>The video doesn’t render in the <strong>Game</strong> window, but you can select the Render Texture Asset to see that its content updating with each video frame. </p>
+
+<figure>
+<img src="../uploads/Main/RenderTextureAsset.png" alt="">
+</figure>
+
+<h2>2. Create a Skybox Material</h2>
+
+<p>You need to replace the default Skybox with your video content to render the panoramic video as a backdrop to your Scene.</p>
+
+<p>To do this, create a new Material (<strong>Assets</strong> &gt; <strong>Create</strong> &gt; <strong>Material</strong>). Go to your new Material’s Inspector and set the Material’s Shader to Skybox/Panoramic (go to <strong>Shader</strong> &gt; <strong>Skybox</strong> &gt; <strong>Panoramic</strong>).</p>
+
+<p>Drag the Render Texture from the Asset view to the Texture slot in the new Material’s Inspector.</p>
+
+<p>You must correctly identify the type of content in the video (cubemap or equirectangular) for the panoramic video to display properly. For cubemap content (such as a cross and strip layout, as is common for static Skybox Textures), set <strong>Mapping</strong> to <strong>6 Frames Layout</strong>.</p>
+
+<p>For equirectangular content, set <strong>Mapping</strong> to <strong>Latitude Longitude Layout</strong>, and then either the <strong>360 degree</strong> or <strong>180 degree</strong> sub-option. Choose the <strong>360 degree</strong> option if the video covers a full 360-degree view. Choose <strong>180 degree</strong> if the video is just a front-facing 180-degree view.</p>
+
+<p>Look at the <strong>Preview</strong> at the bottom of the Material Inspector. Pan around and check that the content looks correct. </p>
+
+<h2>3. Render the panoramic video to the Skybox</h2>
+
+<p>Finally, you must connect your new Skybox Material to the Scene.</p>
+
+<ol>
+<li><p>Open up the Lighting window (menu: <strong>Window</strong> &gt; <strong>Lighting</strong> &gt; <strong>Settings</strong>).</p></li>
+<li><p>Drag and drop the new Skybox Material Asset to the first slot under <strong>Environment</strong>. </p></li>
+<li><p>Press Play to show the video as a Scene backdrop on the Skybox.</p></li>
+<li><p>Change the Scene Camera orientation to show a different portion of the Skybox (and therefore a different portion of the panoramic video).</p></li>
+</ol>
+
+<h2>3D panoramic video</h2>
+
+<p>Turn on Virtual Reality Support in the Player Settings (menu: <strong>Edit</strong> &gt; <strong>Project Settings</strong> &gt; <strong>Player</strong> &gt;<strong>XR Settings</strong>), especially if your source video has stereo content. This unlocks an extra <strong>3D Layout</strong> option in the Skybox/Panoramic Material. The 3D Layout has three options : <strong>Side by Side</strong>, <strong>Over</strong> <strong>Under</strong>, and <strong>None</strong> (default value). </p>
+
+<p>Use the <strong>Side by Side</strong> settings if the video contains the left eye’s content on the left and the right eye’s content on the right. Choose <strong>Over Under</strong> if the left and right content are positioned above and below one another in the video. Unity detects which eye is currently being rendered and sends this information to the Skybox/Panoramic shader using <a href="https://docs.unity3d.com/Manual/SinglePassStereoRendering.html">Single Pass Stereo rendering</a>. The shader contains the logic to select the correct half of the video based on this information when Unity renders each eye’s content in VR.</p>
+
+<figure>
+<img src="../uploads/Main/3dPanoramicVideo.png" alt="3D panoramic video">
+<figcaption>3D panoramic video</figcaption>
+</figure>
+
+<p>For non–360 3D video (where you shouldn’t use a Skybox Material), the same <strong>3D Layout</strong> is available directly in the Video Player component when using the Camera <strong>Near/Far</strong> Plane Render Modes.</p>
+
+<h2>Alternate Render Texture type for cubemap videos</h2>
+
+<p>When working with cubemap videos, instead of the Video Player rendering to a 2D Render Texture and preserving the exact cube map layout, you can render the Video Player directly to a Render Texture Cube.</p>
+
+<p>To achieve this, change the Render Texture Asset’s <strong>Dimension</strong> from <strong>2D</strong> to <strong>Cube and set the Render Texture’s </strong>Size__ to be exactly the dimensions of the individual faces of the source video. </p>
+
+<p>For example, if you have a 4 x 3 horizontal cross cubemap layout video with dimensions 4096 x 3072, set the Render Texture’s <strong>Size</strong> to 1024 x 1024 (4096 / 4 and 3072 / 3).</p>
+
+<p>While rendering to a Cube Target Texture, the Video Player assumes that the source video contains a cube map in either a cross or a strip layout (which it determines using the video aspect ratio). The Video Player then fills out the Render Texture’s faces with the correct cube faces.</p>
+
+<p>Use the resulting Render Texture Cube as a Skybox. To do this, create a Material and assign <strong>Skybox/Cubemap</strong> as the <strong>Shader</strong>(<strong>Shader</strong> &gt; <strong>Skybox</strong> &gt; <strong>Cubemap</strong>) instead of the Skybox/Panoramic Material described above.</p>
+
+<h2>Video dimensions and transcoding</h2>
+
+<p>Including 3D content requires double either the width or the height of the video (corresponding to <strong>Side-by-Side</strong> or <strong>Over-Under</strong> layouts). </p>
+
+<p>Keep in mind that many desktop hardware video decoders are limited to 4K resolutions and mobile hardware video decoders are often limited to 2K or less which limits the resolution of playback in real-time on those platforms.</p>
+
+<p>You can use video transcoding to produce lower resolution versions of panoramic videos, but take precautions to avoid introducing bleeding at the edge between left and right 3D content, or,
+between cube map faces and adjacent black areas. In general, you should author video in power-of-two dimensions and transcoding to other power-of-two dimensions to reduce visual artifacts.</p>
+
+<hr>
+
+<ul>
+<li><p><span class="page-edit">2017–10–25 Page published with limited <a href="DocumentationEditorialReview.html">editorial review</a>
+</span></p></li>
+<li><p><span class="page-history">Added 2D and 3D panoramic video support in <a href="https://docs.unity3d.com/2017.3/Documentation/Manual/30_search.html?q=newin20173">2017.3</a> <span class="search-words">NewIn20173</span></span></p></li>
+</ul>
+<div class="feedbackbox" id="feedbackbox">
+<div id="rating"><p>Did you find this page useful? Please give it a rating:<br><div id="ratecontent" class="c-rating"></div>
+</p></div>
+<div id="ratingThanks" style="display:none"><p>Thanks for rating this page!</p></div>
+<div id="problem"><p><a name="problem" onclick="document.getElementById('problemType').style.display = '';document.getElementById('problem').style.display = 'none';">Report a problem on this page</a></p></div>
+<div id="problemType" style="display:none"><p>What kind of problem would you like to report?<ul type="problems">
+<li><a name="needcode" onclick="                                                             document.getElementById('problemType').style.display = 'none';                                                             document.getElementById('problemThanks').style.display = '';                                                             SendFeedback('problem-needcode',window.location.href,0);                                                             document.getElementById('problemFormDescription').value='Needs code samples.';                                                             document.getElementById('problemNeedCodeForm').style.display = ''                                                         ">This page needs code samples</a></li>
+<li><a name="code" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-brokencode',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Code samples do not work.';                                                         document.getElementById('problemCodeForm').style.display = ''                                                         ">Code samples do not work</a></li>
+<li><a name="missing" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-missing',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Missing information';                                                         document.getElementById('problemMissingForm').style.display = ''                                                         ">Information is missing</a></li>
+<li><a name="incorrect" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-incorrect',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Incorrect information';                                                         document.getElementById('problemIncorrectForm').style.display = ''                                                         ">Information is incorrect</a></li>
+<li><a name="unclear" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-unclear',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Unclear or confusing information';                                                         document.getElementById('problemUnclearForm').style.display = ''                                                         ">Information is unclear or confusing</a></li>
+<li><a name="language" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-language',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Spelling or grammar error';                                                         document.getElementById('problemLanguageForm').style.display = ''                                                         ">There is a spelling/grammar error on this page</a></li>
+<li><a name="other" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-other',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='This page has a problem';                                                         document.getElementById('problemOtherForm').style.display = ''                                                         ">Something else</a></li>
+</ul>
+<p><known_issues><p>Is something described here not working as you expect it to? It might be a <b>Known Issue</b>. Please check with the Issue Tracker at <a href="https://issuetracker.unity3d.com">issuetracker.unity3d.com</a>.</p></known_issues></p>
+</p></div>
+<div id="problemThanks" style="display:none"><p>Thanks for letting us know! This page has been marked for review based on your feedback.<br><br>If you have time, you can provide more information to help us fix the problem faster.<br><br><a onclick="document.getElementById('problemMoreInfo').style.display = '';document.getElementById('problemThanks').style.display = 'none';">Provide more information</a><br>
+</p></div>
+<div id="problemMoreInfo" style="display:none">
+<p id="problemNeedCodeForm" style="display:none">You've told us this page needs code samples. If you'd like to help us further, you could provide a code sample, or tell us about what kind of code sample you'd like to see:</p>
+<p id="problemCodeForm" style="display:none">You've told us there are code samples on this page which don't work. If you know how to fix it, or have something better we could use instead, please let us know:</p>
+<p id="problemMissingForm" style="display:none">You've told us there is information missing from this page. Please tell us more about what's missing:</p>
+<p id="problemIncorrectForm" style="display:none">You've told us there is incorrect information on this page. If you know what we should change to make it correct, please tell us:</p>
+<p id="problemUnclearForm" style="display:none">You've told us this page has unclear or confusing information. Please tell us more about what you found unclear or confusing, or let us know how we could make it clearer:</p>
+<p id="problemLanguageForm" style="display:none">You've told us there is a spelling or grammar error on this page. Please tell us what's wrong:</p>
+<p id="problemOtherForm" style="display:none">You've told us this page has a problem. Please tell us more about what's wrong:</p>
+<form>
+<textarea id="problemFormSuggestionField" cols="40" rows="5"></textarea><input type="hidden" id="problemFormDescription"><input type="submit" id="problemFormDescriptionSubmit" value="Submit" onclick="                                             document.getElementById('problemMoreInfo').style.display = 'none';                                             document.getElementById('problemMoreInfoThanks').style.display = '';                                             return false;                                             ">
+</form>
+</div>
+<div id="problemMoreInfoThanks" style="display:none"><p>Thanks for helping to make the Unity documentation better!</p></div>
+<script>
+
+                                            var ratecontent = document.querySelector('#ratecontent'); // target element
+                                            var currentRating = 0; // initial rating
+                                            var maxRating= 5; // max rating
+
+                                            // callback to run after setting the rating
+                                            var callback = function(rating) {
+                                                document.getElementById('ratingThanks').style.display = '';
+                                                document.getElementById('ratecontent').style.display = 'none';
+                                                document.getElementById('rating').style.display = 'none';
+                                                SendFeedback("rating",window.location.href,rating);
+                                            };
+
+                                            // rating instance
+                                            var myRating = rating(ratecontent, currentRating, maxRating, callback);
+                                        </script>
+</div>
+<div class="nextprev clear">
+<div class="icon tt left mr1" data-distance="-40|-30|top">
+<span class="prev"><a href="VideoTransparency.html"></a></span><div class="tip"> Video transparency support</div>
+</div>
+<div class="icon tt right" data-distance="-40|-30|top">
+<span class="next"><a href="script-Terrain.html"></a></span><div class="tip">Terrain Engine</div>
+</div>
+</div>
+</div>
+</body></html>

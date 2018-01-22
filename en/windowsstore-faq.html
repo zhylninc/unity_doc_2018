@@ -1,0 +1,215 @@
+<html><head><title>html模版</title></head><body>Unity - Manual: ﻿FAQ</br>
+<div class="breadcrumbs clear"><ul>
+<li><a href="UnityManual.html">Unity User Manual (2018.1 beta)</a></li>
+<li><a href="PlatformSpecific.html">Platform-specific</a></li>
+<li><a href="Windows.html">Windows</a></li>
+<li><a href="WindowsStore.html">Universal Windows Platform</a></li>
+<li>﻿FAQ</li>
+</ul></div>
+<div class="mb20"><div class="nextprev clear">
+<div class="icon tt left mr1" data-distance="-40|-30|top">
+<span class="prev"><a href="windowsstore-debugging-il2cpp.html"></a></span><div class="tip">Universal Windows Platform: Debugging on IL2CPP Scripting Backend</div>
+</div>
+<div class="icon tt right" data-distance="-40|-30|top">
+<span class="next"><a href="windowsstore-examples.html"></a></span><div class="tip">﻿Universal Windows Platform: Examples</div>
+</div>
+</div></div>
+<div class="otherversionswrapper" onmouseover="setOtherVersionsDisplay(true)" onmouseout="setOtherVersionsDisplay(false)">
+<a>Other Versions</a><div class="otherversionscontent" id="OtherVersionsContent" style="display: none;">Cannot access other versions offline!</div>
+</div>
+<div class="scrollToFeedback"><a id="scrollToFeedback">Leave feedback</a></div>
+<h1>FAQ</h1>
+<!--BeginSwitchLink--><!--EndSwitchLink-->
+<div class="clear"></div>
+
+<h3>Unsupported classes and functions when using .NET Scripting Backend</h3>
+
+<ul>
+<li>There are many classes and methods that are not supported in .NET for Universal Windows Apps, see this link for supported classes: <a href="http://msdn.microsoft.com/en-us/library/windows/apps/br230232.aspx">http://msdn.microsoft.com/en-us/library/windows/apps/br230232.aspx</a>.</li>
+</ul>
+
+<h3>How to create AppX package from Visual Studio ?</h3>
+
+<ul>
+<li>After building the project from Unity Editor open it with Visual Studio</li>
+<li>In the solution explorer, right click on the project</li>
+<li>
+<strong>Store</strong> -&gt; <strong>Create App Packages</strong>
+</li>
+<li>Do you want to build packages to upload to the Windows Store? Choose No, then Next</li>
+<li>Pick appropriate platform, for ex., ARM Release</li>
+<li>Don’t include public symbol files, this will make package smaller</li>
+<li>Create</li>
+<li>Locate folder which is named something like YourApp_1.0.0.0_ARM_Test, check that it has <strong>Add-AppDevPackage.ps1</strong> file</li>
+<li>Copy the folder contents to the target machine, then on the target machine right click on <strong>Add-AppDevPackage.ps1</strong> -&gt; <strong>Run with PowerShell</strong>
+</li>
+<li>Follow the steps, you might need an internet connection to install Developper License, this will require for you to have Microsoft account</li>
+<li>If everything is okay, your app should appear on the start menu</li>
+</ul>
+
+<h3>How to install an appx file on your machine?</h3>
+
+<ul>
+<li>Open <strong>Windows PowerShell</strong> from start menu, navigate to your appx file, execute <strong>Add-AppxPackage &lt;yourappx&gt;.appx</strong>, if the appx was signed, it will be installed on your machine. <strong>Note:</strong> if you’re installing appx file again, you have to uninstall the previous one, simply right-click on the icon, and click Uninstall.</li>
+</ul>
+
+<h3>I am getting an error “DEP0600: incorrect parameter” while deploying an application.</h3>
+
+<ul>
+<li>Something is wrong with your certificate, try creating a new by clicking on <strong>Package.appxmanifest</strong> -&gt; <strong>Packaging</strong> -&gt; <strong>Choose Certificate</strong> -&gt; <strong>Configure Certificate</strong> -&gt; <strong>Create Test Certificate</strong>
+</li>
+</ul>
+
+<h3>How to use Visual Studio’s graphical debugger on ARM?</h3>
+
+<ul>
+<li>Read this post <a href="http://msdn.microsoft.com/en-us/library/hh780905(v=vs.110).aspx">http://msdn.microsoft.com/en-us/library/hh780905(v=vs.110).aspx</a> . You will need to create a WinRT component, and reference it from main module.</li>
+</ul>
+
+<h3>How to deploy a project on a tablet PC?</h3>
+
+<ul>
+<li>See <a href="windowsstore-deployment.html">Deployment</a>.</li>
+</ul>
+
+<h3>How do I choose which compiler to use for my C# scripts?</h3>
+
+<p>Under publishing settings on Universal Windows Platform player settings, there’s a drop down menu called “Compilation overrides”. There are 3 settings:</p>
+
+<pre><code>1. None. All C# scripts will get compiled with Mono C# compiler;
+2. Use Net Core Partially. Scripts that are in folders “Assets/Plugins”, “Assets/Standard Assets” and “Assets/Pro Standard Assets” will get compiled with Mono C# compiler, while the rest will be compiled with Microsoft C# compiler;
+3. Use Net Core. All scripts will get compiled with Microsoft C# compiler.
+</code></pre>
+
+<p>Both compilers have their ups and downs. Compiling scripts with the Mono C# compiler will allow them to be referenced by JavaScript scripts, which, for example, is needed for Angry Bots (hence you have to set it to none). However, using the Microsoft C# compiler will allow you to use Microsoft specific APIs without the need for plugins - just wrap the code in #if ENABLE_WINMD_SUPPORT/#endif, and it will compile and work just fine.</p>
+
+<h3>Getting more information about Windows App Certification Kit (WACK) failure?</h3>
+
+<p>You can find a log in &lt;user&gt;\AppData\Local\Microsoft\AppCertKit which might contain additional information about the failure.</p>
+
+<h3>Help! There’s too many defines! Which are defined when?</h3>
+
+<p>No worries. Here’s all of them:</p>
+
+<table>
+<colgroup>
+<col style="text-align:left;">
+<col style="text-align:left;">
+</colgroup>
+
+<tbody>
+<tr>
+	<td style="text-align:left;"><strong>UNITY_WINRT</strong></td>
+	<td style="text-align:left;">Defined on all scripts</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>UNITY_WSA</strong></td>
+	<td style="text-align:left;">Defined on all scripts</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>UNITY_WINRT_10_0</strong></td>
+	<td style="text-align:left;">Defined on all scripts</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>UNITY_WSA_10_0</strong></td>
+	<td style="text-align:left;">Defined on all scripts</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>ENABLE_DOTNET</strong></td>
+	<td style="text-align:left;">Defined on all scripts when using .NET scripting backend</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>ENABLE_IL2CPP</strong></td>
+	<td style="text-align:left;">Defined on all scripts when using IL2CPP scripting backend</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>NETFX_CORE</strong></td>
+	<td style="text-align:left;">Defined on C# scripts that are compiled using Microsoft C# compiler when using .NET scripting backend</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>WINDOWS_UWP</strong></td>
+	<td style="text-align:left;">Defined on C# scripts that are compiled using Microsoft C# compiler when using .NET scripting backend or IL2CPP scripting backend with .NET 4.6 compatibility level</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>ENABLE_WINMD_SUPPORT</strong></td>
+	<td style="text-align:left;">Defined on C# scripts that are compiled using Microsoft C# compiler when using .NET scripting backend or IL2CPP scripting backend with .NET 4.6 compatibility level</td>
+</tr>
+</tbody>
+</table>
+
+<p>See also <a href="PlatformDependentCompilation.html">platform dependent compilation</a>.</p>
+
+<h3>Breakpoints in generated Assembly-CSharp-* projects aren’t hit.</h3>
+
+<p>There could be couple of reasons:</p>
+
+<ul>
+<li>This may occur because of the JIT optimization on module load. In Visual Studio, go to <strong>Tools</strong> &gt; <strong>Options</strong> &gt; <strong>Debugging</strong> &gt; <strong>General</strong> and uncheck <strong>Suppress JIT optimization on module load</strong>.</li>
+<li>Visual Studio doesn’t consider Assembly-CSharp-* as your code. Go to <strong>Tools</strong> &gt; <strong>Options</strong> &gt; <strong>Debugging</strong> &gt; <strong>General</strong> and uncheck <strong>Enable Just My Code</strong>. This tells Visual Studio that you want to debug the Assembly-CSharp-* projects.</li>
+</ul>
+
+<hr>
+
+<p>
+<span class="page-edit">• 2017–05–16 Page amended with no <a href="DocumentationEditorialReview.html">editorial review</a>
+</span><br>
+</p>
+<div class="feedbackbox" id="feedbackbox">
+<div id="rating"><p>Did you find this page useful? Please give it a rating:<br><div id="ratecontent" class="c-rating"></div>
+</p></div>
+<div id="ratingThanks" style="display:none"><p>Thanks for rating this page!</p></div>
+<div id="problem"><p><a name="problem" onclick="document.getElementById('problemType').style.display = '';document.getElementById('problem').style.display = 'none';">Report a problem on this page</a></p></div>
+<div id="problemType" style="display:none"><p>What kind of problem would you like to report?<ul type="problems">
+<li><a name="needcode" onclick="                                                             document.getElementById('problemType').style.display = 'none';                                                             document.getElementById('problemThanks').style.display = '';                                                             SendFeedback('problem-needcode',window.location.href,0);                                                             document.getElementById('problemFormDescription').value='Needs code samples.';                                                             document.getElementById('problemNeedCodeForm').style.display = ''                                                         ">This page needs code samples</a></li>
+<li><a name="code" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-brokencode',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Code samples do not work.';                                                         document.getElementById('problemCodeForm').style.display = ''                                                         ">Code samples do not work</a></li>
+<li><a name="missing" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-missing',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Missing information';                                                         document.getElementById('problemMissingForm').style.display = ''                                                         ">Information is missing</a></li>
+<li><a name="incorrect" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-incorrect',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Incorrect information';                                                         document.getElementById('problemIncorrectForm').style.display = ''                                                         ">Information is incorrect</a></li>
+<li><a name="unclear" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-unclear',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Unclear or confusing information';                                                         document.getElementById('problemUnclearForm').style.display = ''                                                         ">Information is unclear or confusing</a></li>
+<li><a name="language" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-language',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Spelling or grammar error';                                                         document.getElementById('problemLanguageForm').style.display = ''                                                         ">There is a spelling/grammar error on this page</a></li>
+<li><a name="other" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-other',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='This page has a problem';                                                         document.getElementById('problemOtherForm').style.display = ''                                                         ">Something else</a></li>
+</ul>
+<p><known_issues><p>Is something described here not working as you expect it to? It might be a <b>Known Issue</b>. Please check with the Issue Tracker at <a href="https://issuetracker.unity3d.com">issuetracker.unity3d.com</a>.</p></known_issues></p>
+</p></div>
+<div id="problemThanks" style="display:none"><p>Thanks for letting us know! This page has been marked for review based on your feedback.<br><br>If you have time, you can provide more information to help us fix the problem faster.<br><br><a onclick="document.getElementById('problemMoreInfo').style.display = '';document.getElementById('problemThanks').style.display = 'none';">Provide more information</a><br>
+</p></div>
+<div id="problemMoreInfo" style="display:none">
+<p id="problemNeedCodeForm" style="display:none">You've told us this page needs code samples. If you'd like to help us further, you could provide a code sample, or tell us about what kind of code sample you'd like to see:</p>
+<p id="problemCodeForm" style="display:none">You've told us there are code samples on this page which don't work. If you know how to fix it, or have something better we could use instead, please let us know:</p>
+<p id="problemMissingForm" style="display:none">You've told us there is information missing from this page. Please tell us more about what's missing:</p>
+<p id="problemIncorrectForm" style="display:none">You've told us there is incorrect information on this page. If you know what we should change to make it correct, please tell us:</p>
+<p id="problemUnclearForm" style="display:none">You've told us this page has unclear or confusing information. Please tell us more about what you found unclear or confusing, or let us know how we could make it clearer:</p>
+<p id="problemLanguageForm" style="display:none">You've told us there is a spelling or grammar error on this page. Please tell us what's wrong:</p>
+<p id="problemOtherForm" style="display:none">You've told us this page has a problem. Please tell us more about what's wrong:</p>
+<form>
+<textarea id="problemFormSuggestionField" cols="40" rows="5"></textarea><input type="hidden" id="problemFormDescription"><input type="submit" id="problemFormDescriptionSubmit" value="Submit" onclick="                                             document.getElementById('problemMoreInfo').style.display = 'none';                                             document.getElementById('problemMoreInfoThanks').style.display = '';                                             return false;                                             ">
+</form>
+</div>
+<div id="problemMoreInfoThanks" style="display:none"><p>Thanks for helping to make the Unity documentation better!</p></div>
+<script>
+
+                                            var ratecontent = document.querySelector('#ratecontent'); // target element
+                                            var currentRating = 0; // initial rating
+                                            var maxRating= 5; // max rating
+
+                                            // callback to run after setting the rating
+                                            var callback = function(rating) {
+                                                document.getElementById('ratingThanks').style.display = '';
+                                                document.getElementById('ratecontent').style.display = 'none';
+                                                document.getElementById('rating').style.display = 'none';
+                                                SendFeedback("rating",window.location.href,rating);
+                                            };
+
+                                            // rating instance
+                                            var myRating = rating(ratecontent, currentRating, maxRating, callback);
+                                        </script>
+</div>
+<div class="nextprev clear">
+<div class="icon tt left mr1" data-distance="-40|-30|top">
+<span class="prev"><a href="windowsstore-debugging-il2cpp.html"></a></span><div class="tip">Universal Windows Platform: Debugging on IL2CPP Scripting Backend</div>
+</div>
+<div class="icon tt right" data-distance="-40|-30|top">
+<span class="next"><a href="windowsstore-examples.html"></a></span><div class="tip">﻿Universal Windows Platform: Examples</div>
+</div>
+</div>
+</div>
+</body></html>

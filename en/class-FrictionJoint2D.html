@@ -1,0 +1,181 @@
+<html><head><title>html模版</title></head><body>Unity - Manual: Friction Joint 2D</br>
+<div class="breadcrumbs clear"><ul>
+<li><a href="UnityManual.html">Unity User Manual (2018.1 beta)</a></li>
+<li><a href="Unity2D.html">2D</a></li>
+<li><a href="Physics2DReference.html">Physics Reference 2D</a></li>
+<li><a href="Joints2D.html"> 2D Joints</a></li>
+<li>Friction Joint 2D</li>
+</ul></div>
+<div class="mb20"><div class="nextprev clear">
+<div class="icon tt left mr1" data-distance="-40|-30|top">
+<span class="prev"><a href="class-FixedJoint2D.html"></a></span><div class="tip">Fixed Joint 2D</div>
+</div>
+<div class="icon tt right" data-distance="-40|-30|top">
+<span class="next"><a href="class-HingeJoint2D.html"></a></span><div class="tip">Hinge Joint 2D</div>
+</div>
+</div></div>
+<div class="otherversionswrapper" onmouseover="setOtherVersionsDisplay(true)" onmouseout="setOtherVersionsDisplay(false)">
+<a>Other Versions</a><div class="otherversionscontent" id="OtherVersionsContent" style="display: none;">Cannot access other versions offline!</div>
+</div>
+<div class="scrollToFeedback"><a id="scrollToFeedback">Leave feedback</a></div>
+<h1>Friction Joint 2D</h1>
+<!--BeginSwitchLink--><a href='../ScriptReference/FrictionJoint2D.html' title='Go to FrictionJoint2D page in the Scripting Reference' class='switch-link gray-btn sbtn left'>Switch to Scripting</a><!--EndSwitchLink-->
+<div class="clear"></div>
+
+<p>The <strong>Friction Joint 2D</strong> connects GameObjects controlled by Rigidbody 2D physics. The Friction Joint 2D reduces both the linear and angular velocities between the objects to zero (ie, it slows them down). You can use this joint to simulate top-down friction, for example.</p>
+
+<figure>
+<img src="../uploads/Main/FrictionJoint2DInspector.png" alt="">
+</figure>
+
+<table>
+<colgroup>
+<col style="text-align:left;">
+<col style="text-align:left;">
+</colgroup>
+
+<thead>
+<tr>
+	<th style="text-align:left;"><strong><em>Property:</em></strong></th>
+	<th style="text-align:left;"><strong><em>Function:</em></strong></th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+	<td style="text-align:left;"><strong>Enable Collision</strong></td>
+	<td style="text-align:left;">Check the box to enable collisions between the two connected GameObjects.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>Connected Rigid Body</strong></td>
+	<td style="text-align:left;">Specify the other GameObject this Friction Joint 2D connects to. If you leave this as <strong>None</strong>, the other end of the Friction Joint 2D is fixed to a point in space defined by the <strong>Connected Anchor</strong> setting. Select the circle to the right of the field to view a list of GameObjects to connect to.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>Auto Configure Connected Anchor</strong></td>
+	<td style="text-align:left;">Check this box to automatically set the anchor location for the other GameObject this Friction Joint 2D connects to. If you check this, you don’t need to complete the <strong>Connected Anchor</strong> fields.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>Anchor</strong></td>
+	<td style="text-align:left;">Define where (in terms of x, y co-ordinates on the <strong>RigidBody 2D</strong>) the end point of the Friction Joint 2D connects to this GameObject.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>Connected Anchor</strong></td>
+	<td style="text-align:left;">Define where (in terms of x, y co-ordinates on the <strong>RigidBody 2D</strong>) the end point of the Friction Joint 2D connects to the other GameObject.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>Max Force</strong></td>
+	<td style="text-align:left;">Sets the linear (or straight line) movement between joined GameObjects. A high value resists the linear movement between GameObjects.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>Max Torque</strong></td>
+	<td style="text-align:left;">Sets the angular (or rotation) movement between joined GameObjects. A high value resists the rotation movement between GameObjects.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>Break Force</strong></td>
+	<td style="text-align:left;">Specify the force level needed to break and therefore delete the Friction Joint 2D. <strong>Infinity</strong> means it is unbreakable.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>Break Torque</strong></td>
+	<td style="text-align:left;">Specify the torque level needed to break and therefore delete the Friction Joint 2D. <strong>Infinity</strong> means it is unbreakable.</td>
+</tr>
+</tbody>
+</table>
+
+<h2>Notes</h2>
+
+<p>Use the Friction Joint 2D to slow down movement between two points to a stop. This joint’s aim is to maintain a zero relative linear and angular offset between two points. Those two points can be two <strong>Rigidbody 2D</strong> components or a <strong>Rigidbody 2D</strong> component and a fixed position in the world. (Connect to a fixed position in the world by setting <strong>Connected Rigidbody</strong> to None).</p>
+
+<h3>Resistance</h3>
+
+<p>The joint applies linear force (<strong>Force</strong>) and angle force (<strong>Torque</strong>) to both Rigidbody 2D points. It uses a simulated motor that is pre-configured to have a low motor power (and so, low resistence). You can change the resistance to make it weaker or stronger.</p>
+
+<p>Strong Resistance: </p>
+
+<ul>
+<li>A high (1,000,000 is the highest) <strong>Max Force</strong> creates strong linear resistance. The Rigidbody 2D GameObjects won’t move in a line relative to each other very much.</li>
+<li>A high (1,000,000 is the highest) <strong>Max Torque</strong> creates strong angular resistance. The Rigidbody 2D GameObjects won’t move at an angle relative to each each other very much.</li>
+</ul>
+
+<p>Weak Resistance:</p>
+
+<ul>
+<li>A low <strong>Max Force</strong> creates weak linear resistance. The Rigidbody 2D GameObjects move easily in a line relative to each other.</li>
+<li>A low <strong>Max Torque</strong> creates weak angular resistance. The Rigidbody 2D GameObjects move easily at an angle relative to each each other.</li>
+</ul>
+
+<h3>Constraints</h3>
+
+<p>Friction Joint 2D has two simultaneous constraints:</p>
+
+<ul>
+<li>Maintain a zero relative linear velocity between two anchor points on two Rigidbody 2Ds</li>
+<li>Maintain a zero relative angular velocity between two anchor points on two Rigidbody 2Ds</li>
+</ul>
+
+<p>You can use this joint to construct physical GameObjects that need to behave as if they have friction. They can resist either linear movement or angular movement, or both linear and angular movement. For example:</p>
+
+<ul>
+<li>A platform that does rotate, but resists applied forces, making it difficult but possible for the player to move it.</li>
+<li>A ball that resists linear movement. The ball’s friction is related to the GameObject’s velocity and not to any collisions. It acts like the <strong>Linear Drag</strong> and <strong>Angular Drag</strong> which is set in <strong>Rigidbody 2D</strong>. The difference is that Friction Joint 2D has the option of maximum <strong>Force</strong> and <strong>Torque</strong> settings.)</li>
+</ul>
+
+<p>See <a href="Joints2D.html">Joints 2D</a>: <em>Details and Hints</em> for useful background information on all 2D joints.</p>
+<div class="feedbackbox" id="feedbackbox">
+<div id="rating"><p>Did you find this page useful? Please give it a rating:<br><div id="ratecontent" class="c-rating"></div>
+</p></div>
+<div id="ratingThanks" style="display:none"><p>Thanks for rating this page!</p></div>
+<div id="problem"><p><a name="problem" onclick="document.getElementById('problemType').style.display = '';document.getElementById('problem').style.display = 'none';">Report a problem on this page</a></p></div>
+<div id="problemType" style="display:none"><p>What kind of problem would you like to report?<ul type="problems">
+<li><a name="needcode" onclick="                                                             document.getElementById('problemType').style.display = 'none';                                                             document.getElementById('problemThanks').style.display = '';                                                             SendFeedback('problem-needcode',window.location.href,0);                                                             document.getElementById('problemFormDescription').value='Needs code samples.';                                                             document.getElementById('problemNeedCodeForm').style.display = ''                                                         ">This page needs code samples</a></li>
+<li><a name="code" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-brokencode',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Code samples do not work.';                                                         document.getElementById('problemCodeForm').style.display = ''                                                         ">Code samples do not work</a></li>
+<li><a name="missing" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-missing',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Missing information';                                                         document.getElementById('problemMissingForm').style.display = ''                                                         ">Information is missing</a></li>
+<li><a name="incorrect" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-incorrect',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Incorrect information';                                                         document.getElementById('problemIncorrectForm').style.display = ''                                                         ">Information is incorrect</a></li>
+<li><a name="unclear" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-unclear',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Unclear or confusing information';                                                         document.getElementById('problemUnclearForm').style.display = ''                                                         ">Information is unclear or confusing</a></li>
+<li><a name="language" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-language',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Spelling or grammar error';                                                         document.getElementById('problemLanguageForm').style.display = ''                                                         ">There is a spelling/grammar error on this page</a></li>
+<li><a name="other" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-other',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='This page has a problem';                                                         document.getElementById('problemOtherForm').style.display = ''                                                         ">Something else</a></li>
+</ul>
+<p><known_issues><p>Is something described here not working as you expect it to? It might be a <b>Known Issue</b>. Please check with the Issue Tracker at <a href="https://issuetracker.unity3d.com">issuetracker.unity3d.com</a>.</p></known_issues></p>
+</p></div>
+<div id="problemThanks" style="display:none"><p>Thanks for letting us know! This page has been marked for review based on your feedback.<br><br>If you have time, you can provide more information to help us fix the problem faster.<br><br><a onclick="document.getElementById('problemMoreInfo').style.display = '';document.getElementById('problemThanks').style.display = 'none';">Provide more information</a><br>
+</p></div>
+<div id="problemMoreInfo" style="display:none">
+<p id="problemNeedCodeForm" style="display:none">You've told us this page needs code samples. If you'd like to help us further, you could provide a code sample, or tell us about what kind of code sample you'd like to see:</p>
+<p id="problemCodeForm" style="display:none">You've told us there are code samples on this page which don't work. If you know how to fix it, or have something better we could use instead, please let us know:</p>
+<p id="problemMissingForm" style="display:none">You've told us there is information missing from this page. Please tell us more about what's missing:</p>
+<p id="problemIncorrectForm" style="display:none">You've told us there is incorrect information on this page. If you know what we should change to make it correct, please tell us:</p>
+<p id="problemUnclearForm" style="display:none">You've told us this page has unclear or confusing information. Please tell us more about what you found unclear or confusing, or let us know how we could make it clearer:</p>
+<p id="problemLanguageForm" style="display:none">You've told us there is a spelling or grammar error on this page. Please tell us what's wrong:</p>
+<p id="problemOtherForm" style="display:none">You've told us this page has a problem. Please tell us more about what's wrong:</p>
+<form>
+<textarea id="problemFormSuggestionField" cols="40" rows="5"></textarea><input type="hidden" id="problemFormDescription"><input type="submit" id="problemFormDescriptionSubmit" value="Submit" onclick="                                             document.getElementById('problemMoreInfo').style.display = 'none';                                             document.getElementById('problemMoreInfoThanks').style.display = '';                                             return false;                                             ">
+</form>
+</div>
+<div id="problemMoreInfoThanks" style="display:none"><p>Thanks for helping to make the Unity documentation better!</p></div>
+<script>
+
+                                            var ratecontent = document.querySelector('#ratecontent'); // target element
+                                            var currentRating = 0; // initial rating
+                                            var maxRating= 5; // max rating
+
+                                            // callback to run after setting the rating
+                                            var callback = function(rating) {
+                                                document.getElementById('ratingThanks').style.display = '';
+                                                document.getElementById('ratecontent').style.display = 'none';
+                                                document.getElementById('rating').style.display = 'none';
+                                                SendFeedback("rating",window.location.href,rating);
+                                            };
+
+                                            // rating instance
+                                            var myRating = rating(ratecontent, currentRating, maxRating, callback);
+                                        </script>
+</div>
+<div class="nextprev clear">
+<div class="icon tt left mr1" data-distance="-40|-30|top">
+<span class="prev"><a href="class-FixedJoint2D.html"></a></span><div class="tip">Fixed Joint 2D</div>
+</div>
+<div class="icon tt right" data-distance="-40|-30|top">
+<span class="next"><a href="class-HingeJoint2D.html"></a></span><div class="tip">Hinge Joint 2D</div>
+</div>
+</div>
+</div>
+</body></html>

@@ -1,0 +1,583 @@
+<html><head><title>html模版</title></head><body>Unity - Manual: Android Player Settings</br>
+<div class="breadcrumbs clear"><ul>
+<li><a href="UnityManual.html">Unity User Manual (2018.1 beta)</a></li>
+<li><a href="PlatformSpecific.html">Platform-specific</a></li>
+<li><a href="android.html">Android</a></li>
+<li>Android Player Settings</li>
+</ul></div>
+<div class="mb20"><div class="nextprev clear">
+<div class="icon tt left mr1" data-distance="-40|-30|top">
+<span class="prev"><a href="Android-SinglePassStereoRendering.html"></a></span><div class="tip">Single-Pass Stereo Rendering for Android</div>
+</div>
+<div class="icon tt right" data-distance="-40|-30|top">
+<span class="next"><a href="class-TextureImporterAndroid.html"></a></span><div class="tip">Android 2D Textures Overrides</div>
+</div>
+</div></div>
+<div class="otherversionswrapper" onmouseover="setOtherVersionsDisplay(true)" onmouseout="setOtherVersionsDisplay(false)">
+<a>Other Versions</a><div class="otherversionscontent" id="OtherVersionsContent" style="display: none;">Cannot access other versions offline!</div>
+</div>
+<div class="scrollToFeedback"><a id="scrollToFeedback">Leave feedback</a></div>
+<h1>Android Player Settings</h1>
+<!--BeginSwitchLink--><!--EndSwitchLink-->
+<div class="clear"></div>
+
+<p>This page details the <strong>Player Settings</strong> specific to Android. For a description of the general Player Settings, see documentation on <a href="class-PlayerSettings.html">PlayerSettings</a>.</p>
+
+<h2>Resolution And Presentation</h2>
+
+<figure>
+<img src="../uploads/Main/PlayerSetAndroidResPres.png" alt="The Resolution and Presentation section of the Android PlayerSettings window">
+<figcaption>The <strong>Resolution and Presentation</strong> section of the Android PlayerSettings window</figcaption>
+</figure>
+
+<table>
+<colgroup>
+<col style="text-align:left;">
+<col style="text-align:left;">
+</colgroup>
+
+<thead>
+<tr>
+	<th style="text-align:left;"><strong><em>Property:</em></strong></th>
+	<th style="text-align:left;"><strong><em>Function:</em></strong></th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+	<td style="text-align:left;" colspan="2"><strong>Orientation</strong></td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>Default Orientation</strong></td>
+	<td style="text-align:left;">Set the application’s screen orientation.</td>
+</tr>
+<tr>
+	<td style="text-align:left;">    Portrait</td>
+	<td style="text-align:left;">Orient the screen so that the device’s Home button is at the bottom.</td>
+</tr>
+<tr>
+	<td style="text-align:left;">    Portrait Upside Down</td>
+	<td style="text-align:left;">Orient the screen so that the device’s Home button is at the top.</td>
+</tr>
+<tr>
+	<td style="text-align:left;">    Landscape Left</td>
+	<td style="text-align:left;">Orient the screen so that the device’s Home button is on the right-hand side.</td>
+</tr>
+<tr>
+	<td style="text-align:left;">    Landscape right</td>
+	<td style="text-align:left;">Orient the screen so that the device’s Home button is on the left-hand side.</td>
+</tr>
+<tr>
+	<td style="text-align:left;" colspan="2">
+<strong>Allowed Orientations for Auto Rotation</strong> <br>(Only visible when <strong>Default Orientation</strong> is set to <strong>Auto Rotation</strong>)</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>Portrait</strong></td>
+	<td style="text-align:left;">Allow portrait orientation.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>Portrait Upside Down</strong></td>
+	<td style="text-align:left;">Allow portrait upside-down orientation.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>Landscape Right</strong></td>
+	<td style="text-align:left;">Allow landscape right orientation (home button is on the left side).</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>Landscape Left</strong></td>
+	<td style="text-align:left;">Allow landscape left orientation (home button is on the right side).</td>
+</tr>
+<tr>
+	<td style="text-align:left;" colspan="2"><strong>Other</strong></td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>Use 32-bit Display Buffer</strong></td>
+	<td style="text-align:left;">Specifies if the Display Buffer should be created to hold 32-bit color values (16-bit by default). Use it if you see banding, or need alpha in your <a href="PostProcessingOverview.html">post-processed effects</a>, because they create <a href="class-RenderTexture.html">Render Textures</a> in the same format as the Display Buffer.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>Disable Depth and Stencil</strong></td>
+	<td style="text-align:left;">Tick this checkbox to disable the depth and stencil buffers.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>Show Loading Indicator</strong></td>
+	<td style="text-align:left;">The type of loading progress indicator that should be shown. Options are <strong>Don’t Show</strong>, <strong>Large</strong>, <strong>Inversed Large</strong>, <strong>Small</strong> and <strong>Inversed Small</strong>.</td>
+</tr>
+</tbody>
+</table>
+
+<h2>Icon</h2>
+
+<figure>
+<img src="../uploads/Main/PlayerSetAndroidIcon.png" alt="The Icon section of the Android PlayerSettings window">
+<figcaption>The <strong>Icon</strong> section of the Android PlayerSettings window</figcaption>
+</figure>
+
+<table>
+<colgroup>
+<col style="text-align:left;">
+<col style="text-align:left;">
+</colgroup>
+
+<thead>
+<tr>
+	<th style="text-align:left;"><strong><em>Property:</em></strong></th>
+	<th style="text-align:left;"><strong><em>Function:</em></strong></th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+	<td style="text-align:left;"><strong>Override for Android</strong></td>
+	<td style="text-align:left;">Check to override the default icon with a custom one for Android. Drag the various sizes of icon images into the appropriate squares.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>Enable Android Banner</strong></td>
+	<td style="text-align:left;">Enables a custom banner for Android TV builds.</td>
+</tr>
+</tbody>
+</table>
+
+<h2>Splash Image</h2>
+
+<figure>
+<img src="../uploads/Main/PlayerSetAndroidSplash.png" alt="">
+</figure>
+
+<table>
+<colgroup>
+<col style="text-align:left;">
+<col style="text-align:left;">
+</colgroup>
+
+<thead>
+<tr>
+	<th style="text-align:left;"><strong><em>Property:</em></strong></th>
+	<th style="text-align:left;"><strong><em>Function:</em></strong></th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+	<td style="text-align:left;"><strong>Virtual Reality Splash Screen</strong></td>
+	<td style="text-align:left;">Specify the texture that should be used for the Android splash screen on a Virtual Reality application.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>Android Splash Screen</strong></td>
+	<td style="text-align:left;">Specify the texture that should be used for the Android splash screen. The standard size for the splash screen image is 320x480.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>Splash Scaling</strong></td>
+	<td style="text-align:left;">Specify how the splash image is scaled to fit the device’s screen. The options are <strong>Center (only scale down)</strong>, <strong>Scale to Fit (letter-boxed)</strong> and <strong>Scale to Fill (cropped)</strong>.</td>
+</tr>
+</tbody>
+</table>
+
+<p>See also <a href="class-PlayerSettingsSplashScreen.html">Unity Splash Screen</a> settings.</p>
+
+<h2>Other Settings</h2>
+
+<figure>
+<img src="../uploads/Main/PlayerSetAndroidRender.png" alt="The Rendering section of the Android PlayerSettings window">
+<figcaption>The <strong>Rendering</strong> section of the Android PlayerSettings window</figcaption>
+</figure>
+
+<table>
+<colgroup>
+<col style="text-align:left;">
+<col style="text-align:left;">
+</colgroup>
+
+<thead>
+<tr>
+	<th style="text-align:left;"><strong><em>Property:</em></strong></th>
+	<th style="text-align:left;"><strong><em>Function:</em></strong></th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+	<td style="text-align:left;" colspan="2"><strong>Rendering</strong></td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>Color Space</strong></td>
+	<td style="text-align:left;">The Color Space used for your application. See <a href="LinearLighting.html">Linear Lighting</a> for more information.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>Auto Graphics API</strong></td>
+	<td style="text-align:left;">Check this to make Unity auto-select a graphics API from the Open Graphics Library (<a href="https://developer.android.com/guide/topics/graphics/opengl.html">OpenGL</a>). When checked, Unity will try GLES3.1, and fall back to GLES3 or GLES2 if the device does not support GLES3.1. When unchecked, you can manually pick and reorder the graphics APIs. If only GLES3 is in the list, two additional checkboxes; <strong>Require ES3.1</strong> and <strong>Require ES3.1+AEP</strong> appear, allowing you to force the corresponding graphics API. <br><br> <em>Important</em>: GLES3/GLES3.1/AEP requirement is added to your Android manifest only if GLES2 is not in the list, <em>and</em> Minimum API Level is set to JellyBean (API level 18) or higher. In this case only, your application won’t show up on unsupported devices in Google Play Store.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>Multithreaded Rendering</strong></td>
+	<td style="text-align:left;">Check this box to move graphics API calls from Unity’s main thread to a separate worker thread. This can help to improve performance in applications that have high CPU usage on the main thread.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>Static Batching</strong></td>
+	<td style="text-align:left;">Check this box to use <a href="DrawCallBatching.html">Static batching</a> on your build (enabled by default).</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>Dynamic Batching</strong></td>
+	<td style="text-align:left;">Check this box to use <a href="DrawCallBatching.html">Dynamic Batching</a> on your build (enabled by default).</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>GPU Skinning</strong></td>
+	<td style="text-align:left;">Check this box to enable OpenGL ES 3 GPU skinning. To learn more about GPU skinning, see the <a href="https://en.wikipedia.org/wiki/Skeletal_animation">Wikipedia page on skeletal animation</a>.<br><br> Note that this property only supports VR apps, and only works if the Virtual Reality Supported checkbox is ticked.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>Graphics Jobs (Experimental)</strong></td>
+	<td style="text-align:left;">Check this box to instruct Unity to offload graphics tasks (render loops) to worker threads running on other CPU cores. This is intended to reduce the time spent in <a href="../ScriptReference/Camera.Render.html">camera.render</a> on the main thread. This feature is experimental. it may not deliver a performance improvement for your project, and may cause instabilities. <br><br>Graphics Jobs are currently only supported when using <a href="https://www.khronos.org/vulkan/">Vulkan</a> and the checkbox has no effect when using <a href="https://developer.android.com/guide/topics/graphics/opengl.html">OpenGL</a> ES.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>Virtual Reality Supported</strong></td>
+	<td style="text-align:left;">Enable this if your application is a virtual reality application, then add the required VR SDKs to the list.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>Protect Graphics Memory</strong></td>
+	<td style="text-align:left;">Check this box to force the graphics buffer to be displayed only through a hardware-protected path. Works only on devices which support it.</td>
+</tr>
+</tbody>
+</table>
+
+<figure>
+<img src="../uploads/Main/PlayerSetAndroidIdentification.png" alt="The Identification section of the Android PlayerSettings window">
+<figcaption>The Identification section of the Android PlayerSettings window</figcaption>
+</figure>
+
+<table>
+<colgroup>
+<col style="text-align:left;">
+<col style="text-align:left;">
+</colgroup>
+
+<thead>
+<tr>
+	<th style="text-align:left;" colspan="2"><strong>Identification</strong></th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+	<td style="text-align:left;"><strong>Bundle Identifier</strong></td>
+	<td style="text-align:left;">The unique application ID, used to uniquely identify your app on the device and in Google Play Store. (Shared between iOS and Android.)</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>Version</strong></td>
+	<td style="text-align:left;">Specifies the build version number of the bundle, which identifies an iteration (released or unreleased) of the bundle. The version is specified in the common format of a string containing numbers separated by dots (eg, 4.3.2). (Shared between iOS and Android.)</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>Bundle Version Code</strong></td>
+	<td style="text-align:left;">An internal version number. This number is used only to determine whether one version is more recent than another, with higher numbers indicating more recent versions. This is not the version number shown to users; that number is set by the <code>versionName</code> attribute. The value must be set as an integer, such as “100”. You can define it however you want, as long as each successive version has a higher number. <br><br>For example, it could be a build number. Or you could translate a version number in “x.y” format to an integer by encoding the “x” and “y” separately in the lower and upper 16 bits. Or you could simply increase the number by one each time a new version is released.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>Minimum API Level</strong></td>
+	<td style="text-align:left;">Minimum Android version (API level) required to run the application.</td>
+</tr>
+</tbody>
+</table>
+
+<figure>
+<img src="../uploads/Main/PlayerSetAndroidConfiguration.png" alt="The Configuration section of the Android PlayerSettings window">
+<figcaption>The Configuration section of the Android PlayerSettings window</figcaption>
+</figure>
+
+<table>
+<colgroup>
+<col style="text-align:left;">
+<col style="text-align:left;">
+</colgroup>
+
+<thead>
+<tr>
+	<th style="text-align:left;" colspan="2"><strong>Configuration</strong></th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+	<td style="text-align:left;"><strong>Scripting Backend</strong></td>
+	<td style="text-align:left;">Select your scripting backend. There are two options: IL2CPP or Mono2x. The default is Mono2x.</td>
+</tr>
+<tr>
+	<td style="text-align:left;">        <strong>IL2CPP</strong>
+</td>
+	<td style="text-align:left;">Choose this to set ILC2PP as your scripting backend. See Unity documentation on <a href="IL2CPP.html">IL2CPP</a> for more information.</td>
+</tr>
+<tr>
+	<td style="text-align:left;">        <strong>Mono2x</strong>
+</td>
+	<td style="text-align:left;">Choose this to set Mono2x as your scripting backend. This is the default option. See <a href="http://www.mono-project.com/docs/">Mono’s documentation</a> for more information.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>API Compatibility Level</strong></td>
+	<td style="text-align:left;">Specifies active .NET API profile. See below.<br><br>.Net 2.0:NET 2.0 libraries. Maximum .NET compatibility, biggest file sizes <br><br>.Net 2.0 Subset: Subset of full .NET compatibility, smaller file sizes</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>Mute Other Audio Sources)</strong></td>
+	<td style="text-align:left;">Stops or allows audio from other applications to play in the background while your Unity application is running. Enable this and your Unity application stops audio from background applications, disable this and audio from background applications continue to play alongside your Unity application.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>Disable HW Statistics</strong></td>
+	<td style="text-align:left;">By default, Unity Android applications send anonymous HW statistics to Unity. This provides you with aggregated information to help you make decisions as a developer. Find these statistics at <a href="http://stats.unity3d.com/.">http://stats.unity3d.com/</a>. Check this option to stop Unity sending these statistics.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>Device Filter</strong></td>
+	<td style="text-align:left;">Allows the application to run on specified CPUs.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>Install Location</strong></td>
+	<td style="text-align:left;">Specifies application install location on the device (for detailed information, refer to <a href="http://developer.android.com/guide/appendix/install-location.html">Android Developer documentation on install locations</a>.</td>
+</tr>
+<tr>
+	<td style="text-align:left;">        <strong>Automatic</strong>
+</td>
+	<td style="text-align:left;">Let the operating system decide. User will be able to move the app back and forth.</td>
+</tr>
+<tr>
+	<td style="text-align:left;">        <strong>Prefer External</strong>
+</td>
+	<td style="text-align:left;">Install the application to external storage (SD card) if possible. The operating system does not guarantee it; if not possible, the app will be installed to internal memory.</td>
+</tr>
+<tr>
+	<td style="text-align:left;">        <strong>Force Internal</strong>
+</td>
+	<td style="text-align:left;">Force the application to be installed to internal memory. The user will be unable to move the app to external storage.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>Internet Access</strong></td>
+	<td style="text-align:left;">When set to <strong>Require</strong>, this adds the networking (<code>INTERNET</code>) permission to the <a href="android-manifest.html">Android manifest</a>, even if you are not using any networking APIs. This is enabled by default for development builds.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>Write Access</strong></td>
+	<td style="text-align:left;">When set to <strong>External(SDCard)</strong> , enables write access to the external storage such as the SD card and add a corresponding permission to the Android manifest. Enabled by default for development builds.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>Sustained Performance Mode</strong></td>
+	<td style="text-align:left;">Set a predictable and consistent level of device performance over longer periods of time, without thermal throttling. Overall, performance might be lower when this setting is enabled. Based on the <a href="https://developer.android.com/about/versions/nougat/android-7.0.html#sustained_performance_api">Android Sustained Performance API</a>.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>Android TV Compatibility</strong></td>
+	<td style="text-align:left;">Check this box to mark the application as Android TV compatible.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>Android Game</strong></td>
+	<td style="text-align:left;">Android TV - Check this box to mark the output package (APK) will as a game rather than a regular application.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>Android Gamepad Support Level</strong></td>
+	<td style="text-align:left;">Android TV - This option allows you to define the level of support your application offers for a gamepad. The options are <strong>Works with D-Pad</strong>, <strong>Supports Gamepad</strong> and <strong>Requires Gamepad</strong>.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>Scripting Define Symbols</strong></td>
+	<td style="text-align:left;">Custom compilation flags (see the <a href="PlatformDependentCompilation.html">platform dependent compilation</a> page for details).</td>
+</tr>
+</tbody>
+</table>
+
+<figure>
+<img src="../uploads/Main/PlayerSetAndroidOptimization.png" alt="The Optimization section of the Android PlayerSettings window">
+<figcaption>The Optimization section of the Android PlayerSettings window</figcaption>
+</figure>
+
+<table>
+<colgroup>
+<col style="text-align:left;">
+<col style="text-align:left;">
+</colgroup>
+
+<thead>
+<tr>
+	<th style="text-align:left;" colspan="2"><strong>Optimization</strong></th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+	<td style="text-align:left;"><strong>Prebake Collision Meshes</strong></td>
+	<td style="text-align:left;">Should collision data be added to meshes at build time?</td>
+</tr>
+<tr>
+	<td style="text-align:left;">
+<em>Keep Loaded Shaders Alive<strong>|Check this box to prevent shaders from being unloaded.|
+|</strong>Preload Shaders<strong>|Should shaders be loaded when the application starts up? |
+|</strong>Preloaded Assets<strong>|An array of assets to be loaded when the application starts up. |
+|</strong>Stripping Level</em>_</td>
+	<td style="text-align:left;">Options to strip out scripting features to reduce the output package (APK) size (This setting is shared between iOS and Android platforms, and is available with the Mono scripting backend only.)</td>
+</tr>
+<tr>
+	<td style="text-align:left;">        <strong>Disabled</strong>
+</td>
+	<td style="text-align:left;">No reduction is done.</td>
+</tr>
+<tr>
+	<td style="text-align:left;">        <strong>Strip Assemblies</strong>
+</td>
+	<td style="text-align:left;">Level 1 size reduction.</td>
+</tr>
+<tr>
+	<td style="text-align:left;">        <strong>Strip ByteCode (iOS only)</strong>
+</td>
+	<td style="text-align:left;">Level 2 size reduction (includes reductions from Level 1).</td>
+</tr>
+<tr>
+	<td style="text-align:left;">        <strong>Use micro mscorlib</strong>
+</td>
+	<td style="text-align:left;">Level 3 size reduction (includes reductions from Levels 1 and 2).</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>Strip Engine Code</strong></td>
+	<td style="text-align:left;">Enable code stripping. (This setting is only available with the <a href="https://docs.unity3d.com/Manual/IL2CPP.html">IL2CPP</a> scripting backend.)</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>Enable Internal profiler</strong></td>
+	<td style="text-align:left;">Check this box if you want to get the profiler data from your device in the Android SDK’s <a href="https://developer.android.com/studio/command-line/logcat.html">adblogcat</a> output while testing your projects (only available in development builds).</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>Vertex Compression</strong></td>
+	<td style="text-align:left;">Select which vertex channels should be compressed. Compression can save memory and bandwidth but precision will be lower.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>Optimize Mesh Data</strong></td>
+	<td style="text-align:left;">Remove any data from meshes that is not required by the material applied to them (tangents, normals, colors, UV).</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>Logging</strong></td>
+	<td style="text-align:left;">Enable different logging types (see the <a href="../ScriptReference/StackTraceLogType.html">StackTraceLogType</a> page for details).</td>
+</tr>
+</tbody>
+</table>
+
+<h3>API Compatibility Level</h3>
+
+<p>You can choose your Mono API compatibility level for all targets. Sometimes a 3rd party .NET DLL uses the APIs that are not included into the .NET compatibility level you would like to use. In order to investigate such cases, get a reflection tool like ILSpy on Windows, and check the dependencies of the DLLs.</p>
+
+<h2>Publishing Settings</h2>
+
+<figure>
+<img src="../uploads/Main/PlayerSetAndroidPublish.png" alt="">
+</figure>
+
+<table>
+<colgroup>
+<col style="text-align:left;">
+<col style="text-align:left;">
+</colgroup>
+
+<thead>
+<tr>
+	<th style="text-align:left;"><strong><em>Property:</em></strong></th>
+	<th style="text-align:left;"><strong><em>Function:</em></strong></th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+	<td style="text-align:left;" colspan="2"><strong><a href="https://developer.android.com/training/articles/keystore.html">Keystore</a></strong></td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>Use Existing Keystore / Create New Keystore</strong></td>
+	<td style="text-align:left;">Use this to choose whether to create a new Keystore or use an existing one. You can use the <strong>Browse Keystore</strong> button to select a Keystore from the filesystem.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>Keystore password</strong></td>
+	<td style="text-align:left;">Create a password for the Keystore.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>Confirm password</strong></td>
+	<td style="text-align:left;">Enter the same password you did in <strong>Keystore password</strong> (only enabled if the Create New Keystore option is selected).</td>
+</tr>
+<tr>
+	<td style="text-align:left;" colspan="2"><strong>Key</strong></td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>Alias</strong></td>
+	<td style="text-align:left;">Key alias.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>Password</strong></td>
+	<td style="text-align:left;">Password for key alias.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>Split Application Binary</strong></td>
+	<td style="text-align:left;">Enable this option to split your output package into main (APK) and expansion (OBB) packages. This is required to publish applications larger than 100 MBytes to Goolge Play Store.</td>
+</tr>
+</tbody>
+</table>
+
+<p>Note that for security reasons, Unity does not save the <strong>Keystore</strong> password or the <strong>Key</strong> password. Also, note that the signing must be done from Unity’s <a href="https://docs.unity3d.com/Manual/class-PlayerSettings.html">Playersettings</a>, <a href="http://docs.oracle.com/javase/7/docs/technotes/tools/windows/jarsigner.html">jarsigner</a> does not work. The unsigned debug keystore is located by default at ~/.android/debug.keystore on MacOS and %USERPROFILE%.android\debug.keystore on Windows.</p>
+
+<h2>Details</h2>
+
+<h3>Bundle Identifier</h3>
+
+<p>The <strong>Bundle Identifier</strong> string is the unique name of your application when published to Google Play Store and installed on the device. The basic structure of the identifier is <strong>com.CompanyName.GameName</strong>, and can be chosen arbitrarily. In Unity this field is shared with the iOS Player Settings for convenience.</p>
+
+<h3>Stripping Level</h3>
+
+<p>Most games don’t use all the functionality of the DLLs included by default. With this option, you can strip out unused parts to reduce the size of the output package (APK).</p>
+
+<hr>
+
+<ul>
+<li><p><span class="page-edit">2017–05–18 Page published with limited <a href="DocumentationEditorialReview.html">editorial review</a>
+</span></p></li>
+<li><p><span class="page-history">Updated features in 5.5</span></p></li>
+<li><p><span class="page-history"><strong>Sustained Performance Mode</strong> added in 2017.3</span></p></li>
+</ul>
+<div class="feedbackbox" id="feedbackbox">
+<div id="rating"><p>Did you find this page useful? Please give it a rating:<br><div id="ratecontent" class="c-rating"></div>
+</p></div>
+<div id="ratingThanks" style="display:none"><p>Thanks for rating this page!</p></div>
+<div id="problem"><p><a name="problem" onclick="document.getElementById('problemType').style.display = '';document.getElementById('problem').style.display = 'none';">Report a problem on this page</a></p></div>
+<div id="problemType" style="display:none"><p>What kind of problem would you like to report?<ul type="problems">
+<li><a name="needcode" onclick="                                                             document.getElementById('problemType').style.display = 'none';                                                             document.getElementById('problemThanks').style.display = '';                                                             SendFeedback('problem-needcode',window.location.href,0);                                                             document.getElementById('problemFormDescription').value='Needs code samples.';                                                             document.getElementById('problemNeedCodeForm').style.display = ''                                                         ">This page needs code samples</a></li>
+<li><a name="code" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-brokencode',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Code samples do not work.';                                                         document.getElementById('problemCodeForm').style.display = ''                                                         ">Code samples do not work</a></li>
+<li><a name="missing" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-missing',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Missing information';                                                         document.getElementById('problemMissingForm').style.display = ''                                                         ">Information is missing</a></li>
+<li><a name="incorrect" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-incorrect',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Incorrect information';                                                         document.getElementById('problemIncorrectForm').style.display = ''                                                         ">Information is incorrect</a></li>
+<li><a name="unclear" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-unclear',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Unclear or confusing information';                                                         document.getElementById('problemUnclearForm').style.display = ''                                                         ">Information is unclear or confusing</a></li>
+<li><a name="language" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-language',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Spelling or grammar error';                                                         document.getElementById('problemLanguageForm').style.display = ''                                                         ">There is a spelling/grammar error on this page</a></li>
+<li><a name="other" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-other',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='This page has a problem';                                                         document.getElementById('problemOtherForm').style.display = ''                                                         ">Something else</a></li>
+</ul>
+<p><known_issues><p>Is something described here not working as you expect it to? It might be a <b>Known Issue</b>. Please check with the Issue Tracker at <a href="https://issuetracker.unity3d.com">issuetracker.unity3d.com</a>.</p></known_issues></p>
+</p></div>
+<div id="problemThanks" style="display:none"><p>Thanks for letting us know! This page has been marked for review based on your feedback.<br><br>If you have time, you can provide more information to help us fix the problem faster.<br><br><a onclick="document.getElementById('problemMoreInfo').style.display = '';document.getElementById('problemThanks').style.display = 'none';">Provide more information</a><br>
+</p></div>
+<div id="problemMoreInfo" style="display:none">
+<p id="problemNeedCodeForm" style="display:none">You've told us this page needs code samples. If you'd like to help us further, you could provide a code sample, or tell us about what kind of code sample you'd like to see:</p>
+<p id="problemCodeForm" style="display:none">You've told us there are code samples on this page which don't work. If you know how to fix it, or have something better we could use instead, please let us know:</p>
+<p id="problemMissingForm" style="display:none">You've told us there is information missing from this page. Please tell us more about what's missing:</p>
+<p id="problemIncorrectForm" style="display:none">You've told us there is incorrect information on this page. If you know what we should change to make it correct, please tell us:</p>
+<p id="problemUnclearForm" style="display:none">You've told us this page has unclear or confusing information. Please tell us more about what you found unclear or confusing, or let us know how we could make it clearer:</p>
+<p id="problemLanguageForm" style="display:none">You've told us there is a spelling or grammar error on this page. Please tell us what's wrong:</p>
+<p id="problemOtherForm" style="display:none">You've told us this page has a problem. Please tell us more about what's wrong:</p>
+<form>
+<textarea id="problemFormSuggestionField" cols="40" rows="5"></textarea><input type="hidden" id="problemFormDescription"><input type="submit" id="problemFormDescriptionSubmit" value="Submit" onclick="                                             document.getElementById('problemMoreInfo').style.display = 'none';                                             document.getElementById('problemMoreInfoThanks').style.display = '';                                             return false;                                             ">
+</form>
+</div>
+<div id="problemMoreInfoThanks" style="display:none"><p>Thanks for helping to make the Unity documentation better!</p></div>
+<script>
+
+                                            var ratecontent = document.querySelector('#ratecontent'); // target element
+                                            var currentRating = 0; // initial rating
+                                            var maxRating= 5; // max rating
+
+                                            // callback to run after setting the rating
+                                            var callback = function(rating) {
+                                                document.getElementById('ratingThanks').style.display = '';
+                                                document.getElementById('ratecontent').style.display = 'none';
+                                                document.getElementById('rating').style.display = 'none';
+                                                SendFeedback("rating",window.location.href,rating);
+                                            };
+
+                                            // rating instance
+                                            var myRating = rating(ratecontent, currentRating, maxRating, callback);
+                                        </script>
+</div>
+<div class="nextprev clear">
+<div class="icon tt left mr1" data-distance="-40|-30|top">
+<span class="prev"><a href="Android-SinglePassStereoRendering.html"></a></span><div class="tip">Single-Pass Stereo Rendering for Android</div>
+</div>
+<div class="icon tt right" data-distance="-40|-30|top">
+<span class="next"><a href="class-TextureImporterAndroid.html"></a></span><div class="tip">Android 2D Textures Overrides</div>
+</div>
+</div>
+</div>
+</body></html>

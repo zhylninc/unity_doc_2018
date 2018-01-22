@@ -1,0 +1,182 @@
+<html><head><title>html模版</title></head><body>Unity - Manual:  Troubleshooting</br>
+<div class="breadcrumbs clear"><ul>
+<li><a href="UnityManual.html">Unity User Manual (2018.1 beta)</a></li>
+<li><a href="UnityOverview.html">Working in Unity</a></li>
+<li><a href="AdvancedDevelopment.html">Advanced Development</a></li>
+<li><a href="AssetBundlesIntro.html"> AssetBundles</a></li>
+<li> Troubleshooting</li>
+</ul></div>
+<div class="mb20"><div class="nextprev clear">
+<div class="icon tt left mr1" data-distance="-40|-30|top">
+<span class="prev"><a href="AssetBundles-Patching.html"></a></span><div class="tip"> Patching with AssetBundles</div>
+</div>
+<div class="icon tt right" data-distance="-40|-30|top">
+<span class="next"><a href="AssetBundles-Browser.html"></a></span><div class="tip"> Unity Asset Bundle Browser tool</div>
+</div>
+</div></div>
+<div class="otherversionswrapper" onmouseover="setOtherVersionsDisplay(true)" onmouseout="setOtherVersionsDisplay(false)">
+<a>Other Versions</a><div class="otherversionscontent" id="OtherVersionsContent" style="display: none;">Cannot access other versions offline!</div>
+</div>
+<div class="scrollToFeedback"><a id="scrollToFeedback">Leave feedback</a></div>
+<h1>Troubleshooting</h1>
+<!--BeginSwitchLink--><!--EndSwitchLink-->
+<div class="clear"></div>
+
+<p>This section describes several problems that commonly appear in projects using AssetBundles.</p>
+
+<h2>Asset Duplication</h2>
+
+<p>Unity 5’s AssetBundle system will discover all dependencies of an Object when the Object is built into an AssetBundle. This is done using the Asset Database. This dependency information is used to determine the set of Objects that will be included in an AssetBundle.</p>
+
+<p>Objects that are explicitly assigned to an AssetBundle will only be built into that AssetBundle. An Object is “explicitly assigned” when that Object’s AssetImporter has its assetBundleName property set to a non-empty string.</p>
+
+<p>Any Object that is not explicitly assigned in an AssetBundle will be included in all AssetBundles that contain 1 or more Objects that reference the untagged Object.</p>
+
+<p>If two different Objects are assigned to two different AssetBundles, but both have references to a common dependency Object, then that dependency Object will be copied into both AssetBundles. The duplicated dependency will also be instanced, meaning that the two copies of the dependency Object will be considered different Objects with a different identifiers. This will increase the total size of the application’s AssetBundles. This will also cause two different copies of the Object to be loaded into memory if the application loads both of its parents.</p>
+
+<p>There are several ways to address this problem:</p>
+
+<ol>
+<li>
+<p>Ensure that Objects built into different AssetBundles do not share dependencies. Any Objects which do share dependencies can be placed into the same AssetBundle without duplicating their dependencies.</p>
+
+<ul>
+<li>This method usually is not viable for projects with many shared dependencies. It can produce monolithic AssetBundles that must be rebuilt and re-downloaded too frequently to be convenient or efficient.</li>
+</ul>
+</li>
+<li>
+<p>Segment AssetBundles so that no two AssetBundles that share a dependency will be loaded at the same time.</p>
+
+<ul>
+<li>This method may work for certain types of projects, such as level-based games. However, it still unnecessarily increases the size of the project’s AssetBundles, and increases both build times and loading times.</li>
+</ul>
+</li>
+<li><p>Ensure that all dependency assets are built into their own AssetBundles. This entirely eliminates the risk of duplicated assets, but also introduces complexity. The application must track dependencies between AssetBundles, and ensure that the right AssetBundles are loaded before calling any AssetBundle.LoadAsset APIs.</p></li>
+</ol>
+
+<p>In Unity 5, Object dependencies are tracked via the AssetDatabase API, located in the UnityEditor namespace. As the namespace implies, this API is only available in the Unity Editor and not at runtime. AssetDatabase.GetDependencies can be used to locate all of the immediate dependencies of a specific Object or Asset. Note that these dependencies may have their own dependencies. Additionally, the AssetImporter API can be used to query the AssetBundle to which any specific Object is assigned.</p>
+
+<p>By combining the AssetDatabase and AssetImporter APIs, it is possible to write an Editor script that ensures that all of an AssetBundle’s direct or indirect dependencies are assigned to AssetBundles, or that no two AssetBundles share dependencies that have not been assigned to an AssetBundle. Due to the memory cost of duplicating assets, it is recommended that all projects have such a script.</p>
+
+<h2>Sprite Atlas Duplication</h2>
+
+<p>The following sections describe a quirk of Unity 5’s asset dependency calculation code when used in conjunction with automatically-generated sprite atlases.</p>
+
+<p>Any automatically-generated sprite atlas will be assigned to the AssetBundle containing the Sprite Objects from which the sprite atlas was generated. If the sprite Objects are assigned to multiple AssetBundles, then the sprite atlas will not be assigned to an AssetBundle and will be duplicated. If the Sprite Objects are not assigned to an AssetBundle, then the sprite atlas will also not be assigned to an AssetBundle.</p>
+
+<p>To ensure that sprite atlases are not duplicated, check that all sprites tagged into the same sprite atlas are assigned to the same AssetBundle.</p>
+
+<p>Unity 5.2.2p3 and older</p>
+
+<p>Automatically-generated sprite atlases will never be assigned to an AssetBundle. Because of this, they will be included in any AssetBundles containing their constituent sprites and also any AssetBundles referencing their constituent sprites.</p>
+
+<p>Because of this problem, it is strongly recommended that all Unity 5 projects using Unity’s sprite packer upgrade to Unity 5.2.2p4, 5.3 or any newer version of Unity.</p>
+
+<p>For projects that cannot upgrade, there are two workarounds for this problem:</p>
+
+<ol>
+<li><p>Easy: Avoid using Unity’s built-in sprite packer. Sprite atlases generated by external tools will be normal Assets, and can be properly assigned to an AssetBundle.</p></li>
+<li>
+<p>Hard: Assign all Objects that use automatically atlased sprites to the same AssetBundle as the sprites.</p>
+
+<ul>
+<li><p>This will ensure that the generated sprite atlas is not seen as the indirect dependency of any other AssetBundles and will not be duplicated.</p></li>
+<li><p>This solution preserves the workflow of using Unity’s sprite packer, but it degrades developers’ ability to separate Assets into different AssetBundles, and forces the re-download of an entire sprite atlas when any data changes on any component referencing the atlas, even if the atlas itself is unchanged.</p></li>
+</ul>
+</li>
+</ol>
+
+<h2>Android Textures</h2>
+
+<p>Due to heavy device fragmentation in the Android ecosystem, it is often necessary to compress textures into several different formats. While all Android devices support ETC1, ETC1 does not support textures with alpha channels. Should an application not require OpenGL ES 2 support, the cleanest way to solve the problem is to use ETC2, which is supported by all Android OpenGL ES 3 devices.</p>
+
+<p>Most applications need to ship on older devices where ETC2 support is unavailable. One way to solve this problem is with Unity 5’s AssetBundle Variants. (Please see Unity’s Android optimization guide for details on other options.)</p>
+
+<p>To use AssetBundle Variants, all textures that cannot be cleanly compressed using ETC1 must be isolated into texture-only AssetBundles. Next, create sufficient variants of these AssetBundles to support the non-ETC2-capable slices of the Android ecosystem, using vendor-specific texture compression formats such as DXT5, PVRTC and ATITC. For each AssetBundle Variant, change the included textures’ TextureImporter settings to the compression format appropriate to the Variant.</p>
+
+<p>At runtime, support for the different texture compression formats can be detected using the <a href="http://docs.unity3d.com/ScriptReference/SystemInfo.SupportsTextureFormat.html?_ga=1.141687282.1751468213.1479139860">SystemInfo.SupportsTextureFormat</a> API. This information should be used to select and load the AssetBundle Variant containing textures compressed in a supported format.</p>
+
+<p>More information on Android texture compression formats can be found <a href="http://developer.android.com/guide/topics/graphics/opengl.html#textures">here</a>.</p>
+
+<h2>iOS File Handle Overuse</h2>
+
+<p>The issue described in the following section was fixed in Unity 5.3.2p2. Current versions of Unity are not affected by this issue.</p>
+
+<p>In versions prior to Unity 5.3.2p2, Unity would hold an open file handle to an AssetBundle the entire time that the AssetBundle is loaded. This is not a problem on most platforms. However, iOS limits the number of file handles a process may simultaneously have open to 255. If loading an AssetBundle causes this limit to be exceeded, the loading call will fail with a “Too Many Open File Handles” error.</p>
+
+<p>This was a common problem for projects trying to divide their content across many hundreds or thousands of AssetBundles.</p>
+
+<p>For projects unable to upgrade to a patched version of Unity, temporary solutions are:</p>
+
+<ul>
+<li>Reducing the number of AssetBundles in use by merging related AssetBundles</li>
+<li>Using AssetBundle.Unload(false) to close an AssetBundle’s file handle, and managing the loaded Objects’ lifecycles manually</li>
+</ul>
+
+<p><br></p>
+
+<hr>
+
+<ul>
+<li><span class="page-edit">2017–05–15 Page published with no <a href="DocumentationEditorialReview.html">editorial review</a>
+</span></li>
+</ul>
+<div class="feedbackbox" id="feedbackbox">
+<div id="rating"><p>Did you find this page useful? Please give it a rating:<br><div id="ratecontent" class="c-rating"></div>
+</p></div>
+<div id="ratingThanks" style="display:none"><p>Thanks for rating this page!</p></div>
+<div id="problem"><p><a name="problem" onclick="document.getElementById('problemType').style.display = '';document.getElementById('problem').style.display = 'none';">Report a problem on this page</a></p></div>
+<div id="problemType" style="display:none"><p>What kind of problem would you like to report?<ul type="problems">
+<li><a name="needcode" onclick="                                                             document.getElementById('problemType').style.display = 'none';                                                             document.getElementById('problemThanks').style.display = '';                                                             SendFeedback('problem-needcode',window.location.href,0);                                                             document.getElementById('problemFormDescription').value='Needs code samples.';                                                             document.getElementById('problemNeedCodeForm').style.display = ''                                                         ">This page needs code samples</a></li>
+<li><a name="code" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-brokencode',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Code samples do not work.';                                                         document.getElementById('problemCodeForm').style.display = ''                                                         ">Code samples do not work</a></li>
+<li><a name="missing" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-missing',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Missing information';                                                         document.getElementById('problemMissingForm').style.display = ''                                                         ">Information is missing</a></li>
+<li><a name="incorrect" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-incorrect',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Incorrect information';                                                         document.getElementById('problemIncorrectForm').style.display = ''                                                         ">Information is incorrect</a></li>
+<li><a name="unclear" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-unclear',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Unclear or confusing information';                                                         document.getElementById('problemUnclearForm').style.display = ''                                                         ">Information is unclear or confusing</a></li>
+<li><a name="language" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-language',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Spelling or grammar error';                                                         document.getElementById('problemLanguageForm').style.display = ''                                                         ">There is a spelling/grammar error on this page</a></li>
+<li><a name="other" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-other',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='This page has a problem';                                                         document.getElementById('problemOtherForm').style.display = ''                                                         ">Something else</a></li>
+</ul>
+<p><known_issues><p>Is something described here not working as you expect it to? It might be a <b>Known Issue</b>. Please check with the Issue Tracker at <a href="https://issuetracker.unity3d.com">issuetracker.unity3d.com</a>.</p></known_issues></p>
+</p></div>
+<div id="problemThanks" style="display:none"><p>Thanks for letting us know! This page has been marked for review based on your feedback.<br><br>If you have time, you can provide more information to help us fix the problem faster.<br><br><a onclick="document.getElementById('problemMoreInfo').style.display = '';document.getElementById('problemThanks').style.display = 'none';">Provide more information</a><br>
+</p></div>
+<div id="problemMoreInfo" style="display:none">
+<p id="problemNeedCodeForm" style="display:none">You've told us this page needs code samples. If you'd like to help us further, you could provide a code sample, or tell us about what kind of code sample you'd like to see:</p>
+<p id="problemCodeForm" style="display:none">You've told us there are code samples on this page which don't work. If you know how to fix it, or have something better we could use instead, please let us know:</p>
+<p id="problemMissingForm" style="display:none">You've told us there is information missing from this page. Please tell us more about what's missing:</p>
+<p id="problemIncorrectForm" style="display:none">You've told us there is incorrect information on this page. If you know what we should change to make it correct, please tell us:</p>
+<p id="problemUnclearForm" style="display:none">You've told us this page has unclear or confusing information. Please tell us more about what you found unclear or confusing, or let us know how we could make it clearer:</p>
+<p id="problemLanguageForm" style="display:none">You've told us there is a spelling or grammar error on this page. Please tell us what's wrong:</p>
+<p id="problemOtherForm" style="display:none">You've told us this page has a problem. Please tell us more about what's wrong:</p>
+<form>
+<textarea id="problemFormSuggestionField" cols="40" rows="5"></textarea><input type="hidden" id="problemFormDescription"><input type="submit" id="problemFormDescriptionSubmit" value="Submit" onclick="                                             document.getElementById('problemMoreInfo').style.display = 'none';                                             document.getElementById('problemMoreInfoThanks').style.display = '';                                             return false;                                             ">
+</form>
+</div>
+<div id="problemMoreInfoThanks" style="display:none"><p>Thanks for helping to make the Unity documentation better!</p></div>
+<script>
+
+                                            var ratecontent = document.querySelector('#ratecontent'); // target element
+                                            var currentRating = 0; // initial rating
+                                            var maxRating= 5; // max rating
+
+                                            // callback to run after setting the rating
+                                            var callback = function(rating) {
+                                                document.getElementById('ratingThanks').style.display = '';
+                                                document.getElementById('ratecontent').style.display = 'none';
+                                                document.getElementById('rating').style.display = 'none';
+                                                SendFeedback("rating",window.location.href,rating);
+                                            };
+
+                                            // rating instance
+                                            var myRating = rating(ratecontent, currentRating, maxRating, callback);
+                                        </script>
+</div>
+<div class="nextprev clear">
+<div class="icon tt left mr1" data-distance="-40|-30|top">
+<span class="prev"><a href="AssetBundles-Patching.html"></a></span><div class="tip"> Patching with AssetBundles</div>
+</div>
+<div class="icon tt right" data-distance="-40|-30|top">
+<span class="next"><a href="AssetBundles-Browser.html"></a></span><div class="tip"> Unity Asset Bundle Browser tool</div>
+</div>
+</div>
+</div>
+</body></html>

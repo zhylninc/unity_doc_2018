@@ -1,0 +1,151 @@
+<html><head><title>html模版</title></head><body>Unity - Manual: Building Off-Mesh Links Automatically</br>
+<div class="breadcrumbs clear"><ul>
+<li><a href="UnityManual.html">Unity User Manual (2018.1 beta)</a></li>
+<li><a href="Navigation.html">Navigation and Pathfinding</a></li>
+<li><a href="nav-Overview.html">Navigation Overview</a></li>
+<li>Building Off-Mesh Links Automatically</li>
+</ul></div>
+<div class="mb20"><div class="nextprev clear">
+<div class="icon tt left mr1" data-distance="-40|-30|top">
+<span class="prev"><a href="nav-CreateOffMeshLink.html"></a></span><div class="tip">Creating an Off-mesh Link</div>
+</div>
+<div class="icon tt right" data-distance="-40|-30|top">
+<span class="next"><a href="nav-HeightMesh.html"></a></span><div class="tip">Building Height Mesh for Accurate Character Placement</div>
+</div>
+</div></div>
+<div class="otherversionswrapper" onmouseover="setOtherVersionsDisplay(true)" onmouseout="setOtherVersionsDisplay(false)">
+<a>Other Versions</a><div class="otherversionscontent" id="OtherVersionsContent" style="display: none;">Cannot access other versions offline!</div>
+</div>
+<div class="scrollToFeedback"><a id="scrollToFeedback">Leave feedback</a></div>
+<h1>Building Off-Mesh Links Automatically</h1>
+<!--BeginSwitchLink--><!--EndSwitchLink-->
+<div class="clear"></div>
+
+<p>Some use cases for Off-Mesh Links can be detected automatically. The two most common ones are: <em>Drop-Down</em> and <em>Jump-Across</em>.</p>
+
+<ul>
+<li>
+<strong>Drop-Down</strong> links are created to drop down from a platform.</li>
+<li>
+<strong>Jump-Across</strong> links are created to jump across a crevice.</li>
+</ul>
+
+<p>In order to find the jump locations automatically, the build process walks along the edges of the NavMesh and checks if the landing location of the jump is on NavMesh. If the jump trajectory is unobstructed an Off-Mesh link is created.</p>
+
+<p>Let’s set up automatic Off-Mesh Link generation. If you’re not familiar with NavMesh baking, take a look at <a href="nav-BuildingNavMesh.html">Building a NavMesh</a>.</p>
+
+<figure>
+<img src="../uploads/Main/AutoOffMeshLinksSetup.svg" alt="">
+</figure>
+
+<p>First, the objects in the Scene where the jump can <em>start from</em> needs to be marked. This is done my checking <strong>Generate Off-Mesh Links</strong> option in the <em>Navigation Window</em> under <em>Objects</em> tab.</p>
+
+<figure>
+<img src="../uploads/Main/AutoOffMeshLinksParams.svg" alt="">
+</figure>
+
+<p>The second step is to setup the drop-down and jump-across trajectories:</p>
+
+<ul>
+<li>
+<strong>Drop-Down</strong> link generation is controlled by the Drop Height parameter. The parameter controls what is the highest drop that will be connected, setting the value to 0 will disable the generation.
+
+<ul>
+<li>The trajectory of the drop-down link is defined so that the horizontal travel <strong>(A)</strong> is: <em>2*agentRadius + 4*voxelSize</em>. That is, the drop will land just beyond the edge of the platform. In addition the vertical travel <strong>(B)</strong> needs to be more than bake settings’ <em>Step Height</em> (otherwise we could just step down) and less than <em>Drop Height</em>. The adjustment by voxel size is done so that any round off errors during voxelization does not prevent the links being generated. You should set the <em>Drop Height</em> to a bit larger value than what you measure in your level, so that the links will connect properly.</li>
+</ul>
+</li>
+<li>
+<strong>Jump-Across</strong> link generation is controlled by the <em>Jump Distance</em> parameter. The parameter controls what is the furthest distance that will be connected. Setting the value to 0 will disable the generation.
+
+<ul>
+<li>The trajectory of the jump-across link is defined so that the horizontal travel <strong>(C)</strong> is more than <em>2*agentRadius</em> and less than Jump Distance. In addition the landing location <strong>(D)</strong> must not be further than voxelSize from the level of the start location.</li>
+</ul>
+</li>
+</ul>
+
+<p>Now that objects are marked, and settings adjusted, it’s time to press <em>Bake</em> and you have will have automatically generated off-mesh links! When ever you change the scene and bake, the old links will be discarded and new links will be created based on the new scene.</p>
+
+<h2>Trouble Shooting</h2>
+
+<p>Things to keep in mind if Off-Mesh links are not generated at locations where you expect them to be:</p>
+
+<ul>
+<li>
+<em>Drop Height</em> should a bit bigger than the actual distance measured in your level. This ensures that small deviations that happen during the NavMesh baking process will not prevent the link to be connected.</li>
+<li>
+<em>Jump Distance</em> should be a bit longer than the actual distance measured in your level. The Jump Distance is measured from one location on a NavMesh to another location on the NavMesh, which means that you should add <em>2*agentRadius</em> (plus a little) to make sure the crevices are crossed.</li>
+</ul>
+
+<h3>Further Reading</h3>
+
+<ul>
+<li>
+<a href="nav-CreateOffMeshLink.html">Creating Off-Mesh Links</a> - learn how to manually create Off-Mesh Links.</li>
+<li>
+<a href="nav-BuildingNavMesh.html">Building a NavMesh</a> – workflow for NavMesh baking.</li>
+<li>
+<a href="nav-AdvancedSettings.html">Bake Settings</a> – full description of the NavMesh bake settings.</li>
+<li>
+<a href="class-OffMeshLink.html">Off-Mesh Link component reference</a> – full description of all the Off-Mesh Link properties.</li>
+<li>
+<a href="../ScriptReference/AI.OffMeshLink.html">Off-Mesh Link scripting reference</a> - full description of the Off-Mesh Link scripting API.</li>
+</ul>
+<div class="feedbackbox" id="feedbackbox">
+<div id="rating"><p>Did you find this page useful? Please give it a rating:<br><div id="ratecontent" class="c-rating"></div>
+</p></div>
+<div id="ratingThanks" style="display:none"><p>Thanks for rating this page!</p></div>
+<div id="problem"><p><a name="problem" onclick="document.getElementById('problemType').style.display = '';document.getElementById('problem').style.display = 'none';">Report a problem on this page</a></p></div>
+<div id="problemType" style="display:none"><p>What kind of problem would you like to report?<ul type="problems">
+<li><a name="needcode" onclick="                                                             document.getElementById('problemType').style.display = 'none';                                                             document.getElementById('problemThanks').style.display = '';                                                             SendFeedback('problem-needcode',window.location.href,0);                                                             document.getElementById('problemFormDescription').value='Needs code samples.';                                                             document.getElementById('problemNeedCodeForm').style.display = ''                                                         ">This page needs code samples</a></li>
+<li><a name="code" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-brokencode',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Code samples do not work.';                                                         document.getElementById('problemCodeForm').style.display = ''                                                         ">Code samples do not work</a></li>
+<li><a name="missing" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-missing',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Missing information';                                                         document.getElementById('problemMissingForm').style.display = ''                                                         ">Information is missing</a></li>
+<li><a name="incorrect" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-incorrect',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Incorrect information';                                                         document.getElementById('problemIncorrectForm').style.display = ''                                                         ">Information is incorrect</a></li>
+<li><a name="unclear" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-unclear',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Unclear or confusing information';                                                         document.getElementById('problemUnclearForm').style.display = ''                                                         ">Information is unclear or confusing</a></li>
+<li><a name="language" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-language',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Spelling or grammar error';                                                         document.getElementById('problemLanguageForm').style.display = ''                                                         ">There is a spelling/grammar error on this page</a></li>
+<li><a name="other" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-other',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='This page has a problem';                                                         document.getElementById('problemOtherForm').style.display = ''                                                         ">Something else</a></li>
+</ul>
+<p><known_issues><p>Is something described here not working as you expect it to? It might be a <b>Known Issue</b>. Please check with the Issue Tracker at <a href="https://issuetracker.unity3d.com">issuetracker.unity3d.com</a>.</p></known_issues></p>
+</p></div>
+<div id="problemThanks" style="display:none"><p>Thanks for letting us know! This page has been marked for review based on your feedback.<br><br>If you have time, you can provide more information to help us fix the problem faster.<br><br><a onclick="document.getElementById('problemMoreInfo').style.display = '';document.getElementById('problemThanks').style.display = 'none';">Provide more information</a><br>
+</p></div>
+<div id="problemMoreInfo" style="display:none">
+<p id="problemNeedCodeForm" style="display:none">You've told us this page needs code samples. If you'd like to help us further, you could provide a code sample, or tell us about what kind of code sample you'd like to see:</p>
+<p id="problemCodeForm" style="display:none">You've told us there are code samples on this page which don't work. If you know how to fix it, or have something better we could use instead, please let us know:</p>
+<p id="problemMissingForm" style="display:none">You've told us there is information missing from this page. Please tell us more about what's missing:</p>
+<p id="problemIncorrectForm" style="display:none">You've told us there is incorrect information on this page. If you know what we should change to make it correct, please tell us:</p>
+<p id="problemUnclearForm" style="display:none">You've told us this page has unclear or confusing information. Please tell us more about what you found unclear or confusing, or let us know how we could make it clearer:</p>
+<p id="problemLanguageForm" style="display:none">You've told us there is a spelling or grammar error on this page. Please tell us what's wrong:</p>
+<p id="problemOtherForm" style="display:none">You've told us this page has a problem. Please tell us more about what's wrong:</p>
+<form>
+<textarea id="problemFormSuggestionField" cols="40" rows="5"></textarea><input type="hidden" id="problemFormDescription"><input type="submit" id="problemFormDescriptionSubmit" value="Submit" onclick="                                             document.getElementById('problemMoreInfo').style.display = 'none';                                             document.getElementById('problemMoreInfoThanks').style.display = '';                                             return false;                                             ">
+</form>
+</div>
+<div id="problemMoreInfoThanks" style="display:none"><p>Thanks for helping to make the Unity documentation better!</p></div>
+<script>
+
+                                            var ratecontent = document.querySelector('#ratecontent'); // target element
+                                            var currentRating = 0; // initial rating
+                                            var maxRating= 5; // max rating
+
+                                            // callback to run after setting the rating
+                                            var callback = function(rating) {
+                                                document.getElementById('ratingThanks').style.display = '';
+                                                document.getElementById('ratecontent').style.display = 'none';
+                                                document.getElementById('rating').style.display = 'none';
+                                                SendFeedback("rating",window.location.href,rating);
+                                            };
+
+                                            // rating instance
+                                            var myRating = rating(ratecontent, currentRating, maxRating, callback);
+                                        </script>
+</div>
+<div class="nextprev clear">
+<div class="icon tt left mr1" data-distance="-40|-30|top">
+<span class="prev"><a href="nav-CreateOffMeshLink.html"></a></span><div class="tip">Creating an Off-mesh Link</div>
+</div>
+<div class="icon tt right" data-distance="-40|-30|top">
+<span class="next"><a href="nav-HeightMesh.html"></a></span><div class="tip">Building Height Mesh for Accurate Character Placement</div>
+</div>
+</div>
+</div>
+</body></html>

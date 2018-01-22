@@ -1,0 +1,227 @@
+<html><head><title>html模版</title></head><body>Unity - Manual:  Receipt validation</br>
+<div class="breadcrumbs clear"><ul>
+<li><a href="UnityManual.html">Unity User Manual (2018.1 beta)</a></li>
+<li><a href="UnityServices.html">Unity Services &amp; Dashboard</a></li>
+<li><a href="UnityIAP.html">﻿Unity IAP</a></li>
+<li>Cross Platform Guide</li>
+<li> Receipt validation</li>
+</ul></div>
+<div class="mb20"><div class="nextprev clear">
+<div class="icon tt left mr1" data-distance="-40|-30|top">
+<span class="prev"><a href="UnityIAPPurchaseReceipts.html"></a></span><div class="tip">﻿Purchase Receipts</div>
+</div>
+<div class="icon tt right" data-distance="-40|-30|top">
+<span class="next"><a href="UnityIAPStoreExtensions.html"></a></span><div class="tip">Store Extensions</div>
+</div>
+</div></div>
+<div class="otherversionswrapper" onmouseover="setOtherVersionsDisplay(true)" onmouseout="setOtherVersionsDisplay(false)">
+<a>Other Versions</a><div class="otherversionscontent" id="OtherVersionsContent" style="display: none;">Cannot access other versions offline!</div>
+</div>
+<div class="scrollToFeedback"><a id="scrollToFeedback">Leave feedback</a></div>
+<h1>Receipt validation</h1>
+<!--BeginSwitchLink--><!--EndSwitchLink-->
+<div class="clear"></div>
+
+<p>Receipt validation helps you prevent users from accessing content they have not purchased.</p>
+
+<h2>Point of validation</h2>
+
+<p>It is best practice to validate the receipt at the point where your application’s content is distributed.</p>
+
+<ul>
+<li>
+<strong>Local validation:</strong> For client-side content, where all content is contained in the application and is enabled once purchased, the validation should take place on the target device, without the need to connect to a remote server. Unity IAP is designed to support local validation within your application. See <strong>Local validation</strong> below for more information.</li>
+<li>
+<strong>Remote validation:</strong> For server-side content, where content is downloaded once purchased, the validation should take place on the server before the content is released. Unity does not offer support for server-side validation; however, third-party solutions are available, such as Nobuyori Takahashi’s <a href="https://github.com/voltrue2/in-app-purchase">IAP project</a>.</li>
+</ul>
+
+<h2>Local validation</h2>
+
+<p>If the content that the user is purchasing already exists on the device, the application simply needs to make a decision about whether to unlock it.</p>
+
+<p>Unity IAP provides tools to help you hide content and to validate and parse receipts through Google Play and Apple stores.</p>
+
+<h3>Obfuscating encryption keys</h3>
+
+<p>Receipt validation is performed using known encryption keys. For your application, this is an encrypted Google Play public key, and/or Apple’s root certificate.</p>
+
+<p>If a user can replace these, they can defeat your receipt validation checks, so it is important to make it difficult for a user to easily find and modify these keys.</p>
+
+<p>Unity IAP provides a tool that can help you obfuscate your encryption keys within your Application. This confuses or jumbles the keys so that it is much harder for a user to acces them. In the Unity menu bar, go to <strong>Window</strong> &gt; <strong>Unity IAP</strong> &gt; <strong>IAP Receipt Validation Obfuscator</strong>.</p>
+
+<figure>
+<img src="../uploads/Main/IAPObfuscator.png" alt="The Obfuscator window">
+<figcaption>The Obfuscator window</figcaption>
+</figure>
+
+<p>This window encodes both Apple’s root certificate (which is bundled with Unity IAP) and your Google Play public key (from the application’s <a href="https://developer.android.com/google/play/licensing/setting-up.html">Google Play Developer Console’s Services &amp; APIs</a> page) into two different C# files: <strong>AppleTangle</strong> and <strong>GooglePlayTangle</strong>. These are added to your project for use in the next section.</p>
+
+<p>Note that you do not have to provide a Google Play public key if you are only targeting Apple’s stores, and vice versa.</p>
+
+<h3>Validating receipts</h3>
+
+<p>Use the <code>CrossPlatformValidator</code> class for validation across both Google Play and Apple stores.</p>
+
+<p>You must supply this class with either your Google Play public key or Apple’s root certificate, or both if you wish to validate across both platforms.</p>
+
+<p>The <code>CrossPlatformValidator</code> performs two checks:</p>
+
+<ul>
+<li>Receipt authenticity is checked via signature validation.</li>
+<li>The application bundle identifier on the receipt is compared to the one in your application. An <strong>InvalidBundleId</strong> exception is thrown if they do not match.</li>
+</ul>
+
+<p>Note that the validator only validates receipts generated on Google Play and Apple platforms. Receipts generated on any other platform, including fakes generated in the Editor, throw an <strong>IAPSecurityException</strong>.</p>
+
+<p>If you try to validate a receipt for a platform that you haven’t supplied a secret key for, a <strong>MissingStoreSecretException</strong> is thrown.</p>
+
+<pre><code>public PurchaseProcessingResult ProcessPurchase (PurchaseEventArgs e)
+{
+    bool validPurchase = true; // Presume valid for platforms with no R.V.
+
+    // Unity IAP's validation logic is only included on these platforms.
+#if UNITY_ANDROID || UNITY_IOS || UNITY_STANDALONE_OSX
+    // Prepare the validator with the secrets we prepared in the Editor
+    // obfuscation window.
+    var validator = new CrossPlatformValidator(GooglePlayTangle.Data(),
+        AppleTangle.Data(), Application.bundleIdentifier);
+
+    try {
+        // On Google Play, result has a single product ID.
+        // On Apple stores, receipts contain multiple products.
+        var result = validator.Validate(e.purchasedProduct.receipt);
+        // For informational purposes, we list the receipt(s)
+        Debug.Log(&quot;Receipt is valid. Contents:&quot;);
+        foreach (IPurchaseReceipt productReceipt in result) {
+            Debug.Log(productReceipt.productID);
+            Debug.Log(productReceipt.purchaseDate);
+            Debug.Log(productReceipt.transactionID);
+        }
+    } catch (IAPSecurityException) {
+        Debug.Log(&quot;Invalid receipt, not unlocking content&quot;);
+        validPurchase = false;
+    }
+#endif
+
+    if (validPurchase) {
+        // Unlock the appropriate content here.
+    }
+
+    return PurchaseProcessingResult.Complete;
+}
+
+</code></pre>
+
+<p>It is important you check not just that the receipt is valid, but also what information it contains. A common technique by users attempting to access content without purchase is to supply receipts from other products or applications. These receipts are genuine and do pass validation, so you should make decisions based on the product IDs parsed by the <strong>CrossPlatformValidator</strong>.</p>
+
+<h3>Store-specific details</h3>
+
+<p>Different stores have different fields in their purchase receipts. To access store-specific fields, <code>IPurchaseReceipt</code> can be downcast to two different subtypes: <code>GooglePlayReceipt</code> and <code>AppleInAppPurchaseReceipt</code>.</p>
+
+<pre><code>var result = validator.Validate(e.purchasedProduct.receipt);
+Debug.Log(&quot;Receipt is valid. Contents:&quot;);
+foreach (IPurchaseReceipt productReceipt in result) {
+    Debug.Log(productReceipt.productID);
+    Debug.Log(productReceipt.purchaseDate);
+    Debug.Log(productReceipt.transactionID);
+
+    GooglePlayReceipt google = productReceipt as GooglePlayReceipt;
+    if (null != google) {
+        // This is Google's Order ID.
+        // Note that it is null when testing in the sandbox
+        // because Google's sandbox does not provide Order IDs.
+        Debug.Log(google.transactionID);
+        Debug.Log(google.purchaseState);
+        Debug.Log(google.purchaseToken);
+    }
+
+    AppleInAppPurchaseReceipt apple = productReceipt as AppleInAppPurchaseReceipt;
+    if (null != apple) {
+        Debug.Log(apple.originalTransactionIdentifier);
+        Debug.Log(apple.subscriptionExpirationDate);
+        Debug.Log(apple.cancellationDate);
+        Debug.Log(apple.quantity);
+    }
+}
+</code></pre>
+
+<h3>Parsing raw Apple receipts</h3>
+
+<p>Use the <code>AppleValidator</code> class to extract detailed information about an Apple receipt. Note that this class only works with iOS App receipts from version 7.0 onwards, not Apple’s deprecated transaction receipts.</p>
+
+<pre><code>#if UNITY_ANDROID || UNITY_IOS || UNITY_STANDALONE_OSX
+var builder = ConfigurationBuilder.Instance(StandardPurchasingModule.Instance());
+// Get a reference to IAppleConfiguration during IAP initialization.
+var appleConfig = builder.Configure&lt;IAppleConfiguration&gt;();
+var receiptData = System.Convert.FromBase64String(appleConfig.appReceipt);
+AppleReceipt receipt = new AppleValidator(AppleTangle.Data()).Validate(receiptData);
+
+Debug.Log(receipt.bundleID);
+Debug.Log(receipt.receiptCreationDate);
+foreach (AppleInAppPurchaseReceipt productReceipt in receipt.inAppPurchaseReceipts) {
+    Debug.Log(productReceipt.transactionIdentifier);
+    Debug.Log(productReceipt.productIdentifier);
+}
+#endif
+</code></pre>
+
+<p>The <code>AppleReceipt</code> type models Apple’s ASN1 receipt format. See <a href="https://developer.apple.com/library/ios/releasenotes/General/ValidateAppStoreReceipt/Chapters/ReceiptFields.html#/apple_ref/doc/uid/TP40010573-CH106-SW1">Apple’s documentation</a> for an explanation of its fields.</p>
+<div class="feedbackbox" id="feedbackbox">
+<div id="rating"><p>Did you find this page useful? Please give it a rating:<br><div id="ratecontent" class="c-rating"></div>
+</p></div>
+<div id="ratingThanks" style="display:none"><p>Thanks for rating this page!</p></div>
+<div id="problem"><p><a name="problem" onclick="document.getElementById('problemType').style.display = '';document.getElementById('problem').style.display = 'none';">Report a problem on this page</a></p></div>
+<div id="problemType" style="display:none"><p>What kind of problem would you like to report?<ul type="problems">
+<li><a name="needcode" onclick="                                                             document.getElementById('problemType').style.display = 'none';                                                             document.getElementById('problemThanks').style.display = '';                                                             SendFeedback('problem-needcode',window.location.href,0);                                                             document.getElementById('problemFormDescription').value='Needs code samples.';                                                             document.getElementById('problemNeedCodeForm').style.display = ''                                                         ">This page needs code samples</a></li>
+<li><a name="code" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-brokencode',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Code samples do not work.';                                                         document.getElementById('problemCodeForm').style.display = ''                                                         ">Code samples do not work</a></li>
+<li><a name="missing" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-missing',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Missing information';                                                         document.getElementById('problemMissingForm').style.display = ''                                                         ">Information is missing</a></li>
+<li><a name="incorrect" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-incorrect',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Incorrect information';                                                         document.getElementById('problemIncorrectForm').style.display = ''                                                         ">Information is incorrect</a></li>
+<li><a name="unclear" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-unclear',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Unclear or confusing information';                                                         document.getElementById('problemUnclearForm').style.display = ''                                                         ">Information is unclear or confusing</a></li>
+<li><a name="language" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-language',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Spelling or grammar error';                                                         document.getElementById('problemLanguageForm').style.display = ''                                                         ">There is a spelling/grammar error on this page</a></li>
+<li><a name="other" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-other',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='This page has a problem';                                                         document.getElementById('problemOtherForm').style.display = ''                                                         ">Something else</a></li>
+</ul>
+<p><known_issues><p>Is something described here not working as you expect it to? It might be a <b>Known Issue</b>. Please check with the Issue Tracker at <a href="https://issuetracker.unity3d.com">issuetracker.unity3d.com</a>.</p></known_issues></p>
+</p></div>
+<div id="problemThanks" style="display:none"><p>Thanks for letting us know! This page has been marked for review based on your feedback.<br><br>If you have time, you can provide more information to help us fix the problem faster.<br><br><a onclick="document.getElementById('problemMoreInfo').style.display = '';document.getElementById('problemThanks').style.display = 'none';">Provide more information</a><br>
+</p></div>
+<div id="problemMoreInfo" style="display:none">
+<p id="problemNeedCodeForm" style="display:none">You've told us this page needs code samples. If you'd like to help us further, you could provide a code sample, or tell us about what kind of code sample you'd like to see:</p>
+<p id="problemCodeForm" style="display:none">You've told us there are code samples on this page which don't work. If you know how to fix it, or have something better we could use instead, please let us know:</p>
+<p id="problemMissingForm" style="display:none">You've told us there is information missing from this page. Please tell us more about what's missing:</p>
+<p id="problemIncorrectForm" style="display:none">You've told us there is incorrect information on this page. If you know what we should change to make it correct, please tell us:</p>
+<p id="problemUnclearForm" style="display:none">You've told us this page has unclear or confusing information. Please tell us more about what you found unclear or confusing, or let us know how we could make it clearer:</p>
+<p id="problemLanguageForm" style="display:none">You've told us there is a spelling or grammar error on this page. Please tell us what's wrong:</p>
+<p id="problemOtherForm" style="display:none">You've told us this page has a problem. Please tell us more about what's wrong:</p>
+<form>
+<textarea id="problemFormSuggestionField" cols="40" rows="5"></textarea><input type="hidden" id="problemFormDescription"><input type="submit" id="problemFormDescriptionSubmit" value="Submit" onclick="                                             document.getElementById('problemMoreInfo').style.display = 'none';                                             document.getElementById('problemMoreInfoThanks').style.display = '';                                             return false;                                             ">
+</form>
+</div>
+<div id="problemMoreInfoThanks" style="display:none"><p>Thanks for helping to make the Unity documentation better!</p></div>
+<script>
+
+                                            var ratecontent = document.querySelector('#ratecontent'); // target element
+                                            var currentRating = 0; // initial rating
+                                            var maxRating= 5; // max rating
+
+                                            // callback to run after setting the rating
+                                            var callback = function(rating) {
+                                                document.getElementById('ratingThanks').style.display = '';
+                                                document.getElementById('ratecontent').style.display = 'none';
+                                                document.getElementById('rating').style.display = 'none';
+                                                SendFeedback("rating",window.location.href,rating);
+                                            };
+
+                                            // rating instance
+                                            var myRating = rating(ratecontent, currentRating, maxRating, callback);
+                                        </script>
+</div>
+<div class="nextprev clear">
+<div class="icon tt left mr1" data-distance="-40|-30|top">
+<span class="prev"><a href="UnityIAPPurchaseReceipts.html"></a></span><div class="tip">﻿Purchase Receipts</div>
+</div>
+<div class="icon tt right" data-distance="-40|-30|top">
+<span class="next"><a href="UnityIAPStoreExtensions.html"></a></span><div class="tip">Store Extensions</div>
+</div>
+</div>
+</div>
+</body></html>

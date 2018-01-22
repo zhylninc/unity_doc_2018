@@ -1,0 +1,192 @@
+<html><head><title>html模版</title></head><body>Unity - Manual:  Distance Shadowmask</br>
+<div class="breadcrumbs clear"><ul>
+<li><a href="UnityManual.html">Unity User Manual (2018.1 beta)</a></li>
+<li><a href="Graphics.html">Graphics</a></li>
+<li><a href="GraphicsOverview.html">Graphics Overview</a></li>
+<li><a href="LightingOverview.html">Lighting</a></li>
+<li><a href="LightModes.html"> Lighting Modes</a></li>
+<li><a href="LightMode-Mixed.html"> Mixed lighting</a></li>
+<li><a href="LightMode-Mixed-ShadowmaskMode.html">Shadowmask mode</a></li>
+<li> Distance Shadowmask</li>
+</ul></div>
+<div class="mb20"><div class="nextprev clear">
+<div class="icon tt left mr1" data-distance="-40|-30|top">
+<span class="prev"><a href="LightMode-Mixed-Shadowmask.html"></a></span><div class="tip"> Shadowmask</div>
+</div>
+<div class="icon tt right" data-distance="-40|-30|top">
+<span class="next"><a href="LightMode-Mixed-Subtractive.html"></a></span><div class="tip"> Subtractive mode</div>
+</div>
+</div></div>
+<div class="otherversionswrapper" onmouseover="setOtherVersionsDisplay(true)" onmouseout="setOtherVersionsDisplay(false)">
+<a>Other Versions</a><div class="otherversionscontent" id="OtherVersionsContent" style="display: none;">Cannot access other versions offline!</div>
+</div>
+<div class="scrollToFeedback"><a id="scrollToFeedback">Leave feedback</a></div>
+<h1>Distance Shadowmask</h1>
+<!--BeginSwitchLink--><!--EndSwitchLink-->
+<div class="clear"></div>
+
+<p>
+<strong>Distance Shadowmask</strong> is a version of the <strong>Shadowmask</strong> lighting mode. It is shared by all Mixed Lights in a Scene. To set <strong>Mixed lighting</strong> to <strong>Distance Shadowmask</strong>: </p>
+
+<ul>
+<li>Open the Lighting window (menu: <strong>Window</strong> &gt; <strong>Lighting</strong> &gt; <strong>Settings</strong>), click the <strong>Scene</strong> tab, navigate to <strong>Mixed Lighting</strong>, and set the <strong>Lighting Mode</strong> to <strong>Shadowmask</strong>.</li>
+<li>Next, open the <strong>Quality Settings</strong> (menu: <strong>Edit</strong> &gt; <strong>Project Settings</strong> &gt; <strong>Quality</strong>), navigate to <strong>Shadowmask Mode</strong> and set it to <strong>Distance Shadowmask</strong>.</li>
+</ul>
+
+<p>See documentation on <a href="LightMode-Mixed.html">Mixed lighting</a> to learn more about this lighting mode, and see documentation on <a href="LightModes.html">Light modes</a> to learn more about the other modes available. </p>
+
+<p>A shadow mask is a Texture that shares the same UV layout and resolution with its corresponding light map. It stores occlusion information for up to 4 lights per texel, because Textures are limited to up to 4 channels on current GPUs.</p>
+
+<p>The <strong>Distance Shadowmask</strong> mode is a version of the <strong>Shadowmask</strong> lighting mode that includes high quality shadows cast from static GameObjects onto dynamic GameObjects.</p>
+
+<p>Within the <strong>Shadow Distance</strong> (menu: <strong>Edit</strong> &gt; <strong>Project Settings</strong> &gt; <strong>Quality</strong> &gt; <strong>Shadows</strong>), Unity renders both dynamic and static GameObjects into the shadow map, allowing static GameObjects to cast sharp shadows onto dynamic GameObjects. For this reason, <strong>Distance Shadowmask</strong> mode has higher performance requirements than <strong>Shadowmask</strong> mode, because all static GameObjects in the scene are rendered into the shadow map.</p>
+
+<p>Beyond the <strong>Shadow Distance</strong>:</p>
+
+<ul>
+<li>Static GameObjects receive high-resolution shadows from other static GameObjects via the precomputed shadow mask.</li>
+<li>Dynamic GameObjects receive low-resolution shadows from static GameObjects via <a href="LightProbes.html">Light Probes</a>.</li>
+</ul>
+
+<p>A good example of when <strong>Distance Shadowmask</strong> mode might be useful is if you are building an open world Scene with shadows up to the horizon, and complex static Meshes casting real-time shadows on moving characters.</p>
+
+<h2>Shadows</h2>
+
+<p>The following table shows how static and dynamic GameObjects cast and receive shadows when using <strong>Distance Shadowmask</strong> mode:</p>
+
+<table>
+<colgroup>
+<col style="text-align:left;">
+<col style="text-align:left;">
+<col style="text-align:left;">
+<col style="text-align:left;">
+<col style="text-align:left;">
+</colgroup>
+
+<thead>
+<tr>
+	<th style="text-align:left;"></th>
+	<th style="text-align:left;">
+<strong>Dynamic receiver</strong><br>A dynamic GameObject that is receiving a shadow from another static or dynamic GameObject</th>
+	<th style="text-align:left;"></th>
+	<th style="text-align:left;" colspan="2">
+<strong>Static receiver</strong><br>A static GameObject that is receiving a shadow from another static or dynamic GameObject</th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;">Within Shadow Distance</td>
+	<td style="text-align:left;">Beyond Shadow Distance</td>
+	<td style="text-align:left;">Within Shadow Distance</td>
+	<td style="text-align:left;">Beyond Shadow Distance</td>
+</tr>
+<tr>
+	<td style="text-align:left;">
+<strong>Dynamic caster</strong><br>A dynamic GameObject that is casting a shadow</td>
+	<td style="text-align:left;">Shadow map</td>
+	<td style="text-align:left;">-</td>
+	<td style="text-align:left;">Shadow map</td>
+	<td style="text-align:left;">-</td>
+</tr>
+<tr>
+	<td style="text-align:left;">
+<strong>Static caster</strong><br>A static GameObject that is casting a shadow</td>
+	<td style="text-align:left;">Shadow map</td>
+	<td style="text-align:left;">Light Probes</td>
+	<td style="text-align:left;">Shadow map</td>
+	<td style="text-align:left;">Shadow mask</td>
+</tr>
+</tbody>
+</table>
+
+<h2>Advantages and disadvantages of Distance Shadowmask mode</h2>
+
+<p>The performance requirements of <strong>Distance Shadowmask</strong> mode make it a good option for building to high-end PCs and current generation consoles. These are the most significant advantages and disadvantages of using <strong>Distance Shadowmask</strong> mode:</p>
+
+<h3>Advantages</h3>
+
+<ul>
+<li>It provides the same visual effect as <a href="LightMode-Realtime.html">Realtime Lighting</a>.</li>
+<li>It provides real-time shadows from dynamic GameObjects onto static GameObjects, and static GameObjects onto dynamic GameObjects.</li>
+<li>One Texture operation in the Shader handles all lighting and shadows between static GameObjects.</li>
+<li>It automatically composites dynamic and static shadows.</li>
+<li>It provides indirect lighting.</li>
+</ul>
+
+<h3>Disadvantages</h3>
+
+<ul>
+<li>It only allows up to 4 overlapping light volumes (see documentation under the ‘Technical details’ section of <a href="LightMode-Mixed.html">Mixed lighting</a> for more information).</li>
+<li>It has increased memory requirements for light map Texture sets.</li>
+<li>It has increased memory requirements for shadow mask Textures.</li>
+<li>It has increased performance requirements, because Unity renders light and shadow from static GameObjects into shadow maps.</li>
+</ul>
+
+<hr>
+
+<ul>
+<li><p><span class="page-edit"> 2017–09–18 Page published with limited <a href="DocumentationEditorialReview.html">editorial review</a>
+</span></p></li>
+<li><p><span class="page-history">Light Modes added in 5.6</span></p></li>
+</ul>
+<div class="feedbackbox" id="feedbackbox">
+<div id="rating"><p>Did you find this page useful? Please give it a rating:<br><div id="ratecontent" class="c-rating"></div>
+</p></div>
+<div id="ratingThanks" style="display:none"><p>Thanks for rating this page!</p></div>
+<div id="problem"><p><a name="problem" onclick="document.getElementById('problemType').style.display = '';document.getElementById('problem').style.display = 'none';">Report a problem on this page</a></p></div>
+<div id="problemType" style="display:none"><p>What kind of problem would you like to report?<ul type="problems">
+<li><a name="needcode" onclick="                                                             document.getElementById('problemType').style.display = 'none';                                                             document.getElementById('problemThanks').style.display = '';                                                             SendFeedback('problem-needcode',window.location.href,0);                                                             document.getElementById('problemFormDescription').value='Needs code samples.';                                                             document.getElementById('problemNeedCodeForm').style.display = ''                                                         ">This page needs code samples</a></li>
+<li><a name="code" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-brokencode',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Code samples do not work.';                                                         document.getElementById('problemCodeForm').style.display = ''                                                         ">Code samples do not work</a></li>
+<li><a name="missing" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-missing',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Missing information';                                                         document.getElementById('problemMissingForm').style.display = ''                                                         ">Information is missing</a></li>
+<li><a name="incorrect" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-incorrect',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Incorrect information';                                                         document.getElementById('problemIncorrectForm').style.display = ''                                                         ">Information is incorrect</a></li>
+<li><a name="unclear" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-unclear',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Unclear or confusing information';                                                         document.getElementById('problemUnclearForm').style.display = ''                                                         ">Information is unclear or confusing</a></li>
+<li><a name="language" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-language',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Spelling or grammar error';                                                         document.getElementById('problemLanguageForm').style.display = ''                                                         ">There is a spelling/grammar error on this page</a></li>
+<li><a name="other" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-other',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='This page has a problem';                                                         document.getElementById('problemOtherForm').style.display = ''                                                         ">Something else</a></li>
+</ul>
+<p><known_issues><p>Is something described here not working as you expect it to? It might be a <b>Known Issue</b>. Please check with the Issue Tracker at <a href="https://issuetracker.unity3d.com">issuetracker.unity3d.com</a>.</p></known_issues></p>
+</p></div>
+<div id="problemThanks" style="display:none"><p>Thanks for letting us know! This page has been marked for review based on your feedback.<br><br>If you have time, you can provide more information to help us fix the problem faster.<br><br><a onclick="document.getElementById('problemMoreInfo').style.display = '';document.getElementById('problemThanks').style.display = 'none';">Provide more information</a><br>
+</p></div>
+<div id="problemMoreInfo" style="display:none">
+<p id="problemNeedCodeForm" style="display:none">You've told us this page needs code samples. If you'd like to help us further, you could provide a code sample, or tell us about what kind of code sample you'd like to see:</p>
+<p id="problemCodeForm" style="display:none">You've told us there are code samples on this page which don't work. If you know how to fix it, or have something better we could use instead, please let us know:</p>
+<p id="problemMissingForm" style="display:none">You've told us there is information missing from this page. Please tell us more about what's missing:</p>
+<p id="problemIncorrectForm" style="display:none">You've told us there is incorrect information on this page. If you know what we should change to make it correct, please tell us:</p>
+<p id="problemUnclearForm" style="display:none">You've told us this page has unclear or confusing information. Please tell us more about what you found unclear or confusing, or let us know how we could make it clearer:</p>
+<p id="problemLanguageForm" style="display:none">You've told us there is a spelling or grammar error on this page. Please tell us what's wrong:</p>
+<p id="problemOtherForm" style="display:none">You've told us this page has a problem. Please tell us more about what's wrong:</p>
+<form>
+<textarea id="problemFormSuggestionField" cols="40" rows="5"></textarea><input type="hidden" id="problemFormDescription"><input type="submit" id="problemFormDescriptionSubmit" value="Submit" onclick="                                             document.getElementById('problemMoreInfo').style.display = 'none';                                             document.getElementById('problemMoreInfoThanks').style.display = '';                                             return false;                                             ">
+</form>
+</div>
+<div id="problemMoreInfoThanks" style="display:none"><p>Thanks for helping to make the Unity documentation better!</p></div>
+<script>
+
+                                            var ratecontent = document.querySelector('#ratecontent'); // target element
+                                            var currentRating = 0; // initial rating
+                                            var maxRating= 5; // max rating
+
+                                            // callback to run after setting the rating
+                                            var callback = function(rating) {
+                                                document.getElementById('ratingThanks').style.display = '';
+                                                document.getElementById('ratecontent').style.display = 'none';
+                                                document.getElementById('rating').style.display = 'none';
+                                                SendFeedback("rating",window.location.href,rating);
+                                            };
+
+                                            // rating instance
+                                            var myRating = rating(ratecontent, currentRating, maxRating, callback);
+                                        </script>
+</div>
+<div class="nextprev clear">
+<div class="icon tt left mr1" data-distance="-40|-30|top">
+<span class="prev"><a href="LightMode-Mixed-Shadowmask.html"></a></span><div class="tip"> Shadowmask</div>
+</div>
+<div class="icon tt right" data-distance="-40|-30|top">
+<span class="next"><a href="LightMode-Mixed-Subtractive.html"></a></span><div class="tip"> Subtractive mode</div>
+</div>
+</div>
+</div>
+</body></html>

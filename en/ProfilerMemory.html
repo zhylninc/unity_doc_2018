@@ -1,0 +1,154 @@
+<html><head><title>html模版</title></head><body>Unity - Manual:  Memory Profiler</br>
+<div class="breadcrumbs clear"><ul>
+<li><a href="UnityManual.html">Unity User Manual (2018.1 beta)</a></li>
+<li><a href="UnityOverview.html">Working in Unity</a></li>
+<li><a href="AdvancedDevelopment.html">Advanced Development</a></li>
+<li><a href="Profiler.html">Profiler overview</a></li>
+<li> Memory Profiler</li>
+</ul></div>
+<div class="mb20"><div class="nextprev clear">
+<div class="icon tt left mr1" data-distance="-40|-30|top">
+<span class="prev"><a href="ProfilerRendering.html"></a></span><div class="tip">Rendering Profiler</div>
+</div>
+<div class="icon tt right" data-distance="-40|-30|top">
+<span class="next"><a href="ProfilerAudio.html"></a></span><div class="tip"> Audio Profiler</div>
+</div>
+</div></div>
+<div class="otherversionswrapper" onmouseover="setOtherVersionsDisplay(true)" onmouseout="setOtherVersionsDisplay(false)">
+<a>Other Versions</a><div class="otherversionscontent" id="OtherVersionsContent" style="display: none;">Cannot access other versions offline!</div>
+</div>
+<div class="scrollToFeedback"><a id="scrollToFeedback">Leave feedback</a></div>
+<h1>Memory Profiler</h1>
+<!--BeginSwitchLink--><!--EndSwitchLink-->
+<div class="clear"></div>
+
+<p>There are two modes you can use in the Memory Profiler to inspect the memory usage of your application. This is selected in the dropdown in the top-left of the lower panel.</p>
+
+<h2>Simple</h2>
+
+<p>The <strong>Simple</strong> view shows a simple overview how memory is used throughout Unity in real-time on a per-frame basis.</p>
+
+<figure>
+<img src="../uploads/Main/ProfilerMemorySimple.png" alt="">
+</figure>
+
+<p>Unity reserves memory pools for allocations in order to avoid asking the operating system for memory too often. This is displayed as a reserved amount, and how much is used.</p>
+
+<p>The areas covered by this are:</p>
+
+<ul>
+<li>
+<strong>Unity</strong> The amount of memory tracked by allocations in native Unity code</li>
+<li>
+<strong>Mono</strong> The total heap size and used heap size used by managed code. This memory is garbage-collected</li>
+<li>
+<strong>GfxDriver</strong> The estimated amount of memory the driver is using on Textures, render targets, Shaders and Mesh data.</li>
+<li>
+<strong>FMOD</strong> The Audio driver’s estimated memory usage</li>
+<li>
+<strong>Profiler</strong> Memory used for the Profiler data</li>
+</ul>
+
+<p>The numbers that are displayed are not the same as the Task Manager or Activity Monitor, because some usage is untracked by the Memory Profiler. This includes memory used by some drivers, and memory used for executable code.</p>
+
+<p>Memory statistics are shown for some of the most common Asset/object types. These stats include the count and the used memory (main and video memory):</p>
+
+<ul>
+<li><strong>Textures</strong></li>
+<li><strong>Meshes</strong></li>
+<li><strong>Materials</strong></li>
+<li><strong>Animations</strong></li>
+<li><strong>Audio</strong></li>
+<li><strong>Object Count</strong></li>
+</ul>
+
+<p>
+<strong>Object Count</strong> is the total number of objects that are created. If this number rises over time, your game is creating some objects that are never destroyed.</p>
+
+<h2>Detailed</h2>
+
+<p>The <strong>Detailed</strong> view allows you take a snapshot of the current state. Use the <strong>Take Sample</strong> button to capture detailed memory usage. Obtaining this data takes some time, so the Detailed view should not be expected to give you real-time details. After taking a sample, the Profiler window is updated with a tree view where you can explore memory usage.</p>
+
+<figure>
+<img src="../uploads/Main/ProfilerMemoryDetailed.png" alt="">
+</figure>
+
+<p>This displays individual Assets and GameObject memory usage. It also displays a reason for a GameObject to be in memory. Common reasons include:</p>
+
+<ul>
+<li>
+<strong>Assets</strong>: Asset referenced from user or native code</li>
+<li>
+<strong>Built-in Resources</strong>: Unity Editor resources or Unity default resources</li>
+<li>
+<strong>Not Saved</strong>: GameObjects marked as DontSave</li>
+<li>
+<strong>Scene Memory</strong>: GameObject and attached components</li>
+<li>
+<strong>Other</strong>: GameObjects not marked in the above categories</li>
+</ul>
+
+<p>Click on a GameObject in the list to view it in either the Project or the Scene view.</p>
+
+<p>When profiling in the Editor, all numbers displayed by the Memory Profiler indicate the memory usage in the Editor. These are generally larger than when running in a player, because running the Unity Editor adds extra memory. For more precise numbers and memory usage for your app, use the Profiler connection to connect to the running player. This will give the actual usage on the target device.</p>
+
+<p>Memory reported under <code>System.ExecutableAndDlls</code> is read-only memory, so the operating system might discard these pages as needed and later reload them from the file system. This generates lower memory usage, and usually does not directly contribute to the operating system’s decision to kill the application. Some of these pages might also be shared with other applications that are using the same frameworks. </p>
+<div class="feedbackbox" id="feedbackbox">
+<div id="rating"><p>Did you find this page useful? Please give it a rating:<br><div id="ratecontent" class="c-rating"></div>
+</p></div>
+<div id="ratingThanks" style="display:none"><p>Thanks for rating this page!</p></div>
+<div id="problem"><p><a name="problem" onclick="document.getElementById('problemType').style.display = '';document.getElementById('problem').style.display = 'none';">Report a problem on this page</a></p></div>
+<div id="problemType" style="display:none"><p>What kind of problem would you like to report?<ul type="problems">
+<li><a name="needcode" onclick="                                                             document.getElementById('problemType').style.display = 'none';                                                             document.getElementById('problemThanks').style.display = '';                                                             SendFeedback('problem-needcode',window.location.href,0);                                                             document.getElementById('problemFormDescription').value='Needs code samples.';                                                             document.getElementById('problemNeedCodeForm').style.display = ''                                                         ">This page needs code samples</a></li>
+<li><a name="code" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-brokencode',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Code samples do not work.';                                                         document.getElementById('problemCodeForm').style.display = ''                                                         ">Code samples do not work</a></li>
+<li><a name="missing" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-missing',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Missing information';                                                         document.getElementById('problemMissingForm').style.display = ''                                                         ">Information is missing</a></li>
+<li><a name="incorrect" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-incorrect',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Incorrect information';                                                         document.getElementById('problemIncorrectForm').style.display = ''                                                         ">Information is incorrect</a></li>
+<li><a name="unclear" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-unclear',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Unclear or confusing information';                                                         document.getElementById('problemUnclearForm').style.display = ''                                                         ">Information is unclear or confusing</a></li>
+<li><a name="language" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-language',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Spelling or grammar error';                                                         document.getElementById('problemLanguageForm').style.display = ''                                                         ">There is a spelling/grammar error on this page</a></li>
+<li><a name="other" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-other',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='This page has a problem';                                                         document.getElementById('problemOtherForm').style.display = ''                                                         ">Something else</a></li>
+</ul>
+<p><known_issues><p>Is something described here not working as you expect it to? It might be a <b>Known Issue</b>. Please check with the Issue Tracker at <a href="https://issuetracker.unity3d.com">issuetracker.unity3d.com</a>.</p></known_issues></p>
+</p></div>
+<div id="problemThanks" style="display:none"><p>Thanks for letting us know! This page has been marked for review based on your feedback.<br><br>If you have time, you can provide more information to help us fix the problem faster.<br><br><a onclick="document.getElementById('problemMoreInfo').style.display = '';document.getElementById('problemThanks').style.display = 'none';">Provide more information</a><br>
+</p></div>
+<div id="problemMoreInfo" style="display:none">
+<p id="problemNeedCodeForm" style="display:none">You've told us this page needs code samples. If you'd like to help us further, you could provide a code sample, or tell us about what kind of code sample you'd like to see:</p>
+<p id="problemCodeForm" style="display:none">You've told us there are code samples on this page which don't work. If you know how to fix it, or have something better we could use instead, please let us know:</p>
+<p id="problemMissingForm" style="display:none">You've told us there is information missing from this page. Please tell us more about what's missing:</p>
+<p id="problemIncorrectForm" style="display:none">You've told us there is incorrect information on this page. If you know what we should change to make it correct, please tell us:</p>
+<p id="problemUnclearForm" style="display:none">You've told us this page has unclear or confusing information. Please tell us more about what you found unclear or confusing, or let us know how we could make it clearer:</p>
+<p id="problemLanguageForm" style="display:none">You've told us there is a spelling or grammar error on this page. Please tell us what's wrong:</p>
+<p id="problemOtherForm" style="display:none">You've told us this page has a problem. Please tell us more about what's wrong:</p>
+<form>
+<textarea id="problemFormSuggestionField" cols="40" rows="5"></textarea><input type="hidden" id="problemFormDescription"><input type="submit" id="problemFormDescriptionSubmit" value="Submit" onclick="                                             document.getElementById('problemMoreInfo').style.display = 'none';                                             document.getElementById('problemMoreInfoThanks').style.display = '';                                             return false;                                             ">
+</form>
+</div>
+<div id="problemMoreInfoThanks" style="display:none"><p>Thanks for helping to make the Unity documentation better!</p></div>
+<script>
+
+                                            var ratecontent = document.querySelector('#ratecontent'); // target element
+                                            var currentRating = 0; // initial rating
+                                            var maxRating= 5; // max rating
+
+                                            // callback to run after setting the rating
+                                            var callback = function(rating) {
+                                                document.getElementById('ratingThanks').style.display = '';
+                                                document.getElementById('ratecontent').style.display = 'none';
+                                                document.getElementById('rating').style.display = 'none';
+                                                SendFeedback("rating",window.location.href,rating);
+                                            };
+
+                                            // rating instance
+                                            var myRating = rating(ratecontent, currentRating, maxRating, callback);
+                                        </script>
+</div>
+<div class="nextprev clear">
+<div class="icon tt left mr1" data-distance="-40|-30|top">
+<span class="prev"><a href="ProfilerRendering.html"></a></span><div class="tip">Rendering Profiler</div>
+</div>
+<div class="icon tt right" data-distance="-40|-30|top">
+<span class="next"><a href="ProfilerAudio.html"></a></span><div class="tip"> Audio Profiler</div>
+</div>
+</div>
+</div>
+</body></html>

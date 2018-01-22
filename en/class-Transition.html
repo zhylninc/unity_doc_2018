@@ -1,0 +1,300 @@
+<html><head><title>html模版</title></head><body>Unity - Manual:  Animation transitions</br>
+<div class="breadcrumbs clear"><ul>
+<li><a href="UnityManual.html">Unity User Manual (2018.1 beta)</a></li>
+<li><a href="AnimationSection.html">Animation</a></li>
+<li><a href="comp-AnimationGroup.html">Animation Reference</a></li>
+<li><a href="class-AnimatorController.html">Animator Controller</a></li>
+<li> Animation transitions</li>
+</ul></div>
+<div class="mb20"><div class="nextprev clear">
+<div class="icon tt left mr1" data-distance="-40|-30|top">
+<span class="prev"><a href="class-State.html"></a></span><div class="tip">Animation States</div>
+</div>
+<div class="icon tt right" data-distance="-40|-30|top">
+<span class="next"><a href="class-AvatarMask.html"></a></span><div class="tip">Avatar Mask</div>
+</div>
+</div></div>
+<div class="otherversionswrapper" onmouseover="setOtherVersionsDisplay(true)" onmouseout="setOtherVersionsDisplay(false)">
+<a>Other Versions</a><div class="otherversionscontent" id="OtherVersionsContent" style="display: none;">Cannot access other versions offline!</div>
+</div>
+<div class="scrollToFeedback"><a id="scrollToFeedback">Leave feedback</a></div>
+<h1>Animation transitions</h1>
+<!--BeginSwitchLink--><!--EndSwitchLink-->
+<div class="clear"></div>
+
+<p>Animation transitions allow the <a href="StateMachineBasics.html">state machine</a> to switch or blend from one animation state to another. Transitions define not only how long the blend between states should take, but also under what conditions they should activate. You can set up a transition to occur only when certain conditions are true. To set up these conditions, specify values of parameters in the Animator Controller.</p>
+
+<p>For example, your character might have a “patrolling” state and a “sleeping” state. You could set the transition between patrolling and sleeping to occur only when an “alertness” parameter value drops below a certain level.</p>
+
+<figure>
+<img src="../uploads/Main/classTransitionAnimatorPreview.png" alt="An example of a transition as viewed in the inspector.">
+<figcaption>An example of a transition as viewed in the inspector.</figcaption>
+</figure>
+
+<p>To give transitions a name, type it into the field as shown below:</p>
+
+<figure>
+<img src="../uploads/Main/AnimatorTransitionName.png" alt="">
+</figure>
+
+<p>The Inspector window of a state shows the transitions the state uses as shown below:</p>
+
+<figure>
+<img src="../uploads/Main/AnimatorTransitionNameInState.png" alt="">
+</figure>
+
+<p>There can be only one transition active at any given time. However, the currently active transition can be interrupted by another transition if you have configured the settings to allow it (see <a href="#TransitionInterruption">Transition Interruption</a> below).</p>
+
+<h3>Transition properties</h3>
+
+<p>To view properties for a transition, click on the transition line connecting two states in the Animator window. The properties appear in the Inspector window.</p>
+
+<figure>
+<img src="../uploads/Main/class-Transition-Properties.png" alt="">
+</figure>
+
+<p>Use the following properties to adjust the transition and how it blends between the current and next state.</p>
+
+<table>
+<colgroup>
+<col style="text-align:left;">
+<col style="text-align:left;">
+</colgroup>
+
+<thead>
+<tr>
+	<th style="text-align:left;"><strong>Property</strong></th>
+	<th style="text-align:left;"><strong>Function</strong></th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+	<td style="text-align:left;"><strong>Has Exit Time</strong></td>
+	<td style="text-align:left;">
+<strong>Exit Time</strong> is a special transition that doesn’t rely on a parameter. Instead, it relies on the normalized time of the state. Check to make the transition happen at the specific time specified in <strong>Exit Time</strong>.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>Settings</strong></td>
+	<td style="text-align:left;">Fold-out menu containing detailed transition settings as below.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>Exit Time</strong></td>
+	<td style="text-align:left;">If <strong>Has Exit Time</strong> is checked, this value represents the exact time at which the transition can take effect. This is represented in normalized time (for example, an exit time of 0.75 means that on the first frame where 75% of the animation has played, the <strong>Exit Time</strong> condition is true). On the next frame, the condition is false.<br><br>For looped animations, transitions with exit times smaller than 1 are evaluated every loop, so you can use this to time your transition with the proper timing in the animation every loop. <br><br>Transitions with an <strong>Exit Time</strong> greater than 1 are evaluated only once, so they can be used to exit at a specific time after a fixed number of loops. For example, a transition with an exit time of 3.5 are evaluated once, after three and a half loops.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>Fixed Duration</strong></td>
+	<td style="text-align:left;">If the <strong>Fixed Duration</strong> box is checked, the transition time is interpreted in seconds. If the <strong>Fixed Duration</strong> box is not checked, the transition time is interpreted as a fraction of the normalized time of the source state.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>Transition Duration</strong></td>
+	<td style="text-align:left;">The duration of the transition, in normalized time or seconds depending on the <strong>Fixed Duration</strong> mode, relative to the current state’s duration. This is visualized in the transition graph as the portion between the two blue markers.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>Transition Offset</strong></td>
+	<td style="text-align:left;">The offset of the time to begin playing in the destination state which is transitioned to. For example, a value of 0.5 means the target state begins playing at 50% of the way through its own timeline.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>Interruption Source</strong></td>
+	<td style="text-align:left;">Use this to control the circumstances under which this transition may be interrupted (see <a href="#TransitionInterruption">Transition interruption</a> below).</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>Ordered Interruption</strong></td>
+	<td style="text-align:left;">Determines whether the current transition can be interrupted by other transitions independently of their order (see <a href="#TransitionInterruption">Transition interruption</a> below).</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>Conditions</strong></td>
+	<td style="text-align:left;">A transition can have a single condition, multiple conditions, or no conditions at all. If your transition has no conditions, the Unity Editor only considers the <strong>Exit Time</strong>, and the transition occurs when the exit time is reached. If your transition has one or more conditions, the conditions must all be met before the transition is triggered.<br><br>A condition consists of: <br><br>- An event parameter (the value considered in the condition). <br>- A conditional predicate (if needed,for example, ‘less than’ or ‘greater than’ for floats). <br>- A parameter value (if needed). <br><br>If you have <strong>Has Exit Time</strong> selected for the transition and have one or more conditions, note that the Unity Editor considers whether the conditions are true after the <strong>Exit Time</strong>. This allows you to ensure that your transition occurs during a certain portion of the animation.</td>
+</tr>
+</tbody>
+</table>
+
+<p><a name="TransitionInterruption"></a></p>
+
+<h3>Transition interruption</h3>
+
+<p>Use the <strong>Interruption Source</strong> and <strong>Ordered Interruption</strong> properties to control how your transition can be interrupted.</p>
+
+<p>The interruption order works, conceptually, as if transitions are queued and then parsed for a valid transition from the first transition inserted to the last.</p>
+
+<h4>Interruption Source property</h4>
+
+<p>The transitions in <a href="class-State.html">AnyState</a> are always added first in the queue, then other transitions are queued depending on the value of <strong>Interruption Source</strong>:</p>
+
+<table>
+<colgroup>
+<col style="text-align:left;">
+<col style="text-align:left;">
+</colgroup>
+
+<thead>
+<tr>
+	<th style="text-align:left;"><strong>Value</strong></th>
+	<th style="text-align:left;"><strong>Function</strong></th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+	<td style="text-align:left;"><strong>None</strong></td>
+	<td style="text-align:left;">Don’t add any more transitions.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>Current State</strong></td>
+	<td style="text-align:left;">Queue the transitions from the current state.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>Next State</strong></td>
+	<td style="text-align:left;">Queue the transitions from the next state.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>Current State then Next State</strong></td>
+	<td style="text-align:left;">Queue the transitions from the current state, then queue the ones from the next state.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>Next State then Current State</strong></td>
+	<td style="text-align:left;">Queue the transitions from the next state, then queue the ones from the current state.</td>
+</tr>
+</tbody>
+</table>
+
+<p>
+<strong>Note</strong>: This means that even with the <strong>Interruption Source</strong> set to <strong>None</strong>, transitions can be interrupted by one of the <a href="class-State.html">AnyState</a> transitions.</p>
+
+<h4>Ordered Interruption property</h4>
+
+<p>The property <strong>Ordered Interruption</strong> changes how the queue is parsed.</p>
+
+<p>Depending on its value, parsing the queue ends at a different moment as listed below.</p>
+
+<table>
+<colgroup>
+<col style="text-align:left;">
+<col style="text-align:left;">
+</colgroup>
+
+<thead>
+<tr>
+	<th style="text-align:left;"><strong>Value</strong></th>
+	<th style="text-align:left;"><strong>Ends when</strong></th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+	<td style="text-align:left;"><strong>Checked</strong></td>
+	<td style="text-align:left;">A valid transition or the current transition has been found.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>Unchecked</strong></td>
+	<td style="text-align:left;">A valid transition has been found.</td>
+</tr>
+</tbody>
+</table>
+
+<p>Only an <a href="class-State.html">AnyState</a> transition can be interrupted by itself.</p>
+
+<p>To learn more about transition interruptions, see the Unity blog post <a href="https://blogs.unity3d.com/2016/07/13/wait-ive-changed-my-mind-state-machine-transition-interruptions/">State Machine Transition Interruptions</a>.</p>
+
+<h3>Transition graph</h3>
+
+<p>To manually adjust the settings listed above, you can either enter numbers directly into the fields or use the transition graph. The transition graph modifies the values above when the visual elements are manipulated.</p>
+
+<figure>
+<img src="../uploads/Main/AnimatorTransitionSettingsAndGraph.svg" alt="The Transition settings and graph as shown in the Inspector">
+<figcaption>The Transition settings and graph as shown in the Inspector</figcaption>
+</figure>
+
+<p>Change the transition properties in the graph view using the following directions::</p>
+
+<ul>
+<li>Drag the <strong>Duration “out”</strong> marker to change the <strong>Duration</strong> of the transition.</li>
+<li>Drag the <strong>Duration “in”</strong> marker to change the duration of the transition and the <strong>Exit Time</strong>.</li>
+<li>Drag the target transition to adjust the <strong>Transition Offset</strong>.</li>
+<li>Drag the preview playback marker to scrub through the animation blend in the preview window at the bottom of the Inspector.</li>
+</ul>
+
+<h3>Transitions between Blend Tree states</h3>
+
+<p>If either the current or next state belonging to this transition is a <a href="class-BlendTree.html">Blend Tree</a> state, the Blend Tree parameters appear in the Inspector. Adjust these values to preview how your transition would look with the Blend Tree values set to different configurations.
+If your Blend Tree contains clips of differing lengths, you should test what your transition looks like when showing both the short clip and the long clip. Adjusting these values does not affect how the transition behaves at runtime; they are solely for helping you preview how the transition could look in different situations.</p>
+
+<figure>
+<img src="../uploads/Main/AnimatorTransitionInspectorShowingBlendtreeParams.png" alt="The Blend Tree parameter preview controls, visible when either your current or next state is a Blend Tree state.">
+<figcaption>The Blend Tree parameter preview controls, visible when either your current or next state is a Blend Tree state.</figcaption>
+</figure>
+
+<p><a name="Conditions"></a></p>
+
+<h3>Conditions</h3>
+
+<p>A transition can have a single condition, multiple conditions, or no conditions at all. If your transition has no conditions, the Unity Editor only considers the <strong>Exit Time</strong>, and the transition occurs when the exit time is reached. If your transition has one or more conditions, the conditions must all be met before the transition is triggered.</p>
+
+<p>A condition consists of:</p>
+
+<ul>
+<li>An event parameter, the value of which is considered in the condition.</li>
+<li>A conditional predicate, if needed (for example, less or greater for floats).</li>
+<li>A parameter value, if needed.</li>
+</ul>
+
+<p>If <strong>Has Exit Time</strong> is enabled for the transition and has one or more conditions, these conditions are only checked after the exit time of the state. This allows you to ensure that your transition only occurs during a certain portion of the animation.</p>
+<div class="feedbackbox" id="feedbackbox">
+<div id="rating"><p>Did you find this page useful? Please give it a rating:<br><div id="ratecontent" class="c-rating"></div>
+</p></div>
+<div id="ratingThanks" style="display:none"><p>Thanks for rating this page!</p></div>
+<div id="problem"><p><a name="problem" onclick="document.getElementById('problemType').style.display = '';document.getElementById('problem').style.display = 'none';">Report a problem on this page</a></p></div>
+<div id="problemType" style="display:none"><p>What kind of problem would you like to report?<ul type="problems">
+<li><a name="needcode" onclick="                                                             document.getElementById('problemType').style.display = 'none';                                                             document.getElementById('problemThanks').style.display = '';                                                             SendFeedback('problem-needcode',window.location.href,0);                                                             document.getElementById('problemFormDescription').value='Needs code samples.';                                                             document.getElementById('problemNeedCodeForm').style.display = ''                                                         ">This page needs code samples</a></li>
+<li><a name="code" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-brokencode',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Code samples do not work.';                                                         document.getElementById('problemCodeForm').style.display = ''                                                         ">Code samples do not work</a></li>
+<li><a name="missing" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-missing',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Missing information';                                                         document.getElementById('problemMissingForm').style.display = ''                                                         ">Information is missing</a></li>
+<li><a name="incorrect" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-incorrect',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Incorrect information';                                                         document.getElementById('problemIncorrectForm').style.display = ''                                                         ">Information is incorrect</a></li>
+<li><a name="unclear" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-unclear',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Unclear or confusing information';                                                         document.getElementById('problemUnclearForm').style.display = ''                                                         ">Information is unclear or confusing</a></li>
+<li><a name="language" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-language',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Spelling or grammar error';                                                         document.getElementById('problemLanguageForm').style.display = ''                                                         ">There is a spelling/grammar error on this page</a></li>
+<li><a name="other" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-other',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='This page has a problem';                                                         document.getElementById('problemOtherForm').style.display = ''                                                         ">Something else</a></li>
+</ul>
+<p><known_issues><p>Is something described here not working as you expect it to? It might be a <b>Known Issue</b>. Please check with the Issue Tracker at <a href="https://issuetracker.unity3d.com">issuetracker.unity3d.com</a>.</p></known_issues></p>
+</p></div>
+<div id="problemThanks" style="display:none"><p>Thanks for letting us know! This page has been marked for review based on your feedback.<br><br>If you have time, you can provide more information to help us fix the problem faster.<br><br><a onclick="document.getElementById('problemMoreInfo').style.display = '';document.getElementById('problemThanks').style.display = 'none';">Provide more information</a><br>
+</p></div>
+<div id="problemMoreInfo" style="display:none">
+<p id="problemNeedCodeForm" style="display:none">You've told us this page needs code samples. If you'd like to help us further, you could provide a code sample, or tell us about what kind of code sample you'd like to see:</p>
+<p id="problemCodeForm" style="display:none">You've told us there are code samples on this page which don't work. If you know how to fix it, or have something better we could use instead, please let us know:</p>
+<p id="problemMissingForm" style="display:none">You've told us there is information missing from this page. Please tell us more about what's missing:</p>
+<p id="problemIncorrectForm" style="display:none">You've told us there is incorrect information on this page. If you know what we should change to make it correct, please tell us:</p>
+<p id="problemUnclearForm" style="display:none">You've told us this page has unclear or confusing information. Please tell us more about what you found unclear or confusing, or let us know how we could make it clearer:</p>
+<p id="problemLanguageForm" style="display:none">You've told us there is a spelling or grammar error on this page. Please tell us what's wrong:</p>
+<p id="problemOtherForm" style="display:none">You've told us this page has a problem. Please tell us more about what's wrong:</p>
+<form>
+<textarea id="problemFormSuggestionField" cols="40" rows="5"></textarea><input type="hidden" id="problemFormDescription"><input type="submit" id="problemFormDescriptionSubmit" value="Submit" onclick="                                             document.getElementById('problemMoreInfo').style.display = 'none';                                             document.getElementById('problemMoreInfoThanks').style.display = '';                                             return false;                                             ">
+</form>
+</div>
+<div id="problemMoreInfoThanks" style="display:none"><p>Thanks for helping to make the Unity documentation better!</p></div>
+<script>
+
+                                            var ratecontent = document.querySelector('#ratecontent'); // target element
+                                            var currentRating = 0; // initial rating
+                                            var maxRating= 5; // max rating
+
+                                            // callback to run after setting the rating
+                                            var callback = function(rating) {
+                                                document.getElementById('ratingThanks').style.display = '';
+                                                document.getElementById('ratecontent').style.display = 'none';
+                                                document.getElementById('rating').style.display = 'none';
+                                                SendFeedback("rating",window.location.href,rating);
+                                            };
+
+                                            // rating instance
+                                            var myRating = rating(ratecontent, currentRating, maxRating, callback);
+                                        </script>
+</div>
+<div class="nextprev clear">
+<div class="icon tt left mr1" data-distance="-40|-30|top">
+<span class="prev"><a href="class-State.html"></a></span><div class="tip">Animation States</div>
+</div>
+<div class="icon tt right" data-distance="-40|-30|top">
+<span class="next"><a href="class-AvatarMask.html"></a></span><div class="tip">Avatar Mask</div>
+</div>
+</div>
+</div>
+</body></html>

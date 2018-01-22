@@ -1,0 +1,136 @@
+<html><head><title>html模版</title></head><body>Unity - Manual: Input types</br>
+<div class="breadcrumbs clear"><ul>
+<li><a href="UnityManual.html">Unity User Manual (2018.1 beta)</a></li>
+<li><a href="PlatformSpecific.html">Platform-specific</a></li>
+<li><a href="Windows.html">Windows</a></li>
+<li><a href="windowsholographic.html">Windows Holographic</a></li>
+<li>Input types</li>
+</ul></div>
+<div class="mb20"><div class="nextprev clear">
+<div class="icon tt left mr1" data-distance="-40|-30|top">
+<span class="prev"><a href="windowsholographic-startup.html"></a></span><div class="tip">Running your first application</div>
+</div>
+<div class="icon tt right" data-distance="-40|-30|top">
+<span class="next"><a href="windowsholographic-focuspoint.html"></a></span><div class="tip">Focus Point</div>
+</div>
+</div></div>
+<div class="otherversionswrapper" onmouseover="setOtherVersionsDisplay(true)" onmouseout="setOtherVersionsDisplay(false)">
+<a>Other Versions</a><div class="otherversionscontent" id="OtherVersionsContent" style="display: none;">Cannot access other versions offline!</div>
+</div>
+<div class="scrollToFeedback"><a id="scrollToFeedback">Leave feedback</a></div>
+<h1>Input types</h1>
+<!--BeginSwitchLink--><!--EndSwitchLink-->
+<div class="clear"></div>
+
+<p>Input on HoloLens is different from other platforms. Unlike other platforms, the primary means of interaction are three non-traditional systems:</p>
+
+<ol>
+<li>
+<strong>Gaze</strong>: Where the user is looking in the world.</li>
+<li>
+<strong>Gesture</strong>: Hand signals used to signify commands to the system.</li>
+<li>
+<strong>Voice</strong>: Short, spoken commands, and longer free-form dictation.</li>
+</ol>
+
+<h2>Gaze</h2>
+
+<p>The <strong>Gaze</strong> refers to where the user is looking. On HoloLens, this is fairly precise and can be used to select GameObjects in the world. This can be used to direct commands at specific GameObjects rather than every GameObject in the Scene.</p>
+
+<p>Microsoft provides useful documentation on <a href="https://dev.windows.com/en-us/holographic/gaze_indicator">Gaze indicator</a> and <a href="https://dev.windows.com/en-us/holographic/gaze_targeting">Gaze targeting</a> pages.</p>
+
+<h2>Gesture</h2>
+
+<p>A <strong>Gesture</strong> is a hand signal interpreted by the system. These can be used to represent commands. There are several built-in Gestures you can use in your application, as well as a generic API to recognize custom Gestures. Both built-in Gestures and custom Gestures (via API) are functional in Unity.</p>
+
+<p>Built-in Gestures:</p>
+
+<ul>
+<li>
+<strong>Tap</strong>: With a closed hand and extended thumb and forefinger, press thumb and forefinger together. This is commonly used as a select command on the HoloLens.</li>
+<li>
+<strong>Double Tap</strong>: Two Tap Gestures in rapid succession.</li>
+<li>
+<strong>Hold</strong>: A Tap Gesture, keeping the forefinger and thumb together for one second or more.</li>
+<li>
+<strong>Manipulation</strong>: A Hold Gesture, followed by a translation in space. Distances from the Hold position are reported in the Gesture.</li>
+<li>
+<strong>Navigation</strong>: A Hold gesture, followed by a translation in space. This may be constrained to one or more of the x, y, and z planes, and reports a value from –1 to 1 for each axis.</li>
+</ul>
+
+<p>For more information about gestures, refer to Microsoft’s documentation on <a href="https://dev.windows.com/en-us/holographic/Gesture_design">Gesture design</a>.</p>
+
+<h2>Voice</h2>
+
+<p>
+<strong>Voice</strong> input on HoloLens is provided by the Windows 10 API. Unity supports three styles of input:</p>
+
+<ul>
+<li>
+<strong>Keywords</strong>: Simple commands or phrases set up in code which generate events. This allows you to quickly add voice commands to an application where localization is not an issue. This functionality is provided by the <a href="../ScriptReference/Windows.Speech.KeywordRecognizer.html">KeywordRecognizer</a>.</li>
+<li>
+<strong>Grammars</strong>: A table of commands with semantic meaning which you can localize. Grammars are configured from an xml grammar file (.grxml). See Microsoft’s documentation on <a href="https://msdn.microsoft.com/en-us/library/ms873278.aspx">Creating Grammar Files</a> for more information on the file format. Grammar recognition functionality is provided by the <a href="../ScriptReference/Windows.Speech.GrammarRecognizer.html">GrammarRecognizer</a>.</li>
+<li>
+<strong>Dictation</strong>: A more free-form text-to-speech system that translates longer spoken input into text. Dictation recognition on the HoloLens is only active for short periods of time to prolong battery life. Dictation requires a working Internet connection and is provided by the <a href="../ScriptReference/Windows.Speech.DictationRecognizer.html">DictationRecognizer</a>.</li>
+</ul>
+
+<p>For more information about voice input, refer to Microsoft’s documentation on <a href="https://dev.windows.com/en-us/holographic/Voice_design">Voice design</a>.</p>
+<div class="feedbackbox" id="feedbackbox">
+<div id="rating"><p>Did you find this page useful? Please give it a rating:<br><div id="ratecontent" class="c-rating"></div>
+</p></div>
+<div id="ratingThanks" style="display:none"><p>Thanks for rating this page!</p></div>
+<div id="problem"><p><a name="problem" onclick="document.getElementById('problemType').style.display = '';document.getElementById('problem').style.display = 'none';">Report a problem on this page</a></p></div>
+<div id="problemType" style="display:none"><p>What kind of problem would you like to report?<ul type="problems">
+<li><a name="needcode" onclick="                                                             document.getElementById('problemType').style.display = 'none';                                                             document.getElementById('problemThanks').style.display = '';                                                             SendFeedback('problem-needcode',window.location.href,0);                                                             document.getElementById('problemFormDescription').value='Needs code samples.';                                                             document.getElementById('problemNeedCodeForm').style.display = ''                                                         ">This page needs code samples</a></li>
+<li><a name="code" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-brokencode',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Code samples do not work.';                                                         document.getElementById('problemCodeForm').style.display = ''                                                         ">Code samples do not work</a></li>
+<li><a name="missing" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-missing',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Missing information';                                                         document.getElementById('problemMissingForm').style.display = ''                                                         ">Information is missing</a></li>
+<li><a name="incorrect" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-incorrect',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Incorrect information';                                                         document.getElementById('problemIncorrectForm').style.display = ''                                                         ">Information is incorrect</a></li>
+<li><a name="unclear" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-unclear',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Unclear or confusing information';                                                         document.getElementById('problemUnclearForm').style.display = ''                                                         ">Information is unclear or confusing</a></li>
+<li><a name="language" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-language',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Spelling or grammar error';                                                         document.getElementById('problemLanguageForm').style.display = ''                                                         ">There is a spelling/grammar error on this page</a></li>
+<li><a name="other" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-other',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='This page has a problem';                                                         document.getElementById('problemOtherForm').style.display = ''                                                         ">Something else</a></li>
+</ul>
+<p><known_issues><p>Is something described here not working as you expect it to? It might be a <b>Known Issue</b>. Please check with the Issue Tracker at <a href="https://issuetracker.unity3d.com">issuetracker.unity3d.com</a>.</p></known_issues></p>
+</p></div>
+<div id="problemThanks" style="display:none"><p>Thanks for letting us know! This page has been marked for review based on your feedback.<br><br>If you have time, you can provide more information to help us fix the problem faster.<br><br><a onclick="document.getElementById('problemMoreInfo').style.display = '';document.getElementById('problemThanks').style.display = 'none';">Provide more information</a><br>
+</p></div>
+<div id="problemMoreInfo" style="display:none">
+<p id="problemNeedCodeForm" style="display:none">You've told us this page needs code samples. If you'd like to help us further, you could provide a code sample, or tell us about what kind of code sample you'd like to see:</p>
+<p id="problemCodeForm" style="display:none">You've told us there are code samples on this page which don't work. If you know how to fix it, or have something better we could use instead, please let us know:</p>
+<p id="problemMissingForm" style="display:none">You've told us there is information missing from this page. Please tell us more about what's missing:</p>
+<p id="problemIncorrectForm" style="display:none">You've told us there is incorrect information on this page. If you know what we should change to make it correct, please tell us:</p>
+<p id="problemUnclearForm" style="display:none">You've told us this page has unclear or confusing information. Please tell us more about what you found unclear or confusing, or let us know how we could make it clearer:</p>
+<p id="problemLanguageForm" style="display:none">You've told us there is a spelling or grammar error on this page. Please tell us what's wrong:</p>
+<p id="problemOtherForm" style="display:none">You've told us this page has a problem. Please tell us more about what's wrong:</p>
+<form>
+<textarea id="problemFormSuggestionField" cols="40" rows="5"></textarea><input type="hidden" id="problemFormDescription"><input type="submit" id="problemFormDescriptionSubmit" value="Submit" onclick="                                             document.getElementById('problemMoreInfo').style.display = 'none';                                             document.getElementById('problemMoreInfoThanks').style.display = '';                                             return false;                                             ">
+</form>
+</div>
+<div id="problemMoreInfoThanks" style="display:none"><p>Thanks for helping to make the Unity documentation better!</p></div>
+<script>
+
+                                            var ratecontent = document.querySelector('#ratecontent'); // target element
+                                            var currentRating = 0; // initial rating
+                                            var maxRating= 5; // max rating
+
+                                            // callback to run after setting the rating
+                                            var callback = function(rating) {
+                                                document.getElementById('ratingThanks').style.display = '';
+                                                document.getElementById('ratecontent').style.display = 'none';
+                                                document.getElementById('rating').style.display = 'none';
+                                                SendFeedback("rating",window.location.href,rating);
+                                            };
+
+                                            // rating instance
+                                            var myRating = rating(ratecontent, currentRating, maxRating, callback);
+                                        </script>
+</div>
+<div class="nextprev clear">
+<div class="icon tt left mr1" data-distance="-40|-30|top">
+<span class="prev"><a href="windowsholographic-startup.html"></a></span><div class="tip">Running your first application</div>
+</div>
+<div class="icon tt right" data-distance="-40|-30|top">
+<span class="next"><a href="windowsholographic-focuspoint.html"></a></span><div class="tip">Focus Point</div>
+</div>
+</div>
+</div>
+</body></html>

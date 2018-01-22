@@ -1,0 +1,151 @@
+<html><head><title>html模版</title></head><body>Unity - Manual: Root Motion - how it works</br>
+<div class="breadcrumbs clear"><ul>
+<li><a href="UnityManual.html">Unity User Manual (2018.1 beta)</a></li>
+<li><a href="AnimationSection.html">Animation</a></li>
+<li><a href="AnimatorControllers.html">Animator Controllers</a></li>
+<li><a href="AnimationStateMachines.html">Animation State Machines</a></li>
+<li>Root Motion - how it works</li>
+</ul></div>
+<div class="mb20"><div class="nextprev clear">
+<div class="icon tt left mr1" data-distance="-40|-30|top">
+<span class="prev"><a href="InverseKinematics.html"></a></span><div class="tip">Inverse Kinematics</div>
+</div>
+<div class="icon tt right" data-distance="-40|-30|top">
+<span class="next"><a href="ScriptingRootMotion.html"></a></span><div class="tip">Tutorial: Scripting Root Motion for &quot;in-place&quot; humanoid animations</div>
+</div>
+</div></div>
+<div class="otherversionswrapper" onmouseover="setOtherVersionsDisplay(true)" onmouseout="setOtherVersionsDisplay(false)">
+<a>Other Versions</a><div class="otherversionscontent" id="OtherVersionsContent" style="display: none;">Cannot access other versions offline!</div>
+</div>
+<div class="scrollToFeedback"><a id="scrollToFeedback">Leave feedback</a></div>
+<h1>Root Motion - how it works</h1>
+<!--BeginSwitchLink--><!--EndSwitchLink-->
+<div class="clear"></div>
+
+<h2>Body Transform</h2>
+
+<p>The Body Transform is the mass center of the character. It is used in Mecanim’s retargeting engine and provides the most stable displacement model. The Body Orientation is an average of the lower and upper body orientation relative to the Avatar T-Pose.</p>
+
+<p>The Body Transform and Orientation are stored in the <strong>Animation Clip</strong> (using the <a href="MuscleDefinitions.html">Muscle definitions</a> set up in the Avatar). They are the only world-space curves stored in the <strong>Animation Clip</strong>. Everything else: muscle curves and IK goals (Hands and Feet) are stored relative to the body transform. </p>
+
+<h2>Root Transform</h2>
+
+<p>The Root Transform is a projection on the Y plane of the Body Transform and is computed at runtime. At every frame, a change in the Root Transform is computed. This change in transform is then applied to the Game Object to make it move.</p>
+
+<figure>
+<img src="../uploads/Main/MecanimRootMotionPreview.png" alt="The circle below the character represents the root transform">
+<figcaption>The circle below the character represents the root transform</figcaption>
+</figure>
+
+<h2>Animation Clip Inspector</h2>
+
+<p>The Animation Clip Editor settings - <strong>Root Transform Rotation</strong>, <strong>Root Transform Position (Y)</strong> and <strong>Root Transform Position (XZ)</strong> - let you control the Root Transform projection from the Body Transform. Depending on these settings some parts of the Body Transform may be transferred to Root Transform. For example you can decide if you want the motion Y position to be part of the Root Motion (trajectory) or part of the pose (body transform), which is known as <strong>Baked into Pose</strong>.</p>
+
+<figure>
+<img src="../uploads/Main/MecanimRootMotion.png" alt="">
+</figure>
+
+<h2>Root Transform Rotation</h2>
+
+<p>
+<strong>Bake into Pose:</strong> The orientation will stay on the body transform (or Pose). The Root Orientation will be constant and delta Orientation will be identity. This means that the Game Object will not be rotated at all by that <strong>AnimationClip</strong>.</p>
+
+<p>Only AnimationClips that have similar start and stop Root Orientation should use this option. You will have a Green Light in the UI telling you that an <strong>AnimationClip</strong> is a good candidate. A suitable candidate would be a straight walk or a run.</p>
+
+<p>
+<strong>Based Upon</strong>: This lets you set the orientation of the clip. Using <strong>Body Orientation</strong>, the clip will be oriented to follow the forward vector of body. This default setting works well for most Motion Capture (Mocap) data like walks, runs, and jumps, but it will fail with motion like strafing where the motion is perpendicular to the body’s forward vector. In those cases you can manually adjust the orientation using the <strong>Offset</strong> setting. Finally you have <strong>Original</strong> that will automatically add the authored offset found in the imported clip. It is usually used with Keyframed data to respect orientation that was set by the artist.</p>
+
+<p>
+<strong>Offset</strong>: used to enter the offset when that option is chosen for <strong>Based Upon</strong>.</p>
+
+<h2>Root Transform Position (Y)</h2>
+
+<p>This uses the same concepts described in Root Transform Rotation.</p>
+
+<p>
+<strong>Bake Into Pose</strong>: The Y component of the motion will stay on the Body Transform (Pose). The Y component of the Root Transform will be constant and Delta Root Position Y will be 0. This means that this clip won’t change the Game Object Height. Again you have a Green Light telling you that a clip is a good candidate for baking Y motion into pose.</p>
+
+<p>Most of the <strong>AnimationClips</strong> will enable this setting. Only clips that will change the <strong>GameObject</strong> height should have this turned off, like jump up or down.</p>
+
+<p>Note: the <code>Animator.gravityWeight</code> is driven by Bake Into Pose position Y. When enabled, <code>gravityWeight = 1</code>, when <code>disabled = 0</code>. <strong>gravityWeight</strong> is blended for clips when transitioning between states.</p>
+
+<p>
+<strong>Based Upon:</strong> In a similar way to <strong>Root Transform Rotation</strong> you can choose from <strong>Original</strong> or <strong>Mass Center (Body)</strong>. There is also a <strong>Feet</strong> option that is very convenient for <strong>AnimationClips</strong> that change height (<strong>Bake Into Pose</strong> disabled). When using <strong>Feet</strong> the Root Transform Position Y will match the lowest foot Y for all frames. Thus the blending point always remains around the feet which prevents floating problem when blending or transitioning.</p>
+
+<p>
+<strong>Offset:</strong> In a similar way to <strong>Root Transform Rotation</strong>, you can manually adjust the <strong>AnimationClip</strong> height using the <strong>Offset</strong> setting.</p>
+
+<h2>Root Transform Position (XZ)</h2>
+
+<p>Again, this uses same concepts described in <strong>Root Transform Rotation</strong> and <strong>Root Motion Position (Y).</strong>
+</p>
+
+<p>
+<strong>Bake Into Pose</strong> will usually be used for “Idles” where you want to force the delta Position (XZ) to be 0. It will stop the accumulation of small deltas drifting after many evaluations. It can also be used for a Keyframed clip with <strong>Based Upon</strong> <strong>Original</strong> to force an authored position that was set by the artist.</p>
+
+<h2>Loop Pose</h2>
+
+<p>Loop Pose (like Pose Blending in Blend Trees or Transitions) happens in the referential of Root Transform. Once the Root Transform is computed, the Pose becomes relative to it. The relative Pose difference between Start and Stop frame is computed and distributed over the range of the clip from 0–100%.</p>
+
+<h2>Generic Root Motion and Loop Pose</h2>
+
+<p>This works in essentially the same as Humanoid Root Motion, but instead of using the Body Transform to compute/project a Root Transform, the transform set in <strong>Root Node</strong> is used. The Pose (all the bones which transform below the Root Motion bone) is made relative to the Root Transform.</p>
+<div class="feedbackbox" id="feedbackbox">
+<div id="rating"><p>Did you find this page useful? Please give it a rating:<br><div id="ratecontent" class="c-rating"></div>
+</p></div>
+<div id="ratingThanks" style="display:none"><p>Thanks for rating this page!</p></div>
+<div id="problem"><p><a name="problem" onclick="document.getElementById('problemType').style.display = '';document.getElementById('problem').style.display = 'none';">Report a problem on this page</a></p></div>
+<div id="problemType" style="display:none"><p>What kind of problem would you like to report?<ul type="problems">
+<li><a name="needcode" onclick="                                                             document.getElementById('problemType').style.display = 'none';                                                             document.getElementById('problemThanks').style.display = '';                                                             SendFeedback('problem-needcode',window.location.href,0);                                                             document.getElementById('problemFormDescription').value='Needs code samples.';                                                             document.getElementById('problemNeedCodeForm').style.display = ''                                                         ">This page needs code samples</a></li>
+<li><a name="code" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-brokencode',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Code samples do not work.';                                                         document.getElementById('problemCodeForm').style.display = ''                                                         ">Code samples do not work</a></li>
+<li><a name="missing" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-missing',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Missing information';                                                         document.getElementById('problemMissingForm').style.display = ''                                                         ">Information is missing</a></li>
+<li><a name="incorrect" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-incorrect',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Incorrect information';                                                         document.getElementById('problemIncorrectForm').style.display = ''                                                         ">Information is incorrect</a></li>
+<li><a name="unclear" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-unclear',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Unclear or confusing information';                                                         document.getElementById('problemUnclearForm').style.display = ''                                                         ">Information is unclear or confusing</a></li>
+<li><a name="language" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-language',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Spelling or grammar error';                                                         document.getElementById('problemLanguageForm').style.display = ''                                                         ">There is a spelling/grammar error on this page</a></li>
+<li><a name="other" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-other',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='This page has a problem';                                                         document.getElementById('problemOtherForm').style.display = ''                                                         ">Something else</a></li>
+</ul>
+<p><known_issues><p>Is something described here not working as you expect it to? It might be a <b>Known Issue</b>. Please check with the Issue Tracker at <a href="https://issuetracker.unity3d.com">issuetracker.unity3d.com</a>.</p></known_issues></p>
+</p></div>
+<div id="problemThanks" style="display:none"><p>Thanks for letting us know! This page has been marked for review based on your feedback.<br><br>If you have time, you can provide more information to help us fix the problem faster.<br><br><a onclick="document.getElementById('problemMoreInfo').style.display = '';document.getElementById('problemThanks').style.display = 'none';">Provide more information</a><br>
+</p></div>
+<div id="problemMoreInfo" style="display:none">
+<p id="problemNeedCodeForm" style="display:none">You've told us this page needs code samples. If you'd like to help us further, you could provide a code sample, or tell us about what kind of code sample you'd like to see:</p>
+<p id="problemCodeForm" style="display:none">You've told us there are code samples on this page which don't work. If you know how to fix it, or have something better we could use instead, please let us know:</p>
+<p id="problemMissingForm" style="display:none">You've told us there is information missing from this page. Please tell us more about what's missing:</p>
+<p id="problemIncorrectForm" style="display:none">You've told us there is incorrect information on this page. If you know what we should change to make it correct, please tell us:</p>
+<p id="problemUnclearForm" style="display:none">You've told us this page has unclear or confusing information. Please tell us more about what you found unclear or confusing, or let us know how we could make it clearer:</p>
+<p id="problemLanguageForm" style="display:none">You've told us there is a spelling or grammar error on this page. Please tell us what's wrong:</p>
+<p id="problemOtherForm" style="display:none">You've told us this page has a problem. Please tell us more about what's wrong:</p>
+<form>
+<textarea id="problemFormSuggestionField" cols="40" rows="5"></textarea><input type="hidden" id="problemFormDescription"><input type="submit" id="problemFormDescriptionSubmit" value="Submit" onclick="                                             document.getElementById('problemMoreInfo').style.display = 'none';                                             document.getElementById('problemMoreInfoThanks').style.display = '';                                             return false;                                             ">
+</form>
+</div>
+<div id="problemMoreInfoThanks" style="display:none"><p>Thanks for helping to make the Unity documentation better!</p></div>
+<script>
+
+                                            var ratecontent = document.querySelector('#ratecontent'); // target element
+                                            var currentRating = 0; // initial rating
+                                            var maxRating= 5; // max rating
+
+                                            // callback to run after setting the rating
+                                            var callback = function(rating) {
+                                                document.getElementById('ratingThanks').style.display = '';
+                                                document.getElementById('ratecontent').style.display = 'none';
+                                                document.getElementById('rating').style.display = 'none';
+                                                SendFeedback("rating",window.location.href,rating);
+                                            };
+
+                                            // rating instance
+                                            var myRating = rating(ratecontent, currentRating, maxRating, callback);
+                                        </script>
+</div>
+<div class="nextprev clear">
+<div class="icon tt left mr1" data-distance="-40|-30|top">
+<span class="prev"><a href="InverseKinematics.html"></a></span><div class="tip">Inverse Kinematics</div>
+</div>
+<div class="icon tt right" data-distance="-40|-30|top">
+<span class="next"><a href="ScriptingRootMotion.html"></a></span><div class="tip">Tutorial: Scripting Root Motion for &quot;in-place&quot; humanoid animations</div>
+</div>
+</div>
+</div>
+</body></html>

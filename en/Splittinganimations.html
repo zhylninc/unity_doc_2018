@@ -1,0 +1,150 @@
+<html><head><title>html模版</title></head><body>Unity - Manual: Splitting Animations</br>
+<div class="breadcrumbs clear"><ul>
+<li><a href="UnityManual.html">Unity User Manual (2018.1 beta)</a></li>
+<li><a href="AnimationSection.html">Animation</a></li>
+<li><a href="AnimationClips.html">Animation Clips</a></li>
+<li><a href="AnimationsImport.html">Animation from external sources </a></li>
+<li>Splitting Animations</li>
+</ul></div>
+<div class="mb20"><div class="nextprev clear">
+<div class="icon tt left mr1" data-distance="-40|-30|top">
+<span class="prev"><a href="GenericAnimations.html"></a></span><div class="tip"> Non-humanoid Animations</div>
+</div>
+<div class="icon tt right" data-distance="-40|-30|top">
+<span class="next"><a href="LoopingAnimationClips.html"></a></span><div class="tip">Looping animation clips</div>
+</div>
+</div></div>
+<div class="otherversionswrapper" onmouseover="setOtherVersionsDisplay(true)" onmouseout="setOtherVersionsDisplay(false)">
+<a>Other Versions</a><div class="otherversionscontent" id="OtherVersionsContent" style="display: none;">Cannot access other versions offline!</div>
+</div>
+<div class="scrollToFeedback"><a id="scrollToFeedback">Leave feedback</a></div>
+<h1>Splitting Animations</h1>
+<!--BeginSwitchLink--><!--EndSwitchLink-->
+<div class="clear"></div>
+
+<p>An animated character typically has a number of different movements that are activated in the game in different circumstances. These movements are called <a href="class-AnimationClip.html"><strong>Animation Clips</strong></a>. For example, we might have separate animation clips for walking, running, jumping, throwing, dying, etc. Depending on the way the model was animated, these separate movements might be imported as distinct animation clips or as one single clip where each movement simply follows on from the previous one. In cases where there is only a single clip, the clip must be <strong>split</strong> into its component animation clips within Unity, which will involve some extra steps in your workflow.</p>
+
+<h2>Working with models that have pre-split animations</h2>
+
+<p>The simplest types of models to work with are those that contain pre-split animations. If you have an animation like that, the <strong>Animations</strong> tab in the <strong>Animation Importer Inspector</strong> will look like this:</p>
+
+<figure>
+<img src="../uploads/Main/MecanimImportPreSplitAnimation.png" alt="">
+</figure>
+
+<p>You will see a list available clips which you can preview by pressing Play in the <strong>Preview Window</strong> (lower down in the inspector). The frame ranges of the clips can be edited, if needed. </p>
+
+<h2>Working with models that have unsplit animations</h2>
+
+<p>For models where the clips are supplied as one continuous animation, the <strong>Animation</strong> tab in the <strong>Animation Importer Inspector</strong> will look like this:</p>
+
+<figure>
+<img src="../uploads/Main/MecanimImportAnimationNoSplit.png" alt="">
+</figure>
+
+<p>In cases like this, you can define the frame ranges that correspond to each of the separate animation sequences (walking, jumping, etc). You can create a new animation clip by pressing (+) and selecting the range of frames that are included in it. </p>
+
+<p>For example:</p>
+
+<ul>
+<li>walk animation during frames 1 - 33</li>
+<li>run animation during frames 41 - 57</li>
+<li>kick animation during frames 81 - 97</li>
+</ul>
+
+<figure>
+<img src="../uploads/Main/MecanimImportAnimationSplitting.png" alt="The Import Settings Options for Animation">
+<figcaption>The Import Settings Options for Animation</figcaption>
+</figure>
+
+<p>In the Import Settings, the <strong>Split Animations</strong> table is where you tell Unity which frames in your asset file make up which Animation Clip. The names you specify here are used to activate them in your game.</p>
+
+<p>For further information about the animation inspector, see the <a href="class-AnimationClip.html">Animation Clip component reference page</a>.</p>
+
+<h2>Animating objects and properties in Unity using Mecanim</h2>
+
+<p>You can create animation clips which animate any object or component property using Unity’s animation window. These animation clips can then be arranged into a state machine in exactly the same way as external animation clips such as character animations. For example, you could animate the motion of a <a href="class-Camera.html">camera</a>, the colour of a <a href="class-Light.html">light</a>, the individual frames of a <a href="SpriteEditor.html">sprite</a> animation, or a public property of a <a href="CreatingAndUsingScripts.html">script</a>.</p>
+
+<p>To set up a Character or other GameObject for animation, you need to follow this process:</p>
+
+<ul>
+<li>Create a <strong>New Animator Controller</strong>
+</li>
+<li>Open the <strong>Animator Window</strong> to edit the Animator Controller</li>
+<li>Drag the desired animation clip into the <strong>Animator Controller Window</strong>
+</li>
+<li>Drag the model asset into the Hierarchy.</li>
+<li>Add the animator controller to the <strong>Animator component</strong> of the asset.</li>
+</ul>
+
+<h3>Importing Animations using multiple model files</h3>
+
+<p>Another way to import animations is to follow a naming scheme that Unity allows for the animation files. You create separate model files and name them with the convention ‘modelName@animationName.fbx’. For example, for a model called “goober”, you could import separate idle, walk, jump and walljump animations using files named “goober@idle.fbx”, “goober@walk.fbx”, “goober@jump.fbx” and “goober@walljump.fbx”. Only the animation data from these files will be used, even if the original files are exported with mesh data.</p>
+
+<figure>
+<img src="../uploads/Main/animation_at_naming.png" alt="An example of four animation files for an animated character (note that the .fbx suffix is not shown within Unity)">
+<figcaption>An example of four animation files for an animated character (note that the .fbx suffix is not shown within Unity)</figcaption>
+</figure>
+
+<p>Unity automatically imports all four files and collects all animations to the file without the @ sign in. In the example above, the goober.mb file will be set up to reference idle, jump, walk and wallJump automatically.</p>
+
+<p>For FBX files, simply export a model file with no animation ticked (eg, goober.fbx) and the 4 clips as goober@_animname_.fbx by exporting the desired keyframes for each (enable animation in the FBX dialog).</p>
+<div class="feedbackbox" id="feedbackbox">
+<div id="rating"><p>Did you find this page useful? Please give it a rating:<br><div id="ratecontent" class="c-rating"></div>
+</p></div>
+<div id="ratingThanks" style="display:none"><p>Thanks for rating this page!</p></div>
+<div id="problem"><p><a name="problem" onclick="document.getElementById('problemType').style.display = '';document.getElementById('problem').style.display = 'none';">Report a problem on this page</a></p></div>
+<div id="problemType" style="display:none"><p>What kind of problem would you like to report?<ul type="problems">
+<li><a name="needcode" onclick="                                                             document.getElementById('problemType').style.display = 'none';                                                             document.getElementById('problemThanks').style.display = '';                                                             SendFeedback('problem-needcode',window.location.href,0);                                                             document.getElementById('problemFormDescription').value='Needs code samples.';                                                             document.getElementById('problemNeedCodeForm').style.display = ''                                                         ">This page needs code samples</a></li>
+<li><a name="code" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-brokencode',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Code samples do not work.';                                                         document.getElementById('problemCodeForm').style.display = ''                                                         ">Code samples do not work</a></li>
+<li><a name="missing" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-missing',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Missing information';                                                         document.getElementById('problemMissingForm').style.display = ''                                                         ">Information is missing</a></li>
+<li><a name="incorrect" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-incorrect',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Incorrect information';                                                         document.getElementById('problemIncorrectForm').style.display = ''                                                         ">Information is incorrect</a></li>
+<li><a name="unclear" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-unclear',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Unclear or confusing information';                                                         document.getElementById('problemUnclearForm').style.display = ''                                                         ">Information is unclear or confusing</a></li>
+<li><a name="language" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-language',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Spelling or grammar error';                                                         document.getElementById('problemLanguageForm').style.display = ''                                                         ">There is a spelling/grammar error on this page</a></li>
+<li><a name="other" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-other',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='This page has a problem';                                                         document.getElementById('problemOtherForm').style.display = ''                                                         ">Something else</a></li>
+</ul>
+<p><known_issues><p>Is something described here not working as you expect it to? It might be a <b>Known Issue</b>. Please check with the Issue Tracker at <a href="https://issuetracker.unity3d.com">issuetracker.unity3d.com</a>.</p></known_issues></p>
+</p></div>
+<div id="problemThanks" style="display:none"><p>Thanks for letting us know! This page has been marked for review based on your feedback.<br><br>If you have time, you can provide more information to help us fix the problem faster.<br><br><a onclick="document.getElementById('problemMoreInfo').style.display = '';document.getElementById('problemThanks').style.display = 'none';">Provide more information</a><br>
+</p></div>
+<div id="problemMoreInfo" style="display:none">
+<p id="problemNeedCodeForm" style="display:none">You've told us this page needs code samples. If you'd like to help us further, you could provide a code sample, or tell us about what kind of code sample you'd like to see:</p>
+<p id="problemCodeForm" style="display:none">You've told us there are code samples on this page which don't work. If you know how to fix it, or have something better we could use instead, please let us know:</p>
+<p id="problemMissingForm" style="display:none">You've told us there is information missing from this page. Please tell us more about what's missing:</p>
+<p id="problemIncorrectForm" style="display:none">You've told us there is incorrect information on this page. If you know what we should change to make it correct, please tell us:</p>
+<p id="problemUnclearForm" style="display:none">You've told us this page has unclear or confusing information. Please tell us more about what you found unclear or confusing, or let us know how we could make it clearer:</p>
+<p id="problemLanguageForm" style="display:none">You've told us there is a spelling or grammar error on this page. Please tell us what's wrong:</p>
+<p id="problemOtherForm" style="display:none">You've told us this page has a problem. Please tell us more about what's wrong:</p>
+<form>
+<textarea id="problemFormSuggestionField" cols="40" rows="5"></textarea><input type="hidden" id="problemFormDescription"><input type="submit" id="problemFormDescriptionSubmit" value="Submit" onclick="                                             document.getElementById('problemMoreInfo').style.display = 'none';                                             document.getElementById('problemMoreInfoThanks').style.display = '';                                             return false;                                             ">
+</form>
+</div>
+<div id="problemMoreInfoThanks" style="display:none"><p>Thanks for helping to make the Unity documentation better!</p></div>
+<script>
+
+                                            var ratecontent = document.querySelector('#ratecontent'); // target element
+                                            var currentRating = 0; // initial rating
+                                            var maxRating= 5; // max rating
+
+                                            // callback to run after setting the rating
+                                            var callback = function(rating) {
+                                                document.getElementById('ratingThanks').style.display = '';
+                                                document.getElementById('ratecontent').style.display = 'none';
+                                                document.getElementById('rating').style.display = 'none';
+                                                SendFeedback("rating",window.location.href,rating);
+                                            };
+
+                                            // rating instance
+                                            var myRating = rating(ratecontent, currentRating, maxRating, callback);
+                                        </script>
+</div>
+<div class="nextprev clear">
+<div class="icon tt left mr1" data-distance="-40|-30|top">
+<span class="prev"><a href="GenericAnimations.html"></a></span><div class="tip"> Non-humanoid Animations</div>
+</div>
+<div class="icon tt right" data-distance="-40|-30|top">
+<span class="next"><a href="LoopingAnimationClips.html"></a></span><div class="tip">Looping animation clips</div>
+</div>
+</div>
+</div>
+</body></html>

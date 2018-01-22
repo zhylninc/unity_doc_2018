@@ -1,0 +1,383 @@
+<html><head><title>html模版</title></head><body>Unity - Manual: Custom Editors</br>
+<div class="breadcrumbs clear"><ul>
+<li><a href="UnityManual.html">Unity User Manual (2018.1 beta)</a></li>
+<li><a href="UnityOverview.html">Working in Unity</a></li>
+<li><a href="AdvancedEditor.html">Advanced Editor Topics</a></li>
+<li><a href="ExtendingTheEditor.html">Extending the Editor</a></li>
+<li>Custom Editors</li>
+</ul></div>
+<div class="mb20"><div class="nextprev clear">
+<div class="icon tt left mr1" data-distance="-40|-30|top">
+<span class="prev"><a href="editor-PropertyDrawers.html"></a></span><div class="tip">Property Drawers</div>
+</div>
+<div class="icon tt right" data-distance="-40|-30|top">
+<span class="next"><a href="TreeViewAPI.html"></a></span><div class="tip"> TreeView</div>
+</div>
+</div></div>
+<div class="otherversionswrapper" onmouseover="setOtherVersionsDisplay(true)" onmouseout="setOtherVersionsDisplay(false)">
+<a>Other Versions</a><div class="otherversionscontent" id="OtherVersionsContent" style="display: none;">Cannot access other versions offline!</div>
+</div>
+<div class="scrollToFeedback"><a id="scrollToFeedback">Leave feedback</a></div>
+<h1>Custom Editors</h1>
+<!--BeginSwitchLink--><!--EndSwitchLink-->
+<div class="clear"></div>
+
+<p>A key to increasing the speed of game creation is to create custom editors for commonly used components. For the sake of example, we’ll use this very simple script that always keeps an object looking at a point. Add this script to your project, and place it onto a cube gameobject in your scene. The script should be named “LookAtPoint”</p>
+
+<pre><code>//C# Example (LookAtPoint.cs)
+using UnityEngine;
+public class LookAtPoint : MonoBehaviour
+{
+    public Vector3 lookAtPoint = Vector3.zero;
+
+    void Update()
+    {
+        transform.LookAt(lookAtPoint);
+    }
+}
+</code></pre>
+
+<pre><code>//JS Example (LookAtPoint.js)
+#pragma strict
+var lookAtPoint = Vector3.zero;
+function Update()
+{
+    transform.LookAt(lookAtPoint);
+}
+</code></pre>
+
+<p>This will keep an object oriented towards a world-space point. Currently this script will only become active in <strong>play mode</strong>, that is, when the game is running. When writing editor scripts it’s often useful to have certain scripts execute during <strong>edit mode</strong> too, while the game is not running. You can do this by adding an ExecuteInEditMode attribute to it:</p>
+
+<pre><code>//C# Example (LookAtPoint.cs)
+using UnityEngine;
+[ExecuteInEditMode]
+public class LookAtPoint : MonoBehaviour
+{
+    public Vector3 lookAtPoint = Vector3.zero;
+
+    void Update()
+    {
+        transform.LookAt(lookAtPoint);
+    }
+}
+</code></pre>
+
+<pre><code>//JS Example (LookAtPoint.js)
+#pragma strict
+@script ExecuteInEditMode()
+var lookAtPoint = Vector3.zero;
+function Update()
+{
+    transform.LookAt(lookAtPoint);
+}
+</code></pre>
+
+<p>Now if you move the object which has this script around in the editor, or change the values of “Look At Point” in the inspector - even when not in play mode - the object will update its orientation correspondingly so it remains looking at the target point in world space.</p>
+
+<h3>Making a Custom Editor</h3>
+
+<p>The above demonstrates how you can get simple scripts running during edit-time, however this alone does not allow you to create your own editor tools. The next step is to create a <strong>Custom Editor</strong> for script we just created.</p>
+
+<p>When you create a script in Unity, by default it inherits from MonoBehaviour, and therefore is a <strong>Component</strong> which can be placed on a game object. When placed on a game object, the Inspector displays a default interface for viewing and editing all public variables that can be shown - such as integers, floats, strings, Vector3’s, etc.</p>
+
+<p>Here’s how the default inspector looks for our script above:</p>
+
+<figure>
+<img src="../uploads/Main/NoCustomInspector.png" alt="A default inspector with a public Vector3 field">
+<figcaption>A default inspector with a public Vector3 field</figcaption>
+</figure>
+
+<p><strong>A custom editor is a separate script which <em>replaces</em> this default layout with any editor controls that you choose.</strong></p>
+
+<p>To begin creating the custom editor for our LookAtPoint script, you should create another script with the same name, but with “Editor” appended. So for our example: “LookAtPointEditor”.</p>
+
+<pre><code>//c# Example (LookAtPointEditor.cs)
+using UnityEngine;
+using UnityEditor;
+​
+[CustomEditor(typeof(LookAtPoint))]
+[CanEditMultipleObjects]
+public class LookAtPointEditor : Editor 
+{
+    SerializedProperty lookAtPoint;
+    
+    void OnEnable()
+    {
+        lookAtPoint = serializedObject.FindProperty(&quot;lookAtPoint&quot;);
+    }
+​
+    public override void OnInspectorGUI()
+    {
+        serializedObject.Update();
+        EditorGUILayout.PropertyField(lookAtPoint);
+        serializedObject.ApplyModifiedProperties();
+    }
+}
+</code></pre>
+
+<pre><code>//JS Example (LookAtPointEditor.js)
+#pragma strict
+@CustomEditor(LookAtPoint)
+@CanEditMultipleObjects
+class LookAtPointEditor extends Editor {
+
+    var lookAtPoint : SerializedProperty;
+
+    function OnEnable()
+    {
+        lookAtPoint = serializedObject.FindProperty(&quot;lookAtPoint&quot;);
+    }
+
+    function OnInspectorGUI()
+    {
+        serializedObject.Update();
+        EditorGUILayout.PropertyField(lookAtPoint);
+        serializedObject.ApplyModifiedProperties();
+    }
+}
+</code></pre>
+
+<p>This class has to derive from <strong>Editor</strong>. The <strong>CustomEditor</strong> attribute informs Unity which component it should act as an editor for. The <strong>CanEditMultipleObjects</strong> attribute tells Unity that you can select multiple objects with this editor and change them all at the same time.</p>
+
+<p>The code in OnInspectorGUI is executed whenever Unity displays the editor in the Inspector. You can put any GUI code in here - it works just like OnGUI does for games, but is run inside the Inspector. Editor defines the target property that you can use to access the object being inspected. Here’s what our custom inspector looks like:</p>
+
+<figure>
+<img src="../uploads/Main/CustomInspector.png" alt="">
+</figure>
+
+<p>It’s not very interesting because all we have done so far is to recreate the Vector3 field, exactly like the default inspector shows us, so the result looks very similar (although the “Script” field is now not present, because we didn’t add any inspector code to show it).</p>
+
+<p>However now that you have control over how the inspector is displayed in an Editor script, you can use any code you like to lay out the inspector fields, allow the user to adjust the values, and even display graphics or other visual elements. In fact all of the inspectors you see within the Unity Editor including the more complex inspectors such as the terrain system and animation import settings, are all made using the same API that you have access to when creating your own custom Editors.</p>
+
+<p>Here’s a simple example which extends your editor script to display a message indicating whether the target point is above or below the gameobject:</p>
+
+<pre><code>//c# Example (LookAtPointEditor.cs)
+using UnityEngine;
+using UnityEditor;
+
+[CustomEditor(typeof(LookAtPoint))]
+[CanEditMultipleObjects]
+public class LookAtPointEditor : Editor
+{
+    SerializedProperty lookAtPoint;
+
+    void OnEnable()
+    {
+        lookAtPoint = serializedObject.FindProperty(&quot;lookAtPoint&quot;);
+    }
+
+    public override void OnInspectorGUI()
+    {
+        serializedObject.Update();
+        EditorGUILayout.PropertyField(lookAtPoint);
+        serializedObject.ApplyModifiedProperties();
+        if (lookAtPoint.vector3Value.y &gt; (target as LookAtPoint).transform.position.y)
+        {
+            EditorGUILayout.LabelField(&quot;(Above this object)&quot;);
+        }
+        if (lookAtPoint.vector3Value.y &lt; (target as LookAtPoint).transform.position.y)
+        {
+            EditorGUILayout.LabelField(&quot;(Below this object)&quot;);
+        }
+    }
+}
+</code></pre>
+
+<pre><code>//JS Example (LookAtPointEditor.js)
+#pragma strict
+@CustomEditor(LookAtPoint)
+@CanEditMultipleObjects
+class LookAtPointEditor extends Editor {
+
+    var lookAtPoint : SerializedProperty;
+
+    function OnEnable()
+    {
+        lookAtPoint = serializedObject.FindProperty(&quot;lookAtPoint&quot;);
+    }
+
+    function OnInspectorGUI()
+    {
+        serializedObject.Update();
+        EditorGUILayout.PropertyField(lookAtPoint);
+        serializedObject.ApplyModifiedProperties();
+        if (lookAtPoint.vector3Value.y &gt; (target as LookAtPoint).transform.position.y)
+        {
+            EditorGUILayout.LabelField(&quot;(Above this object)&quot;);
+        }
+        if (lookAtPoint.vector3Value.y &lt; (target as LookAtPoint).transform.position.y)
+        {
+            EditorGUILayout.LabelField(&quot;(Below this object)&quot;);
+        }
+    }
+}
+</code></pre>
+
+<p>So now we have an new element to our inspector which prints a message showing if the target point is above or below the gameobject.</p>
+
+<figure>
+<img src="../uploads/Main/CustomInspector2.png" alt="">
+</figure>
+
+<p>This is just scratching the surface of what you can do with Editor scripting. You have full access to all the IMGUI commands to draw any type of interface, including rendering scenes using a camera within editor windows.</p>
+
+<h3>Scene View Additions</h3>
+
+<p>You can add extra code to the Scene View by implementing an OnSceneGUI in your custom editor. </p>
+
+<p>OnSceneGUI works just like OnInspectorGUI - except it gets run in the scene view. To help you make your own editing controls in the scene view, you can use the functions defined in <a href="../ScriptReference/Handles.html">Handles</a> class. All functions in there are designed for working in 3D Scene views.</p>
+
+<pre><code>//C# Example (LookAtPointEditor.cs)
+using UnityEngine;
+using UnityEditor;
+
+[CustomEditor(typeof(LookAtPoint))]
+[CanEditMultipleObjects]
+public class LookAtPointEditor : Editor
+{
+    SerializedProperty lookAtPoint;
+
+    void OnEnable()
+    {
+        lookAtPoint = serializedObject.FindProperty(&quot;lookAtPoint&quot;);
+    }
+
+    public override void OnInspectorGUI()
+    {
+        serializedObject.Update();
+        EditorGUILayout.PropertyField(lookAtPoint);
+        if (lookAtPoint.vector3Value.y &gt; (target as LookAtPoint).transform.position.y)
+        {
+            EditorGUILayout.LabelField(&quot;(Above this object)&quot;);
+        }
+        if (lookAtPoint.vector3Value.y &lt; (target as LookAtPoint).transform.position.y)
+        {
+            EditorGUILayout.LabelField(&quot;(Below this object)&quot;);
+        }
+        
+            
+        serializedObject.ApplyModifiedProperties();
+    }
+
+    public void OnSceneGUI()
+    {
+        var t = (target as LookAtPoint);
+
+        EditorGUI.BeginChangeCheck();
+        Vector3 pos = Handles.PositionHandle(t.lookAtPoint, Quaternion.identity);
+        if (EditorGUI.EndChangeCheck())
+        {
+            Undo.RecordObject(target, &quot;Move point&quot;);
+            t.lookAtPoint = pos;
+            t.Update();
+        }
+    }
+}
+</code></pre>
+
+<pre><code>//JS Example (LookAtPointEditor.js)
+#pragma strict
+@CustomEditor(LookAtPointJS)
+@CanEditMultipleObjects
+class LookAtPointEditorJS extends Editor {
+
+    var lookAtPoint : SerializedProperty;
+
+    function OnEnable()
+    {
+        lookAtPoint = serializedObject.FindProperty(&quot;lookAtPoint&quot;);
+    }
+
+    function OnInspectorGUI()
+    {
+        serializedObject.Update();
+        EditorGUILayout.PropertyField(lookAtPoint);
+        serializedObject.ApplyModifiedProperties();
+        if (lookAtPoint.vector3Value.y &gt; (target as LookAtPointJS).transform.position.y)
+        {
+            EditorGUILayout.LabelField(&quot;(Above this object)&quot;);
+        }
+        if (lookAtPoint.vector3Value.y &lt; (target as LookAtPointJS).transform.position.y)
+        {
+            EditorGUILayout.LabelField(&quot;(Below this object)&quot;);
+        }
+    }
+
+
+    function OnSceneGUI()
+    {
+        var t : LookAtPointJS = (target as LookAtPointJS);
+
+        EditorGUI.BeginChangeCheck();
+        var pos = Handles.PositionHandle(t.lookAtPoint, Quaternion.identity);
+        if (EditorGUI.EndChangeCheck())
+        {
+            Undo.RecordObject(target, &quot;Move point&quot;);
+            t.lookAtPoint = pos;
+            t.Update();
+        }
+    }
+}
+
+</code></pre>
+
+<p>If you want to put 2D GUI objects (GUI, EditorGUI and friends), you need to wrap them in calls to Handles.BeginGUI() and Handles.EndGUI().</p>
+<div class="feedbackbox" id="feedbackbox">
+<div id="rating"><p>Did you find this page useful? Please give it a rating:<br><div id="ratecontent" class="c-rating"></div>
+</p></div>
+<div id="ratingThanks" style="display:none"><p>Thanks for rating this page!</p></div>
+<div id="problem"><p><a name="problem" onclick="document.getElementById('problemType').style.display = '';document.getElementById('problem').style.display = 'none';">Report a problem on this page</a></p></div>
+<div id="problemType" style="display:none"><p>What kind of problem would you like to report?<ul type="problems">
+<li><a name="needcode" onclick="                                                             document.getElementById('problemType').style.display = 'none';                                                             document.getElementById('problemThanks').style.display = '';                                                             SendFeedback('problem-needcode',window.location.href,0);                                                             document.getElementById('problemFormDescription').value='Needs code samples.';                                                             document.getElementById('problemNeedCodeForm').style.display = ''                                                         ">This page needs code samples</a></li>
+<li><a name="code" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-brokencode',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Code samples do not work.';                                                         document.getElementById('problemCodeForm').style.display = ''                                                         ">Code samples do not work</a></li>
+<li><a name="missing" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-missing',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Missing information';                                                         document.getElementById('problemMissingForm').style.display = ''                                                         ">Information is missing</a></li>
+<li><a name="incorrect" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-incorrect',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Incorrect information';                                                         document.getElementById('problemIncorrectForm').style.display = ''                                                         ">Information is incorrect</a></li>
+<li><a name="unclear" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-unclear',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Unclear or confusing information';                                                         document.getElementById('problemUnclearForm').style.display = ''                                                         ">Information is unclear or confusing</a></li>
+<li><a name="language" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-language',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Spelling or grammar error';                                                         document.getElementById('problemLanguageForm').style.display = ''                                                         ">There is a spelling/grammar error on this page</a></li>
+<li><a name="other" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-other',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='This page has a problem';                                                         document.getElementById('problemOtherForm').style.display = ''                                                         ">Something else</a></li>
+</ul>
+<p><known_issues><p>Is something described here not working as you expect it to? It might be a <b>Known Issue</b>. Please check with the Issue Tracker at <a href="https://issuetracker.unity3d.com">issuetracker.unity3d.com</a>.</p></known_issues></p>
+</p></div>
+<div id="problemThanks" style="display:none"><p>Thanks for letting us know! This page has been marked for review based on your feedback.<br><br>If you have time, you can provide more information to help us fix the problem faster.<br><br><a onclick="document.getElementById('problemMoreInfo').style.display = '';document.getElementById('problemThanks').style.display = 'none';">Provide more information</a><br>
+</p></div>
+<div id="problemMoreInfo" style="display:none">
+<p id="problemNeedCodeForm" style="display:none">You've told us this page needs code samples. If you'd like to help us further, you could provide a code sample, or tell us about what kind of code sample you'd like to see:</p>
+<p id="problemCodeForm" style="display:none">You've told us there are code samples on this page which don't work. If you know how to fix it, or have something better we could use instead, please let us know:</p>
+<p id="problemMissingForm" style="display:none">You've told us there is information missing from this page. Please tell us more about what's missing:</p>
+<p id="problemIncorrectForm" style="display:none">You've told us there is incorrect information on this page. If you know what we should change to make it correct, please tell us:</p>
+<p id="problemUnclearForm" style="display:none">You've told us this page has unclear or confusing information. Please tell us more about what you found unclear or confusing, or let us know how we could make it clearer:</p>
+<p id="problemLanguageForm" style="display:none">You've told us there is a spelling or grammar error on this page. Please tell us what's wrong:</p>
+<p id="problemOtherForm" style="display:none">You've told us this page has a problem. Please tell us more about what's wrong:</p>
+<form>
+<textarea id="problemFormSuggestionField" cols="40" rows="5"></textarea><input type="hidden" id="problemFormDescription"><input type="submit" id="problemFormDescriptionSubmit" value="Submit" onclick="                                             document.getElementById('problemMoreInfo').style.display = 'none';                                             document.getElementById('problemMoreInfoThanks').style.display = '';                                             return false;                                             ">
+</form>
+</div>
+<div id="problemMoreInfoThanks" style="display:none"><p>Thanks for helping to make the Unity documentation better!</p></div>
+<script>
+
+                                            var ratecontent = document.querySelector('#ratecontent'); // target element
+                                            var currentRating = 0; // initial rating
+                                            var maxRating= 5; // max rating
+
+                                            // callback to run after setting the rating
+                                            var callback = function(rating) {
+                                                document.getElementById('ratingThanks').style.display = '';
+                                                document.getElementById('ratecontent').style.display = 'none';
+                                                document.getElementById('rating').style.display = 'none';
+                                                SendFeedback("rating",window.location.href,rating);
+                                            };
+
+                                            // rating instance
+                                            var myRating = rating(ratecontent, currentRating, maxRating, callback);
+                                        </script>
+</div>
+<div class="nextprev clear">
+<div class="icon tt left mr1" data-distance="-40|-30|top">
+<span class="prev"><a href="editor-PropertyDrawers.html"></a></span><div class="tip">Property Drawers</div>
+</div>
+<div class="icon tt right" data-distance="-40|-30|top">
+<span class="next"><a href="TreeViewAPI.html"></a></span><div class="tip"> TreeView</div>
+</div>
+</div>
+</div>
+</body></html>

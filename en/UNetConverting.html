@@ -1,0 +1,197 @@
+<html><head><title>html模版</title></head><body>Unity - Manual: Converting a single-player game to Unity Multiplayer</br>
+<div class="breadcrumbs clear"><ul>
+<li><a href="UnityManual.html">Unity User Manual (2018.1 beta)</a></li>
+<li><a href="UNet.html">Multiplayer and Networking</a></li>
+<li><a href="UNetOverview.html">Networking Overview</a></li>
+<li><a href="UNetUsingHLAPI.html">The High Level API</a></li>
+<li>Converting a single-player game to Unity Multiplayer</li>
+</ul></div>
+<div class="mb20"><div class="nextprev clear">
+<div class="icon tt left mr1" data-distance="-40|-30|top">
+<span class="prev"><a href="UNetSceneObjects.html"></a></span><div class="tip">Scene Objects</div>
+</div>
+<div class="icon tt right" data-distance="-40|-30|top">
+<span class="next"><a href="UNetLobby.html"></a></span><div class="tip"> Multiplayer Lobby</div>
+</div>
+</div></div>
+<div class="otherversionswrapper" onmouseover="setOtherVersionsDisplay(true)" onmouseout="setOtherVersionsDisplay(false)">
+<a>Other Versions</a><div class="otherversionscontent" id="OtherVersionsContent" style="display: none;">Cannot access other versions offline!</div>
+</div>
+<div class="scrollToFeedback"><a id="scrollToFeedback">Leave feedback</a></div>
+<h1>Converting a single-player game to Unity Multiplayer</h1>
+<!--BeginSwitchLink--><!--EndSwitchLink-->
+<div class="clear"></div>
+
+<p>This document describes steps to converting a single player game to a multiplayer game, using the new Unity Multiplayer networking system. The process described here is a simplified, higher level version of the actual process for a real game; it doesn’t always work exactly like this, but it provides a basic recipe for the process.</p>
+
+<h2>NetworkManager set-up</h2>
+
+<ul>
+<li>Add a new GameObject to the Scene and rename it “NetworkManager”.</li>
+<li>Add the <strong>NetworkManager</strong> component to the “NetworkManager” GameObject.</li>
+<li>Add the <strong>NetworkManagerHUD</strong> component to the GameObject. This provides the default UI for managing the network game state.</li>
+</ul>
+
+<p>See <a href="UNetManager.html">Using the NetworkManager</a>.</p>
+
+<h2>Player Prefab set-up</h2>
+
+<ul>
+<li>Find the Prefab for the player GameObject in the game, or create a Prefab from the player GameObject</li>
+<li>Add the <strong>NetworkIdentity</strong> component to the player Prefab</li>
+<li>Check the LocalPlayerAuthority box on the NetworkIdentity</li>
+<li>Set the <code>playerPrefab</code> in the NetworkManager’s <strong>Spawn Info</strong> section to the player Prefab</li>
+<li>Remove the player GameObject instance from the Scene if it exists in the Scene</li>
+</ul>
+
+<p>See <a href="UNetPlayers.html">Player Objects</a> for more information.</p>
+
+<h2>Player movement</h2>
+
+<ul>
+<li>Add a NetworkTransform component to the player Prefab</li>
+<li>Update input and control scripts to respect <code>isLocalPlayer</code>
+</li>
+<li>Fix Camera to use spawned player and <code>isLocalPlayer</code>
+</li>
+</ul>
+
+<p>For example, this script only processes input for the local player:</p>
+
+<pre><code>using UnityEngine;
+using UnityEngine.Networking;
+
+public class Controls : NetworkBehaviour
+{
+    void Update()
+    {
+        if (!isLocalPlayer)
+        {
+            // exit from update if this is not the local player
+            return;
+        }
+
+        // handle player input for movement
+    }
+}
+</code></pre>
+
+<h2>Basic player game state</h2>
+
+<ul>
+<li>Make scripts that contain important data into NetworkBehaviours instead of MonoBehaviours</li>
+<li>Make important member variables into SyncVars</li>
+</ul>
+
+<p>See <a href="UNetStateSync.html">State Synchronization</a>.</p>
+
+<h2>Networked actions</h2>
+
+<ul>
+<li>Make scripts that perform important actions into NetworkBehaviours instead of MonoBehaviours</li>
+<li>Update functions that perform important player actions to be commands</li>
+</ul>
+
+<p>See <a href="UNetActions.html">Networked Actions</a>.</p>
+
+<h2>Non-player GameObjects</h2>
+
+<p>Fix non-player prefabs such as enemies:</p>
+
+<ul>
+<li>Add the <strong>NetworkIdentify</strong> component</li>
+<li>Add the <strong>NetworkTransform</strong> component</li>
+<li>Register spawnable Prefabs with the <strong>NetworkManager</strong>
+</li>
+<li>Update scripts with game state and actions</li>
+</ul>
+
+<h2>Spawners</h2>
+
+<ul>
+<li>Potentially change spawner scripts to be NetworkBehaviours</li>
+<li>Modify spawners to only run on the server (use isServer property or the <code>OnStartServer()</code> function)</li>
+<li>Call <code>NetworkServer.Spawn()</code> for created GameObjects</li>
+</ul>
+
+<h2>Spawn positions for players</h2>
+
+<ul>
+<li>Add a new GameObject and place it at player’s start location</li>
+<li>Add the <strong>NetworkStartPosition</strong> component to the new GameObject</li>
+</ul>
+
+<h2>Lobby</h2>
+
+<ul>
+<li>Create Lobby Scene</li>
+<li>Add a new GameObject to the Scene and rename it to “NetworkLobbyManager”.</li>
+<li>Add the NetworkLobbyManager component to the new GameObject.</li>
+<li>Configure the Manager:
+
+<ul>
+<li>Scenes</li>
+<li>Prefabs</li>
+<li>Spawners</li>
+</ul>
+</li>
+</ul>
+<div class="feedbackbox" id="feedbackbox">
+<div id="rating"><p>Did you find this page useful? Please give it a rating:<br><div id="ratecontent" class="c-rating"></div>
+</p></div>
+<div id="ratingThanks" style="display:none"><p>Thanks for rating this page!</p></div>
+<div id="problem"><p><a name="problem" onclick="document.getElementById('problemType').style.display = '';document.getElementById('problem').style.display = 'none';">Report a problem on this page</a></p></div>
+<div id="problemType" style="display:none"><p>What kind of problem would you like to report?<ul type="problems">
+<li><a name="needcode" onclick="                                                             document.getElementById('problemType').style.display = 'none';                                                             document.getElementById('problemThanks').style.display = '';                                                             SendFeedback('problem-needcode',window.location.href,0);                                                             document.getElementById('problemFormDescription').value='Needs code samples.';                                                             document.getElementById('problemNeedCodeForm').style.display = ''                                                         ">This page needs code samples</a></li>
+<li><a name="code" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-brokencode',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Code samples do not work.';                                                         document.getElementById('problemCodeForm').style.display = ''                                                         ">Code samples do not work</a></li>
+<li><a name="missing" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-missing',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Missing information';                                                         document.getElementById('problemMissingForm').style.display = ''                                                         ">Information is missing</a></li>
+<li><a name="incorrect" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-incorrect',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Incorrect information';                                                         document.getElementById('problemIncorrectForm').style.display = ''                                                         ">Information is incorrect</a></li>
+<li><a name="unclear" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-unclear',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Unclear or confusing information';                                                         document.getElementById('problemUnclearForm').style.display = ''                                                         ">Information is unclear or confusing</a></li>
+<li><a name="language" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-language',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Spelling or grammar error';                                                         document.getElementById('problemLanguageForm').style.display = ''                                                         ">There is a spelling/grammar error on this page</a></li>
+<li><a name="other" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-other',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='This page has a problem';                                                         document.getElementById('problemOtherForm').style.display = ''                                                         ">Something else</a></li>
+</ul>
+<p><known_issues><p>Is something described here not working as you expect it to? It might be a <b>Known Issue</b>. Please check with the Issue Tracker at <a href="https://issuetracker.unity3d.com">issuetracker.unity3d.com</a>.</p></known_issues></p>
+</p></div>
+<div id="problemThanks" style="display:none"><p>Thanks for letting us know! This page has been marked for review based on your feedback.<br><br>If you have time, you can provide more information to help us fix the problem faster.<br><br><a onclick="document.getElementById('problemMoreInfo').style.display = '';document.getElementById('problemThanks').style.display = 'none';">Provide more information</a><br>
+</p></div>
+<div id="problemMoreInfo" style="display:none">
+<p id="problemNeedCodeForm" style="display:none">You've told us this page needs code samples. If you'd like to help us further, you could provide a code sample, or tell us about what kind of code sample you'd like to see:</p>
+<p id="problemCodeForm" style="display:none">You've told us there are code samples on this page which don't work. If you know how to fix it, or have something better we could use instead, please let us know:</p>
+<p id="problemMissingForm" style="display:none">You've told us there is information missing from this page. Please tell us more about what's missing:</p>
+<p id="problemIncorrectForm" style="display:none">You've told us there is incorrect information on this page. If you know what we should change to make it correct, please tell us:</p>
+<p id="problemUnclearForm" style="display:none">You've told us this page has unclear or confusing information. Please tell us more about what you found unclear or confusing, or let us know how we could make it clearer:</p>
+<p id="problemLanguageForm" style="display:none">You've told us there is a spelling or grammar error on this page. Please tell us what's wrong:</p>
+<p id="problemOtherForm" style="display:none">You've told us this page has a problem. Please tell us more about what's wrong:</p>
+<form>
+<textarea id="problemFormSuggestionField" cols="40" rows="5"></textarea><input type="hidden" id="problemFormDescription"><input type="submit" id="problemFormDescriptionSubmit" value="Submit" onclick="                                             document.getElementById('problemMoreInfo').style.display = 'none';                                             document.getElementById('problemMoreInfoThanks').style.display = '';                                             return false;                                             ">
+</form>
+</div>
+<div id="problemMoreInfoThanks" style="display:none"><p>Thanks for helping to make the Unity documentation better!</p></div>
+<script>
+
+                                            var ratecontent = document.querySelector('#ratecontent'); // target element
+                                            var currentRating = 0; // initial rating
+                                            var maxRating= 5; // max rating
+
+                                            // callback to run after setting the rating
+                                            var callback = function(rating) {
+                                                document.getElementById('ratingThanks').style.display = '';
+                                                document.getElementById('ratecontent').style.display = 'none';
+                                                document.getElementById('rating').style.display = 'none';
+                                                SendFeedback("rating",window.location.href,rating);
+                                            };
+
+                                            // rating instance
+                                            var myRating = rating(ratecontent, currentRating, maxRating, callback);
+                                        </script>
+</div>
+<div class="nextprev clear">
+<div class="icon tt left mr1" data-distance="-40|-30|top">
+<span class="prev"><a href="UNetSceneObjects.html"></a></span><div class="tip">Scene Objects</div>
+</div>
+<div class="icon tt right" data-distance="-40|-30|top">
+<span class="next"><a href="UNetLobby.html"></a></span><div class="tip"> Multiplayer Lobby</div>
+</div>
+</div>
+</div>
+</body></html>

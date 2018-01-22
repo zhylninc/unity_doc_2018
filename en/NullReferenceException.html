@@ -1,0 +1,170 @@
+<html><head><title>html模版</title></head><body>Unity - Manual:  What is a Null Reference Exception?</br>
+<div class="breadcrumbs clear"><ul>
+<li><a href="UnityManual.html">Unity User Manual (2018.1 beta)</a></li>
+<li><a href="ScriptingSection.html">Scripting</a></li>
+<li><a href="ScriptingConcepts.html">Scripting Overview</a></li>
+<li> What is a Null Reference Exception?</li>
+</ul></div>
+<div class="mb20"><div class="nextprev clear">
+<div class="icon tt left mr1" data-distance="-40|-30|top">
+<span class="prev"><a href="UnityEvents.html"></a></span><div class="tip">UnityEvents</div>
+</div>
+<div class="icon tt right" data-distance="-40|-30|top">
+<span class="next"><a href="ScriptingImportantClasses.html"></a></span><div class="tip">Important Classes </div>
+</div>
+</div></div>
+<div class="otherversionswrapper" onmouseover="setOtherVersionsDisplay(true)" onmouseout="setOtherVersionsDisplay(false)">
+<a>Other Versions</a><div class="otherversionscontent" id="OtherVersionsContent" style="display: none;">Cannot access other versions offline!</div>
+</div>
+<div class="scrollToFeedback"><a id="scrollToFeedback">Leave feedback</a></div>
+<h1>What is a Null Reference Exception?</h1>
+<!--BeginSwitchLink--><!--EndSwitchLink-->
+<div class="clear"></div>
+
+<p>A <code>NullReferenceException</code> happens when you try to access a reference variable that isn’t referencing any object. If a reference variable isn’t referencing an object, then it’ll be treated as <code>null</code>. The run-time will tell you that you are trying to access an object, when the variable is <code>null</code> by issuing a <code>NullReferenceException</code>.</p>
+
+<p>Reference variables in c# and JavaScript are similar in concept to pointers in C and C++. Reference types default to <code>null</code> to indicate that they are not referencing any object. Hence, if you try and access the object that is being referenced and there isn’t one, you will get a <code>NullReferenceException</code>.</p>
+
+<p>When you get a <code>NullReferenceException</code> in your code it means that you have forgotten to set a variable before using it. The error message will look something like:</p>
+
+<pre><code>NullReferenceException: Object reference not set to an instance of an object
+  at Example.Start () [0x0000b] in /Unity/projects/nre/Assets/Example.cs:10 
+</code></pre>
+
+<p>This error message says that a <code>NullReferenceException</code> happened on line 10 of the script file <code>Example.cs</code>. Also, the message says that the exception happened inside the <code>Start()</code> function. This makes the Null Reference Exception easy to find and fix. In this example, the code is:</p>
+
+<pre><code>//c# example
+using UnityEngine;
+using System.Collections;
+
+public class Example : MonoBehaviour {
+
+    // Use this for initialization
+    void Start () {
+        GameObject go = GameObject.Find(&quot;wibble&quot;);
+        Debug.Log(go.name);
+    }
+
+}
+</code></pre>
+
+<p>The code simply looks for a game object called “wibble”. In this example there is no game object with that name, so the <code>Find()</code> function returns <code>null</code>. On the next line (line 9) we use the <code>go</code> variable and try and print out the name of the game object it references. Because we are accessing a game object that doesn’t exist the run-time gives us a <code>NullReferenceException</code>
+</p>
+
+<h2>Null Checks</h2>
+
+<p>Although it can be frustrating when this happens it just means the script needs to be more careful. The solution in this simple example is to change the code like this:</p>
+
+<pre><code>using UnityEngine;
+using System.Collections;
+
+public class Example : MonoBehaviour {
+
+    void Start () {
+        GameObject go = GameObject.Find(&quot;wibble&quot;);
+        if (go) {
+            Debug.Log(go.name);
+        } else {
+            Debug.Log(&quot;No game object called wibble found&quot;);
+        }
+    }
+
+}
+</code></pre>
+
+<p>Now, before we try and do anything with the <code>go</code> variable, we check to see that it is not <code>null</code>. If it it <code>null</code>, then we display a message.</p>
+
+<h2>Try/Catch Blocks</h2>
+
+<p>Another cause for <code>NullReferenceException</code> is to use a variable that should be initialised in the Inspector. If you forget to do this, then the variable will be <code>null</code>. A different way to deal with <code>NullReferenceException</code> is to use try/catch block. For example, this code:</p>
+
+<pre><code>using UnityEngine;
+using System;
+using System.Collections;
+
+public class Example2 : MonoBehaviour {
+
+    public Light myLight; // set in the inspector
+
+    void Start () {
+        try {
+            myLight.color = Color.yellow;
+        }       
+        catch (NullReferenceException ex) {
+            Debug.Log(&quot;myLight was not set in the inspector&quot;);
+        }
+    }
+
+}
+</code></pre>
+
+<p>In this code example, the variable called <code>myLight</code> is a <code>Light</code> which should be set in the Inspector window. If this variable is not set, then it will default to <code>null</code>. Attempting to change the color of the light in the <code>try</code> block causes a <code>NullReferenceException</code> which is picked up by the <code>catch</code> block. The <code>catch</code> block displays a message which might be more helpful to artists and game designers, and reminds them to set the light in the inspector.</p>
+
+<h2>Summary</h2>
+
+<ul>
+<li>
+<code>NullReferenceException</code> happens when your script code tries to use a variable which isn’t set (referencing) and object.</li>
+<li>The error message that appears tells you a great deal about where in the code the problem happens.</li>
+<li>
+<code>NullReferenceException</code> can be avoided by writing code that checks for <code>null</code> before accessing an object, or uses try/catch blocks.</li>
+</ul>
+<div class="feedbackbox" id="feedbackbox">
+<div id="rating"><p>Did you find this page useful? Please give it a rating:<br><div id="ratecontent" class="c-rating"></div>
+</p></div>
+<div id="ratingThanks" style="display:none"><p>Thanks for rating this page!</p></div>
+<div id="problem"><p><a name="problem" onclick="document.getElementById('problemType').style.display = '';document.getElementById('problem').style.display = 'none';">Report a problem on this page</a></p></div>
+<div id="problemType" style="display:none"><p>What kind of problem would you like to report?<ul type="problems">
+<li><a name="needcode" onclick="                                                             document.getElementById('problemType').style.display = 'none';                                                             document.getElementById('problemThanks').style.display = '';                                                             SendFeedback('problem-needcode',window.location.href,0);                                                             document.getElementById('problemFormDescription').value='Needs code samples.';                                                             document.getElementById('problemNeedCodeForm').style.display = ''                                                         ">This page needs code samples</a></li>
+<li><a name="code" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-brokencode',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Code samples do not work.';                                                         document.getElementById('problemCodeForm').style.display = ''                                                         ">Code samples do not work</a></li>
+<li><a name="missing" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-missing',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Missing information';                                                         document.getElementById('problemMissingForm').style.display = ''                                                         ">Information is missing</a></li>
+<li><a name="incorrect" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-incorrect',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Incorrect information';                                                         document.getElementById('problemIncorrectForm').style.display = ''                                                         ">Information is incorrect</a></li>
+<li><a name="unclear" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-unclear',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Unclear or confusing information';                                                         document.getElementById('problemUnclearForm').style.display = ''                                                         ">Information is unclear or confusing</a></li>
+<li><a name="language" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-language',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Spelling or grammar error';                                                         document.getElementById('problemLanguageForm').style.display = ''                                                         ">There is a spelling/grammar error on this page</a></li>
+<li><a name="other" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-other',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='This page has a problem';                                                         document.getElementById('problemOtherForm').style.display = ''                                                         ">Something else</a></li>
+</ul>
+<p><known_issues><p>Is something described here not working as you expect it to? It might be a <b>Known Issue</b>. Please check with the Issue Tracker at <a href="https://issuetracker.unity3d.com">issuetracker.unity3d.com</a>.</p></known_issues></p>
+</p></div>
+<div id="problemThanks" style="display:none"><p>Thanks for letting us know! This page has been marked for review based on your feedback.<br><br>If you have time, you can provide more information to help us fix the problem faster.<br><br><a onclick="document.getElementById('problemMoreInfo').style.display = '';document.getElementById('problemThanks').style.display = 'none';">Provide more information</a><br>
+</p></div>
+<div id="problemMoreInfo" style="display:none">
+<p id="problemNeedCodeForm" style="display:none">You've told us this page needs code samples. If you'd like to help us further, you could provide a code sample, or tell us about what kind of code sample you'd like to see:</p>
+<p id="problemCodeForm" style="display:none">You've told us there are code samples on this page which don't work. If you know how to fix it, or have something better we could use instead, please let us know:</p>
+<p id="problemMissingForm" style="display:none">You've told us there is information missing from this page. Please tell us more about what's missing:</p>
+<p id="problemIncorrectForm" style="display:none">You've told us there is incorrect information on this page. If you know what we should change to make it correct, please tell us:</p>
+<p id="problemUnclearForm" style="display:none">You've told us this page has unclear or confusing information. Please tell us more about what you found unclear or confusing, or let us know how we could make it clearer:</p>
+<p id="problemLanguageForm" style="display:none">You've told us there is a spelling or grammar error on this page. Please tell us what's wrong:</p>
+<p id="problemOtherForm" style="display:none">You've told us this page has a problem. Please tell us more about what's wrong:</p>
+<form>
+<textarea id="problemFormSuggestionField" cols="40" rows="5"></textarea><input type="hidden" id="problemFormDescription"><input type="submit" id="problemFormDescriptionSubmit" value="Submit" onclick="                                             document.getElementById('problemMoreInfo').style.display = 'none';                                             document.getElementById('problemMoreInfoThanks').style.display = '';                                             return false;                                             ">
+</form>
+</div>
+<div id="problemMoreInfoThanks" style="display:none"><p>Thanks for helping to make the Unity documentation better!</p></div>
+<script>
+
+                                            var ratecontent = document.querySelector('#ratecontent'); // target element
+                                            var currentRating = 0; // initial rating
+                                            var maxRating= 5; // max rating
+
+                                            // callback to run after setting the rating
+                                            var callback = function(rating) {
+                                                document.getElementById('ratingThanks').style.display = '';
+                                                document.getElementById('ratecontent').style.display = 'none';
+                                                document.getElementById('rating').style.display = 'none';
+                                                SendFeedback("rating",window.location.href,rating);
+                                            };
+
+                                            // rating instance
+                                            var myRating = rating(ratecontent, currentRating, maxRating, callback);
+                                        </script>
+</div>
+<div class="nextprev clear">
+<div class="icon tt left mr1" data-distance="-40|-30|top">
+<span class="prev"><a href="UnityEvents.html"></a></span><div class="tip">UnityEvents</div>
+</div>
+<div class="icon tt right" data-distance="-40|-30|top">
+<span class="next"><a href="ScriptingImportantClasses.html"></a></span><div class="tip">Important Classes </div>
+</div>
+</div>
+</div>
+</body></html>

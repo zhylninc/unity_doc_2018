@@ -1,0 +1,140 @@
+<html><head><title>html模版</title></head><body>Unity - Manual:  Memory</br>
+<div class="breadcrumbs clear"><ul>
+<li><a href="UnityManual.html">Unity User Manual (2018.1 beta)</a></li>
+<li><a href="BestPracticeGuides.html"> Best practice guides</a></li>
+<li><a href="BestPracticeUnderstandingPerformanceInUnity.html"> Understanding optimization in Unity</a></li>
+<li> Memory</li>
+</ul></div>
+<div class="mb20"><div class="nextprev clear">
+<div class="icon tt left mr1" data-distance="-40|-30|top">
+<span class="prev"><a href="BestPracticeUnderstandingPerformanceInUnity1.html"></a></span><div class="tip"> Profiling</div>
+</div>
+<div class="icon tt right" data-distance="-40|-30|top">
+<span class="next"><a href="BestPracticeUnderstandingPerformanceInUnity3.html"></a></span><div class="tip"> Coroutines</div>
+</div>
+</div></div>
+<div class="otherversionswrapper" onmouseover="setOtherVersionsDisplay(true)" onmouseout="setOtherVersionsDisplay(false)">
+<a>Other Versions</a><div class="otherversionscontent" id="OtherVersionsContent" style="display: none;">Cannot access other versions offline!</div>
+</div>
+<div class="scrollToFeedback"><a id="scrollToFeedback">Leave feedback</a></div>
+<h1>Memory</h1>
+<!--BeginSwitchLink--><!--EndSwitchLink-->
+<div class="clear"></div>
+
+<p>Memory consumption is a critical performance indicator, and is especially important on platforms with limited memory resources, such as low-end mobile devices.</p>
+
+<h2>Profiling memory consumption</h2>
+
+<p>Diagnosing memory issues in Unity is best performed with <a href="https://bitbucket.org/Unity-Technologies/memoryprofiler">an open-source memory visualization tool</a> available from Unity’s Bitbucket. Integration of this tool is as simple as downloading the linked repository and dropping the included <em>Editor</em> folder into a project.</p>
+
+<p>The tool can be used with any version of Unity from 5.3 onwards. It can capture a wealth of information on native- and managed-code memory consumption when attached to an application built with IL2CPP.</p>
+
+<p>To use the tool, simply build a project with an IL2CPP scripting backend and deploy it to the appropriate device. Attach Unity’s regular in-editor CPU profiler, then open the Memory Profiler window (menu: <strong>Window</strong> &gt; <strong>MemoryProfilerWindow</strong>) and selet <strong>Take Snapshot</strong>.</p>
+
+<p>The application on device pauses for a short time as data is gathered and transmitted to the Unity Editor. Then, the Unity Editor pauses to parse the received data; this can require a significant amount of time. For very memory-intensive applications, a trace might require 10–30 minutes to be parsed.</p>
+
+<p>During this parse-and-load operation, patience is recommended.</p>
+
+<figure>
+<img src="../uploads/Main/UnderstandingPerformanceinUnity-MemorySection_image_0.png" alt="">
+</figure>
+
+<p>This screenshot is from a Standard Assets Scene running on an iOS device, and shows that over three-quarters of memory usage is attributable to four very large Textures, all related to the aircraft’s fuselage.</p>
+
+<p>This visualization can be zoomed. Click each box in the application to see more information about it.</p>
+
+<h3>Identifying duplicated Textures</h3>
+
+<p>One common memory problem is the duplication of Assets in memory. As Textures are often the most memory-intensive Assets in a project, Texture duplication is one of the most common memory problems found in Unity projects.</p>
+
+<p>Duplicated Assets can be identified by locating two objects of the same type and same size, which appear to have been loaded from the same Asset. In the detail pane of the new Memory Profiler, examine the <strong>Name</strong> and <strong>InstanceID</strong> fields of the seemingly-identical objects.</p>
+
+<p>The <strong>Name</strong> field is based on the name of the Asset file from which the object was loaded; generally, it is the file name without the file’s path or extension. The <strong>InstanceID</strong> field indicates the internal identification number assigned by the Unity runtime; this number is unique during a single run of a Unity game(1).</p>
+
+<figure>
+<img src="../uploads/Main/UnderstandingPerformanceinUnity-MemorySection_image_1.png" alt="">
+</figure>
+
+<p>This diagram demonstrates a simple example of this problem. On the left and right sides of the diagram are screenshots taken from the Detail pane of the 5.4 Memory Profiler. The Assets shown in these screenshots are two Textures loaded separately in memory. The Textures have identical names and sizes, suggesting that they may be duplicates. By examining the project’s “Assets” folder, it can be determined that there is only one Asset file named <em>wood-floorboards-texture</em>, which very strongly points towards asset duplication.</p>
+
+<p>Each individual UnityEngine.Object in memory has a unique instance ID, assigned to it when the object is created. As these two Textures have different instance IDs, it is certain that they represent two different sets of Texture data that are loaded into memory.</p>
+
+<p>As the file names and Asset sizes are identical, while the instance IDs are different, it is certain that these two objects represent a Texture that has been duplicated in memory (NOTE:
+ If there are Textures with identical filenames in the project, then this judgment is not absolute, but still strongly suggestive when correlated with the identical file sizes.).</p>
+
+<h4>AssetBundles and Asset duplication</h4>
+
+<p>The most common cause of Texture and Asset duplication in memory is the improper unloading of AssetBundles. See Unity’s <a href="http://unity3d.com/learn/tutorials/topics/best-practices/guide-assetbundles-and-resources?playlist=30089">Best Practice Guide on AssetBundles</a> for a description of this problem. The key section is <a href="http://unity3d.com/learn/tutorials/topics/best-practices/assetbundle-usage-patterns?playlist=30089">Managing Loaded Assets</a>.</p>
+
+<h3>Examining image buffer, Image Effect &amp; RenderTexture memory usage</h3>
+
+<p>It is also possible to visualize the memory required to provide render buffers to Image Effects and RenderTexture objects in the memory visualizer.</p>
+
+<figure>
+<img src="../uploads/Main/UnderstandingPerformanceinUnity-MemorySection_image_2.png" alt="">
+</figure>
+
+<p>The above screenshot demonstrates a simple Scene with a handful of Unity’s Cinematic Image Effects applied to it. The Image Effects allocate temporary render buffers in order to perform their computations; in particular, the Bloom effect allocates several buffers of decreasing size. Due to the high resolution of Retina iOS devices, these temporary buffers consume significantly more memory than the rest of the project combined.</p>
+
+<p>Consider that an iPad Air 2 renders at 2048x1536 – this is beyond the 1080p resolution often targeted on modern consoles and PCs, but is running on a tablet device. A full-screen temporary render buffer consumes a full 24 or 36 megabytes of memory, depending on the format of the buffer. This can be reduced by 75% by halving the pixel dimensions of the render buffer. This often does not significantly degrade the visual quality of the result.</p>
+
+<p>One way to optimize Image Effects’ use of temporary render buffers and other GPU resources is to create a single “uber” Image Effect that performs all of the disparate calculations at once. When using Unity 5.5 or newer, it is possible to use the new <a href="https://github.com/Unity-Technologies/PostProcessing">UberFX</a> (available from <a href="https://github.com/Unity-Technologies/PostProcessing">github</a> package; this package provides a configurable “uber” Image Effect that can perform all of the operations provided by the Cinematic Image Effects with less overhead than individual Image Effects.</p>
+<div class="feedbackbox" id="feedbackbox">
+<div id="rating"><p>Did you find this page useful? Please give it a rating:<br><div id="ratecontent" class="c-rating"></div>
+</p></div>
+<div id="ratingThanks" style="display:none"><p>Thanks for rating this page!</p></div>
+<div id="problem"><p><a name="problem" onclick="document.getElementById('problemType').style.display = '';document.getElementById('problem').style.display = 'none';">Report a problem on this page</a></p></div>
+<div id="problemType" style="display:none"><p>What kind of problem would you like to report?<ul type="problems">
+<li><a name="needcode" onclick="                                                             document.getElementById('problemType').style.display = 'none';                                                             document.getElementById('problemThanks').style.display = '';                                                             SendFeedback('problem-needcode',window.location.href,0);                                                             document.getElementById('problemFormDescription').value='Needs code samples.';                                                             document.getElementById('problemNeedCodeForm').style.display = ''                                                         ">This page needs code samples</a></li>
+<li><a name="code" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-brokencode',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Code samples do not work.';                                                         document.getElementById('problemCodeForm').style.display = ''                                                         ">Code samples do not work</a></li>
+<li><a name="missing" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-missing',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Missing information';                                                         document.getElementById('problemMissingForm').style.display = ''                                                         ">Information is missing</a></li>
+<li><a name="incorrect" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-incorrect',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Incorrect information';                                                         document.getElementById('problemIncorrectForm').style.display = ''                                                         ">Information is incorrect</a></li>
+<li><a name="unclear" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-unclear',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Unclear or confusing information';                                                         document.getElementById('problemUnclearForm').style.display = ''                                                         ">Information is unclear or confusing</a></li>
+<li><a name="language" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-language',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Spelling or grammar error';                                                         document.getElementById('problemLanguageForm').style.display = ''                                                         ">There is a spelling/grammar error on this page</a></li>
+<li><a name="other" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-other',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='This page has a problem';                                                         document.getElementById('problemOtherForm').style.display = ''                                                         ">Something else</a></li>
+</ul>
+<p><known_issues><p>Is something described here not working as you expect it to? It might be a <b>Known Issue</b>. Please check with the Issue Tracker at <a href="https://issuetracker.unity3d.com">issuetracker.unity3d.com</a>.</p></known_issues></p>
+</p></div>
+<div id="problemThanks" style="display:none"><p>Thanks for letting us know! This page has been marked for review based on your feedback.<br><br>If you have time, you can provide more information to help us fix the problem faster.<br><br><a onclick="document.getElementById('problemMoreInfo').style.display = '';document.getElementById('problemThanks').style.display = 'none';">Provide more information</a><br>
+</p></div>
+<div id="problemMoreInfo" style="display:none">
+<p id="problemNeedCodeForm" style="display:none">You've told us this page needs code samples. If you'd like to help us further, you could provide a code sample, or tell us about what kind of code sample you'd like to see:</p>
+<p id="problemCodeForm" style="display:none">You've told us there are code samples on this page which don't work. If you know how to fix it, or have something better we could use instead, please let us know:</p>
+<p id="problemMissingForm" style="display:none">You've told us there is information missing from this page. Please tell us more about what's missing:</p>
+<p id="problemIncorrectForm" style="display:none">You've told us there is incorrect information on this page. If you know what we should change to make it correct, please tell us:</p>
+<p id="problemUnclearForm" style="display:none">You've told us this page has unclear or confusing information. Please tell us more about what you found unclear or confusing, or let us know how we could make it clearer:</p>
+<p id="problemLanguageForm" style="display:none">You've told us there is a spelling or grammar error on this page. Please tell us what's wrong:</p>
+<p id="problemOtherForm" style="display:none">You've told us this page has a problem. Please tell us more about what's wrong:</p>
+<form>
+<textarea id="problemFormSuggestionField" cols="40" rows="5"></textarea><input type="hidden" id="problemFormDescription"><input type="submit" id="problemFormDescriptionSubmit" value="Submit" onclick="                                             document.getElementById('problemMoreInfo').style.display = 'none';                                             document.getElementById('problemMoreInfoThanks').style.display = '';                                             return false;                                             ">
+</form>
+</div>
+<div id="problemMoreInfoThanks" style="display:none"><p>Thanks for helping to make the Unity documentation better!</p></div>
+<script>
+
+                                            var ratecontent = document.querySelector('#ratecontent'); // target element
+                                            var currentRating = 0; // initial rating
+                                            var maxRating= 5; // max rating
+
+                                            // callback to run after setting the rating
+                                            var callback = function(rating) {
+                                                document.getElementById('ratingThanks').style.display = '';
+                                                document.getElementById('ratecontent').style.display = 'none';
+                                                document.getElementById('rating').style.display = 'none';
+                                                SendFeedback("rating",window.location.href,rating);
+                                            };
+
+                                            // rating instance
+                                            var myRating = rating(ratecontent, currentRating, maxRating, callback);
+                                        </script>
+</div>
+<div class="nextprev clear">
+<div class="icon tt left mr1" data-distance="-40|-30|top">
+<span class="prev"><a href="BestPracticeUnderstandingPerformanceInUnity1.html"></a></span><div class="tip"> Profiling</div>
+</div>
+<div class="icon tt right" data-distance="-40|-30|top">
+<span class="next"><a href="BestPracticeUnderstandingPerformanceInUnity3.html"></a></span><div class="tip"> Coroutines</div>
+</div>
+</div>
+</div>
+</body></html>

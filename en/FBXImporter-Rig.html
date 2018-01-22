@@ -1,0 +1,199 @@
+<html><head><title>html模版</title></head><body>Unity - Manual:  Model Importer: Rig</br>
+<div class="breadcrumbs clear"><ul>
+<li><a href="UnityManual.html">Unity User Manual (2018.1 beta)</a></li>
+<li><a href="AnimationSection.html">Animation</a></li>
+<li><a href="comp-AnimationGroup.html">Animation Reference</a></li>
+<li><a href="class-FBXImporter.html"> Importing models</a></li>
+<li> Model Importer: Rig</li>
+</ul></div>
+<div class="mb20"><div class="nextprev clear">
+<div class="icon tt left mr1" data-distance="-40|-30|top">
+<span class="prev"><a href="FBXImporter-Model.html"></a></span><div class="tip"> Model Importer: Model</div>
+</div>
+<div class="icon tt right" data-distance="-40|-30|top">
+<span class="next"><a href="FBXImporter-Animations.html"></a></span><div class="tip"> Model Importer: Animations</div>
+</div>
+</div></div>
+<div class="otherversionswrapper" onmouseover="setOtherVersionsDisplay(true)" onmouseout="setOtherVersionsDisplay(false)">
+<a>Other Versions</a><div class="otherversionscontent" id="OtherVersionsContent" style="display: none;">Cannot access other versions offline!</div>
+</div>
+<div class="scrollToFeedback"><a id="scrollToFeedback">Leave feedback</a></div>
+<h1>Model Importer: Rig</h1>
+<!--BeginSwitchLink--><!--EndSwitchLink-->
+<div class="clear"></div>
+
+<p>The <strong>Rig</strong> tab allows you to assign or create an avatar definition to your imported skinned Model so that you can animate it. See documentation on <a href="AssetPreparationandImport.html">Asset Preparation and Import</a> for more details.</p>
+
+<p>By default, the <strong>Rig</strong> tab looks like this:</p>
+
+<figure>
+<img src="../uploads/Main/Rig-0.png" alt="The Rig tab with Animation Type set to None">
+<figcaption>The <strong>Rig</strong> tab with <strong>Animation Type</strong> set to <strong>None</strong></figcaption>
+</figure>
+
+<p>There are three <strong>Animation Type</strong> options:</p>
+
+<ul>
+<li><strong>Generic</strong></li>
+<li><strong>Humanoid</strong></li>
+<li><strong>Legacy</strong></li>
+</ul>
+
+<h2>Animation Type: Generic</h2>
+
+<p>If you have a non humanoid character e.g. a quadruped, or any animatable entity that you wish to use with <a href="AnimationOverview.html">Mecanim</a> choose Generic. After choosing you will then need to identify a bone in the drop down to use as the root node.</p>
+
+<figure>
+<img src="../uploads/Main/Rig-1.png" alt="The Rig tab with Animation Type set to Generic">
+<figcaption>The <strong>Rig</strong> tab with <strong>Animation Type</strong> set to <strong>Generic</strong></figcaption>
+</figure>
+
+<h2>Animation Type: Humanoid</h2>
+
+<p>If you have a humanoid character (ie, two legs, two arms and a head) then choose Humanoid and ‘Create from this model’. An Avatar will be created to best match the bone hierarchy - see <a href="AvatarCreationandSetup.html">Avatar Creation and Setup</a> or you can pick an alternative avatar Definition that has already been set up.</p>
+
+<figure>
+<img src="../uploads/Main/MecanimImporterRigTab.png" alt="The Rig tab with Animation Type set to Humanoid">
+<figcaption>The <strong>Rig</strong> tab with <strong>Animation Type</strong> set to <strong>Humanoid</strong></figcaption>
+</figure>
+
+<table>
+<colgroup>
+<col style="text-align:left;">
+<col style="text-align:left;">
+<col style="text-align:left;">
+</colgroup>
+
+<thead>
+<tr>
+	<th style="text-align:left;" colspan="2"><strong><em>Property:</em></strong></th>
+	<th style="text-align:left;"><strong><em>Function:</em></strong></th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+	<td style="text-align:left;" colspan="2"><strong>Animation Type</strong></td>
+	<td style="text-align:left;">The type of animation.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;"><strong>None</strong></td>
+	<td style="text-align:left;">No animation present</td>
+</tr>
+<tr>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;"><strong>Legacy</strong></td>
+	<td style="text-align:left;">Legacy animation system</td>
+</tr>
+<tr>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;"><strong>Generic</strong></td>
+	<td style="text-align:left;">Generic Mecanim animation</td>
+</tr>
+<tr>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;"><strong>Humanoid</strong></td>
+	<td style="text-align:left;">Humanoid Mecanim animation system</td>
+</tr>
+<tr>
+	<td style="text-align:left;" colspan="2"><strong>Avatar Definition</strong></td>
+	<td style="text-align:left;">Where to get the Avatar definition</td>
+</tr>
+<tr>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;"><strong>Create from this model</strong></td>
+	<td style="text-align:left;">The Avatar should be based on this model</td>
+</tr>
+<tr>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;"><strong>Copy from other Avatar</strong></td>
+	<td style="text-align:left;">Point to an Avatar config set up on another model.</td>
+</tr>
+<tr>
+	<td style="text-align:left;" colspan="2"><strong>Configure…</strong></td>
+	<td style="text-align:left;">Go to the <a href="ConfiguringtheAvatar.html">Avatar configuration</a>
+</td>
+</tr>
+<tr>
+	<td style="text-align:left;" colspan="2"><strong>Optimize Game Object</strong></td>
+	<td style="text-align:left;">When turned on, the game object transform hierarchy of the imported character will be removed and stored in the Avatar and Animator component. The SkinnedMeshRenderers of the character will then directly use the Mecanim internal skeleton. This option improves the performance of the animated characters. You should turn it on for the final product. In optimized mode skinned mesh matrix extraction is also multithreaded.</td>
+</tr>
+</tbody>
+</table>
+
+<h2>Animation Type: Legacy</h2>
+
+<p>Choose legacy if you wish to use the legacy animation system and import and use animations as with 3.x.</p>
+
+<figure>
+<img src="../uploads/Main/Rig-3.png" alt="The Rig tab with Animation Type set to Legacy">
+<figcaption>The <strong>Rig</strong> tab with <strong>Animation Type</strong> set to <strong>Legacy</strong></figcaption>
+</figure>
+
+<hr>
+
+<ul>
+<li><p><span class="page-edit"> 2017–12–05 Page amended with limited <a href="DocumentationEditorialReview.html">editorial review</a>
+</span></p></li>
+<li><p><span class="page-history"><strong>Materials</strong> tab added in <a href="https://docs.unity3d.com/2017.2/Documentation/Manual/30_search.html?q=newin20172">2017.2</a> <span class="search-words">NewIn20172</span></span></p></li>
+</ul>
+<div class="feedbackbox" id="feedbackbox">
+<div id="rating"><p>Did you find this page useful? Please give it a rating:<br><div id="ratecontent" class="c-rating"></div>
+</p></div>
+<div id="ratingThanks" style="display:none"><p>Thanks for rating this page!</p></div>
+<div id="problem"><p><a name="problem" onclick="document.getElementById('problemType').style.display = '';document.getElementById('problem').style.display = 'none';">Report a problem on this page</a></p></div>
+<div id="problemType" style="display:none"><p>What kind of problem would you like to report?<ul type="problems">
+<li><a name="needcode" onclick="                                                             document.getElementById('problemType').style.display = 'none';                                                             document.getElementById('problemThanks').style.display = '';                                                             SendFeedback('problem-needcode',window.location.href,0);                                                             document.getElementById('problemFormDescription').value='Needs code samples.';                                                             document.getElementById('problemNeedCodeForm').style.display = ''                                                         ">This page needs code samples</a></li>
+<li><a name="code" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-brokencode',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Code samples do not work.';                                                         document.getElementById('problemCodeForm').style.display = ''                                                         ">Code samples do not work</a></li>
+<li><a name="missing" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-missing',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Missing information';                                                         document.getElementById('problemMissingForm').style.display = ''                                                         ">Information is missing</a></li>
+<li><a name="incorrect" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-incorrect',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Incorrect information';                                                         document.getElementById('problemIncorrectForm').style.display = ''                                                         ">Information is incorrect</a></li>
+<li><a name="unclear" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-unclear',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Unclear or confusing information';                                                         document.getElementById('problemUnclearForm').style.display = ''                                                         ">Information is unclear or confusing</a></li>
+<li><a name="language" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-language',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Spelling or grammar error';                                                         document.getElementById('problemLanguageForm').style.display = ''                                                         ">There is a spelling/grammar error on this page</a></li>
+<li><a name="other" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-other',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='This page has a problem';                                                         document.getElementById('problemOtherForm').style.display = ''                                                         ">Something else</a></li>
+</ul>
+<p><known_issues><p>Is something described here not working as you expect it to? It might be a <b>Known Issue</b>. Please check with the Issue Tracker at <a href="https://issuetracker.unity3d.com">issuetracker.unity3d.com</a>.</p></known_issues></p>
+</p></div>
+<div id="problemThanks" style="display:none"><p>Thanks for letting us know! This page has been marked for review based on your feedback.<br><br>If you have time, you can provide more information to help us fix the problem faster.<br><br><a onclick="document.getElementById('problemMoreInfo').style.display = '';document.getElementById('problemThanks').style.display = 'none';">Provide more information</a><br>
+</p></div>
+<div id="problemMoreInfo" style="display:none">
+<p id="problemNeedCodeForm" style="display:none">You've told us this page needs code samples. If you'd like to help us further, you could provide a code sample, or tell us about what kind of code sample you'd like to see:</p>
+<p id="problemCodeForm" style="display:none">You've told us there are code samples on this page which don't work. If you know how to fix it, or have something better we could use instead, please let us know:</p>
+<p id="problemMissingForm" style="display:none">You've told us there is information missing from this page. Please tell us more about what's missing:</p>
+<p id="problemIncorrectForm" style="display:none">You've told us there is incorrect information on this page. If you know what we should change to make it correct, please tell us:</p>
+<p id="problemUnclearForm" style="display:none">You've told us this page has unclear or confusing information. Please tell us more about what you found unclear or confusing, or let us know how we could make it clearer:</p>
+<p id="problemLanguageForm" style="display:none">You've told us there is a spelling or grammar error on this page. Please tell us what's wrong:</p>
+<p id="problemOtherForm" style="display:none">You've told us this page has a problem. Please tell us more about what's wrong:</p>
+<form>
+<textarea id="problemFormSuggestionField" cols="40" rows="5"></textarea><input type="hidden" id="problemFormDescription"><input type="submit" id="problemFormDescriptionSubmit" value="Submit" onclick="                                             document.getElementById('problemMoreInfo').style.display = 'none';                                             document.getElementById('problemMoreInfoThanks').style.display = '';                                             return false;                                             ">
+</form>
+</div>
+<div id="problemMoreInfoThanks" style="display:none"><p>Thanks for helping to make the Unity documentation better!</p></div>
+<script>
+
+                                            var ratecontent = document.querySelector('#ratecontent'); // target element
+                                            var currentRating = 0; // initial rating
+                                            var maxRating= 5; // max rating
+
+                                            // callback to run after setting the rating
+                                            var callback = function(rating) {
+                                                document.getElementById('ratingThanks').style.display = '';
+                                                document.getElementById('ratecontent').style.display = 'none';
+                                                document.getElementById('rating').style.display = 'none';
+                                                SendFeedback("rating",window.location.href,rating);
+                                            };
+
+                                            // rating instance
+                                            var myRating = rating(ratecontent, currentRating, maxRating, callback);
+                                        </script>
+</div>
+<div class="nextprev clear">
+<div class="icon tt left mr1" data-distance="-40|-30|top">
+<span class="prev"><a href="FBXImporter-Model.html"></a></span><div class="tip"> Model Importer: Model</div>
+</div>
+<div class="icon tt right" data-distance="-40|-30|top">
+<span class="next"><a href="FBXImporter-Animations.html"></a></span><div class="tip"> Model Importer: Animations</div>
+</div>
+</div>
+</div>
+</body></html>

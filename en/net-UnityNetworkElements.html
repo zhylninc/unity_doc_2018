@@ -1,0 +1,152 @@
+<html><head><title>html模版</title></head><body>Unity - Manual: Networking Elements in Unity (Legacy)</br>
+<div class="breadcrumbs clear"><ul>
+<li><a href="UnityManual.html">Unity User Manual (2018.1 beta)</a></li>
+<li><a href="LegacyTopics.html">Legacy Topics</a></li>
+<li><a href="NetworkReferenceGuide.html">Legacy Network Reference Guide</a></li>
+<li>Networking Elements in Unity (Legacy)</li>
+</ul></div>
+<div class="mb20"><div class="nextprev clear">
+<div class="icon tt left mr1" data-distance="-40|-30|top">
+<span class="prev"><a href="net-HighLevelOverview.html"></a></span><div class="tip">High Level Networking Concepts (Legacy)</div>
+</div>
+<div class="icon tt right" data-distance="-40|-30|top">
+<span class="next"><a href="net-NetworkView.html"></a></span><div class="tip">Network Views (Legacy)</div>
+</div>
+</div></div>
+<div class="otherversionswrapper" onmouseover="setOtherVersionsDisplay(true)" onmouseout="setOtherVersionsDisplay(false)">
+<a>Other Versions</a><div class="otherversionscontent" id="OtherVersionsContent" style="display: none;">Cannot access other versions offline!</div>
+</div>
+<div class="scrollToFeedback"><a id="scrollToFeedback">Leave feedback</a></div>
+<h1>Networking Elements in Unity (Legacy)</h1>
+<!--BeginSwitchLink--><!--EndSwitchLink-->
+<div class="clear"></div>
+
+<p><em>(For new projects, you should use the <a href="UNet.html">new networking system introduced in 5.1</a>. This information is for legacy projects using the old networking system.)</em></p>
+
+<p>Unity’s native networking supports everything discussed on the previous page. Server creation and client connection, sharing data between connected clients, determining which player controls which objects, and punching through network configuration variations are all supported out of the box. This page will walk you through the Unity-specific implementation of these networking practices.</p>
+
+<h2>Creating a Server</h2>
+
+<p>Before you can begin playing a networked game, you have to determine the different computers you will be communicating with. To do this, you have to create a server. This can be a machine that is also running the game or it can be a dedicated machine that is not participating in the game. To create the server, you simply call <a href="../ScriptReference/Network.InitializeServer.html">Network.InitializeServer()</a> from a script. When you want to connect to an existing server as a client, you call <a href="../ScriptReference/Network.Connect.html">Network.Connect()</a> instead.</p>
+
+<p>In general, you will find it very useful to familiarize yourself with the entire <a href="../ScriptReference/Network.html">Network class</a>.</p>
+
+<h2>Communicating using Network Views</h2>
+
+<p>The <strong>Network View</strong> is a Component that sends data across the network. Network Views make your GameObject capable of sending data using RPC calls or State Synchronization. The way you use Network Views will determine how your game’s networking behaviors will work. Network Views have few options, but they are incredibly important for your networked game.</p>
+
+<p>For more information on using Network Views, please read the <a href="net-NetworkView.html">Network View Guide page</a> and <a href="class-NetworkView.html">Component Reference page</a>.</p>
+
+<h2>Remote Procedure Calls</h2>
+
+<p>Remote Procedure Calls (RPCs) are functions declared in scripts that are attached to a GameObject that contains a Network View.
+The Network View must point to the script which contains the RPC function. The RPC function can then be called from any script within that GameObject.</p>
+
+<p>For more information on using RPCs in Unity, please read the <a href="net-RPCDetails.html">RPC Details page</a>.</p>
+
+<h2>State Synchronization</h2>
+
+<p>State Synchronization is the continual sharing of data across all game clients. This way a player’s position can be synchronized over all clients, so it seems it is controlled locally when data is actually being delivered over a network. To synchronize state within a GameObject you just need to add a NetworkView to that object and tell it what to observe. The observed data is then synchronized across all clients in the game.</p>
+
+<p>For more information on using State Synchronization in Unity, please read the <a href="net-StateSynchronization.html">State Synchronization page</a>.</p>
+
+<h2>Network.Instantiate()</h2>
+
+<p>
+<strong>Network.Instantiate()</strong> lets you instantiate a prefab on all clients in a natural and easy way. Essentially this is an <strong>Instantiate()</strong> call, but it performs the instantiation on all clients.</p>
+
+<p>Internally Network.Instantiate is simply a buffered RPC call which is executed on all clients (also locally). It allocates a NetworkViewID and assigns it to the instantiated prefab which makes sure it synchronizes across all clients correctly.</p>
+
+<p>For more information please read the <a href="net-NetworkInstantiate.html">Network Instantiate</a> page.</p>
+
+<h2>NetworkLevelLoad()</h2>
+
+<p>Dealing with sharing data, state of client players, and loading levels can be a bit overwhelming. The <a href="net-NetworkLevelLoad.html">Network Level Load</a> page contains a helpful example for managing this task.</p>
+
+<h2>Master Server</h2>
+
+<p>The <strong>Master Server</strong> helps you match games. When you start a server you connect to the master server, and it provides a list of all the active servers.</p>
+
+<p>The <strong>Master Server</strong> is a meeting place for servers and clients where servers are advertised and compatible clients can connect to running games. This prevents the need for fiddling with IP addresses for all parties involved. It can even help users host games without them needing to mess with their routers where, under normal circumstances, that would be required. It can help clients bypass the server’s firewall and get to private IP addresses which are normally not accessible through the public internet. This is done with help from a facilitator which <em>facilitates</em> connection establishment.</p>
+
+<p>For more information please read the <a href="net-MasterServer.html">Master Server page</a>.</p>
+
+<h2>Minimizing Bandwidth</h2>
+
+<p>Using the minimum amount of bandwidth to make your game run correctly is essential. There are different methods for sending data, different techniques for deciding <em>what</em> or <em>when</em> to send and other tricks at your disposal.</p>
+
+<p>For tips and tricks to reduce bandwidth usage, please read the <a href="net-MinimizingBandwidth.html">Minimizing Bandwith page</a>.</p>
+
+<h2>Debugging Networked Games</h2>
+
+<p>Unity comes with several facilities to help you debug your Networked game.</p>
+
+<ol>
+<li>The <a href="class-NetworkManager.html">Network Manager</a> can be used for logging all incoming and outgoing network traffic.</li>
+<li>Using the Inspector and Hierarchy View effectively you can track object creation and inspect view id’s etc.</li>
+<li>You can launch Unity two times on the same machine, and open different projects in each. On Windows, this can be done by just launching another Unity instance and opening the project from the project wizard. On Mac OS X, multiple Unity instances can be opened from the terminal, and a <strong>-projectPath</strong> argument can be specified:
+/Applications/Unity/Unity.app/Contents/MacOS/Unity -projectPath “/Users/MyUser/MyProjectFolder/”
+/Applications/Unity/Unity.app/Contents/MacOS/Unity -projectPath “/Users/MyUser/MyOtherProjectFolder/”</li>
+</ol>
+
+<p>Make sure you make the player run in the background when debugging networking because, for example, if you have two instances running at once, one of them doesn’t have focus. This will break the networking loop and cause undesirable results. You can enable this in Edit-&gt;Project Settings-&gt;Player in the editor or with <a href="../ScriptReference/Application-runInBackground.html">Application.runInBackground</a>
+</p>
+<div class="feedbackbox" id="feedbackbox">
+<div id="rating"><p>Did you find this page useful? Please give it a rating:<br><div id="ratecontent" class="c-rating"></div>
+</p></div>
+<div id="ratingThanks" style="display:none"><p>Thanks for rating this page!</p></div>
+<div id="problem"><p><a name="problem" onclick="document.getElementById('problemType').style.display = '';document.getElementById('problem').style.display = 'none';">Report a problem on this page</a></p></div>
+<div id="problemType" style="display:none"><p>What kind of problem would you like to report?<ul type="problems">
+<li><a name="needcode" onclick="                                                             document.getElementById('problemType').style.display = 'none';                                                             document.getElementById('problemThanks').style.display = '';                                                             SendFeedback('problem-needcode',window.location.href,0);                                                             document.getElementById('problemFormDescription').value='Needs code samples.';                                                             document.getElementById('problemNeedCodeForm').style.display = ''                                                         ">This page needs code samples</a></li>
+<li><a name="code" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-brokencode',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Code samples do not work.';                                                         document.getElementById('problemCodeForm').style.display = ''                                                         ">Code samples do not work</a></li>
+<li><a name="missing" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-missing',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Missing information';                                                         document.getElementById('problemMissingForm').style.display = ''                                                         ">Information is missing</a></li>
+<li><a name="incorrect" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-incorrect',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Incorrect information';                                                         document.getElementById('problemIncorrectForm').style.display = ''                                                         ">Information is incorrect</a></li>
+<li><a name="unclear" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-unclear',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Unclear or confusing information';                                                         document.getElementById('problemUnclearForm').style.display = ''                                                         ">Information is unclear or confusing</a></li>
+<li><a name="language" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-language',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Spelling or grammar error';                                                         document.getElementById('problemLanguageForm').style.display = ''                                                         ">There is a spelling/grammar error on this page</a></li>
+<li><a name="other" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-other',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='This page has a problem';                                                         document.getElementById('problemOtherForm').style.display = ''                                                         ">Something else</a></li>
+</ul>
+<p><known_issues><p>Is something described here not working as you expect it to? It might be a <b>Known Issue</b>. Please check with the Issue Tracker at <a href="https://issuetracker.unity3d.com">issuetracker.unity3d.com</a>.</p></known_issues></p>
+</p></div>
+<div id="problemThanks" style="display:none"><p>Thanks for letting us know! This page has been marked for review based on your feedback.<br><br>If you have time, you can provide more information to help us fix the problem faster.<br><br><a onclick="document.getElementById('problemMoreInfo').style.display = '';document.getElementById('problemThanks').style.display = 'none';">Provide more information</a><br>
+</p></div>
+<div id="problemMoreInfo" style="display:none">
+<p id="problemNeedCodeForm" style="display:none">You've told us this page needs code samples. If you'd like to help us further, you could provide a code sample, or tell us about what kind of code sample you'd like to see:</p>
+<p id="problemCodeForm" style="display:none">You've told us there are code samples on this page which don't work. If you know how to fix it, or have something better we could use instead, please let us know:</p>
+<p id="problemMissingForm" style="display:none">You've told us there is information missing from this page. Please tell us more about what's missing:</p>
+<p id="problemIncorrectForm" style="display:none">You've told us there is incorrect information on this page. If you know what we should change to make it correct, please tell us:</p>
+<p id="problemUnclearForm" style="display:none">You've told us this page has unclear or confusing information. Please tell us more about what you found unclear or confusing, or let us know how we could make it clearer:</p>
+<p id="problemLanguageForm" style="display:none">You've told us there is a spelling or grammar error on this page. Please tell us what's wrong:</p>
+<p id="problemOtherForm" style="display:none">You've told us this page has a problem. Please tell us more about what's wrong:</p>
+<form>
+<textarea id="problemFormSuggestionField" cols="40" rows="5"></textarea><input type="hidden" id="problemFormDescription"><input type="submit" id="problemFormDescriptionSubmit" value="Submit" onclick="                                             document.getElementById('problemMoreInfo').style.display = 'none';                                             document.getElementById('problemMoreInfoThanks').style.display = '';                                             return false;                                             ">
+</form>
+</div>
+<div id="problemMoreInfoThanks" style="display:none"><p>Thanks for helping to make the Unity documentation better!</p></div>
+<script>
+
+                                            var ratecontent = document.querySelector('#ratecontent'); // target element
+                                            var currentRating = 0; // initial rating
+                                            var maxRating= 5; // max rating
+
+                                            // callback to run after setting the rating
+                                            var callback = function(rating) {
+                                                document.getElementById('ratingThanks').style.display = '';
+                                                document.getElementById('ratecontent').style.display = 'none';
+                                                document.getElementById('rating').style.display = 'none';
+                                                SendFeedback("rating",window.location.href,rating);
+                                            };
+
+                                            // rating instance
+                                            var myRating = rating(ratecontent, currentRating, maxRating, callback);
+                                        </script>
+</div>
+<div class="nextprev clear">
+<div class="icon tt left mr1" data-distance="-40|-30|top">
+<span class="prev"><a href="net-HighLevelOverview.html"></a></span><div class="tip">High Level Networking Concepts (Legacy)</div>
+</div>
+<div class="icon tt right" data-distance="-40|-30|top">
+<span class="next"><a href="net-NetworkView.html"></a></span><div class="tip">Network Views (Legacy)</div>
+</div>
+</div>
+</div>
+</body></html>

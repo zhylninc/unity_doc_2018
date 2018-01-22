@@ -1,0 +1,172 @@
+<html><head><title>html模版</title></head><body>Unity - Manual:  NavMesh Link</br>
+<div class="breadcrumbs clear"><ul>
+<li><a href="UnityManual.html">Unity User Manual (2018.1 beta)</a></li>
+<li><a href="Navigation.html">Navigation and Pathfinding</a></li>
+<li><a href="nav-Overview.html">Navigation Overview</a></li>
+<li><a href="NavMesh-BuildingComponents.html"> NavMesh building components</a></li>
+<li> NavMesh Link</li>
+</ul></div>
+<div class="mb20"><div class="nextprev clear">
+<div class="icon tt left mr1" data-distance="-40|-30|top">
+<span class="prev"><a href="class-NavMesh-ModifierVolume.html"></a></span><div class="tip"> NavMesh Modifier Volume</div>
+</div>
+<div class="icon tt right" data-distance="-40|-30|top">
+<span class="next"><a href="NavMesh-BuildingComponents-API.html"></a></span><div class="tip"> NavMesh building components API</div>
+</div>
+</div></div>
+<div class="otherversionswrapper" onmouseover="setOtherVersionsDisplay(true)" onmouseout="setOtherVersionsDisplay(false)">
+<a>Other Versions</a><div class="otherversionscontent" id="OtherVersionsContent" style="display: none;">Cannot access other versions offline!</div>
+</div>
+<div class="scrollToFeedback"><a id="scrollToFeedback">Leave feedback</a></div>
+<h1>NavMesh Link</h1>
+<!--BeginSwitchLink--><!--EndSwitchLink-->
+<div class="clear"></div>
+
+<p>The NavMesh Link component is not in the Unity standard install; see documentation on <a href="NavMesh-BuildingComponents.html">high-level NavMesh building components</a> for information on how to access it. </p>
+
+<p>NavMesh Link creates a navigable link between two locations that use NavMeshes.</p>
+
+<p>This link can be from point to point or it can span a gap, in which case the Agent uses the nearest location along the entry edge to cross the link.</p>
+
+<p>You must use a NavMesh Link to connect different NavMesh Surfaces.</p>
+
+<p>To use the NavMesh Link component, navigate to <strong>GameObject</strong> &gt; <strong>AI</strong> &gt; <strong>NavMesh Link</strong>.</p>
+
+<figure>
+<img src="../uploads/Main/class-NavMeshLink-5.png" alt="A NavMesh Link component open in the Inspector window">
+<figcaption>A NavMesh Link component open in the Inspector window</figcaption>
+</figure>
+
+<table>
+<colgroup>
+<col style="text-align:left;">
+<col style="text-align:left;">
+</colgroup>
+
+<thead>
+<tr>
+	<th style="text-align:left;"><strong>Property</strong></th>
+	<th style="text-align:left;"><strong>Function</strong></th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+	<td style="text-align:left;"><strong>Agent Type</strong></td>
+	<td style="text-align:left;">The Agent type that can use the link.<br> - <strong>Humanoid</strong><br> - <strong>Ogre</strong>
+</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>Start Point</strong></td>
+	<td style="text-align:left;">The start point of the link, relative to the GameObject. Defined by XYZ measurements.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>End Point</strong></td>
+	<td style="text-align:left;">The end point of the link, relative to the GameObject. Defined by XYZ measurements.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>Align Transform To Points</strong></td>
+	<td style="text-align:left;">Clicking this button moves the GameObject at the link’s center point and aligns the transform’s forward axis with the end point.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>Bidirectional</strong></td>
+	<td style="text-align:left;">With this tickbox checked, NavMesh Agents traverse the NavMesh Link both ways (from the start point to the end point, and from the end point back to the start point).<br>When this tickbox is unchecked, the NavMesh Link only functions one-way (from the start point to the end point only).</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>Area Type</strong></td>
+	<td style="text-align:left;">The area type of the NavMesh Link (this affects pathfinding costs). <br> - <strong>Walkable</strong> (this is the default option)<br> - <strong>Not Walkable</strong> <br> - <strong>Jump</strong>
+</td>
+</tr>
+</tbody>
+</table>
+
+<h2>Connecting multiple NavMesh Surfaces together</h2>
+
+<figure>
+<img src="../uploads/Main/class-NavMeshLink-6.png" alt="In this image, the blue and red NavMeshes are defined in two different NavMesh Surfaces and connected by a NavMesh Link">
+<figcaption>In this image, the blue and red NavMeshes are defined in two different NavMesh Surfaces and connected by a NavMesh Link</figcaption>
+</figure>
+
+<p>If you want an Agent to move between multiple NavMesh Surfaces in a Scene, they must be connected using a NavMesh Link.</p>
+
+<p>In the example Scene above, the blue and red NavMeshes are defined in different NavMesh Surfaces, with a NavMesh link connecting them.</p>
+
+<p>Note that when connecting NavMesh Surfaces:</p>
+
+<ul>
+<li><p>You can connect NavMesh Surfaces using multiple NavMesh Links.</p></li>
+<li><p>Both the NavMesh Surfaces and the NavMesh Link must have same Agent type.</p></li>
+<li><p>The NavMesh Link’s start and end point must only be on one NavMesh Surface - be careful if you have multiple NavMeshes at the same location. </p></li>
+<li><p>If you are loading a second NavMesh Surface and you have unconnected NavMesh Links in the first Scene, check that they do not connect to any unwanted NavMesh Surfaces.</p></li>
+</ul>
+
+<p>
+<br><br>
+</p>
+
+<hr>
+
+<ul>
+<li><p><span class="page-edit"> 2017–05–26 Page published with limited <a href="DocumentationEditorialReview.html">editorial review</a>
+</span></p></li>
+<li><p><span class="page-history">New feature in 5.6</span></p></li>
+</ul>
+<div class="feedbackbox" id="feedbackbox">
+<div id="rating"><p>Did you find this page useful? Please give it a rating:<br><div id="ratecontent" class="c-rating"></div>
+</p></div>
+<div id="ratingThanks" style="display:none"><p>Thanks for rating this page!</p></div>
+<div id="problem"><p><a name="problem" onclick="document.getElementById('problemType').style.display = '';document.getElementById('problem').style.display = 'none';">Report a problem on this page</a></p></div>
+<div id="problemType" style="display:none"><p>What kind of problem would you like to report?<ul type="problems">
+<li><a name="needcode" onclick="                                                             document.getElementById('problemType').style.display = 'none';                                                             document.getElementById('problemThanks').style.display = '';                                                             SendFeedback('problem-needcode',window.location.href,0);                                                             document.getElementById('problemFormDescription').value='Needs code samples.';                                                             document.getElementById('problemNeedCodeForm').style.display = ''                                                         ">This page needs code samples</a></li>
+<li><a name="code" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-brokencode',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Code samples do not work.';                                                         document.getElementById('problemCodeForm').style.display = ''                                                         ">Code samples do not work</a></li>
+<li><a name="missing" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-missing',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Missing information';                                                         document.getElementById('problemMissingForm').style.display = ''                                                         ">Information is missing</a></li>
+<li><a name="incorrect" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-incorrect',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Incorrect information';                                                         document.getElementById('problemIncorrectForm').style.display = ''                                                         ">Information is incorrect</a></li>
+<li><a name="unclear" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-unclear',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Unclear or confusing information';                                                         document.getElementById('problemUnclearForm').style.display = ''                                                         ">Information is unclear or confusing</a></li>
+<li><a name="language" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-language',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Spelling or grammar error';                                                         document.getElementById('problemLanguageForm').style.display = ''                                                         ">There is a spelling/grammar error on this page</a></li>
+<li><a name="other" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-other',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='This page has a problem';                                                         document.getElementById('problemOtherForm').style.display = ''                                                         ">Something else</a></li>
+</ul>
+<p><known_issues><p>Is something described here not working as you expect it to? It might be a <b>Known Issue</b>. Please check with the Issue Tracker at <a href="https://issuetracker.unity3d.com">issuetracker.unity3d.com</a>.</p></known_issues></p>
+</p></div>
+<div id="problemThanks" style="display:none"><p>Thanks for letting us know! This page has been marked for review based on your feedback.<br><br>If you have time, you can provide more information to help us fix the problem faster.<br><br><a onclick="document.getElementById('problemMoreInfo').style.display = '';document.getElementById('problemThanks').style.display = 'none';">Provide more information</a><br>
+</p></div>
+<div id="problemMoreInfo" style="display:none">
+<p id="problemNeedCodeForm" style="display:none">You've told us this page needs code samples. If you'd like to help us further, you could provide a code sample, or tell us about what kind of code sample you'd like to see:</p>
+<p id="problemCodeForm" style="display:none">You've told us there are code samples on this page which don't work. If you know how to fix it, or have something better we could use instead, please let us know:</p>
+<p id="problemMissingForm" style="display:none">You've told us there is information missing from this page. Please tell us more about what's missing:</p>
+<p id="problemIncorrectForm" style="display:none">You've told us there is incorrect information on this page. If you know what we should change to make it correct, please tell us:</p>
+<p id="problemUnclearForm" style="display:none">You've told us this page has unclear or confusing information. Please tell us more about what you found unclear or confusing, or let us know how we could make it clearer:</p>
+<p id="problemLanguageForm" style="display:none">You've told us there is a spelling or grammar error on this page. Please tell us what's wrong:</p>
+<p id="problemOtherForm" style="display:none">You've told us this page has a problem. Please tell us more about what's wrong:</p>
+<form>
+<textarea id="problemFormSuggestionField" cols="40" rows="5"></textarea><input type="hidden" id="problemFormDescription"><input type="submit" id="problemFormDescriptionSubmit" value="Submit" onclick="                                             document.getElementById('problemMoreInfo').style.display = 'none';                                             document.getElementById('problemMoreInfoThanks').style.display = '';                                             return false;                                             ">
+</form>
+</div>
+<div id="problemMoreInfoThanks" style="display:none"><p>Thanks for helping to make the Unity documentation better!</p></div>
+<script>
+
+                                            var ratecontent = document.querySelector('#ratecontent'); // target element
+                                            var currentRating = 0; // initial rating
+                                            var maxRating= 5; // max rating
+
+                                            // callback to run after setting the rating
+                                            var callback = function(rating) {
+                                                document.getElementById('ratingThanks').style.display = '';
+                                                document.getElementById('ratecontent').style.display = 'none';
+                                                document.getElementById('rating').style.display = 'none';
+                                                SendFeedback("rating",window.location.href,rating);
+                                            };
+
+                                            // rating instance
+                                            var myRating = rating(ratecontent, currentRating, maxRating, callback);
+                                        </script>
+</div>
+<div class="nextprev clear">
+<div class="icon tt left mr1" data-distance="-40|-30|top">
+<span class="prev"><a href="class-NavMesh-ModifierVolume.html"></a></span><div class="tip"> NavMesh Modifier Volume</div>
+</div>
+<div class="icon tt right" data-distance="-40|-30|top">
+<span class="next"><a href="NavMesh-BuildingComponents-API.html"></a></span><div class="tip"> NavMesh building components API</div>
+</div>
+</div>
+</div>
+</body></html>

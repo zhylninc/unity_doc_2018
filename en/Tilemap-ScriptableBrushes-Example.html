@@ -1,0 +1,233 @@
+<html><head><title>html模版</title></head><body>Unity - Manual:  Scriptable Brush example</br>
+<div class="breadcrumbs clear"><ul>
+<li><a href="UnityManual.html">Unity User Manual (2018.1 beta)</a></li>
+<li><a href="Unity2D.html">2D</a></li>
+<li><a href="Tilemap.html"> Tilemap</a></li>
+<li><a href="Tilemap-ScriptableBrushes.html"> Scriptable Brushes</a></li>
+<li> Scriptable Brush example</li>
+</ul></div>
+<div class="mb20"><div class="nextprev clear">
+<div class="icon tt left mr1" data-distance="-40|-30|top">
+<span class="prev"><a href="Tilemap-ScriptableBrushes-OtherClasses.html"></a></span><div class="tip"> Other useful classes</div>
+</div>
+<div class="icon tt right" data-distance="-40|-30|top">
+<span class="next"><a href="Physics2DReference.html"></a></span><div class="tip">Physics Reference 2D</div>
+</div>
+</div></div>
+<div class="otherversionswrapper" onmouseover="setOtherVersionsDisplay(true)" onmouseout="setOtherVersionsDisplay(false)">
+<a>Other Versions</a><div class="otherversionscontent" id="OtherVersionsContent" style="display: none;">Cannot access other versions offline!</div>
+</div>
+<div class="scrollToFeedback"><a id="scrollToFeedback">Leave feedback</a></div>
+<h1>Scriptable Brush example</h1>
+<!--BeginSwitchLink--><!--EndSwitchLink-->
+<div class="clear"></div>
+
+<figure>
+<img src="../uploads/Main/Tilemap-ScriptableBrushes-Example-32.png" alt="">
+</figure>
+
+<p>
+<code>LineBrush</code> provides the ability to easily draw lines of Tiles onto the Tilemap by specifying the start point and the end point. The Paint method for the LineBrush is overridden to allow the user to specify the start of a line with the first mouse click in Paint mode and draw the line with the second mouse click in Paint mode. The <code>OnPaintSceneGUI</code> method is overridden to produce the preview of the line to be drawn between the first and second mouse clicks. The following is a script used to create the Brush. </p>
+
+<pre><code>using System;
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+using UnityEngine.Tilemaps;
+
+namespace UnityEditor
+{
+    [CustomGridBrush(true, false, false, &quot;Line Brush&quot;)]
+    public class LineBrush : GridBrush {
+        public bool lineStartActive = false;
+        public Vector3Int lineStart = Vector3Int.zero;
+        public override void Paint(GridLayout grid, GameObject brushTarget, Vector3Int position)
+        {
+            if (lineStartActive)
+            {
+                Vector2Int startPos = new Vector2Int(lineStart.x, lineStart.y);
+                Vector2Int endPos = new Vector2Int(position.x, position.y);
+                if (startPos == endPos)
+                    base.Paint(grid, brushTarget, position);    
+                else
+                {
+                    foreach (var point in GetPointsOnLine(startPos, endPos))
+                    {
+                        Vector3Int paintPos = new Vector3Int(point.x, point.y, position.z);
+                        base.Paint(grid, brushTarget, paintPos);
+                    }
+                }
+                lineStartActive = false;
+            }
+            else
+            {
+                lineStart = position;
+                lineStartActive = true;
+            }
+        }
+        [MenuItem(&quot;Assets/Create/Line Brush&quot;)]
+        public static void CreateBrush()
+        {
+            string path = EditorUtility.SaveFilePanelInProject(&quot;Save Line Brush&quot;, &quot;New Line Brush&quot;, &quot;Asset&quot;, &quot;Save Line Brush&quot;, &quot;Assets&quot;);
+            if (path == &quot;&quot;)
+                return;
+AssetDatabase.CreateAsset(ScriptableObject.CreateInstance&lt;LineBrush&gt;(), path);
+        }
+        // http://ericw.ca/notes/bresenhams-line-algorithm-in-csharp.html
+        public static IEnumerable&lt;Vector2Int&gt; GetPointsOnLine(Vector2Int p1, Vector2Int p2)
+        {
+            int x0 = p1.x;
+            int y0 = p1.y;
+            int x1 = p2.x;
+            int y1 = p2.y;
+            bool steep = Math.Abs(y1 - y0) &gt; Math.Abs(x1 - x0);
+            if (steep)
+            {
+                int t;
+                t = x0; // swap x0 and y0
+                x0 = y0;
+                y0 = t;
+                t = x1; // swap x1 and y1
+                x1 = y1;
+                y1 = t;
+            }
+            if (x0 &gt; x1)
+            {
+                int t;
+                t = x0; // swap x0 and x1
+                x0 = x1;
+                x1 = t;
+                t = y0; // swap y0 and y1
+                y0 = y1;
+                y1 = t;
+            }
+            int dx = x1 - x0;
+            int dy = Math.Abs(y1 - y0);
+            int error = dx / 2;
+            int ystep = (y0 &lt; y1) ? 1 : -1;
+            int y = y0;
+            for (int x = x0; x &lt;= x1; x++)
+            {
+                yield return new Vector2Int((steep ? y : x), (steep ? x : y));
+                error = error - dy;
+                if (error &lt; 0)
+                {
+                    y += ystep;
+                    error += dx;
+                }
+            }
+            yield break;
+        }
+    }
+    [CustomEditor(typeof(LineBrush))]
+    public class LineBrushEditor : GridBrushEditor
+    {
+        private LineBrush lineBrush { get { return target as LineBrush; } }
+        public override void OnPaintSceneGUI(GridLayout grid, GameObject brushTarget, BoundsInt position, GridBrushBase.Tool tool, bool executing)
+        {
+            base.OnPaintSceneGUI(grid, brushTarget, position, tool, executing);
+            if (lineBrush.lineStartActive)
+            {
+                Tilemap tilemap = brushTarget.GetComponent&lt;Tilemap&gt;();
+                if (tilemap != null)
+                    tilemap.ClearAllEditorPreviewTiles();
+                // Draw preview tiles for tilemap
+                Vector2Int startPos = new Vector2Int(lineBrush.lineStart.x, lineBrush.lineStart.y);
+                Vector2Int endPos = new Vector2Int(position.x, position.y);
+                if (startPos == endPos)
+                    PaintPreview(grid, brushTarget, position.min);
+                else
+                {
+                    foreach (var point in LineBrush.GetPointsOnLine(startPos, endPos))
+                    {
+                        Vector3Int paintPos = new Vector3Int(point.x, point.y, position.z);
+                        PaintPreview(grid, brushTarget, paintPos);
+                    }
+                }
+                if (Event.current.type == EventType.Repaint)
+                {
+                    var min = lineBrush.lineStart;
+                    var max = lineBrush.lineStart + position.size;
+                    // Draws a box on the picked starting position
+                    GL.PushMatrix();
+                    GL.MultMatrix(GUI.matrix);
+                    GL.Begin(GL.LINES);
+                    Handles.color = Color.blue;
+                    Handles.DrawLine(new Vector3(min.x, min.y, min.z), new Vector3(max.x, min.y, min.z));
+                    Handles.DrawLine(new Vector3(max.x, min.y, min.z), new Vector3(max.x, max.y, min.z));
+                    Handles.DrawLine(new Vector3(max.x, max.y, min.z), new Vector3(min.x, max.y, min.z));
+                    Handles.DrawLine(new Vector3(min.x, max.y, min.z), new Vector3(min.x, min.y, min.z));
+                    GL.End();
+                    GL.PopMatrix();
+                }
+            }
+        }
+    }
+}
+</code></pre>
+
+<hr>
+
+<ul>
+<li><span class="page-edit">2017–09–06 Page published with limited <a href="DocumentationEditorialReview.html">editorial review</a>
+</span></li>
+</ul>
+<div class="feedbackbox" id="feedbackbox">
+<div id="rating"><p>Did you find this page useful? Please give it a rating:<br><div id="ratecontent" class="c-rating"></div>
+</p></div>
+<div id="ratingThanks" style="display:none"><p>Thanks for rating this page!</p></div>
+<div id="problem"><p><a name="problem" onclick="document.getElementById('problemType').style.display = '';document.getElementById('problem').style.display = 'none';">Report a problem on this page</a></p></div>
+<div id="problemType" style="display:none"><p>What kind of problem would you like to report?<ul type="problems">
+<li><a name="needcode" onclick="                                                             document.getElementById('problemType').style.display = 'none';                                                             document.getElementById('problemThanks').style.display = '';                                                             SendFeedback('problem-needcode',window.location.href,0);                                                             document.getElementById('problemFormDescription').value='Needs code samples.';                                                             document.getElementById('problemNeedCodeForm').style.display = ''                                                         ">This page needs code samples</a></li>
+<li><a name="code" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-brokencode',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Code samples do not work.';                                                         document.getElementById('problemCodeForm').style.display = ''                                                         ">Code samples do not work</a></li>
+<li><a name="missing" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-missing',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Missing information';                                                         document.getElementById('problemMissingForm').style.display = ''                                                         ">Information is missing</a></li>
+<li><a name="incorrect" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-incorrect',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Incorrect information';                                                         document.getElementById('problemIncorrectForm').style.display = ''                                                         ">Information is incorrect</a></li>
+<li><a name="unclear" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-unclear',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Unclear or confusing information';                                                         document.getElementById('problemUnclearForm').style.display = ''                                                         ">Information is unclear or confusing</a></li>
+<li><a name="language" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-language',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Spelling or grammar error';                                                         document.getElementById('problemLanguageForm').style.display = ''                                                         ">There is a spelling/grammar error on this page</a></li>
+<li><a name="other" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-other',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='This page has a problem';                                                         document.getElementById('problemOtherForm').style.display = ''                                                         ">Something else</a></li>
+</ul>
+<p><known_issues><p>Is something described here not working as you expect it to? It might be a <b>Known Issue</b>. Please check with the Issue Tracker at <a href="https://issuetracker.unity3d.com">issuetracker.unity3d.com</a>.</p></known_issues></p>
+</p></div>
+<div id="problemThanks" style="display:none"><p>Thanks for letting us know! This page has been marked for review based on your feedback.<br><br>If you have time, you can provide more information to help us fix the problem faster.<br><br><a onclick="document.getElementById('problemMoreInfo').style.display = '';document.getElementById('problemThanks').style.display = 'none';">Provide more information</a><br>
+</p></div>
+<div id="problemMoreInfo" style="display:none">
+<p id="problemNeedCodeForm" style="display:none">You've told us this page needs code samples. If you'd like to help us further, you could provide a code sample, or tell us about what kind of code sample you'd like to see:</p>
+<p id="problemCodeForm" style="display:none">You've told us there are code samples on this page which don't work. If you know how to fix it, or have something better we could use instead, please let us know:</p>
+<p id="problemMissingForm" style="display:none">You've told us there is information missing from this page. Please tell us more about what's missing:</p>
+<p id="problemIncorrectForm" style="display:none">You've told us there is incorrect information on this page. If you know what we should change to make it correct, please tell us:</p>
+<p id="problemUnclearForm" style="display:none">You've told us this page has unclear or confusing information. Please tell us more about what you found unclear or confusing, or let us know how we could make it clearer:</p>
+<p id="problemLanguageForm" style="display:none">You've told us there is a spelling or grammar error on this page. Please tell us what's wrong:</p>
+<p id="problemOtherForm" style="display:none">You've told us this page has a problem. Please tell us more about what's wrong:</p>
+<form>
+<textarea id="problemFormSuggestionField" cols="40" rows="5"></textarea><input type="hidden" id="problemFormDescription"><input type="submit" id="problemFormDescriptionSubmit" value="Submit" onclick="                                             document.getElementById('problemMoreInfo').style.display = 'none';                                             document.getElementById('problemMoreInfoThanks').style.display = '';                                             return false;                                             ">
+</form>
+</div>
+<div id="problemMoreInfoThanks" style="display:none"><p>Thanks for helping to make the Unity documentation better!</p></div>
+<script>
+
+                                            var ratecontent = document.querySelector('#ratecontent'); // target element
+                                            var currentRating = 0; // initial rating
+                                            var maxRating= 5; // max rating
+
+                                            // callback to run after setting the rating
+                                            var callback = function(rating) {
+                                                document.getElementById('ratingThanks').style.display = '';
+                                                document.getElementById('ratecontent').style.display = 'none';
+                                                document.getElementById('rating').style.display = 'none';
+                                                SendFeedback("rating",window.location.href,rating);
+                                            };
+
+                                            // rating instance
+                                            var myRating = rating(ratecontent, currentRating, maxRating, callback);
+                                        </script>
+</div>
+<div class="nextprev clear">
+<div class="icon tt left mr1" data-distance="-40|-30|top">
+<span class="prev"><a href="Tilemap-ScriptableBrushes-OtherClasses.html"></a></span><div class="tip"> Other useful classes</div>
+</div>
+<div class="icon tt right" data-distance="-40|-30|top">
+<span class="next"><a href="Physics2DReference.html"></a></span><div class="tip">Physics Reference 2D</div>
+</div>
+</div>
+</div>
+</body></html>

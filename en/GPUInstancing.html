@@ -1,0 +1,435 @@
+<html><head><title>html模版</title></head><body>Unity - Manual:  GPU instancing</br>
+<div class="breadcrumbs clear"><ul>
+<li><a href="UnityManual.html">Unity User Manual (2018.1 beta)</a></li>
+<li><a href="Graphics.html">Graphics</a></li>
+<li><a href="GraphicsOverview.html">Graphics Overview</a></li>
+<li>Advanced Rendering Features</li>
+<li> GPU instancing</li>
+</ul></div>
+<div class="mb20"><div class="nextprev clear">
+<div class="icon tt left mr1" data-distance="-40|-30|top">
+<span class="prev"><a href="GraphicsCommandBuffers.html"></a></span><div class="tip"> Graphics Command Buffers</div>
+</div>
+<div class="icon tt right" data-distance="-40|-30|top">
+<span class="next"><a href="SparseTextures.html"></a></span><div class="tip">Sparse Textures</div>
+</div>
+</div></div>
+<div class="otherversionswrapper" onmouseover="setOtherVersionsDisplay(true)" onmouseout="setOtherVersionsDisplay(false)">
+<a>Other Versions</a><div class="otherversionscontent" id="OtherVersionsContent" style="display: none;">Cannot access other versions offline!</div>
+</div>
+<div class="scrollToFeedback"><a id="scrollToFeedback">Leave feedback</a></div>
+<h1>GPU instancing</h1>
+<!--BeginSwitchLink--><!--EndSwitchLink-->
+<div class="clear"></div>
+
+<h2>Introduction</h2>
+
+<p>Use GPU Instancing to draw (or render) multiple copies of the same Mesh at once, using a small number of <a href="DrawCallBatching.html">draw calls</a>. It is useful for drawing objects such as buildings, trees and grass, or other things that appear repeatedly in a Scene. </p>
+
+<p>GPU Instancing only renders identical Meshes with each draw call, but each instance can have different parameters (for example, color or scale) to add variation and reduce the appearance of repetition. </p>
+
+<p>GPU Instancing can reduce the number of draw calls used per Scene. This significantly improves the rendering performance of your project.</p>
+
+<h2>Adding instancing to your Materials</h2>
+
+<p>To enable GPU Instancing on Materials, select your Material in the Project window, and in the Inspector, tick the <strong>Enable Instancing</strong> checkbox.</p>
+
+<figure>
+<img src="../uploads/Main/GPUInstancing-0.png" alt="The Enable Instancing checkbox as it appears in the Material Inspector window">
+<figcaption>The <strong>Enable Instancing</strong> checkbox as it appears in the Material Inspector window</figcaption>
+</figure>
+
+<p>Unity only displays this checkbox if the Material Shader supports GPU Instancing. This includes Standard, StandardSpecular and all surface <a href="Shaders.html">Shaders</a>. See documentation on <a href="shader-StandardShader.html">standard Shaders</a> for more information.</p>
+
+<p>The screenshots below show the same Scene with multiple GameObjects; in the top image GPU Instancing is enabled, in the bottom image it is not. Note the difference in <strong>FPS</strong>, <strong>Batches </strong>and <strong>Saved by batching</strong>.</p>
+
+<figure>
+<img src="../uploads/Main/GPUInstancing-1.png" alt="With GPU Instancing: A simple Scene that includes multiple identical GameObjects that have GPU Instancing enabled">
+<figcaption>With GPU Instancing: A simple Scene that includes multiple identical GameObjects that have GPU Instancing enabled</figcaption>
+</figure>
+
+<figure>
+<img src="../uploads/Main/GPUInstancing-2.png" alt="No GPU Instancing: A simple Scene that includes multiple identical GameObjects that do not have GPU Instancing enabled.">
+<figcaption>No GPU Instancing: A simple Scene that includes multiple identical GameObjects that do not have GPU Instancing enabled.</figcaption>
+</figure>
+
+<p>When you use GPU instancing, the following restrictions apply:</p>
+
+<ul>
+<li><p>Unity automatically picks MeshRenderer components and <code>Graphics.DrawMesh</code> calls for instancing. Note that <a href="https://docs.unity3d.com/ScriptReference/SkinnedMeshRenderer.html">SkinnedMeshRenderer</a> is not supported.</p></li>
+<li><p>Unity only batches GameObjects that share the same Mesh and the same Material in a single GPU instancing draw call. Use a small number of Meshes and Materials for better instancing efficiency. To create variations, modify your shader scripts to add per-instance data (see next section to learn more about this).</p></li>
+</ul>
+
+<p>You can also use the calls <a href="../ScriptReference/Graphics.DrawMeshInstanced.html">Graphics.DrawMeshInstanced</a> and <a href="../ScriptReference/Graphics.DrawMeshInstancedIndirect.html">Graphics.DrawMeshInstancedIndirect</a> to perform GPU Instancing from your scripts.</p>
+
+<p>GPU Instancing is available on the following platforms and APIs:</p>
+
+<ul>
+<li><p>
+<strong>DirectX 11</strong> and <strong>DirectX 12</strong> on Windows</p></li>
+<li><p>
+<strong>OpenGL Core 4.1+/ES3.0+</strong> on Windows, macOS, Linux, iOS and Android</p></li>
+<li><p>
+<strong>Metal</strong> on macOS and iOS</p></li>
+<li><p>
+<strong>Vulkan</strong> on Windows and Android</p></li>
+<li><p>
+<strong>PlayStation 4</strong> and <strong>Xbox One</strong>
+</p></li>
+<li><p>
+<strong>WebGL</strong> (requires WebGL 2.0 API)</p></li>
+</ul>
+
+<h2>Adding per-instance data</h2>
+
+<p>By default, Unity only batches instances of GameObjects with different <a href="Transforms.html">Transforms</a> in each instanced draw call. To add more variance to your instanced GameObjects, modify your Shader to add per-instance properties such as Material color. </p>
+
+<p>The example below demonstrates how to create an instanced Shader with different colour values for each instance.</p>
+
+<pre><code>
+Shader &quot;Custom/InstancedColorSurfaceShader&quot; {
+    Properties {
+        _Color (&quot;Color&quot;, Color) = (1,1,1,1)
+        _MainTex (&quot;Albedo (RGB)&quot;, 2D) = &quot;white&quot; {}
+        _Glossiness (&quot;Smoothness&quot;, Range(0,1)) = 0.5
+        _Metallic (&quot;Metallic&quot;, Range(0,1)) = 0.0
+    }
+
+    SubShader {
+        Tags { &quot;RenderType&quot;=&quot;Opaque&quot; }
+        LOD 200
+        CGPROGRAM
+        // Physically based Standard lighting model, and enable shadows on all light types
+        #pragma surface surf Standard fullforwardshadows
+        // Use Shader model 3.0 target
+        #pragma target 3.0
+        sampler2D _MainTex;
+        struct Input {
+            float2 uv_MainTex;
+        };
+        half _Glossiness;
+        half _Metallic;
+        UNITY_INSTANCING_BUFFER_START(Props)
+           UNITY_DEFINE_INSTANCED_PROP(fixed4, _Color)
+        UNITY_INSTANCING_BUFFER_END(Props)
+        void surf (Input IN, inout SurfaceOutputStandard o) {
+            fixed4 c = tex2D (_MainTex, IN.uv_MainTex) * UNITY_ACCESS_INSTANCED_PROP(Props, _Color);
+            o.Albedo = c.rgb;
+            o.Metallic = _Metallic;
+            o.Smoothness = _Glossiness;
+            o.Alpha = c.a;
+        }
+        ENDCG
+    }
+    FallBack &quot;Diffuse&quot;
+}
+
+</code></pre>
+
+<p>When you declare <code>_Color</code> as an instanced property, Unity will gather <code>_Color</code> values from the MaterialPropertyBlock objects set on GameObjects and put them in a single draw call.</p>
+
+<pre><code>
+MaterialPropertyBlock props = new MaterialPropertyBlock();
+MeshRenderer renderer;
+
+foreach (GameObject obj in objects)
+{
+   float r = Random.Range(0.0f, 1.0f);
+   float g = Random.Range(0.0f, 1.0f);
+   float b = Random.Range(0.0f, 1.0f);
+   props.SetColor(&quot;_Color&quot;, new Color(r, g, b));
+   
+   renderer = obj.GetComponent&lt;MeshRenderer&gt;();
+   renderer.SetPropertyBlock(props);
+}
+</code></pre>
+
+<p>Note that in normal cases (where an instancing shader is not used, or <code>_Color</code> is not a per-instance property), draw call batches are broken due to different values in the MaterialPropertyBlock.</p>
+
+<p>For these changes to take effect, you must enable GPU Instancing. To do this, select your Shader in the Project window, and in the Inspector, tick the <strong>Enable Instancing</strong> checkbox.</p>
+
+<figure>
+<img src="../uploads/Main/GPUInstancing-3.png" alt="The Enable Instancing checkbox as shown in the Shader Inspector window">
+<figcaption>The Enable Instancing checkbox as shown in the Shader Inspector window</figcaption>
+</figure>
+
+<h2>Adding instancing to vertex and fragment Shaders</h2>
+
+<p>The following example takes a simple unlit Shader and makes it capable of instancing with different colors:</p>
+
+<pre><code>
+Shader &quot;SimplestInstancedShader&quot;
+{
+    Properties
+    {
+        _Color (&quot;Color&quot;, Color) = (1, 1, 1, 1)
+    }
+
+    SubShader
+    {
+        Tags { &quot;RenderType&quot;=&quot;Opaque&quot; }
+        LOD 100
+
+        Pass
+        {
+            CGPROGRAM
+            #pragma vertex vert
+            #pragma fragment frag
+            #pragma multi_compile_instancing
+            #include &quot;UnityCG.cginc&quot;
+
+            struct appdata
+            {
+                float4 vertex : POSITION;
+                UNITY_VERTEX_INPUT_INSTANCE_ID
+            };
+
+            struct v2f
+            {
+                float4 vertex : SV_POSITION;
+                UNITY_VERTEX_INPUT_INSTANCE_ID // necessary only if you want to access instanced properties in fragment Shader.
+            };
+
+            UNITY_INSTANCING_BUFFER_START(Props)
+                UNITY_DEFINE_INSTANCED_PROP(float4, _Color)
+            UNITY_INSTANCING_BUFFER_END(Props)
+           
+            v2f vert(appdata v)
+            {
+                v2f o;
+
+                UNITY_SETUP_INSTANCE_ID(v);
+                UNITY_TRANSFER_INSTANCE_ID(v, o); // necessary only if you want to access instanced properties in the fragment Shader.
+
+                o.vertex = UnityObjectToClipPos(v.vertex);
+                return o;
+            }
+           
+            fixed4 frag(v2f i) : SV_Target
+            {
+                UNITY_SETUP_INSTANCE_ID(i); // necessary only if any instanced properties are going to be accessed in the fragment Shader.
+                return UNITY_ACCESS_INSTANCED_PROP(Props, _Color);
+            }
+            ENDCG
+        }
+    }
+}
+</code></pre>
+
+<h2>Shader modifications</h2>
+
+<table>
+<colgroup>
+<col style="text-align:left;">
+<col style="text-align:left;">
+</colgroup>
+
+<thead>
+<tr>
+	<th style="text-align:left;">Addition</th>
+	<th style="text-align:left;">Function</th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+	<td style="text-align:left;"><code>#pragma multi_compile_instancing</code></td>
+	<td style="text-align:left;">Use this to instruct Unity to generate instancing variants. It is not necessary for surface Shaders.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><code>UNITY_VERTEX_INPUT_INSTANCE_ID</code></td>
+	<td style="text-align:left;">Use this in the vertex Shader input/output structure to define an instance ID. See <code>SV_InstanceID</code> for more information.</td>
+</tr>
+<tr>
+	<td style="text-align:left;">
+<code>UNITY_INSTANCING_BUFFER_START(name)</code> / <code>UNITY_INSTANCING_BUFFER_END(name)</code>
+</td>
+	<td style="text-align:left;">Every per-instance property must be defined in a specially named constant buffer. Use this pair of macros to wrap the properties you want to be made unique to each instance.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><code>UNITY_DEFINE_INSTANCED_PROP(float4, _Color)</code></td>
+	<td style="text-align:left;">Use this to define a per-instance Shader property with a type and a name. In this example, the <code>_Color</code> property is unique.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><code>UNITY_SETUP_INSTANCE_ID(v);</code></td>
+	<td style="text-align:left;">Use this to make the instance ID accessible to Shader functions. It must be used at the very beginning of a vertex Shader, and is optional for fragment Shaders.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><code>UNITY_TRANSFER_INSTANCE_ID(v, o);</code></td>
+	<td style="text-align:left;">Use this to copy the instance ID from the input structure to the output structure in the vertex Shader. This is only necessary if you need to access per-instance data in the fragment Shader.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><code>UNITY_ACCESS_INSTANCED_PROP(arrayName, color)</code></td>
+	<td style="text-align:left;">Use this to access a per-instance Shader property declared in an instancing constant buffer. It uses an instance ID to index into the instance data array. The <code>arrayName</code> in the macro must match the one in <code>UNITY_INSTANCING_BUFFER_END(name)</code> macro.</td>
+</tr>
+</tbody>
+</table>
+
+<p>
+<strong>Notes</strong>: </p>
+
+<ul>
+<li><p>When using multiple per-instance properties, you don’t need to fill all of them in <code>MaterialPropertyBlocks</code>.</p></li>
+<li><p>If one instance lacks the property, Unity takes the default value from the referenced Material. If the material does not have a default value for the specified property, Unity sets the value to 0. Do not put non-instanced properties in the <code>MaterialPropertyBlock</code>, because this disables instancing. Instead, create different Materials for them.</p></li>
+</ul>
+
+<h2>Advanced GPU instancing tips</h2>
+
+<h3>Batching priority</h3>
+
+<p>When batching, Unity prioritizes <a href="DrawCallBatching.html">Static batching</a> over instancing. If you mark one of your GameObjects for static batching, and Unity successfully batches it, Unity disables instancing on that GameObject, even if its Renderer uses an instancing Shader. When this happens, the Inspector window displays a warning message suggesting that you disable Static Batching. To do this, open the Player Settings (<strong>Edit</strong> &gt; <strong>Project Settings</strong> &gt; <strong>Player</strong>), open <strong>Other Settings</strong>, and under the <strong>Rendering</strong> section, untick the <strong>Static Batching</strong> checkbox.</p>
+
+<p>Unity prioritizes instancing over dynamic batching. If Unity can instance a Mesh, it disables dynamic batching for that Mesh.</p>
+
+<h3>Graphics.DrawMeshInstanced</h3>
+
+<p>Some factors can prevent GameObjects from being instanced together automatically. These factors include Material changes and depth sorting. Use <a href="../ScriptReference/Graphics.DrawMeshInstanced.html">Graphics.DrawMeshInstanced</a> to force Unity to draw these objects using GPU instancing. Like <a href="../ScriptReference/Graphics.DrawMesh.html">Graphics.DrawMesh</a>, this function draws Meshes for one frame without creating unnecessary GameObjects. </p>
+
+<h3>Graphics.DrawMeshInstancedIndirect</h3>
+
+<p>Use <code>DrawMeshInstancedIndirect</code> in a script to read the parameters of instancing draw calls, including the number of instances, from a compute buffer. This is useful if you want to populate all of the instance data from the GPU, and the CPU does not know the number of instances to draw (for example, when performing GPU culling). See API documentation on <a href="../ScriptReference/Graphics.DrawMeshInstancedIndirect.html">Graphics.DrawMeshInstancedIndirect</a> for a detailed explanation and code examples.</p>
+
+<h3>Shader warming-up</h3>
+
+<p>From Unity 2017.3, you need to warm up shaders to use instancing on OpenGL if you want absolutely smooth rendering when the shader renders for the first time. If you warm up shaders for instancing on a platform that doesn’t require shader warm up, nothing will happen.</p>
+
+<p>See <a href="../ScriptReference/ShaderVariantCollection.WarmUp.html">ShaderVariantCollection.WarmUp</a> and <a href="../ScriptReference/Shader.WarmupAllShaders.html">Shader.WarmupAllShaders</a> for more information.</p>
+
+<h3>#pragma instancing_options</h3>
+
+<p>The <code>#pragma instancing_options</code> directive can use the following switches: </p>
+
+<table>
+<colgroup>
+<col style="text-align:left;">
+<col style="text-align:left;">
+</colgroup>
+
+<thead>
+<tr>
+	<th style="text-align:left;"><strong>Switch</strong></th>
+	<th style="text-align:left;"><strong>Function</strong></th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+	<td style="text-align:left;">
+<code>forcemaxcount:batchSize</code> and <code>maxcount:batchSize</code>
+</td>
+	<td style="text-align:left;">On most platforms, Unity automatically calculates the instancing data array size by dividing the maximum constant buffer size on the target device with the size of the structure containing all per-instance properties. Generally you don’t need to worry about the batch size. However, on some platforms (Vulkan, Xbox One and Switch), a fixed array size is still required. You can specify the batch size for those platforms by using <code>maxcount</code> option. The option is completely ignored on the other platforms. If you really want to force a batch size for all platforms, use <code>forcemaxcount</code> (for example, when you know you will only issue draws with 256 instanced sprites via DrawMeshInstanced). The default value for the two options is 500.</td>
+</tr>
+</tbody>
+
+<tbody>
+<tr>
+	<td style="text-align:left;"><code>assumeuniformscaling</code></td>
+	<td style="text-align:left;">Use this to instruct Unity to assume that all the instances have uniform scalings (the same scale for all X, Y and Z axes).</td>
+</tr>
+</tbody>
+
+<tbody>
+<tr>
+	<td style="text-align:left;"><code>lodfade</code></td>
+	<td style="text-align:left;">Use this to make <a href="LevelOfDetail.html">LOD</a> fade values instanceable. This is useful for <a href="SpeedTree.html">SpeedTree</a> and other LOD techniques that use the LOD fading feature.</td>
+</tr>
+</tbody>
+
+<tbody>
+<tr>
+	<td style="text-align:left;"><code>procedural:FunctionName</code></td>
+	<td style="text-align:left;">Use this to instruct Unity to generate an additional variant for use with <a href="../ScriptReference/Graphics.DrawMeshInstancedIndirect.html">Graphics.DrawMeshInstancedIndirect</a>. <br>At the beginning of the vertex Shader stage, Unity calls the function specified after the colon. To set up the instance data manually, add per-instance data to this function in the same way you would normally add per-instance data to a Shader. Unity also calls this function at the beginning of a fragment Shader if any of the fetched instance properties are included in the fragment Shader.</td>
+</tr>
+</tbody>
+</table>
+
+<h3>UnityObjectToClipPos</h3>
+
+<p>When writing shader scripts, always use <code>UnityObjectToClipPos(v.vertex)</code> instead of <code>mul(UNITY_MATRIX_MVP,v.vertex)</code>. </p>
+
+<p>While you can continue to use <code>UNITY_MATRIX_MVP</code> as normal in instanced Shaders, <code>UnityObjectToClipPos</code> is the most efficient way to transform vertex positions from object space into clip space. Unity also implements a Shader upgrader that scans all your Shaders in the project, and automatically replaces any occurrence of <code>mul(UNITY_MATRIX_MVP, v)</code> with <code>UnityObjectToClipPos(v)</code>.</p>
+
+<p>The console window (menu: <strong>Window</strong> &gt; <strong>Console</strong>) displays performance warnings if there are still places where <code>UNITY_MATRIX_MVP</code> (along with <code>UNITY_MATRIX_MV</code>) is used.</p>
+
+<h2>Further notes</h2>
+
+<ul>
+<li><p>Surface Shaders have instancing variants generated by default, unless you specify <code>noinstancing</code> in the <code>#pragma</code> surface directive. Standard and StandardSpecular Shaders are already modified to have instancing support, but with no per-instance properties defined other than the transforms. Unity ignores uses of <code>#pragma multi_compile_instancing</code> in a surface Shader.</p></li>
+<li><p>Unity strips instancing variants if GPU Instancing is not enabled on any GameObject in the Scene. To override the stripping behaviour, open the <a href="class-GraphicsSettings.html">Graphics Settings</a> (menu: <strong>Edit </strong>&gt; <strong>Project Settings</strong> &gt; <strong>Graphics</strong>), navigate to the <strong>Shader stripping</strong> section and change the <strong>Instancing Variants</strong>. </p></li>
+<li><p>For <code>Graphics.DrawMeshInstanced</code>, you need to enable GPU Instancing on the Material that is being passed into this method. However, <code>Graphics.DrawMeshInstancedIndirect</code> does not require you to enable GPU Instancing. The indirect instancing keyword <code>PROCEDURAL_INSTANCING_ON</code> is not affected by stripping.</p></li>
+<li><p>Instanced draw calls appear in the <a href="FrameDebugger.html">Frame Debugger</a> as <strong>Draw Mesh (instanced)</strong>.</p></li>
+<li><p>You don’t always need to define per-instance properties. However, setting up an instance ID is mandatory, because world matrices need it to function correctly. Surface shaders automatically set up an instance ID. You must set up the instance ID for Custom Vertex and Fragment shaders manually. To do this, use <code>UNITY_SETUP_INSTANCE_ID</code> at the beginning of the Shader.</p></li>
+<li><p>When using forward rendering, Unity cannot efficiently instance objects that are affected by multiple lights. Only the base pass can make effective use of instancing, not the added passes. For more information about lighting passes, see documentation on <a href="RenderTech-ForwardRendering.html">Forward Rendering</a> and <a href="SL-PassTags.html">Pass Tags</a>
+</p></li>
+<li><p>Objects that use lightmaps, or are affected by different light or <a href="class-ReflectionProbe.html">Reflection Probes</a>, can’t be instanced.</p></li>
+<li><p>If you have more than two passes for multi-pass Shaders, only the first passes can be instanced. This is because Unity forces the later passes to be rendered together for each object, forcing Material changes.</p></li>
+<li><p>All the Shader macros used in the above examples are defined in <em>UnityInstancing.cginc</em>. Find this file in the following directory: <em>[Unity installation folder]\Editor\Data\CGIncludes</em>.</p></li>
+</ul>
+
+<hr>
+
+<ul>
+<li><p><span class="page-edit">2017–10–24 Page amended with <a href="DocumentationEditorialReview.html">editorial review</a>
+</span></p></li>
+<li><p><span class="page-history">Enable instancing checkbox guidance, DrawMeshInstancedIndirect, #pragma multi-compile added in 5.6</span></p></li>
+<li><p><span class="page-history">Shader warm up for GPU instancing added in 2017.3.(https://docs.unity3d.com/2017.3/Documentation/Manual/30_search.html?q=newin20173) <span class="search-words">NewIn20173</span></span></p></li>
+</ul>
+<div class="feedbackbox" id="feedbackbox">
+<div id="rating"><p>Did you find this page useful? Please give it a rating:<br><div id="ratecontent" class="c-rating"></div>
+</p></div>
+<div id="ratingThanks" style="display:none"><p>Thanks for rating this page!</p></div>
+<div id="problem"><p><a name="problem" onclick="document.getElementById('problemType').style.display = '';document.getElementById('problem').style.display = 'none';">Report a problem on this page</a></p></div>
+<div id="problemType" style="display:none"><p>What kind of problem would you like to report?<ul type="problems">
+<li><a name="needcode" onclick="                                                             document.getElementById('problemType').style.display = 'none';                                                             document.getElementById('problemThanks').style.display = '';                                                             SendFeedback('problem-needcode',window.location.href,0);                                                             document.getElementById('problemFormDescription').value='Needs code samples.';                                                             document.getElementById('problemNeedCodeForm').style.display = ''                                                         ">This page needs code samples</a></li>
+<li><a name="code" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-brokencode',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Code samples do not work.';                                                         document.getElementById('problemCodeForm').style.display = ''                                                         ">Code samples do not work</a></li>
+<li><a name="missing" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-missing',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Missing information';                                                         document.getElementById('problemMissingForm').style.display = ''                                                         ">Information is missing</a></li>
+<li><a name="incorrect" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-incorrect',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Incorrect information';                                                         document.getElementById('problemIncorrectForm').style.display = ''                                                         ">Information is incorrect</a></li>
+<li><a name="unclear" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-unclear',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Unclear or confusing information';                                                         document.getElementById('problemUnclearForm').style.display = ''                                                         ">Information is unclear or confusing</a></li>
+<li><a name="language" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-language',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Spelling or grammar error';                                                         document.getElementById('problemLanguageForm').style.display = ''                                                         ">There is a spelling/grammar error on this page</a></li>
+<li><a name="other" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-other',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='This page has a problem';                                                         document.getElementById('problemOtherForm').style.display = ''                                                         ">Something else</a></li>
+</ul>
+<p><known_issues><p>Is something described here not working as you expect it to? It might be a <b>Known Issue</b>. Please check with the Issue Tracker at <a href="https://issuetracker.unity3d.com">issuetracker.unity3d.com</a>.</p></known_issues></p>
+</p></div>
+<div id="problemThanks" style="display:none"><p>Thanks for letting us know! This page has been marked for review based on your feedback.<br><br>If you have time, you can provide more information to help us fix the problem faster.<br><br><a onclick="document.getElementById('problemMoreInfo').style.display = '';document.getElementById('problemThanks').style.display = 'none';">Provide more information</a><br>
+</p></div>
+<div id="problemMoreInfo" style="display:none">
+<p id="problemNeedCodeForm" style="display:none">You've told us this page needs code samples. If you'd like to help us further, you could provide a code sample, or tell us about what kind of code sample you'd like to see:</p>
+<p id="problemCodeForm" style="display:none">You've told us there are code samples on this page which don't work. If you know how to fix it, or have something better we could use instead, please let us know:</p>
+<p id="problemMissingForm" style="display:none">You've told us there is information missing from this page. Please tell us more about what's missing:</p>
+<p id="problemIncorrectForm" style="display:none">You've told us there is incorrect information on this page. If you know what we should change to make it correct, please tell us:</p>
+<p id="problemUnclearForm" style="display:none">You've told us this page has unclear or confusing information. Please tell us more about what you found unclear or confusing, or let us know how we could make it clearer:</p>
+<p id="problemLanguageForm" style="display:none">You've told us there is a spelling or grammar error on this page. Please tell us what's wrong:</p>
+<p id="problemOtherForm" style="display:none">You've told us this page has a problem. Please tell us more about what's wrong:</p>
+<form>
+<textarea id="problemFormSuggestionField" cols="40" rows="5"></textarea><input type="hidden" id="problemFormDescription"><input type="submit" id="problemFormDescriptionSubmit" value="Submit" onclick="                                             document.getElementById('problemMoreInfo').style.display = 'none';                                             document.getElementById('problemMoreInfoThanks').style.display = '';                                             return false;                                             ">
+</form>
+</div>
+<div id="problemMoreInfoThanks" style="display:none"><p>Thanks for helping to make the Unity documentation better!</p></div>
+<script>
+
+                                            var ratecontent = document.querySelector('#ratecontent'); // target element
+                                            var currentRating = 0; // initial rating
+                                            var maxRating= 5; // max rating
+
+                                            // callback to run after setting the rating
+                                            var callback = function(rating) {
+                                                document.getElementById('ratingThanks').style.display = '';
+                                                document.getElementById('ratecontent').style.display = 'none';
+                                                document.getElementById('rating').style.display = 'none';
+                                                SendFeedback("rating",window.location.href,rating);
+                                            };
+
+                                            // rating instance
+                                            var myRating = rating(ratecontent, currentRating, maxRating, callback);
+                                        </script>
+</div>
+<div class="nextprev clear">
+<div class="icon tt left mr1" data-distance="-40|-30|top">
+<span class="prev"><a href="GraphicsCommandBuffers.html"></a></span><div class="tip"> Graphics Command Buffers</div>
+</div>
+<div class="icon tt right" data-distance="-40|-30|top">
+<span class="next"><a href="SparseTextures.html"></a></span><div class="tip">Sparse Textures</div>
+</div>
+</div>
+</div>
+</body></html>

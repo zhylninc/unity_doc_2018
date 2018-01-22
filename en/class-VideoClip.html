@@ -1,0 +1,311 @@
+<html><head><title>html模版</title></head><body>Unity - Manual:  Video Clips</br>
+<div class="breadcrumbs clear"><ul>
+<li><a href="UnityManual.html">Unity User Manual (2018.1 beta)</a></li>
+<li><a href="Graphics.html">Graphics</a></li>
+<li><a href="GraphicsOverview.html">Graphics Overview</a></li>
+<li><a href="VideoPlayer.html"> Video overview</a></li>
+<li> Video Clips</li>
+</ul></div>
+<div class="mb20"><div class="nextprev clear">
+<div class="icon tt left mr1" data-distance="-40|-30|top">
+<span class="prev"><a href="class-VideoPlayer.html"></a></span><div class="tip"> Video Player component</div>
+</div>
+<div class="icon tt right" data-distance="-40|-30|top">
+<span class="next"><a href="Video.html"></a></span><div class="tip"> Video sources</div>
+</div>
+</div></div>
+<div class="otherversionswrapper" onmouseover="setOtherVersionsDisplay(true)" onmouseout="setOtherVersionsDisplay(false)">
+<a>Other Versions</a><div class="otherversionscontent" id="OtherVersionsContent" style="display: none;">Cannot access other versions offline!</div>
+</div>
+<div class="scrollToFeedback"><a id="scrollToFeedback">Leave feedback</a></div>
+<h1>Video Clips</h1>
+<!--BeginSwitchLink--><!--EndSwitchLink-->
+<div class="clear"></div>
+
+<p>A Video Clip is an imported video file, which the <a href="class-VideoPlayer.html">Video Player component</a> uses to play video content (and accompanying audio content, if the video also has sound). Typical file extensions for video files include .mp4, .mov, .webm, and .wmv.</p>
+
+<p>When you select a Video Clip, the Inspector shows the Video Clip Importer, including options, preview, and source details. Click the <strong>Play</strong> button at the top-right of the preview to play the Video Clip, along with its first audio track.</p>
+
+<figure>
+<img src="../uploads/Main/Video-3.png" alt="A Video Clip Asset called Havana, viewed in the the Inspector window, showing the Video Clip Importer options">
+<figcaption>A Video Clip Asset called <strong><em>Havana</em></strong>, viewed in the the Inspector window, showing the Video Clip Importer options</figcaption>
+</figure>
+
+<p>To view the source information of a Video Clip, navigate to the preview pane at the bottom of the Inspector window, click the name of the Video Clip in the top-left corner, and select <strong>Source Info</strong>.</p>
+
+<figure>
+<img src="../uploads/Main/Video-4.png" alt="">
+</figure>
+
+<figure>
+<img src="../uploads/Main/Video-5.png" alt="The Source Info shows information about the selected Video Clip">
+<figcaption>The Source Info shows information about the selected Video Clip</figcaption>
+</figure>
+
+<p>Platform-specific options adapt the transcode process for each target platform, allowing the selection of default options for each platform.</p>
+
+<figure>
+<img src="../uploads/Main/Video-6.png" alt="The Transcode section of the Video Clip Importer">
+<figcaption>The Transcode section of the Video Clip Importer</figcaption>
+</figure>
+
+<p>If transcode is disabled, the video file is used as is, meaning compatibility with the target platform must be verified manually (see documentation on video file compatibility for more information). However, choosing not to transcode can save time as well as avoid transformation-related quality loss.</p>
+
+<h2>Video Clip Importer Properties</h2>
+
+<table>
+<colgroup>
+<col style="text-align:left;">
+<col style="text-align:left;">
+<col style="text-align:left;">
+<col style="text-align:left;">
+</colgroup>
+
+<thead>
+<tr>
+	<th style="text-align:left;"><strong><em>Property</em></strong></th>
+	<th style="text-align:left;"></th>
+	<th style="text-align:left;"></th>
+	<th style="text-align:left;"><strong><em>Function</em></strong></th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+	<td style="text-align:left;" colspan="3"><strong>Importer Version</strong></td>
+	<td style="text-align:left;">Selects which Importer version to use.</td>
+</tr>
+<tr>
+	<td style="text-align:left;" colspan="2"></td>
+	<td style="text-align:left;"><strong>VideoClip</strong></td>
+	<td style="text-align:left;">Produces Video Clips, suitable for use with [Video Player components](class-VideoPlayer].</td>
+</tr>
+<tr>
+	<td style="text-align:left;" colspan="2"></td>
+	<td style="text-align:left;">
+<strong>MovieTexture</strong> (Legacy)</td>
+	<td style="text-align:left;">Produces legacy <a href="class-MovieTexture.html">Movie Textures</a>.</td>
+</tr>
+<tr>
+	<td style="text-align:left;" colspan="3"><strong>Keep Alpha</strong></td>
+	<td style="text-align:left;">Keeps the <a href="VideoTransparency.html">alpha channel</a> and encodes it during transcode so it can be used even if the target platform does not natively support videos with alpha.<br><br>This property is only visible for sources that have an alpha channel.</td>
+</tr>
+<tr>
+	<td style="text-align:left;" colspan="3"><strong>Deinterlace</strong></td>
+	<td style="text-align:left;">Controls how interlaced sources are deinterlaced during transcode. For example, you can choose to change interlacing settings due to how a video is encoded or for aesthetic reasons. Interlaced videos have two time samples in each frame: one in odd-numbered lines, and one in even-numbered lines.</td>
+</tr>
+<tr>
+	<td style="text-align:left;" colspan="2"></td>
+	<td style="text-align:left;"><strong>Off</strong></td>
+	<td style="text-align:left;">The source is not interlaced, and there is no processing to do (this is the default setting).</td>
+</tr>
+<tr>
+	<td style="text-align:left;" colspan="2"></td>
+	<td style="text-align:left;"><strong>Even</strong></td>
+	<td style="text-align:left;">Takes the even lines of each frame and interpolates them to create missing content. Odd lines are dropped.</td>
+</tr>
+<tr>
+	<td style="text-align:left;" colspan="2"></td>
+	<td style="text-align:left;"><strong>Odd</strong></td>
+	<td style="text-align:left;">Takes the odd lines of each frame and interpolates them to create missing content. Even lines are dropped.</td>
+</tr>
+<tr>
+	<td style="text-align:left;" colspan="3"><strong>Flip Horizontally</strong></td>
+	<td style="text-align:left;">If this tickbox is checked, the source content is flipped along a horizontal axis during transcode to make it upside-down.</td>
+</tr>
+<tr>
+	<td style="text-align:left;" colspan="3"><strong>Flip Vertically</strong></td>
+	<td style="text-align:left;">If this tickbox is checked, the source content is flipped along a vertical axis during transcode to swap left and right.</td>
+</tr>
+<tr>
+	<td style="text-align:left;" colspan="3"><strong>Import Audio</strong></td>
+	<td style="text-align:left;">If this tickbox is checked, audio tracks are imported during transcode.<br><br>This property is only visible for sources that have audio tracks.</td>
+</tr>
+<tr>
+	<td style="text-align:left;" colspan="3"><strong>Transcode</strong></td>
+	<td style="text-align:left;">When enabled by ticking the checkbox, the source is transcoded into a format that is compatible with the target platform.<br><br>If disabled, the original content is used, bypassing the potentially lengthy transcoding process.<br><br><strong>Note:</strong> Verify that the source format is compatible with each target platform (see documentation on video file compatibility for more information).</td>
+</tr>
+<tr>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;" colspan="2"><strong>Dimensions</strong></td>
+	<td style="text-align:left;">Controls how the source content is resized.</td>
+</tr>
+<tr>
+	<td style="text-align:left;" colspan="2"></td>
+	<td style="text-align:left;"><strong>Original</strong></td>
+	<td style="text-align:left;">Keeps the original size.</td>
+</tr>
+<tr>
+	<td style="text-align:left;" colspan="2"></td>
+	<td style="text-align:left;"><strong>Three Quarter Res</strong></td>
+	<td style="text-align:left;">Resizes the source to three quarters of its original width and height.</td>
+</tr>
+<tr>
+	<td style="text-align:left;" colspan="2"></td>
+	<td style="text-align:left;"><strong>Half Res</strong></td>
+	<td style="text-align:left;">Resizes the source to half of its original width and height.</td>
+</tr>
+<tr>
+	<td style="text-align:left;" colspan="2"></td>
+	<td style="text-align:left;"><strong>Quarter Res</strong></td>
+	<td style="text-align:left;">Resizes the source to a quarter of its original width and height.</td>
+</tr>
+<tr>
+	<td style="text-align:left;" colspan="2"></td>
+	<td style="text-align:left;"><strong>Square (1024 X 1024)</strong></td>
+	<td style="text-align:left;">Resizes the source to 1024 x 1024 square images. Aspect ratio is controllable.</td>
+</tr>
+<tr>
+	<td style="text-align:left;" colspan="2"></td>
+	<td style="text-align:left;"><strong>Square (512 X 512)</strong></td>
+	<td style="text-align:left;">Resizes the source to 512 x 512 square images. Aspect ratio is controllable.</td>
+</tr>
+<tr>
+	<td style="text-align:left;" colspan="2"></td>
+	<td style="text-align:left;"><strong>Square (256 X 256)</strong></td>
+	<td style="text-align:left;">Resizes the source to to 256 x 256 square images. Aspect ratio is controllable.</td>
+</tr>
+<tr>
+	<td style="text-align:left;" colspan="2"></td>
+	<td style="text-align:left;"><strong>Custom</strong></td>
+	<td style="text-align:left;">Resizes the source to a custom resolution. Aspect ratio is controllable.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;" colspan="2"><strong>Width</strong></td>
+	<td style="text-align:left;">Width of the resulting images.<br><br>This property is only visible when the Dimensions field is set to Custom.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;" colspan="2"><strong>Height</strong></td>
+	<td style="text-align:left;">Height of the resulting images.<br><br>This property is only visible when the Dimensions field is set to Custom.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;" colspan="2"><strong>Aspect Ratio</strong></td>
+	<td style="text-align:left;">Aspect ratio control used when resizing images.<br><br>This property is only visible when the Dimensions field is set to an option other than Original.</td>
+</tr>
+<tr>
+	<td style="text-align:left;" colspan="2"></td>
+	<td style="text-align:left;"><strong>No Scaling</strong></td>
+	<td style="text-align:left;">Black areas added as needed to preserve the aspect ratio of the original content.</td>
+</tr>
+<tr>
+	<td style="text-align:left;" colspan="2"></td>
+	<td style="text-align:left;"><strong>Stretch</strong></td>
+	<td style="text-align:left;">Stretches the original content to fill the destination resolution without leaving black areas.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;" colspan="2"><strong>Codec</strong></td>
+	<td style="text-align:left;">Codec used for encoding the video track.</td>
+</tr>
+<tr>
+	<td style="text-align:left;" colspan="2"></td>
+	<td style="text-align:left;"><strong>Auto</strong></td>
+	<td style="text-align:left;">Chooses the most suitable video codec for the target platform.</td>
+</tr>
+<tr>
+	<td style="text-align:left;" colspan="2"></td>
+	<td style="text-align:left;"><strong>H264</strong></td>
+	<td style="text-align:left;">The MPEG–4 AVC video codec, supported by hardware on most platforms.</td>
+</tr>
+<tr>
+	<td style="text-align:left;" colspan="2"></td>
+	<td style="text-align:left;"><strong>VP8</strong></td>
+	<td style="text-align:left;">The VP8 video codec, supported by software on most platforms, and by hardware on a few platforms such as Android and WebGL.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;" colspan="2"><strong>Bitrate Mode</strong></td>
+	<td style="text-align:left;">Low, Medium, or High bitrate, relative to the chosen codec’s baseline profile.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;" colspan="2"><strong>Spatial Quality</strong></td>
+	<td style="text-align:left;">This setting dictates whether video images are reduced in size during transcoding, which means they take up less storage space. However, resizing images also results in blurriness during playback.</td>
+</tr>
+<tr>
+	<td style="text-align:left;" colspan="2"></td>
+	<td style="text-align:left;"><strong>Low Spatial Quality</strong></td>
+	<td style="text-align:left;">The image is significantly reduced in size during transcode (typically to a quarter of its original dimensions), and then expanded back to its original size upon playback. This is the highest amount of resizing, meaning it saves the most storage space but results in the largest amount of blurriness upon playback.</td>
+</tr>
+<tr>
+	<td style="text-align:left;" colspan="2"></td>
+	<td style="text-align:left;"><strong>Medium Spatial Quality</strong></td>
+	<td style="text-align:left;">The image is moderately reduced in size during transcode (typically to half of its original dimensions), and then expanded back to its original size upon playback. Although there is some resizing, images will be less blurry than those that use the Low Spatial Quality option, and there is some reduction in required storage space.</td>
+</tr>
+<tr>
+	<td style="text-align:left;" colspan="2"></td>
+	<td style="text-align:left;"><strong>High Spatial Quality</strong></td>
+	<td style="text-align:left;">No resizing takes place if this option is selected. This means the image is not reduced in size during transcode, and therefore the video’s original level of visual clarity is maintained.</td>
+</tr>
+</tbody>
+</table>
+
+<hr>
+
+<ul>
+<li><p><span class="page-edit">2017–06–15 Page published with limited <a href="DocumentationEditorialReview.html">editorial review</a>
+</span></p></li>
+<li><p><span class="page-history">New feature in Unity 5.6</span></p></li>
+</ul>
+<div class="feedbackbox" id="feedbackbox">
+<div id="rating"><p>Did you find this page useful? Please give it a rating:<br><div id="ratecontent" class="c-rating"></div>
+</p></div>
+<div id="ratingThanks" style="display:none"><p>Thanks for rating this page!</p></div>
+<div id="problem"><p><a name="problem" onclick="document.getElementById('problemType').style.display = '';document.getElementById('problem').style.display = 'none';">Report a problem on this page</a></p></div>
+<div id="problemType" style="display:none"><p>What kind of problem would you like to report?<ul type="problems">
+<li><a name="needcode" onclick="                                                             document.getElementById('problemType').style.display = 'none';                                                             document.getElementById('problemThanks').style.display = '';                                                             SendFeedback('problem-needcode',window.location.href,0);                                                             document.getElementById('problemFormDescription').value='Needs code samples.';                                                             document.getElementById('problemNeedCodeForm').style.display = ''                                                         ">This page needs code samples</a></li>
+<li><a name="code" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-brokencode',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Code samples do not work.';                                                         document.getElementById('problemCodeForm').style.display = ''                                                         ">Code samples do not work</a></li>
+<li><a name="missing" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-missing',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Missing information';                                                         document.getElementById('problemMissingForm').style.display = ''                                                         ">Information is missing</a></li>
+<li><a name="incorrect" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-incorrect',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Incorrect information';                                                         document.getElementById('problemIncorrectForm').style.display = ''                                                         ">Information is incorrect</a></li>
+<li><a name="unclear" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-unclear',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Unclear or confusing information';                                                         document.getElementById('problemUnclearForm').style.display = ''                                                         ">Information is unclear or confusing</a></li>
+<li><a name="language" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-language',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Spelling or grammar error';                                                         document.getElementById('problemLanguageForm').style.display = ''                                                         ">There is a spelling/grammar error on this page</a></li>
+<li><a name="other" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-other',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='This page has a problem';                                                         document.getElementById('problemOtherForm').style.display = ''                                                         ">Something else</a></li>
+</ul>
+<p><known_issues><p>Is something described here not working as you expect it to? It might be a <b>Known Issue</b>. Please check with the Issue Tracker at <a href="https://issuetracker.unity3d.com">issuetracker.unity3d.com</a>.</p></known_issues></p>
+</p></div>
+<div id="problemThanks" style="display:none"><p>Thanks for letting us know! This page has been marked for review based on your feedback.<br><br>If you have time, you can provide more information to help us fix the problem faster.<br><br><a onclick="document.getElementById('problemMoreInfo').style.display = '';document.getElementById('problemThanks').style.display = 'none';">Provide more information</a><br>
+</p></div>
+<div id="problemMoreInfo" style="display:none">
+<p id="problemNeedCodeForm" style="display:none">You've told us this page needs code samples. If you'd like to help us further, you could provide a code sample, or tell us about what kind of code sample you'd like to see:</p>
+<p id="problemCodeForm" style="display:none">You've told us there are code samples on this page which don't work. If you know how to fix it, or have something better we could use instead, please let us know:</p>
+<p id="problemMissingForm" style="display:none">You've told us there is information missing from this page. Please tell us more about what's missing:</p>
+<p id="problemIncorrectForm" style="display:none">You've told us there is incorrect information on this page. If you know what we should change to make it correct, please tell us:</p>
+<p id="problemUnclearForm" style="display:none">You've told us this page has unclear or confusing information. Please tell us more about what you found unclear or confusing, or let us know how we could make it clearer:</p>
+<p id="problemLanguageForm" style="display:none">You've told us there is a spelling or grammar error on this page. Please tell us what's wrong:</p>
+<p id="problemOtherForm" style="display:none">You've told us this page has a problem. Please tell us more about what's wrong:</p>
+<form>
+<textarea id="problemFormSuggestionField" cols="40" rows="5"></textarea><input type="hidden" id="problemFormDescription"><input type="submit" id="problemFormDescriptionSubmit" value="Submit" onclick="                                             document.getElementById('problemMoreInfo').style.display = 'none';                                             document.getElementById('problemMoreInfoThanks').style.display = '';                                             return false;                                             ">
+</form>
+</div>
+<div id="problemMoreInfoThanks" style="display:none"><p>Thanks for helping to make the Unity documentation better!</p></div>
+<script>
+
+                                            var ratecontent = document.querySelector('#ratecontent'); // target element
+                                            var currentRating = 0; // initial rating
+                                            var maxRating= 5; // max rating
+
+                                            // callback to run after setting the rating
+                                            var callback = function(rating) {
+                                                document.getElementById('ratingThanks').style.display = '';
+                                                document.getElementById('ratecontent').style.display = 'none';
+                                                document.getElementById('rating').style.display = 'none';
+                                                SendFeedback("rating",window.location.href,rating);
+                                            };
+
+                                            // rating instance
+                                            var myRating = rating(ratecontent, currentRating, maxRating, callback);
+                                        </script>
+</div>
+<div class="nextprev clear">
+<div class="icon tt left mr1" data-distance="-40|-30|top">
+<span class="prev"><a href="class-VideoPlayer.html"></a></span><div class="tip"> Video Player component</div>
+</div>
+<div class="icon tt right" data-distance="-40|-30|top">
+<span class="next"><a href="Video.html"></a></span><div class="tip"> Video sources</div>
+</div>
+</div>
+</div>
+</body></html>

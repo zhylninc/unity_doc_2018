@@ -1,0 +1,132 @@
+<html><head><title>html模版</title></head><body>Unity - Manual:  Scriptable Brushes</br>
+<div class="breadcrumbs clear"><ul>
+<li><a href="UnityManual.html">Unity User Manual (2018.1 beta)</a></li>
+<li><a href="Unity2D.html">2D</a></li>
+<li><a href="Tilemap.html"> Tilemap</a></li>
+<li> Scriptable Brushes</li>
+</ul></div>
+<div class="mb20"><div class="nextprev clear">
+<div class="icon tt left mr1" data-distance="-40|-30|top">
+<span class="prev"><a href="Tilemap-ScriptableTiles-Example.html"></a></span><div class="tip"> Scriptable Tile example</div>
+</div>
+<div class="icon tt right" data-distance="-40|-30|top">
+<span class="next"><a href="Tilemap-ScriptableBrushes-GridBrushBase.html"></a></span><div class="tip"> GridBrushBase</div>
+</div>
+</div></div>
+<div class="otherversionswrapper" onmouseover="setOtherVersionsDisplay(true)" onmouseout="setOtherVersionsDisplay(false)">
+<a>Other Versions</a><div class="otherversionscontent" id="OtherVersionsContent" style="display: none;">Cannot access other versions offline!</div>
+</div>
+<div class="scrollToFeedback"><a id="scrollToFeedback">Leave feedback</a></div>
+<h1>Scriptable Brushes</h1>
+<!--BeginSwitchLink--><!--EndSwitchLink-->
+<div class="clear"></div>
+
+<h2>Creating Scriptable Brushes</h2>
+
+<p>Create a new class inheriting from <code>GridBrushBase</code> (or any useful sub-classes of <code>GridBrushBase</code> like <code>GridBrush</code>). Override any required methods for your new <code>Brush</code> class. The following are the usual methods you would override:</p>
+
+<ul>
+<li>
+<code>Paint</code> allows the Brush to add items onto the target Grid</li>
+<li>
+<code>Erase</code> allows the Brush to remove items from the target Grid</li>
+<li>
+<code>FloodFill</code> allows the Brush to fill items onto the target Grid</li>
+<li>
+<code>Rotate</code> rotates the items set in the Brush.</li>
+<li>
+<code>Flip</code> flips the items set in the Brush.</li>
+</ul>
+
+<p>Create instances of your new class using <code>ScriptableObject.CreateInstance&lt;(Your Brush Class&gt;()</code>. You may convert this new instance to an Asset in the Editor in order to use it repeatedly by calling <code>AssetDatabase.CreateAsset()</code>.</p>
+
+<p>You can also make a custom editor for your brush. This works the same way as custom editors for scriptable objects. The following are the main methods you would want to override when creating a custom editor:</p>
+
+<ul>
+<li>You can override <code>OnPaintInspectorGUI</code> to have an inspector show up on the Palette when the Brush is selected to provide additional behaviour when painting.</li>
+<li>You can also override <code>OnPaintSceneGUI</code> to add additional behaviour when painting on the <code>SceneView</code>.</li>
+<li>You can also override <code>validTargets</code> to have a custom list of targets which the Brush can interact with. This list of targets is shown as a dropdown in the Palette window.</li>
+</ul>
+
+<p>When created, the Scriptable Brush is listed in the <strong>Brushes Dropdown</strong> in the Palette window. By default, an instance of the Scriptable Brush script is instantiated and stored in the <em>Library</em> folder of your project. Any modifications to the brush properties are stored in that instance. If you want to have multiple copies of that Brush with different properties, you can instantiate the Brush as Assets in your project. These Brush Assets are listed separately in the Brush dropdown.</p>
+
+<p>You can add a <code>CustomGridBrush</code> attribute to your Scriptable Brush class. This allows you to configure the behaviour of the Brush in the Palette window. The <code>CustomGridBrush</code> attribute has the following properties:</p>
+
+<ul>
+<li>
+<code>HideAssetInstances</code> - Setting this to true hides all copies of created Brush Assets in the Palette window. Set this if you only want the default instance to show up in the Brush dropdown in the Palette window.</li>
+<li>
+<code>HideDefaultInstances</code> - Setting this to true hides the default instance of the Brush in the Palette window. Set this if you only want created Assets to show up in the Brush dropdown in the Palette window.</li>
+<li>
+<code>DefaultBrush</code> - Setting this to true sets the default instance of the Brush as the default Brush in the project. This makes this Brush the default selected Brush whenever the project starts up. Only set one Scriptable Brush to be the Default Brush!</li>
+<li>
+<code>DefaultName</code> - Setting this makes the Brush dropdown use this as the name for the Brush instead of the name of the class of the Brush.</li>
+</ul>
+
+<p>Remember to save your project to ensure that your new Brush Assets are saved!</p>
+
+<hr>
+
+<ul>
+<li><span class="page-edit">2017–09–06 Page published with limited <a href="DocumentationEditorialReview.html">editorial review</a>
+</span></li>
+</ul>
+<div class="feedbackbox" id="feedbackbox">
+<div id="rating"><p>Did you find this page useful? Please give it a rating:<br><div id="ratecontent" class="c-rating"></div>
+</p></div>
+<div id="ratingThanks" style="display:none"><p>Thanks for rating this page!</p></div>
+<div id="problem"><p><a name="problem" onclick="document.getElementById('problemType').style.display = '';document.getElementById('problem').style.display = 'none';">Report a problem on this page</a></p></div>
+<div id="problemType" style="display:none"><p>What kind of problem would you like to report?<ul type="problems">
+<li><a name="needcode" onclick="                                                             document.getElementById('problemType').style.display = 'none';                                                             document.getElementById('problemThanks').style.display = '';                                                             SendFeedback('problem-needcode',window.location.href,0);                                                             document.getElementById('problemFormDescription').value='Needs code samples.';                                                             document.getElementById('problemNeedCodeForm').style.display = ''                                                         ">This page needs code samples</a></li>
+<li><a name="code" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-brokencode',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Code samples do not work.';                                                         document.getElementById('problemCodeForm').style.display = ''                                                         ">Code samples do not work</a></li>
+<li><a name="missing" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-missing',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Missing information';                                                         document.getElementById('problemMissingForm').style.display = ''                                                         ">Information is missing</a></li>
+<li><a name="incorrect" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-incorrect',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Incorrect information';                                                         document.getElementById('problemIncorrectForm').style.display = ''                                                         ">Information is incorrect</a></li>
+<li><a name="unclear" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-unclear',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Unclear or confusing information';                                                         document.getElementById('problemUnclearForm').style.display = ''                                                         ">Information is unclear or confusing</a></li>
+<li><a name="language" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-language',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Spelling or grammar error';                                                         document.getElementById('problemLanguageForm').style.display = ''                                                         ">There is a spelling/grammar error on this page</a></li>
+<li><a name="other" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-other',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='This page has a problem';                                                         document.getElementById('problemOtherForm').style.display = ''                                                         ">Something else</a></li>
+</ul>
+<p><known_issues><p>Is something described here not working as you expect it to? It might be a <b>Known Issue</b>. Please check with the Issue Tracker at <a href="https://issuetracker.unity3d.com">issuetracker.unity3d.com</a>.</p></known_issues></p>
+</p></div>
+<div id="problemThanks" style="display:none"><p>Thanks for letting us know! This page has been marked for review based on your feedback.<br><br>If you have time, you can provide more information to help us fix the problem faster.<br><br><a onclick="document.getElementById('problemMoreInfo').style.display = '';document.getElementById('problemThanks').style.display = 'none';">Provide more information</a><br>
+</p></div>
+<div id="problemMoreInfo" style="display:none">
+<p id="problemNeedCodeForm" style="display:none">You've told us this page needs code samples. If you'd like to help us further, you could provide a code sample, or tell us about what kind of code sample you'd like to see:</p>
+<p id="problemCodeForm" style="display:none">You've told us there are code samples on this page which don't work. If you know how to fix it, or have something better we could use instead, please let us know:</p>
+<p id="problemMissingForm" style="display:none">You've told us there is information missing from this page. Please tell us more about what's missing:</p>
+<p id="problemIncorrectForm" style="display:none">You've told us there is incorrect information on this page. If you know what we should change to make it correct, please tell us:</p>
+<p id="problemUnclearForm" style="display:none">You've told us this page has unclear or confusing information. Please tell us more about what you found unclear or confusing, or let us know how we could make it clearer:</p>
+<p id="problemLanguageForm" style="display:none">You've told us there is a spelling or grammar error on this page. Please tell us what's wrong:</p>
+<p id="problemOtherForm" style="display:none">You've told us this page has a problem. Please tell us more about what's wrong:</p>
+<form>
+<textarea id="problemFormSuggestionField" cols="40" rows="5"></textarea><input type="hidden" id="problemFormDescription"><input type="submit" id="problemFormDescriptionSubmit" value="Submit" onclick="                                             document.getElementById('problemMoreInfo').style.display = 'none';                                             document.getElementById('problemMoreInfoThanks').style.display = '';                                             return false;                                             ">
+</form>
+</div>
+<div id="problemMoreInfoThanks" style="display:none"><p>Thanks for helping to make the Unity documentation better!</p></div>
+<script>
+
+                                            var ratecontent = document.querySelector('#ratecontent'); // target element
+                                            var currentRating = 0; // initial rating
+                                            var maxRating= 5; // max rating
+
+                                            // callback to run after setting the rating
+                                            var callback = function(rating) {
+                                                document.getElementById('ratingThanks').style.display = '';
+                                                document.getElementById('ratecontent').style.display = 'none';
+                                                document.getElementById('rating').style.display = 'none';
+                                                SendFeedback("rating",window.location.href,rating);
+                                            };
+
+                                            // rating instance
+                                            var myRating = rating(ratecontent, currentRating, maxRating, callback);
+                                        </script>
+</div>
+<div class="nextprev clear">
+<div class="icon tt left mr1" data-distance="-40|-30|top">
+<span class="prev"><a href="Tilemap-ScriptableTiles-Example.html"></a></span><div class="tip"> Scriptable Tile example</div>
+</div>
+<div class="icon tt right" data-distance="-40|-30|top">
+<span class="next"><a href="Tilemap-ScriptableBrushes-GridBrushBase.html"></a></span><div class="tip"> GridBrushBase</div>
+</div>
+</div>
+</div>
+</body></html>

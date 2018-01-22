@@ -1,0 +1,168 @@
+<html><head><title>html模版</title></head><body>Unity - Manual:  Configuration for the Amazon Appstore</br>
+<div class="breadcrumbs clear"><ul>
+<li><a href="UnityManual.html">Unity User Manual (2018.1 beta)</a></li>
+<li><a href="UnityServices.html">Unity Services &amp; Dashboard</a></li>
+<li><a href="UnityIAP.html">﻿Unity IAP</a></li>
+<li><a href="UnityIAPSettingUp.html">Setting up Unity IAP</a></li>
+<li> Configuration for the Amazon Appstore</li>
+</ul></div>
+<div class="mb20"><div class="nextprev clear">
+<div class="icon tt left mr1" data-distance="-40|-30|top">
+<span class="prev"><a href="UnityIAPWindowsConfiguration.html"></a></span><div class="tip">Configuring for Windows Store</div>
+</div>
+<div class="icon tt right" data-distance="-40|-30|top">
+<span class="next"><a href="UnityIAPSamsungConfiguration.html"></a></span><div class="tip"> Samsung Galaxy IAP configuration</div>
+</div>
+</div></div>
+<div class="otherversionswrapper" onmouseover="setOtherVersionsDisplay(true)" onmouseout="setOtherVersionsDisplay(false)">
+<a>Other Versions</a><div class="otherversionscontent" id="OtherVersionsContent" style="display: none;">Cannot access other versions offline!</div>
+</div>
+<div class="scrollToFeedback"><a id="scrollToFeedback">Leave feedback</a></div>
+<h1>Configuration for the Amazon Appstore</h1>
+<!--BeginSwitchLink--><!--EndSwitchLink-->
+<div class="clear"></div>
+
+<h2>Introduction</h2>
+
+<p>This guide describes the process of setting up the Amazon Appstore for use with the Unity in-app purchasing (IAP) system. This includes establishing the digital records and relationships that are required to interact with the Unity IAP API, setting up an Amazon developer account, and testing and publishing a Unity IAP application. </p>
+
+<p>As with other platforms, the Amazon store allows for the purchase of virtual goods and managed products. These digital products are identified using a string identifier and an additional type to define durability, with choices including subscription (capable of being subscribed to), consumable (capable of being rebought), and non-consumable (capable of being bought once).</p>
+
+<h2>Cross-store implementation of in-app purchases</h2>
+
+<p>There are cross-store installation issues with publishing to multiple Android IAP stores (e.g. Amazon and Google) simultaneously and shared Android bundle identifiers. Please see the page on <a href="UnityIAPCrossStoreInstallationIssues.html">Cross-store installation issues with Android in-app purchase stores</a> to learn more.</p>
+
+<h2>Amazon Appstore</h2>
+
+<h3>Getting started</h3>
+
+<ol>
+<li>Set up an Amazon developer account at the <a href="https://developer.amazon.com/">Amazon developer portal</a>.</li>
+<li>Write a game implementing the Unity IAP API. For reference, see the guides on <a href="UnityIAPInitialization.html">Unity IAP initialization</a> and <a href="https://unity3d.com/learn/tutorials/topics/analytics/integrating-unity-iap-your-game">Integrating Unity IAP in your game</a>. Use the Amazon Appstore for apps with no restrictions on IAP items.</li>
+</ol>
+
+<h3>Device setup</h3>
+
+<ol>
+<li><p>For non-FireOS Android devices, download and install the <a href="https://www.amazon.com/appstore_android_app">Amazon Appstore</a>.</p></li>
+<li><p>On FireOS devices, the Amazon Appstore should come pre-installed.</p></li>
+<li>
+<p>Once you have installed the Amazon Appstore, install the <a href="http://www.amazon.com/Amazon-App-Tester/dp/B00BN3YZM2/">Amazon App Tester</a>.</p>
+
+<figure>
+<img src="../uploads/Main/AmazonConfiguration-AmazonAppTester.png" alt="">
+</figure>
+</li>
+<li>Set up the Android SDK
+
+<ol>
+<li>To install and watch the Android debug log, ensure you have the <a href="https://developer.android.com/studio/install.html">Android SDK</a> installed. Download the relevant command line tools package from the Android SDK install page and extract them to your computer.</li>
+<li>Confirm that the SDK recognizes the attached Android device through the command-line adb tool. For example:</li>
+</ol>
+</li>
+</ol>
+
+<pre><code>|[11:07:01] user@laptop:/Applications | $ adb devices
+List of devices attached
+00DA0807526300W5    device
+</code></pre>
+
+<h3>Unity app setup</h3>
+
+<p>Setting up to use Unity’s IAP takes a few steps.</p>
+
+<ol>
+<li><p>Import the Unity IAP plug-in. See <a href="UnityIAPSettingUp.html">Setting up Unity IAP</a> for more information (Unity 5.3 or higher).</p></li>
+<li>
+<p>Set the IAP target store. You should already have an Android app set up. Set the target store using <strong>Unity IAP’s Window &gt; Unity IAP &gt; Android &gt; Target Amazon</strong> menu item. This is used to toggle between Google, Amazon, and other Android stores.</p>
+
+<figure>
+<img src="../uploads/Main/AmazonConfiguration-TargetAmazonMenu.png" alt="">
+</figure>
+</li>
+</ol>
+
+<p>Alternatively, call the API: </p>
+
+<pre><code>UnityPurchasingEditor.TargetAndroidStore(AndroidStore.AmazonAppStore)
+</code></pre>
+
+<h3>Amazon Appstore setup</h3>
+
+<p>It’s not necessary to download Amazon’s native IAP plug-in when preparing to use the Amazon stores, as all of the functionality it provides is already included in Unity’s IAP service.</p>
+
+<ol>
+<li>
+<p>Add your app. From the Amazon Developer Portal select <strong>Add a New App</strong>.</p>
+
+<figure>
+<img src="../uploads/Main/AmazonConfiguration-AddNewApp.png" alt="">
+</figure>
+</li>
+<li>
+<p>Set up your catalog. Using the product descriptions you prepared earlier, add the items to the Amazon catalog using the Amazon Developer Portal. Navigate to your app’s page, and find the <strong>In-App Items section</strong>. Use the <strong>Add a Consumable</strong>, <strong>Add an Entitlement</strong>, or <strong>Add a Subscription</strong> buttons to set up your catalog.</p>
+
+<figure>
+<img src="../uploads/Main/AmazonConfiguration-SetUpCatalog.png" alt="">
+</figure>
+</li>
+</ol>
+<div class="feedbackbox" id="feedbackbox">
+<div id="rating"><p>Did you find this page useful? Please give it a rating:<br><div id="ratecontent" class="c-rating"></div>
+</p></div>
+<div id="ratingThanks" style="display:none"><p>Thanks for rating this page!</p></div>
+<div id="problem"><p><a name="problem" onclick="document.getElementById('problemType').style.display = '';document.getElementById('problem').style.display = 'none';">Report a problem on this page</a></p></div>
+<div id="problemType" style="display:none"><p>What kind of problem would you like to report?<ul type="problems">
+<li><a name="needcode" onclick="                                                             document.getElementById('problemType').style.display = 'none';                                                             document.getElementById('problemThanks').style.display = '';                                                             SendFeedback('problem-needcode',window.location.href,0);                                                             document.getElementById('problemFormDescription').value='Needs code samples.';                                                             document.getElementById('problemNeedCodeForm').style.display = ''                                                         ">This page needs code samples</a></li>
+<li><a name="code" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-brokencode',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Code samples do not work.';                                                         document.getElementById('problemCodeForm').style.display = ''                                                         ">Code samples do not work</a></li>
+<li><a name="missing" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-missing',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Missing information';                                                         document.getElementById('problemMissingForm').style.display = ''                                                         ">Information is missing</a></li>
+<li><a name="incorrect" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-incorrect',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Incorrect information';                                                         document.getElementById('problemIncorrectForm').style.display = ''                                                         ">Information is incorrect</a></li>
+<li><a name="unclear" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-unclear',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Unclear or confusing information';                                                         document.getElementById('problemUnclearForm').style.display = ''                                                         ">Information is unclear or confusing</a></li>
+<li><a name="language" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-language',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Spelling or grammar error';                                                         document.getElementById('problemLanguageForm').style.display = ''                                                         ">There is a spelling/grammar error on this page</a></li>
+<li><a name="other" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-other',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='This page has a problem';                                                         document.getElementById('problemOtherForm').style.display = ''                                                         ">Something else</a></li>
+</ul>
+<p><known_issues><p>Is something described here not working as you expect it to? It might be a <b>Known Issue</b>. Please check with the Issue Tracker at <a href="https://issuetracker.unity3d.com">issuetracker.unity3d.com</a>.</p></known_issues></p>
+</p></div>
+<div id="problemThanks" style="display:none"><p>Thanks for letting us know! This page has been marked for review based on your feedback.<br><br>If you have time, you can provide more information to help us fix the problem faster.<br><br><a onclick="document.getElementById('problemMoreInfo').style.display = '';document.getElementById('problemThanks').style.display = 'none';">Provide more information</a><br>
+</p></div>
+<div id="problemMoreInfo" style="display:none">
+<p id="problemNeedCodeForm" style="display:none">You've told us this page needs code samples. If you'd like to help us further, you could provide a code sample, or tell us about what kind of code sample you'd like to see:</p>
+<p id="problemCodeForm" style="display:none">You've told us there are code samples on this page which don't work. If you know how to fix it, or have something better we could use instead, please let us know:</p>
+<p id="problemMissingForm" style="display:none">You've told us there is information missing from this page. Please tell us more about what's missing:</p>
+<p id="problemIncorrectForm" style="display:none">You've told us there is incorrect information on this page. If you know what we should change to make it correct, please tell us:</p>
+<p id="problemUnclearForm" style="display:none">You've told us this page has unclear or confusing information. Please tell us more about what you found unclear or confusing, or let us know how we could make it clearer:</p>
+<p id="problemLanguageForm" style="display:none">You've told us there is a spelling or grammar error on this page. Please tell us what's wrong:</p>
+<p id="problemOtherForm" style="display:none">You've told us this page has a problem. Please tell us more about what's wrong:</p>
+<form>
+<textarea id="problemFormSuggestionField" cols="40" rows="5"></textarea><input type="hidden" id="problemFormDescription"><input type="submit" id="problemFormDescriptionSubmit" value="Submit" onclick="                                             document.getElementById('problemMoreInfo').style.display = 'none';                                             document.getElementById('problemMoreInfoThanks').style.display = '';                                             return false;                                             ">
+</form>
+</div>
+<div id="problemMoreInfoThanks" style="display:none"><p>Thanks for helping to make the Unity documentation better!</p></div>
+<script>
+
+                                            var ratecontent = document.querySelector('#ratecontent'); // target element
+                                            var currentRating = 0; // initial rating
+                                            var maxRating= 5; // max rating
+
+                                            // callback to run after setting the rating
+                                            var callback = function(rating) {
+                                                document.getElementById('ratingThanks').style.display = '';
+                                                document.getElementById('ratecontent').style.display = 'none';
+                                                document.getElementById('rating').style.display = 'none';
+                                                SendFeedback("rating",window.location.href,rating);
+                                            };
+
+                                            // rating instance
+                                            var myRating = rating(ratecontent, currentRating, maxRating, callback);
+                                        </script>
+</div>
+<div class="nextprev clear">
+<div class="icon tt left mr1" data-distance="-40|-30|top">
+<span class="prev"><a href="UnityIAPWindowsConfiguration.html"></a></span><div class="tip">Configuring for Windows Store</div>
+</div>
+<div class="icon tt right" data-distance="-40|-30|top">
+<span class="next"><a href="UnityIAPSamsungConfiguration.html"></a></span><div class="tip"> Samsung Galaxy IAP configuration</div>
+</div>
+</div>
+</div>
+</body></html>

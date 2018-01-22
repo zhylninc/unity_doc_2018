@@ -1,0 +1,262 @@
+<html><head><title>html模版</title></head><body>Unity - Manual:  Placing probes using scripting</br>
+<div class="breadcrumbs clear"><ul>
+<li><a href="UnityManual.html">Unity User Manual (2018.1 beta)</a></li>
+<li><a href="Graphics.html">Graphics</a></li>
+<li><a href="GraphicsOverview.html">Graphics Overview</a></li>
+<li><a href="LightingOverview.html">Lighting</a></li>
+<li><a href="GIIntro.html">Global Illumination</a></li>
+<li><a href="LightProbes.html"> Light Probes</a></li>
+<li> Placing probes using scripting</li>
+</ul></div>
+<div class="mb20"><div class="nextprev clear">
+<div class="icon tt left mr1" data-distance="-40|-30|top">
+<span class="prev"><a href="class-LightProbeGroup.html"></a></span><div class="tip"> Placing Light Probes</div>
+</div>
+<div class="icon tt right" data-distance="-40|-30|top">
+<span class="next"><a href="LightProbes-MovingObjects.html"></a></span><div class="tip"> Light Probes for moving objects</div>
+</div>
+</div></div>
+<div class="otherversionswrapper" onmouseover="setOtherVersionsDisplay(true)" onmouseout="setOtherVersionsDisplay(false)">
+<a>Other Versions</a><div class="otherversionscontent" id="OtherVersionsContent" style="display: none;">Cannot access other versions offline!</div>
+</div>
+<div class="scrollToFeedback"><a id="scrollToFeedback">Leave feedback</a></div>
+<h1>Placing probes using scripting</h1>
+<!--BeginSwitchLink--><!--EndSwitchLink-->
+<div class="clear"></div>
+
+<p>Placing light probes over large levels by hand can be time consuming. You can automate the placing of light probes by writing your own editor scripts. Your script can create a new GameObject with a LightProbeGroup component, and you can add probe positions individually according to any rules that you choose to program.</p>
+
+<p>For example, this script can place Light Probes in a circle or a ring.</p>
+
+<pre><code>using UnityEngine;
+using System.Collections.Generic;
+
+[RequireComponent (typeof (LightProbeGroup))]
+public class LightProbesTetrahedralGrid : MonoBehaviour
+{
+ // Common
+ public float m_Side = 1.0f;
+ public float m_Radius = 5.0f;
+ public float m_InnerRadius = 0.1f;
+ public float m_Height = 2.0f;
+ public uint m_Levels = 3;
+ const float kMinSide = 0.05f;
+ const float kMinHeight = 0.05f;
+ const float kMinInnerRadius = 0.1f;
+ const uint kMinIterations = 4;
+ public void OnValidate ()
+ {
+  m_Side = Mathf.Max (kMinSide, m_Side);
+  m_Height = Mathf.Max (kMinHeight, m_Height);
+  if (m_InnerRadius &lt; kMinInnerRadius)
+  {
+   TriangleProps props = new TriangleProps (m_Side);
+   m_Radius = Mathf.Max (props.circumscribedCircleRadius + 0.01f, m_Radius);
+  }
+  else
+  {
+   m_Radius = Mathf.Max (0.1f, m_Radius);
+   m_InnerRadius = Mathf.Min (m_Radius, m_InnerRadius);
+  }
+ }
+ struct TriangleProps
+ {
+  public TriangleProps (float triangleSide)
+  {
+   side = triangleSide;
+   halfSide = side / 2.0f;
+   height = Mathf.Sqrt (3.0f) * side / 2.0f;
+   inscribedCircleRadius = Mathf.Sqrt (3.0f) * side / 6.0f;
+   circumscribedCircleRadius = 2.0f * height / 3.0f;
+  }
+  public float side;
+  public float halfSide;
+  public float height;
+  public float inscribedCircleRadius;
+  public float circumscribedCircleRadius;
+ };
+
+ private TriangleProps m_TriangleProps;
+ public void Generate ()
+ {
+  LightProbeGroup lightProbeGroup = GetComponent&lt;LightProbeGroup&gt; ();
+  List&lt;Vector3&gt; positions = new List&lt;Vector3&gt; ();
+  m_TriangleProps = new TriangleProps (m_Side);
+  if (m_InnerRadius &lt; kMinInnerRadius)
+   GenerateCylinder (m_TriangleProps, m_Radius, m_Height, m_Levels, positions);
+  else
+   GenerateRing (m_TriangleProps, m_Radius, m_InnerRadius, m_Height, m_Levels, positions);
+  lightProbeGroup.probePositions = positions.ToArray ();
+ }
+ static void AttemptAdding (Vector3 position, Vector3 center, float distanceCutoffSquared, List&lt;Vector3&gt; outPositions)
+ {
+  if ((position - center).sqrMagnitude &lt; distanceCutoffSquared)
+   outPositions.Add (position);
+ }
+ uint CalculateCylinderIterations (TriangleProps props, float radius)
+ {
+  int iterations = Mathf.CeilToInt ((radius + props.height - props.inscribedCircleRadius) / props.height);
+  if (iterations &gt; 0)
+   return (uint)iterations;
+  return 0;
+ }
+ void GenerateCylinder (TriangleProps props, float radius, float height, uint levels, List&lt;Vector3&gt; outPositions)
+ {
+  uint iterations = CalculateCylinderIterations (props, radius);
+  float distanceCutoff = radius;
+  float distanceCutoffSquared = distanceCutoff * distanceCutoff;
+  Vector3 up = new Vector3 (props.circumscribedCircleRadius, 0.0f, 0.0f);
+  Vector3 leftDown = new Vector3 (-props.inscribedCircleRadius, 0.0f, -props.halfSide);
+  Vector3 rightDown = new Vector3 (-props.inscribedCircleRadius, 0.0f, props.halfSide);
+  for (uint l = 0; l &lt; levels; l++)
+  {
+   float tLevel = levels == 1 ? 0 : (float)l / (float)(levels - 1);
+   Vector3 center = new Vector3 (0.0f, tLevel * height, 0.0f);
+   if (l % 2 == 0)
+   {
+    for (uint i = 0; i &lt; iterations; i++)
+    {
+     Vector3 upCorner = center + up + (float)i * up * 2.0f * 3.0f / 2.0f;
+     Vector3 leftDownCorner = center + leftDown + (float)i * leftDown * 2.0f * 3.0f / 2.0f;
+     Vector3 rightDownCorner = center + rightDown + (float)i * rightDown * 2.0f * 3.0f / 2.0f;
+     AttemptAdding (upCorner, center, distanceCutoffSquared, outPositions);
+     AttemptAdding (leftDownCorner, center, distanceCutoffSquared, outPositions);
+     AttemptAdding (rightDownCorner, center, distanceCutoffSquared, outPositions);
+     Vector3 leftDownUp = upCorner - leftDownCorner;
+     Vector3 upRightDown = rightDownCorner - upCorner;
+     Vector3 rightDownLeftDown = leftDownCorner - rightDownCorner;
+     uint subdiv = 3 * i + 1;
+     for (uint s = 1; s &lt; subdiv; s++)
+     {
+      Vector3 leftDownUpSubdiv = leftDownCorner + leftDownUp * (float)s / (float)subdiv;
+      AttemptAdding (leftDownUpSubdiv, center, distanceCutoffSquared, outPositions);
+      Vector3 upRightDownSubdiv = upCorner + upRightDown * (float)s / (float)subdiv;
+      AttemptAdding (upRightDownSubdiv, center, distanceCutoffSquared, outPositions);
+      Vector3 rightDownLeftDownSubdiv = rightDownCorner + rightDownLeftDown * (float)s / (float)subdiv;
+      AttemptAdding (rightDownLeftDownSubdiv, center, distanceCutoffSquared, outPositions);
+     }
+    }
+   }
+   else
+   {
+    for (uint i = 0; i &lt; iterations; i++)
+    {
+     Vector3 upCorner = center + (float)i * (2.0f * up * 3.0f / 2.0f);
+     Vector3 leftDownCorner = center + (float)i * (2.0f * leftDown * 3.0f / 2.0f);
+     Vector3 rightDownCorner = center + (float)i * (2.0f * rightDown * 3.0f / 2.0f);
+     AttemptAdding (upCorner, center, distanceCutoffSquared, outPositions);
+     AttemptAdding (leftDownCorner, center, distanceCutoffSquared, outPositions);
+     AttemptAdding (rightDownCorner, center, distanceCutoffSquared, outPositions);
+     Vector3 leftDownUp = upCorner - leftDownCorner;
+     Vector3 upRightDown = rightDownCorner - upCorner;
+     Vector3 rightDownLeftDown = leftDownCorner - rightDownCorner;
+     uint subdiv = 3 * i;
+     for (uint s = 1; s &lt; subdiv; s++)
+     {
+      Vector3 leftDownUpSubdiv = leftDownCorner + leftDownUp * (float)s / (float)subdiv;
+      AttemptAdding (leftDownUpSubdiv, center, distanceCutoffSquared, outPositions);
+      Vector3 upRightDownSubdiv = upCorner + upRightDown * (float)s / (float)subdiv;
+      AttemptAdding (upRightDownSubdiv, center, distanceCutoffSquared, outPositions);
+      Vector3 rightDownLeftDownSubdiv = rightDownCorner + rightDownLeftDown * (float)s / (float)subdiv;
+      AttemptAdding (rightDownLeftDownSubdiv, center, distanceCutoffSquared, outPositions);
+     }
+    }
+   }
+  }
+ }
+ void GenerateRing (TriangleProps props, float radius, float innerRadius, float height, uint levels, List&lt;Vector3&gt; outPositions)
+ {
+  float chordLength = props.side;
+  float angle = Mathf.Clamp (2.0f * Mathf.Asin (chordLength / (2.0f * radius)), 0.01f, 2.0f * Mathf.PI);
+  uint slicesAtRadius = (uint)Mathf.FloorToInt (2.0f * Mathf.PI / angle);
+  uint layers = (uint)Mathf.Max (Mathf.Ceil ((radius - innerRadius) / props.height), 0.0f);
+  for (uint level = 0; level &lt; levels; level++)
+  {
+   float tLevel = levels == 1 ? 0 : (float)level / (float)(levels - 1);
+   float y = height * tLevel;
+   float iterationOffset0 = level % 2 == 0 ? 0.0f : 0.5f;
+   for (uint layer = 0; layer &lt; layers; layer++)
+   {
+    float tLayer = layers == 1 ? 1.0f : (float)layer / (float)(layers - 1);
+    float tIterations = (tLayer * (radius - innerRadius) + innerRadius - kMinInnerRadius) / (radius - kMinInnerRadius);
+    uint slices = (uint)Mathf.CeilToInt (Mathf.Lerp (kMinIterations, slicesAtRadius, tIterations));
+    float x = innerRadius + (radius - innerRadius) * tLayer;
+    Vector3 position = new Vector3 (x, y, 0.0f);
+    float layerSliceOffset = layer % 2 == 0 ? 0.0f : 0.5f;
+    for (uint slice = 0; slice &lt; slices; slice++)
+    {
+     Quaternion rotation = Quaternion.Euler (0.0f, (slice + iterationOffset0 + layerSliceOffset) * 360.0f / (float)slices, 0.0f);
+     outPositions.Add (rotation * position);
+    }
+   }
+  }
+ }
+}
+</code></pre>
+
+<hr>
+
+<ul>
+<li><p><span class="page-edit"> 2017–06–08 Page published with no <a href="DocumentationEditorialReview.html">editorial review</a>
+</span></p></li>
+<li><p><span class="page-history">Light Probes updated in 5.6</span></p></li>
+</ul>
+<div class="feedbackbox" id="feedbackbox">
+<div id="rating"><p>Did you find this page useful? Please give it a rating:<br><div id="ratecontent" class="c-rating"></div>
+</p></div>
+<div id="ratingThanks" style="display:none"><p>Thanks for rating this page!</p></div>
+<div id="problem"><p><a name="problem" onclick="document.getElementById('problemType').style.display = '';document.getElementById('problem').style.display = 'none';">Report a problem on this page</a></p></div>
+<div id="problemType" style="display:none"><p>What kind of problem would you like to report?<ul type="problems">
+<li><a name="needcode" onclick="                                                             document.getElementById('problemType').style.display = 'none';                                                             document.getElementById('problemThanks').style.display = '';                                                             SendFeedback('problem-needcode',window.location.href,0);                                                             document.getElementById('problemFormDescription').value='Needs code samples.';                                                             document.getElementById('problemNeedCodeForm').style.display = ''                                                         ">This page needs code samples</a></li>
+<li><a name="code" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-brokencode',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Code samples do not work.';                                                         document.getElementById('problemCodeForm').style.display = ''                                                         ">Code samples do not work</a></li>
+<li><a name="missing" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-missing',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Missing information';                                                         document.getElementById('problemMissingForm').style.display = ''                                                         ">Information is missing</a></li>
+<li><a name="incorrect" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-incorrect',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Incorrect information';                                                         document.getElementById('problemIncorrectForm').style.display = ''                                                         ">Information is incorrect</a></li>
+<li><a name="unclear" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-unclear',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Unclear or confusing information';                                                         document.getElementById('problemUnclearForm').style.display = ''                                                         ">Information is unclear or confusing</a></li>
+<li><a name="language" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-language',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Spelling or grammar error';                                                         document.getElementById('problemLanguageForm').style.display = ''                                                         ">There is a spelling/grammar error on this page</a></li>
+<li><a name="other" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-other',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='This page has a problem';                                                         document.getElementById('problemOtherForm').style.display = ''                                                         ">Something else</a></li>
+</ul>
+<p><known_issues><p>Is something described here not working as you expect it to? It might be a <b>Known Issue</b>. Please check with the Issue Tracker at <a href="https://issuetracker.unity3d.com">issuetracker.unity3d.com</a>.</p></known_issues></p>
+</p></div>
+<div id="problemThanks" style="display:none"><p>Thanks for letting us know! This page has been marked for review based on your feedback.<br><br>If you have time, you can provide more information to help us fix the problem faster.<br><br><a onclick="document.getElementById('problemMoreInfo').style.display = '';document.getElementById('problemThanks').style.display = 'none';">Provide more information</a><br>
+</p></div>
+<div id="problemMoreInfo" style="display:none">
+<p id="problemNeedCodeForm" style="display:none">You've told us this page needs code samples. If you'd like to help us further, you could provide a code sample, or tell us about what kind of code sample you'd like to see:</p>
+<p id="problemCodeForm" style="display:none">You've told us there are code samples on this page which don't work. If you know how to fix it, or have something better we could use instead, please let us know:</p>
+<p id="problemMissingForm" style="display:none">You've told us there is information missing from this page. Please tell us more about what's missing:</p>
+<p id="problemIncorrectForm" style="display:none">You've told us there is incorrect information on this page. If you know what we should change to make it correct, please tell us:</p>
+<p id="problemUnclearForm" style="display:none">You've told us this page has unclear or confusing information. Please tell us more about what you found unclear or confusing, or let us know how we could make it clearer:</p>
+<p id="problemLanguageForm" style="display:none">You've told us there is a spelling or grammar error on this page. Please tell us what's wrong:</p>
+<p id="problemOtherForm" style="display:none">You've told us this page has a problem. Please tell us more about what's wrong:</p>
+<form>
+<textarea id="problemFormSuggestionField" cols="40" rows="5"></textarea><input type="hidden" id="problemFormDescription"><input type="submit" id="problemFormDescriptionSubmit" value="Submit" onclick="                                             document.getElementById('problemMoreInfo').style.display = 'none';                                             document.getElementById('problemMoreInfoThanks').style.display = '';                                             return false;                                             ">
+</form>
+</div>
+<div id="problemMoreInfoThanks" style="display:none"><p>Thanks for helping to make the Unity documentation better!</p></div>
+<script>
+
+                                            var ratecontent = document.querySelector('#ratecontent'); // target element
+                                            var currentRating = 0; // initial rating
+                                            var maxRating= 5; // max rating
+
+                                            // callback to run after setting the rating
+                                            var callback = function(rating) {
+                                                document.getElementById('ratingThanks').style.display = '';
+                                                document.getElementById('ratecontent').style.display = 'none';
+                                                document.getElementById('rating').style.display = 'none';
+                                                SendFeedback("rating",window.location.href,rating);
+                                            };
+
+                                            // rating instance
+                                            var myRating = rating(ratecontent, currentRating, maxRating, callback);
+                                        </script>
+</div>
+<div class="nextprev clear">
+<div class="icon tt left mr1" data-distance="-40|-30|top">
+<span class="prev"><a href="class-LightProbeGroup.html"></a></span><div class="tip"> Placing Light Probes</div>
+</div>
+<div class="icon tt right" data-distance="-40|-30|top">
+<span class="next"><a href="LightProbes-MovingObjects.html"></a></span><div class="tip"> Light Probes for moving objects</div>
+</div>
+</div>
+</div>
+</body></html>

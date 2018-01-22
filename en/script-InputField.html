@@ -1,0 +1,307 @@
+<html><head><title>html模版</title></head><body>Unity - Manual: Input Field</br>
+<div class="breadcrumbs clear"><ul>
+<li><a href="UnityManual.html">Unity User Manual (2018.1 beta)</a></li>
+<li><a href="UISystem.html">UI</a></li>
+<li><a href="UIReference.html"> UI Reference</a></li>
+<li><a href="comp-UIInteraction.html"> Interaction Components</a></li>
+<li>Input Field</li>
+</ul></div>
+<div class="mb20"><div class="nextprev clear">
+<div class="icon tt left mr1" data-distance="-40|-30|top">
+<span class="prev"><a href="script-Dropdown.html"></a></span><div class="tip">Dropdown</div>
+</div>
+<div class="icon tt right" data-distance="-40|-30|top">
+<span class="next"><a href="script-ScrollRect.html"></a></span><div class="tip"> Scroll Rect</div>
+</div>
+</div></div>
+<div class="otherversionswrapper" onmouseover="setOtherVersionsDisplay(true)" onmouseout="setOtherVersionsDisplay(false)">
+<a>Other Versions</a><div class="otherversionscontent" id="OtherVersionsContent" style="display: none;">Cannot access other versions offline!</div>
+</div>
+<div class="scrollToFeedback"><a id="scrollToFeedback">Leave feedback</a></div>
+<h1>Input Field</h1>
+<!--BeginSwitchLink--><!--EndSwitchLink-->
+<div class="clear"></div>
+
+<p>An <strong>Input Field</strong> is a way to make the text of a <a href="script-Text.html">Text Control</a> editable. Like the other interaction controls, it’s not a visible UI element in itself and must be combined with one or more visual UI elements in order to be visible.</p>
+
+<figure>
+<img src="../uploads/Main/UI_InputFieldExample.png" alt="An empty Input Field.">
+<figcaption>An empty Input Field.</figcaption>
+</figure>
+
+<figure>
+<img src="../uploads/Main/UI_InputFieldExample2.png" alt="Text entered into the Input Field.">
+<figcaption>Text entered into the Input Field.</figcaption>
+</figure>
+
+<figure>
+<img src="../uploads/Main/UI_InputFieldInspector.png" alt="">
+</figure>
+
+<h2>Properties</h2>
+
+<table>
+<colgroup>
+<col style="text-align:left;">
+<col style="text-align:left;">
+<col style="text-align:left;">
+</colgroup>
+
+<thead>
+<tr>
+	<th style="text-align:left;" colspan="2"><strong><em>Property:</em></strong></th>
+	<th style="text-align:left;"><strong><em>Function:</em></strong></th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+	<td style="text-align:left;" colspan="2"><strong><strong>Interactable</strong></strong></td>
+	<td style="text-align:left;">A boolean that determines if the Input Field can be interacted with or not.</td>
+</tr>
+</tbody>
+
+<tbody>
+<tr>
+	<td style="text-align:left;" colspan="2"><strong><strong>Transition</strong></strong></td>
+	<td style="text-align:left;">
+<a href="script-SelectableTransition.html">Transitions</a> are used to set how the input field transitions when <strong><em>Normal</em></strong>, <strong><em>Highlighted</em></strong>, <strong><em>Pressed</em></strong> or <strong><em>Disabled</em></strong>.</td>
+</tr>
+<tr>
+	<td style="text-align:left;" colspan="2"><strong><strong>Navigation</strong></strong></td>
+	<td style="text-align:left;">Properties that determine the sequence of controls. See <a href="script-SelectableNavigation.html">Navigation Options</a>.</td>
+</tr>
+</tbody>
+
+<tbody>
+<tr>
+	<td style="text-align:left;" colspan="2"><strong><strong>TextComponent</strong></strong></td>
+	<td style="text-align:left;">A reference to the <a href="script-Text.html">Text</a> element used as the contents of the <em><em>Input Field</em></em>
+</td>
+</tr>
+</tbody>
+
+<tbody>
+<tr>
+	<td style="text-align:left;" colspan="2"><strong><strong>Text</strong></strong></td>
+	<td style="text-align:left;">Starting Value. The initial text placed in the field before editing begins.</td>
+</tr>
+</tbody>
+
+<tbody>
+<tr>
+	<td style="text-align:left;" colspan="2"><strong><strong>Character Limit</strong></strong></td>
+	<td style="text-align:left;">The value of the maximum number of characters that can be entered into the input field.</td>
+</tr>
+</tbody>
+
+<tbody>
+<tr>
+	<td style="text-align:left;" colspan="2"><strong><strong>Content Type</strong></strong></td>
+	<td style="text-align:left;">Define the type(s) of characters that your input field accepts</td>
+</tr>
+<tr>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;"><strong>Standard</strong></td>
+	<td style="text-align:left;">Any charcter can be entered.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;"><strong>Autocorrected</strong></td>
+	<td style="text-align:left;">The autocorrection determines whether the input tracks unknown words and suggests a more suitable replacement candidate to the user, replacing the typed text automatically unless the user explicitly overrides the action.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;"><strong>Integer Number</strong></td>
+	<td style="text-align:left;">Allow only whole numbers to be entered.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;"><strong>Decimal Number</strong></td>
+	<td style="text-align:left;">Allow only numbers and a single decimal point to be entered.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;"><strong>Alphanumeric</strong></td>
+	<td style="text-align:left;">Allow both letters and numbers. Symbols cannot be entered.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;"><strong>Name</strong></td>
+	<td style="text-align:left;">Automatically capitalizes the first letter of each word. Note that the user can circumvent the capitalization rules using the <strong>Delete</strong> key.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;"><strong>Email Address</strong></td>
+	<td style="text-align:left;">Allows you to enter an Alphanumeric string consisting of a maximum of one @ sign. periods/baseline dots cannot be entered next to each other.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;"><strong>Password*</strong></td>
+	<td style="text-align:left;">Conceals the characters inputed with an asterisk. Allows symbols.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;"><strong>Pin</strong></td>
+	<td style="text-align:left;">Conceals the characters inputed with an asterisk. Only allows only whole numbers to be entered.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;"><strong>Custom</strong></td>
+	<td style="text-align:left;">Allows you to customise the Line Type, Input Type, Keyboard Type and Character Validation.</td>
+</tr>
+</tbody>
+
+<tbody>
+<tr>
+	<td style="text-align:left;" colspan="2"><strong><strong>Line Type</strong></strong></td>
+	<td style="text-align:left;">Defines how test is formatted inside the text field.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;"><strong>Single Line</strong></td>
+	<td style="text-align:left;">Only allows text to be on a single line.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;"><strong>Multi Line Submit</strong></td>
+	<td style="text-align:left;">Allows text to use multiple lines. Only uses a new line when needed.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;"><strong>Multi Line Newline</strong></td>
+	<td style="text-align:left;">Allows text to use multiple lines. User can use a newline by pressing the return key.</td>
+</tr>
+</tbody>
+
+<tbody>
+<tr>
+	<td style="text-align:left;" colspan="2"><strong><strong>Placeholder</strong></strong></td>
+	<td style="text-align:left;">This is an optional ‘empty’ <a href="../ScriptReference/UI.Graphic.html">Graphic</a> to show that the <em><em>Input Field</em></em> is empty of text. Note that this ‘empty’ graphic still displays even when the <em><em>Input Field</em></em> is selected (that is; when there is focus on it). eg; “Enter text…”.</td>
+</tr>
+</tbody>
+
+<tbody>
+<tr>
+	<td style="text-align:left;" colspan="2"><strong><strong>Caret Blink Rate</strong></strong></td>
+	<td style="text-align:left;">Defines the blink rate for the mark placed on the line to indicate a proposed insertion of text.</td>
+</tr>
+</tbody>
+
+<tbody>
+<tr>
+	<td style="text-align:left;" colspan="2"><strong><strong>Selection Color</strong></strong></td>
+	<td style="text-align:left;">The background color of the selected portion of text.</td>
+</tr>
+</tbody>
+
+<tbody>
+<tr>
+	<td style="text-align:left;" colspan="2"><strong><strong>Hide Mobile Input</strong> (iOS only)</strong></td>
+	<td style="text-align:left;">Hides the native input field attached to the onscreen keyboard on mobile devices. Note that this only works on iOS devices.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;"></td>
+</tr>
+</tbody>
+</table>
+
+<h2>Events</h2>
+
+<table>
+<colgroup>
+<col style="text-align:left;">
+<col style="text-align:left;">
+</colgroup>
+
+<thead>
+<tr>
+	<th style="text-align:left;"><strong><em>Property:</em></strong></th>
+	<th style="text-align:left;"><strong><em>Function:</em></strong></th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+	<td style="text-align:left;"><strong>On Value Change</strong></td>
+	<td style="text-align:left;">A <a href="UnityEvents.html">UnityEvent</a> that is invoked when the text content of the Input Field changes. The event can send the current text content as a <code>string</code> type dynamic argument.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>End Edit</strong></td>
+	<td style="text-align:left;">A <a href="UnityEvents.html">UnityEvent</a> that is invoked when the user finishes editing the text content either by submitting or by clicking somewhere that removes the focus from the Input Field. The event can send the current text content as a <code>string</code> type dynamic argument.</td>
+</tr>
+</tbody>
+</table>
+
+<h2>Details</h2>
+
+<p>The Input Field script can be added to any existing Text control object from the menu (<strong>Component &gt; UI &gt; Input Field</strong>). Having done this, you should also drag the object to the Input Field’s <em>Text</em> property to enable editing.</p>
+
+<p>The <em>Text</em> property of the Text control itself will change as the user types and the value can be retrieved from a script after editing. Note that Rich Text is intentionally not supported for editable Text controls; the field will apply any Rich Text markup instantly when typed but the markup essentially “disappears” and there is no subsequent way to change or remove the styling.</p>
+
+<h2>Hints</h2>
+
+<ul>
+<li>To obtains the text of the Input Field, use the text property on the InputField component itself, not the text property of the Text component that displays the text. The text property of the Text component may be cropped or may consist of asterisks for passwords.</li>
+</ul>
+<div class="feedbackbox" id="feedbackbox">
+<div id="rating"><p>Did you find this page useful? Please give it a rating:<br><div id="ratecontent" class="c-rating"></div>
+</p></div>
+<div id="ratingThanks" style="display:none"><p>Thanks for rating this page!</p></div>
+<div id="problem"><p><a name="problem" onclick="document.getElementById('problemType').style.display = '';document.getElementById('problem').style.display = 'none';">Report a problem on this page</a></p></div>
+<div id="problemType" style="display:none"><p>What kind of problem would you like to report?<ul type="problems">
+<li><a name="needcode" onclick="                                                             document.getElementById('problemType').style.display = 'none';                                                             document.getElementById('problemThanks').style.display = '';                                                             SendFeedback('problem-needcode',window.location.href,0);                                                             document.getElementById('problemFormDescription').value='Needs code samples.';                                                             document.getElementById('problemNeedCodeForm').style.display = ''                                                         ">This page needs code samples</a></li>
+<li><a name="code" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-brokencode',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Code samples do not work.';                                                         document.getElementById('problemCodeForm').style.display = ''                                                         ">Code samples do not work</a></li>
+<li><a name="missing" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-missing',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Missing information';                                                         document.getElementById('problemMissingForm').style.display = ''                                                         ">Information is missing</a></li>
+<li><a name="incorrect" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-incorrect',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Incorrect information';                                                         document.getElementById('problemIncorrectForm').style.display = ''                                                         ">Information is incorrect</a></li>
+<li><a name="unclear" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-unclear',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Unclear or confusing information';                                                         document.getElementById('problemUnclearForm').style.display = ''                                                         ">Information is unclear or confusing</a></li>
+<li><a name="language" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-language',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Spelling or grammar error';                                                         document.getElementById('problemLanguageForm').style.display = ''                                                         ">There is a spelling/grammar error on this page</a></li>
+<li><a name="other" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-other',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='This page has a problem';                                                         document.getElementById('problemOtherForm').style.display = ''                                                         ">Something else</a></li>
+</ul>
+<p><known_issues><p>Is something described here not working as you expect it to? It might be a <b>Known Issue</b>. Please check with the Issue Tracker at <a href="https://issuetracker.unity3d.com">issuetracker.unity3d.com</a>.</p></known_issues></p>
+</p></div>
+<div id="problemThanks" style="display:none"><p>Thanks for letting us know! This page has been marked for review based on your feedback.<br><br>If you have time, you can provide more information to help us fix the problem faster.<br><br><a onclick="document.getElementById('problemMoreInfo').style.display = '';document.getElementById('problemThanks').style.display = 'none';">Provide more information</a><br>
+</p></div>
+<div id="problemMoreInfo" style="display:none">
+<p id="problemNeedCodeForm" style="display:none">You've told us this page needs code samples. If you'd like to help us further, you could provide a code sample, or tell us about what kind of code sample you'd like to see:</p>
+<p id="problemCodeForm" style="display:none">You've told us there are code samples on this page which don't work. If you know how to fix it, or have something better we could use instead, please let us know:</p>
+<p id="problemMissingForm" style="display:none">You've told us there is information missing from this page. Please tell us more about what's missing:</p>
+<p id="problemIncorrectForm" style="display:none">You've told us there is incorrect information on this page. If you know what we should change to make it correct, please tell us:</p>
+<p id="problemUnclearForm" style="display:none">You've told us this page has unclear or confusing information. Please tell us more about what you found unclear or confusing, or let us know how we could make it clearer:</p>
+<p id="problemLanguageForm" style="display:none">You've told us there is a spelling or grammar error on this page. Please tell us what's wrong:</p>
+<p id="problemOtherForm" style="display:none">You've told us this page has a problem. Please tell us more about what's wrong:</p>
+<form>
+<textarea id="problemFormSuggestionField" cols="40" rows="5"></textarea><input type="hidden" id="problemFormDescription"><input type="submit" id="problemFormDescriptionSubmit" value="Submit" onclick="                                             document.getElementById('problemMoreInfo').style.display = 'none';                                             document.getElementById('problemMoreInfoThanks').style.display = '';                                             return false;                                             ">
+</form>
+</div>
+<div id="problemMoreInfoThanks" style="display:none"><p>Thanks for helping to make the Unity documentation better!</p></div>
+<script>
+
+                                            var ratecontent = document.querySelector('#ratecontent'); // target element
+                                            var currentRating = 0; // initial rating
+                                            var maxRating= 5; // max rating
+
+                                            // callback to run after setting the rating
+                                            var callback = function(rating) {
+                                                document.getElementById('ratingThanks').style.display = '';
+                                                document.getElementById('ratecontent').style.display = 'none';
+                                                document.getElementById('rating').style.display = 'none';
+                                                SendFeedback("rating",window.location.href,rating);
+                                            };
+
+                                            // rating instance
+                                            var myRating = rating(ratecontent, currentRating, maxRating, callback);
+                                        </script>
+</div>
+<div class="nextprev clear">
+<div class="icon tt left mr1" data-distance="-40|-30|top">
+<span class="prev"><a href="script-Dropdown.html"></a></span><div class="tip">Dropdown</div>
+</div>
+<div class="icon tt right" data-distance="-40|-30|top">
+<span class="next"><a href="script-ScrollRect.html"></a></span><div class="tip"> Scroll Rect</div>
+</div>
+</div>
+</div>
+</body></html>

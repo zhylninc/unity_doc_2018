@@ -1,0 +1,231 @@
+<html><head><title>html模版</title></head><body>Unity - Manual: Importing Objects From SketchUp</br>
+<div class="breadcrumbs clear"><ul>
+<li><a href="UnityManual.html">Unity User Manual (2018.1 beta)</a></li>
+<li><a href="Graphics.html">Graphics</a></li>
+<li><a href="GraphicsHowTos.html">Graphics HOWTOs</a></li>
+<li><a href="HOWTO-importObject.html">How do I import models from my 3D app?</a></li>
+<li>Importing Objects From SketchUp</li>
+</ul></div>
+<div class="mb20"><div class="nextprev clear">
+<div class="icon tt left mr1" data-distance="-40|-30|top">
+<span class="prev"><a href="HOWTO-ImportObjectBlender.html"></a></span><div class="tip">Importing Objects From Blender</div>
+</div>
+<div class="icon tt right" data-distance="-40|-30|top">
+<span class="next"><a href="StereoscopicRendering.html"></a></span><div class="tip">How to do Stereoscopic Rendering</div>
+</div>
+</div></div>
+<div class="otherversionswrapper" onmouseover="setOtherVersionsDisplay(true)" onmouseout="setOtherVersionsDisplay(false)">
+<a>Other Versions</a><div class="otherversionscontent" id="OtherVersionsContent" style="display: none;">Cannot access other versions offline!</div>
+</div>
+<div class="scrollToFeedback"><a id="scrollToFeedback">Leave feedback</a></div>
+<h1>Importing Objects From SketchUp</h1>
+<!--BeginSwitchLink--><!--EndSwitchLink-->
+<div class="clear"></div>
+
+<h2>Overview</h2>
+
+<p>SketchUp is one of the commonly used software for architecture modeling. To use a SketchUp model for visualisation in Unity, user will previously need to convert it to an intermediate format which Unity supports and use the converted format in Unity.</p>
+
+<p>To overcome this problem, Unity now supports importing SketchUp file directly into Unity without the need for conversion and allowing user to access certain properties within the SketchUp file within Unity which is not previously possible.</p>
+
+<h2>Glossary of Terms</h2>
+
+<table>
+<colgroup>
+<col style="text-align:left;">
+<col style="text-align:left;">
+</colgroup>
+
+<thead>
+<tr>
+	<th style="text-align:left;">Term</th>
+	<th style="text-align:left;">Definition</th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+	<td style="text-align:left;">Node</td>
+	<td style="text-align:left;">A node is a generalisation of Entity, Group, and Component Instance in SketchUp.</td>
+</tr>
+<tr>
+	<td style="text-align:left;">Geo Coordinate</td>
+	<td style="text-align:left;">A coordinate system to identify a position on geographic system.</td>
+</tr>
+</tbody>
+</table>
+
+<h2>Importing SketchUp Model</h2>
+
+<p>Importing a SketchUp file into Unity is similar to importing a 3D model that is supported by Unity (eg FBX). There are 3 ways you can import a SketchUp file</p>
+
+<ol>
+<li><p>Click on Assets -&gt; Import New Asset.. from the menu bar
+<img src="../uploads/Main/sketchup1.png" alt="Editor menu to import a SketchUp model">
+</p></li>
+<li><p>Drag and drop the file into the Project window</p></li>
+<li><p>‘Import New Asset…’ via Project window’s context menu</p></li>
+</ol>
+
+<p>Once the model is imported, you can place then use the model in your scene by placing it into your scene. The hierarchy of the SketchUp file is maintain via Unity’s GameObject hierarchy.</p>
+
+<h3>Materials and Textures</h3>
+
+<p>When the model is imported, the materials and textures for the model are imported into 2 separate folders relative to where the file is imported to; namely ‘Material’ for the material of the model and ‘Texture’ for the textures from the model.</p>
+
+<figure>
+<img src="../uploads/Main/sketchup2.png" alt="SketchUp Materials and Textures folders">
+<figcaption>SketchUp Materials and Textures folders</figcaption>
+</figure>
+
+<p>The textures imported from the SketchUp file will maintain its original filename when it is imported into Unity. </p>
+
+<p>The materials imported from the SketchUp file will have the SketchUp file name prefixed into the material’s name.</p>
+
+<h3>Hidden Geometries</h3>
+
+<p>Unity is able to determine if a node should be imported by it’s visibility setting in the SketchUp file. </p>
+
+<p>If a node is set to hidden when it is last saved in the SketchUp file, Unity will not import the node.</p>
+
+<h3>Selective Node Import</h3>
+
+<p>Imagine you have a SketchUp file which contains a library of chairs and you only want to import a few of them for your scene. In this case, it is possible to only import certain objects from your SketchUp file. To do this, hold the ‘option’ key in Mac or ‘alt’ in Windows when you are importing your SketchUp file. </p>
+
+<p>By doing so, a dialog box will appear for you to select what to import:</p>
+
+<figure>
+<img src="../uploads/Main/sketchup3.png" alt="Import dialog">
+<figcaption>Import dialog</figcaption>
+</figure>
+
+<p>This dialog shows you the groups and component instances that are in the file. This also allows you to select which group or component instance to import into Unity3D.</p>
+
+<p>Once you have make your selection, click on the OK button and only the nodes that are selected will be imported.</p>
+
+<h3>Front and Back Face</h3>
+
+<p>By default, Unity will only import the front facing polygons to reduce polygon counts.
+The exception is that if the back facing polygons have material assigned in SketchUp. </p>
+
+<p>If you would like to have back facing polygons generated, you can specify this in the SketchUp Model Inspector.</p>
+
+<h3>Scale Conversion</h3>
+
+<p>Unity imports the SketchUp file and scales the model to 1 meter (0.0254 inches) to 1 unit length in Unity by default.</p>
+
+<p>You can change the import scale in the SketchUp Model Inspector.</p>
+
+<figure>
+<img src="../uploads/Main/sketchup4.png" alt="SketchUp file with a cube sert to 1m in height">
+<figcaption>SketchUp file with a cube sert to 1m in height</figcaption>
+</figure>
+
+<figure>
+<img src="../uploads/Main/sketchup5.png" alt="Setting the conversion unit changes affects the scale of the imported file. The green square is placed as reference where the size of the square is set to 1x1 unit length.">
+<figcaption>Setting the conversion unit changes affects the scale of the imported file. The green square is placed as reference where the size of the square is set to 1x1 unit length.</figcaption>
+</figure>
+
+<h3>SketchUp Component Definition, Instance and Group</h3>
+
+<p>Unity uses the same concept when generating meshes for SketchUp’s Component Definition, Component Instance and Group:</p>
+
+<figure>
+<img src="../uploads/Main/sketchup6.png" alt="">
+</figure>
+
+<p>Component Definition and Group will be generated into meshes.
+The meshes will than be instanced as GameObjects so that it can be place into the scene.</p>
+
+<h2>SketchUp Reference</h2>
+
+<h3>SketchUp Model Inspector</h3>
+
+<p>In the inspector of a imported SketchUp model, you will find several options.
+Any changes made in the inspector will require you to click on the ‘Apply’ button of the inspector to have the changes take effect.</p>
+
+<h3>SketchUp Scene Camera</h3>
+
+<p>Unity extracts and stores SketchUp file’s camera data for each scene in the file so that it can be used later. Refer to the API reference on how to retrieve the data.</p>
+
+<h3>Geo Coordinates</h3>
+
+<p>Unity extracts and stores the geo coordinates of the SketchUp file (if available). These values can be view via the SketchUp Model Inspector or refer to the API reference on how to retrieve the data.</p>
+
+<h2>Limitations</h2>
+
+<ul>
+<li>GIF textures are not supported</li>
+<li>
+<a href="http://help.sketchup.com/en/article/94824">Lines</a> are not imported</li>
+<li>2D components (Text, dimensions) are not supported</li>
+<li>
+<a href="http://help.sketchup.com/en/article/22496">Dynamic components</a> are not supported</li>
+<li>
+<a href="http://help.sketchup.com/en/article/114547">Attributes</a> are not imported into Unity</li>
+<li>SketchUp <a href="http://help.sketchup.com/en/article/114598">Layers</a> are not imported</li>
+<li>SketchUp <a href="http://help.sketchup.com/en/article/114934">Shadow</a> settings are not imported</li>
+<li>SketchUp <a href="http://help.sketchup.com/en/article/117009">Drawing Styles</a> are not imported</li>
+<li>SketchUp <a href="http://help.sketchup.com/en/article/94999">Section Planes</a> are not imported</li>
+<li>SketchUp <a href="http://help.sketchup.com/en/article/114452">Animation</a> settings are not imported</li>
+<li>Limited SketchUp Scenes data are imported</li>
+</ul>
+<div class="feedbackbox" id="feedbackbox">
+<div id="rating"><p>Did you find this page useful? Please give it a rating:<br><div id="ratecontent" class="c-rating"></div>
+</p></div>
+<div id="ratingThanks" style="display:none"><p>Thanks for rating this page!</p></div>
+<div id="problem"><p><a name="problem" onclick="document.getElementById('problemType').style.display = '';document.getElementById('problem').style.display = 'none';">Report a problem on this page</a></p></div>
+<div id="problemType" style="display:none"><p>What kind of problem would you like to report?<ul type="problems">
+<li><a name="needcode" onclick="                                                             document.getElementById('problemType').style.display = 'none';                                                             document.getElementById('problemThanks').style.display = '';                                                             SendFeedback('problem-needcode',window.location.href,0);                                                             document.getElementById('problemFormDescription').value='Needs code samples.';                                                             document.getElementById('problemNeedCodeForm').style.display = ''                                                         ">This page needs code samples</a></li>
+<li><a name="code" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-brokencode',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Code samples do not work.';                                                         document.getElementById('problemCodeForm').style.display = ''                                                         ">Code samples do not work</a></li>
+<li><a name="missing" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-missing',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Missing information';                                                         document.getElementById('problemMissingForm').style.display = ''                                                         ">Information is missing</a></li>
+<li><a name="incorrect" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-incorrect',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Incorrect information';                                                         document.getElementById('problemIncorrectForm').style.display = ''                                                         ">Information is incorrect</a></li>
+<li><a name="unclear" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-unclear',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Unclear or confusing information';                                                         document.getElementById('problemUnclearForm').style.display = ''                                                         ">Information is unclear or confusing</a></li>
+<li><a name="language" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-language',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Spelling or grammar error';                                                         document.getElementById('problemLanguageForm').style.display = ''                                                         ">There is a spelling/grammar error on this page</a></li>
+<li><a name="other" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-other',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='This page has a problem';                                                         document.getElementById('problemOtherForm').style.display = ''                                                         ">Something else</a></li>
+</ul>
+<p><known_issues><p>Is something described here not working as you expect it to? It might be a <b>Known Issue</b>. Please check with the Issue Tracker at <a href="https://issuetracker.unity3d.com">issuetracker.unity3d.com</a>.</p></known_issues></p>
+</p></div>
+<div id="problemThanks" style="display:none"><p>Thanks for letting us know! This page has been marked for review based on your feedback.<br><br>If you have time, you can provide more information to help us fix the problem faster.<br><br><a onclick="document.getElementById('problemMoreInfo').style.display = '';document.getElementById('problemThanks').style.display = 'none';">Provide more information</a><br>
+</p></div>
+<div id="problemMoreInfo" style="display:none">
+<p id="problemNeedCodeForm" style="display:none">You've told us this page needs code samples. If you'd like to help us further, you could provide a code sample, or tell us about what kind of code sample you'd like to see:</p>
+<p id="problemCodeForm" style="display:none">You've told us there are code samples on this page which don't work. If you know how to fix it, or have something better we could use instead, please let us know:</p>
+<p id="problemMissingForm" style="display:none">You've told us there is information missing from this page. Please tell us more about what's missing:</p>
+<p id="problemIncorrectForm" style="display:none">You've told us there is incorrect information on this page. If you know what we should change to make it correct, please tell us:</p>
+<p id="problemUnclearForm" style="display:none">You've told us this page has unclear or confusing information. Please tell us more about what you found unclear or confusing, or let us know how we could make it clearer:</p>
+<p id="problemLanguageForm" style="display:none">You've told us there is a spelling or grammar error on this page. Please tell us what's wrong:</p>
+<p id="problemOtherForm" style="display:none">You've told us this page has a problem. Please tell us more about what's wrong:</p>
+<form>
+<textarea id="problemFormSuggestionField" cols="40" rows="5"></textarea><input type="hidden" id="problemFormDescription"><input type="submit" id="problemFormDescriptionSubmit" value="Submit" onclick="                                             document.getElementById('problemMoreInfo').style.display = 'none';                                             document.getElementById('problemMoreInfoThanks').style.display = '';                                             return false;                                             ">
+</form>
+</div>
+<div id="problemMoreInfoThanks" style="display:none"><p>Thanks for helping to make the Unity documentation better!</p></div>
+<script>
+
+                                            var ratecontent = document.querySelector('#ratecontent'); // target element
+                                            var currentRating = 0; // initial rating
+                                            var maxRating= 5; // max rating
+
+                                            // callback to run after setting the rating
+                                            var callback = function(rating) {
+                                                document.getElementById('ratingThanks').style.display = '';
+                                                document.getElementById('ratecontent').style.display = 'none';
+                                                document.getElementById('rating').style.display = 'none';
+                                                SendFeedback("rating",window.location.href,rating);
+                                            };
+
+                                            // rating instance
+                                            var myRating = rating(ratecontent, currentRating, maxRating, callback);
+                                        </script>
+</div>
+<div class="nextprev clear">
+<div class="icon tt left mr1" data-distance="-40|-30|top">
+<span class="prev"><a href="HOWTO-ImportObjectBlender.html"></a></span><div class="tip">Importing Objects From Blender</div>
+</div>
+<div class="icon tt right" data-distance="-40|-30|top">
+<span class="next"><a href="StereoscopicRendering.html"></a></span><div class="tip">How to do Stereoscopic Rendering</div>
+</div>
+</div>
+</div>
+</body></html>

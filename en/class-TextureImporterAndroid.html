@@ -1,0 +1,260 @@
+<html><head><title>html模版</title></head><body>Unity - Manual: Android 2D Textures Overrides</br>
+<div class="breadcrumbs clear"><ul>
+<li><a href="UnityManual.html">Unity User Manual (2018.1 beta)</a></li>
+<li><a href="PlatformSpecific.html">Platform-specific</a></li>
+<li><a href="android.html">Android</a></li>
+<li>Android 2D Textures Overrides</li>
+</ul></div>
+<div class="mb20"><div class="nextprev clear">
+<div class="icon tt left mr1" data-distance="-40|-30|top">
+<span class="prev"><a href="class-PlayerSettingsAndroid.html"></a></span><div class="tip">Android Player Settings</div>
+</div>
+<div class="icon tt right" data-distance="-40|-30|top">
+<span class="next"><a href="android-gradle-overview.html"></a></span><div class="tip"> Gradle for Android</div>
+</div>
+</div></div>
+<div class="otherversionswrapper" onmouseover="setOtherVersionsDisplay(true)" onmouseout="setOtherVersionsDisplay(false)">
+<a>Other Versions</a><div class="otherversionscontent" id="OtherVersionsContent" style="display: none;">Cannot access other versions offline!</div>
+</div>
+<div class="scrollToFeedback"><a id="scrollToFeedback">Leave feedback</a></div>
+<h1>Android 2D Textures Overrides</h1>
+<!--BeginSwitchLink--><!--EndSwitchLink-->
+<div class="clear"></div>
+
+<p>This page details the <strong>Texture Overrides</strong> specific to Android. A description of the general Texture Overrides can be found <a href="class-TextureImporter.html">here</a>.</p>
+
+<p>The information contained on this page assumes the reader has working knowledge of DXT and ETC Texture compression, OpenGL ES and Android development. </p>
+
+<p>Further information about Texture compression and OpenGL ES can be found on the following Wikipedia pages: </p>
+
+<ul>
+<li><a href="https://en.wikipedia.org/wiki/S3_Texture_Compression#DXT1">DXT Texture compression</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Ericsson_Texture_Compression">ETC(Ericsson Texture Compression</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Lossy_compression">Lossy compression</a></li>
+<li><a href="https://en.wikipedia.org/wiki/OpenGL_ES#OpenGL_ES_3.0">OpenGL ES</a></li>
+</ul>
+
+<figure>
+<img src="../uploads/Main/TextureImporterOverride.png" alt="Android 2D Texture Override settings">
+<figcaption>Android 2D Texture Override settings</figcaption>
+</figure>
+
+<table>
+<colgroup>
+<col style="text-align:left;">
+<col style="text-align:left;">
+</colgroup>
+
+<thead>
+<tr>
+	<th style="text-align:left;"><strong>Texture Format</strong></th>
+	<th style="text-align:left;">Internal representation</th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+	<td style="text-align:left;">        <strong>RGB Compressed DXT1</strong>
+</td>
+	<td style="text-align:left;">Compressed RGB texture. Supported by NVIDIA Tegra. 4 bits per pixel (32 KB for a 256x256 texture).</td>
+</tr>
+<tr>
+	<td style="text-align:left;">        <strong>RGB Crunched DXT1</strong>
+</td>
+	<td style="text-align:left;">Compressed RGB Texture. Supported by NVIDIA Tegra. Crunch is a lossy compression format on top of DXT Texture compression. Textures are decompressed to DXT1 by the CPU and then uploaded to the GPU at runtime. Crunch produces smaller Textures than by regular DXT1 compression, but with lower quality. Crunch Textures can take a long time to compress, but decompression at runtime is very fast. 4 bits per pixel (output size varies depending on the Texture - from 1 KB for a 256x256 Texture).</td>
+</tr>
+<tr>
+	<td style="text-align:left;">        <strong>RGBA Compressed DXT5</strong>
+</td>
+	<td style="text-align:left;">Compressed RGBA texture. Supported by NVIDIA Tegra. 8 bits per pixel (64 KB for a 256x256 texture).</td>
+</tr>
+<tr>
+	<td style="text-align:left;">        <strong>RGBA Crunched DXT5</strong>
+</td>
+	<td style="text-align:left;">Compressed RGBA Texture. Supported by NVIDIA Tegra. Crunch is a lossy compression format on top of DXT Texture compression. Textures are decompressed to DXT5 on the CPU and then uploaded to the GPU at runtime. Crunch compression can be used to produce significantly smaller Textures than by regular DXT5 compression, but with lower quality. Crunch Textures can take a long time to compress, but decompression at runtime is very fast. 8 bits per pixel (output size varies depending on the Texture - from 1 KB for a 256x256 Texture).</td>
+</tr>
+<tr>
+	<td style="text-align:left;">        <strong>RGB Compressed ETC 4 bits</strong>
+</td>
+	<td style="text-align:left;">Compressed RGB Texture. This is the default Texture format for Android projects in Unity. ETC_RGB4 is a part of OpenGL ES 2.0 and is supported by all OpenGL ES 2.0 GPUs. It does not support alpha. 4 bits per pixel (32 KB for a 256x256 Texture).</td>
+</tr>
+<tr>
+	<td style="text-align:left;">        <strong>RGB Crunched ETC</strong>
+</td>
+	<td style="text-align:left;">Compressed RGB Texture. Crunch is a lossy compression format on top of ETC Texture compression. Textures are decompressed to ETC_RGB4 by the CPU and then uploaded to the GPU at runtime. Crunch produces smaller Textures than by regular ETC_RGB4 compression, but with lower quality. Crunch Textures can take a long time to compress, but decompression at runtime is very fast. ETC_RGB4 is a part of OpenGL ES 2.0 and is supported by all OpenGL ES 2.0 GPUs. It does not support alpha. 4 bits per pixel (output size varies depending on the Texture - from 1 KB for a 256x256 Texture).</td>
+</tr>
+<tr>
+	<td style="text-align:left;">        <strong>RGB Compressed ETC2 4 bits</strong>
+</td>
+	<td style="text-align:left;">Compressed RGB Texture. ETC2 is a part of OpenGL ES 3.0 and is supported by all OpenGL ES 3.0 GPUs. 4 bits per pixel (32 KB for a 256x256 Texture).</td>
+</tr>
+<tr>
+	<td style="text-align:left;">        <strong>RGB + 1-bit Alpha Compressed ETC2 4 bits</strong>
+</td>
+	<td style="text-align:left;">Compressed RGB Texture with 1-bit punchthrough alpha. ETC2 is a part of OpenGL ES 3.0 and is supported by all OpenGL ES 3.0 GPUs. 4 bits per pixel (32 KB for a 256x256 Texture).</td>
+</tr>
+<tr>
+	<td style="text-align:left;">        <strong>RGBA Compressed ETC2 8 bits</strong>
+</td>
+	<td style="text-align:left;">Compressed RGBA Texture. Supported by all OpenGL ES 3.0 GPUs. (64 KB for a 256x256 Texture)</td>
+</tr>
+<tr>
+	<td style="text-align:left;">        <strong>RGBA Crunched ETC2</strong>
+</td>
+	<td style="text-align:left;">Compressed RGBA Texture. Crunch is a lossy compression format on top of ETC Texture compression. Textures are decompressed to ETC2_RGBA8 on the CPU and then uploaded to the GPU at runtime. Crunch compression can be used to produce significantly smaller Textures than by regular ETC2_RGBA8 compression, but with lower quality. Crunch Textures can take a long time to compress, but decompression at runtime is very fast. Supported by all OpenGL ES 3.0 GPUs. 8 bits per pixel (output size varies depending on the Texture - from 1 KB for a 256x256 Texture).</td>
+</tr>
+<tr>
+	<td style="text-align:left;">        <strong>RGB Compressed PVRTC 2 bits</strong>
+</td>
+	<td style="text-align:left;">Compressed RGB Texture. Supported by Imagination PowerVR GPUs. 2 bits per pixel (16 KB for a 256x256 Texture)</td>
+</tr>
+<tr>
+	<td style="text-align:left;">        <strong>RGBA Compressed PVRTC 2 bits</strong>
+</td>
+	<td style="text-align:left;">Compressed RGBA Texture. Supported by Imagination PowerVR GPUs. 2 bits per pixel (16 KB for a 256x256 Texture)</td>
+</tr>
+<tr>
+	<td style="text-align:left;">        <strong>RGB Compressed PVRTC 4 bits</strong>
+</td>
+	<td style="text-align:left;">Compressed RGB Texture. Supported by Imagination PowerVR GPUs. 4 bits per pixel (32 KB for a 256x256 Texture)</td>
+</tr>
+<tr>
+	<td style="text-align:left;">        <strong>RGBA Compressed PVRTC 4 bits</strong>
+</td>
+	<td style="text-align:left;">Compressed RGBA Texture. Supported by Imagination PowerVR GPUs. 4 bits per pixel (32 KB for a 256x256 Texture)</td>
+</tr>
+<tr>
+	<td style="text-align:left;">        <strong>RGB Compressed ATC 4 bits</strong>
+</td>
+	<td style="text-align:left;">Compressed RGB Texture. Supported by Qualcomm Snapdragon. 4 bits per pixel (32 KB for a 256x256 Texture).</td>
+</tr>
+<tr>
+	<td style="text-align:left;">        <strong>RGBA Compressed ATC 8 bits</strong>
+</td>
+	<td style="text-align:left;">Compressed RGBA Texture. Supported by Qualcomm Snapdragon. 8 bits per pixel (64 KB for a 256x256 Texture).</td>
+</tr>
+<tr>
+	<td style="text-align:left;">        <strong>RGB Compressed ASTC 4x4 block</strong> <br><br>        <strong>RGB Compressed ASTC 5x5 block</strong> <br><br>        <strong>RGB Compressed ASTC 6x6 block</strong> <br><br>        <strong>RGB Compressed ASTC 8x8 block</strong> <br><br>        <strong>RGB Compressed ASTC 10x10 block</strong> <br><br>        <strong>RGB Compressed ASTC 12x12 block</strong>
+</td>
+	<td style="text-align:left;">Compressed RGB Texture. Supported by all OpenGL ES 3.2 and OpenGL ES 3.1+AEP GPUs, as well as by some OpenGL ES 3.0 GPUs. This compression type uses fixed 128-bit block size, and depending on the pixel block size (4x4 to 12x12), it may utilize 8 to 0.89 bits per pixel. The size of the compressed Texture varies from 64 KB for a 256x256 Texture (4x4 block, highest quality) to 7.6 KB for a 256x256 Texture (12x12 block, highest compression rate).</td>
+</tr>
+<tr>
+	<td style="text-align:left;">        <strong>RGBA Compressed ASTC 4x4 block</strong> <br><br>        <strong>RGBA Compressed ASTC 5x5 block</strong> <br><br>        <strong>RGBA Compressed ASTC 6x6 block</strong> <br><br>        <strong>RGBA Compressed ASTC 8x8 block</strong> <br><br>        <strong>RGBA Compressed ASTC 10x10 block</strong> <br><br>        <strong>RGBA Compressed ASTC 12x12 block</strong>
+</td>
+	<td style="text-align:left;">Compressed RGBA Texture. Supported by all OpenGL ES 3.2 and OpenGL ES 3.1+AEP GPUs, as well as by some OpenGL ES 3.0 GPUs. This compression type uses fixed 128-bit block size, and depending on the pixel block size (4x4 to 12x12), it may utilize 8 to 0.89 bits per pixel. The size of the compressed Texture varies from 64 KB for a 256x256 Texture (4x4 block, highest quality) to 7.6 KB for a 256x256 Texture (12x12 block, highest compression rate).</td>
+</tr>
+<tr>
+	<td style="text-align:left;">        <strong>RGB 16 bit</strong>
+</td>
+	<td style="text-align:left;">65 thousand colors with no alpha. Uses more memory than the compressed formats, but could be more suitable for UI or crisp Textures without gradients. 128 KB for a 256x256 Texture.</td>
+</tr>
+<tr>
+	<td style="text-align:left;">        <strong>RGB 24 bit</strong>
+</td>
+	<td style="text-align:left;">Truecolor but without alpha. 192 KB for a 256x256 Texture.</td>
+</tr>
+<tr>
+	<td style="text-align:left;">        <strong>Alpha 8 bit</strong>
+</td>
+	<td style="text-align:left;">High quality alpha channel but without any color. 64 KB for a 256x256 Texture.</td>
+</tr>
+<tr>
+	<td style="text-align:left;">        <strong>RGBA 16 bit</strong>
+</td>
+	<td style="text-align:left;">Low-quality truecolor. The default compression for the Textures with alpha channel. 128 KB for a 256x256 Texture.</td>
+</tr>
+<tr>
+	<td style="text-align:left;">        <strong>RGBA 32 bit</strong>
+</td>
+	<td style="text-align:left;">Truecolor with alpha - this is the highest quality compression for the Textures with alpha. 256 KB for a 256x256 Texture.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>Compression quality</strong></td>
+	<td style="text-align:left;">Choose Fast for quickest performance, Best for the best image quality and Normal for a balance between the two.</td>
+</tr>
+</tbody>
+</table>
+
+<p>If a your app is installed on a device that does not support the Texture compression format you have used, Unity will decompress the Textures to RGBA 32 and store them in the device’s memory—along with the compressed Textures—when the app is running. This will lead to increased loading times and higher memory usage as Unity must decompress the Textures and store two versions of the Textures used (compressed and uncompressed).This can also have a large impact on rendering performance, especially on older, slower devices.</p>
+
+<p>Use ETC2 compression unless you are targeting specific hardware (like Nvidia Tegra). ETC2 supports Textures with and without an alpha channel and is supported by all OpenGL ES 3 devices. To avoid software decompression, set the minimum graphics API to OpenGL ES 3 in the Player Settings window by removing OpenGL ES 2 from the graphics API list and setting the Minimum API Level to 18+. </p>
+
+<figure>
+<img src="../uploads/Main/PlayerSettingsWindow.png" alt="">
+</figure>
+
+<p>To target OpenGL ES 2 and OpenGL ES 3 devices, you can create two different APKs by first building an APK targeting OpenGL ES 3, as shown above, and then building an APK targeting OpenGL ES 2 by removing OpenGL ES 2 and Vulcan from the Graphics API section of the PlayerSettings window. You can then publish both of these APKs to the Google Play Store. When a user downloads your app, the Google Play Store will automatically install the most relevant APK for their device. For more information about publishing multiple APK files, see Android Developer documentation on <a href="https://developer.android.com/google/play/publishing/multiple-apks.html">Publishing Multiple APKs</a> and <a href="https://developer.android.com/google/play/filters.html">Google Play Store APK filtering</a>.</p>
+
+<p>When building an APK that targets OpenGL ES 2, you can use ETC1 texture compression. </p>
+
+<p>The Texture compression format for OpenGL ES2-targeted APK can be ETC1. Unity can use ETC1 for Textures with Alpha, provided they are placed on an <a href="https://docs.unity3d.com/Manual/SpritePacker.html">Atlas</a> (by specifying the packing tag) and the build is for Android. You can opt in for this by setting the “Compress using ETC1” checkbox for the Texture. Under the hood Unity will split the resulting atlas into two Textures, each without alpha and then combine them in the final parts of the render-pipeline.</p>
+
+<p>If you absolutely want to store an alpha channel in a Texture, RGBA16 bit is the compression format supported by all hardware vendors.</p>
+
+<hr>
+
+<ul>
+<li><p><span class="page-edit">2017–09–18 Page amended with <a href="DocumentationEditorialReview.html">editorial review</a>
+</span></p></li>
+<li><p><span class="page-history">Updated feature in Unity 2017.1</span></p></li>
+<li><p><span class="page-history">Crunch compression format updated in Unity 2017.3</span></p></li>
+</ul>
+<div class="feedbackbox" id="feedbackbox">
+<div id="rating"><p>Did you find this page useful? Please give it a rating:<br><div id="ratecontent" class="c-rating"></div>
+</p></div>
+<div id="ratingThanks" style="display:none"><p>Thanks for rating this page!</p></div>
+<div id="problem"><p><a name="problem" onclick="document.getElementById('problemType').style.display = '';document.getElementById('problem').style.display = 'none';">Report a problem on this page</a></p></div>
+<div id="problemType" style="display:none"><p>What kind of problem would you like to report?<ul type="problems">
+<li><a name="needcode" onclick="                                                             document.getElementById('problemType').style.display = 'none';                                                             document.getElementById('problemThanks').style.display = '';                                                             SendFeedback('problem-needcode',window.location.href,0);                                                             document.getElementById('problemFormDescription').value='Needs code samples.';                                                             document.getElementById('problemNeedCodeForm').style.display = ''                                                         ">This page needs code samples</a></li>
+<li><a name="code" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-brokencode',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Code samples do not work.';                                                         document.getElementById('problemCodeForm').style.display = ''                                                         ">Code samples do not work</a></li>
+<li><a name="missing" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-missing',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Missing information';                                                         document.getElementById('problemMissingForm').style.display = ''                                                         ">Information is missing</a></li>
+<li><a name="incorrect" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-incorrect',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Incorrect information';                                                         document.getElementById('problemIncorrectForm').style.display = ''                                                         ">Information is incorrect</a></li>
+<li><a name="unclear" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-unclear',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Unclear or confusing information';                                                         document.getElementById('problemUnclearForm').style.display = ''                                                         ">Information is unclear or confusing</a></li>
+<li><a name="language" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-language',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Spelling or grammar error';                                                         document.getElementById('problemLanguageForm').style.display = ''                                                         ">There is a spelling/grammar error on this page</a></li>
+<li><a name="other" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-other',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='This page has a problem';                                                         document.getElementById('problemOtherForm').style.display = ''                                                         ">Something else</a></li>
+</ul>
+<p><known_issues><p>Is something described here not working as you expect it to? It might be a <b>Known Issue</b>. Please check with the Issue Tracker at <a href="https://issuetracker.unity3d.com">issuetracker.unity3d.com</a>.</p></known_issues></p>
+</p></div>
+<div id="problemThanks" style="display:none"><p>Thanks for letting us know! This page has been marked for review based on your feedback.<br><br>If you have time, you can provide more information to help us fix the problem faster.<br><br><a onclick="document.getElementById('problemMoreInfo').style.display = '';document.getElementById('problemThanks').style.display = 'none';">Provide more information</a><br>
+</p></div>
+<div id="problemMoreInfo" style="display:none">
+<p id="problemNeedCodeForm" style="display:none">You've told us this page needs code samples. If you'd like to help us further, you could provide a code sample, or tell us about what kind of code sample you'd like to see:</p>
+<p id="problemCodeForm" style="display:none">You've told us there are code samples on this page which don't work. If you know how to fix it, or have something better we could use instead, please let us know:</p>
+<p id="problemMissingForm" style="display:none">You've told us there is information missing from this page. Please tell us more about what's missing:</p>
+<p id="problemIncorrectForm" style="display:none">You've told us there is incorrect information on this page. If you know what we should change to make it correct, please tell us:</p>
+<p id="problemUnclearForm" style="display:none">You've told us this page has unclear or confusing information. Please tell us more about what you found unclear or confusing, or let us know how we could make it clearer:</p>
+<p id="problemLanguageForm" style="display:none">You've told us there is a spelling or grammar error on this page. Please tell us what's wrong:</p>
+<p id="problemOtherForm" style="display:none">You've told us this page has a problem. Please tell us more about what's wrong:</p>
+<form>
+<textarea id="problemFormSuggestionField" cols="40" rows="5"></textarea><input type="hidden" id="problemFormDescription"><input type="submit" id="problemFormDescriptionSubmit" value="Submit" onclick="                                             document.getElementById('problemMoreInfo').style.display = 'none';                                             document.getElementById('problemMoreInfoThanks').style.display = '';                                             return false;                                             ">
+</form>
+</div>
+<div id="problemMoreInfoThanks" style="display:none"><p>Thanks for helping to make the Unity documentation better!</p></div>
+<script>
+
+                                            var ratecontent = document.querySelector('#ratecontent'); // target element
+                                            var currentRating = 0; // initial rating
+                                            var maxRating= 5; // max rating
+
+                                            // callback to run after setting the rating
+                                            var callback = function(rating) {
+                                                document.getElementById('ratingThanks').style.display = '';
+                                                document.getElementById('ratecontent').style.display = 'none';
+                                                document.getElementById('rating').style.display = 'none';
+                                                SendFeedback("rating",window.location.href,rating);
+                                            };
+
+                                            // rating instance
+                                            var myRating = rating(ratecontent, currentRating, maxRating, callback);
+                                        </script>
+</div>
+<div class="nextprev clear">
+<div class="icon tt left mr1" data-distance="-40|-30|top">
+<span class="prev"><a href="class-PlayerSettingsAndroid.html"></a></span><div class="tip">Android Player Settings</div>
+</div>
+<div class="icon tt right" data-distance="-40|-30|top">
+<span class="next"><a href="android-gradle-overview.html"></a></span><div class="tip"> Gradle for Android</div>
+</div>
+</div>
+</div>
+</body></html>

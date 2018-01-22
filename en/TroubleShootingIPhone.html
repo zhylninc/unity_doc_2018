@@ -1,0 +1,344 @@
+<html><head><title>html模版</title></head><body>Unity - Manual: Troubleshooting on iOS devices</br>
+<div class="breadcrumbs clear"><ul>
+<li><a href="UnityManual.html">Unity User Manual (2018.1 beta)</a></li>
+<li><a href="PlatformSpecific.html">Platform-specific</a></li>
+<li><a href="iphone.html">iOS</a></li>
+<li>Troubleshooting on iOS devices</li>
+</ul></div>
+<div class="mb20"><div class="nextprev clear">
+<div class="icon tt left mr1" data-distance="-40|-30|top">
+<span class="prev"><a href="iphone-unsupported.html"></a></span><div class="tip">Features currently not supported by Unity iOS</div>
+</div>
+<div class="icon tt right" data-distance="-40|-30|top">
+<span class="next"><a href="iphone-bugreporting.html"></a></span><div class="tip">Reporting crash bugs on iOS</div>
+</div>
+</div></div>
+<div class="otherversionswrapper" onmouseover="setOtherVersionsDisplay(true)" onmouseout="setOtherVersionsDisplay(false)">
+<a>Other Versions</a><div class="otherversionscontent" id="OtherVersionsContent" style="display: none;">Cannot access other versions offline!</div>
+</div>
+<div class="scrollToFeedback"><a id="scrollToFeedback">Leave feedback</a></div>
+<h1>Troubleshooting on iOS devices</h1>
+<!--BeginSwitchLink--><!--EndSwitchLink-->
+<div class="clear"></div>
+
+<p>There are some situations with iOS where your game can work perfectly in the Unity editor but then doesn’t work or maybe doesn’t even start on the actual device.
+The problems are often related to code or content quality. This section describes the most common scenarios.</p>
+
+<h2>The game stops responding after a while. Xcode shows “interrupted” in the status bar.</h2>
+
+<p>There are a number of reasons why this may happen. Typical causes include:</p>
+
+<ol>
+<li>Scripting errors such as using uninitialized variables, etc.</li>
+<li>Using 3rd party Thumb compiled native libraries. Such libraries trigger a known problem in the iOS SDK linker and might cause random crashes.</li>
+<li>Using generic types with value types as parameters (eg, List&lt;int&gt;, List&lt;SomeStruct&gt;, List&lt;SomeEnum&gt;, etc) for serializable script properties.</li>
+<li>Using reflection when managed code stripping is enabled.</li>
+<li>Errors in the native plugin interface (the managed code method signature does not match the native code function signature).
+Information from the XCode Debugger console can often help detect these problems (Xcode menu: <strong>View &gt; Debug Area &gt; Activate Console</strong>).</li>
+</ol>
+
+<h2>The Xcode console shows &quot;Program received signal: “SIGBUS” or EXC_BAD_ACCESS error.</h2>
+
+<p>This message typically appears on iOS devices when your application receives a NullReferenceException. There two ways to figure out where the fault happened: </p>
+
+<h4>Managed stack traces</h4>
+
+<p>Unity includes software-based handling of the NullReferenceException. The AOT compiler includes quick checks for null references each time a method or variable is accessed on an object. This feature affects script performance which is why it is enabled only for development builds (enable the “script debugging” option in build settings dialog).
+If everything was done right and the fault actually is occurring in .NET code then you won’t see EXC_BAD_ACCESS anymore. Instead, the .NET exception text will be printed in the Xcode console (or else your code will just handle it in a “catch” statement). Typical output might be:</p>
+
+<pre><code>Unhandled Exception: System.NullReferenceException: A null value was found where an object instance was required.
+  at DayController+$handleTimeOfDay$121+$.MoveNext () [0x0035a] in DayController.js:122 
+</code></pre>
+
+<p>This indicates that the fault happened in the handleTimeOfDay method of the DayController class, which works as a coroutine. Also if it is script code then you will generally be told the exact line number (eg, “DayController.js:122”). The offending line might be something like the following:</p>
+
+<pre><code> Instantiate(_imgwww.assetBundle.mainAsset);
+</code></pre>
+
+<p>This might happen if, say, the script accesses an asset bundle without first checking that it was downloaded correctly.</p>
+
+<h4>Native stack traces</h4>
+
+<p>Native stack traces are a much more powerful tool for fault investigation but using them requires some expertise. Also, you generally can’t continue after these native (hardware memory access) faults happen. To get a native stack trace, type <strong>bt all</strong> into the Xcode Debugger Console. Carefully inspect the printed stack traces - they may contain hints about where the error occurred. You might see something like:</p>
+
+<pre><code>...
+Thread 1 (thread 11523): 
+
+1. 0 0x006267d0 in m_OptionsMenu_Start ()
+1. 1 0x002e4160 in wrapper_runtime_invoke_object_runtime_invoke_void__this___object_intptr_intptr_intptr ()
+1. 2 0x00a1dd64 in mono_jit_runtime_invoke (method=0x18b63bc, obj=0x5d10cb0, params=0x0, exc=0x2fffdd34) at /Users/mantasp/work/unity/unity-mono/External/Mono/mono/mono/mini/mini.c:4487
+1. 3 0x0088481c in MonoBehaviour::InvokeMethodOrCoroutineChecked ()
+...
+</code></pre>
+
+<p>First of all you should find the stack trace for <strong>“Thread 1”</strong>, which is the main thread. The very first lines of the stack trace will point to the place where the error occurred. In this example, the trace indicates that the NullReferenceException happened inside the <em>“OptionsMenu”</em> script’s <em>“Start”</em> method. Looking carefully at this method implementation would reveal the cause of the problem. Typically, NullReferenceExceptions happen inside the <strong>Start</strong> method when incorrect assumptions are made about initialization order.
+In some cases only a partial stack trace is seen on the Debugger Console:</p>
+
+<pre><code>Thread 1 (thread 11523): 
+
+1. 0 0x0062564c in start ()
+</code></pre>
+
+<p>This indicates that native symbols were stripped during the Release build of the application. The full stack trace can be obtained with the following procedure:</p>
+
+<ul>
+<li>Remove application from device.</li>
+<li>Clean all targets.</li>
+<li>Build and run.</li>
+<li>Get stack traces again as described above.</li>
+</ul>
+
+<h2>EXC_BAD_ACCESS starts occurring when an external library is linked to the Unity iOS application.</h2>
+
+<p>This usually happens when an external library is compiled with the ARM Thumb instruction set. Currently such libraries are not compatible with Unity. The problem can be solved easily by recompiling the library without Thumb instructions. You can do this for the library’s Xcode project with the following steps:</p>
+
+<ul>
+<li>in Xcode, select <em>“View”</em> &gt; <em>“Navigators”</em> &gt; <em>“Show Project Navigator”</em> from the menu</li>
+<li>select the <em>“Unity-iPhone”</em> project, activate <em>“Build Settings”</em> tab</li>
+<li>in the search field enter : <em>“Other C Flags”</em>
+</li>
+<li>add <em>-mno-thumb</em> flag there and rebuild the library.</li>
+</ul>
+
+<p>If the library source is not available you should ask the supplier for a non-thumb version of the library.</p>
+
+<h2>The Xcode console shows “WARNING -&gt; applicationDidReceiveMemoryWarning()” and the application crashes immediately afterwards</h2>
+
+<p>(Sometimes you might see a message like <em>Program received signal: “0”</em>.)
+This warning message is often not fatal and merely indicates that iOS is low on memory and is asking applications to free up some memory. Typically, background processes like Mail will free some memory and your application can continue to run. However, if your application continues to use memory or ask for more, the OS will eventually start killing applications and yours could be one of them. Apple does not document what memory usage is safe, but empirical observations show that applications using less than 50% MB of all device RAM (roughly 200–256 MB for 2nd generation ipad) do not have major memory usage problems.
+The main metric you should rely on is how much RAM your application uses. Your application memory usage consists of three major components:</p>
+
+<ul>
+<li>application code (the OS needs to load and keep your application code in RAM, but some of it might be discarded if really needed)</li>
+<li>native heap (used by the engine to store its state, your assets, etc. in RAM)</li>
+<li>managed heap (used by your Mono runtime to keep C# or JavaScript objects)</li>
+<li>GLES driver memory pools: textures, framebuffers, compiled shaders, etc.
+Your application memory usage can be tracked by two Xcode Instruments tools: <strong>Activity Monitor</strong>, <strong>Object Allocations</strong> and <strong>VM Tracker</strong>. You can start from the Xcode Run menu: <strong>Product &gt; Profile</strong> and then select specific tool. <strong>Activity Monitor</strong> tool shows all process statistics including <strong>Real memory</strong> which can be regarded as the total amount of RAM used by your application. <strong>Note:</strong> OS and device HW version combination might noticeably affect memory usage numbers, so you should be careful when comparing numbers obtained on different devices.</li>
+</ul>
+
+<figure>
+<img src="../uploads/Main/ActivityMonitor.png" alt="">
+</figure>
+
+<p>
+<strong>Note:</strong> The <a href="iphone-InternalProfiler.html">internal profiler</a> shows only the heap allocated by .NET scripts. Total memory usage can be determined via Xcode Instruments as shown above. This figure includes parts of the application binary, some standard framework buffers, Unity engine internal state buffers, the .NET runtime heap (number printed by internal profiler), GLES driver heap and some other miscellaneous stuff. </p>
+
+<p>The other tool displays all allocations made by your application and includes both native heap and managed heap statistics (don’t forget to check the <strong>Created and still living</strong> box to get the current state of the application). The important statistic is the <strong>Net bytes</strong> value.</p>
+
+<figure>
+<img src="../uploads/Main/ObjectAlloc.png" alt="">
+</figure>
+
+<p>To keep memory usage low:</p>
+
+<ul>
+<li>Reduce the application binary size by using the strongest iOS stripping options, and avoid unnecessary dependencies on different .NET libraries. See the <a href="class-PlayerSettings.html">player settings</a> and <a href="iphone-playerSizeOptimization.html">player size optimization</a> manual pages for further details.</li>
+<li>Reduce the size of your content. Use PVRTC compression for textures and use low poly models. See the manual page about <a href="ReducingFilesize.html">reducing file size</a> for more information.</li>
+<li>Don’t allocate more memory than necessary in your scripts. Track mono heap size and usage with the <a href="iphone-InternalProfiler.html">internal profiler</a>
+</li>
+<li>
+<strong>Note:</strong> with Unity 3.0, the scene loading implementation has changed significantly and now all scene assets are preloaded. This results in fewer hiccups when instantiating game objects. If you need more fine-grained control of asset loading and unloading during gameplay, you should use <a href="../ScriptReference/Resources.Load.html">Resources.Load</a> and <a href="../ScriptReference/Object.Destroy.html">Object.Destroy</a>.</li>
+</ul>
+
+<p>Querying the OS about the amount of free memory may seem like a good idea to evaluate how well your application is performing. However, the free memory statistic is likely to be unreliable since the OS uses a lot of dynamic buffers and caches. The only reliable approach is to keep track of memory consumption for your application and use that as the main metric. Pay attention to how the graphs from the tools described above change over time, especially after loading new levels.</p>
+
+<h2>The game runs correctly when launched from Xcode but crashes while loading the first level when launched manually on the device.</h2>
+
+<p>There could be several reasons for this. You need to inspect the device logs to get more details. Connect the device to your Mac, launch Xcode and select <strong>Window &gt; Organizer</strong> from the menu. Select your device in the Organizer’s left toolbar, then click on the “Console” tab and review the latest messages carefully. Additionally, you may need to investigate crash reports. You can find out how to obtain crash reports here: <a href="http://developer.apple.com/iphone/library/technotes/tn2008/tn2151.html">http://developer.apple.com/iphone/library/technotes/tn2008/tn2151.html</a>.</p>
+
+<h2>The Xcode Organizer console contains the message “killed by SpringBoard”.</h2>
+
+<p>There is a poorly-documented time limit for an iOS application to render its first frames and process input. If your application exceeds this limit, it will be killed by SpringBoard. This may happen in an application with a first scene which is too large, for example. To avoid this problem, it is advisable to create a small initial scene which just displays a splash screen, waits a frame or two with <strong>yield</strong> and then starts loading the real scene. This can be done with code as simple as the following:</p>
+
+<pre><code>function Start() {
+    yield;
+    Application.LoadLevel(&quot;Test&quot;);
+}
+</code></pre>
+
+<h2>Type.GetProperty() / Type.GetValue() cause crashes on the device</h2>
+
+<p>Currently <strong>Type.GetProperty()</strong> and <strong>Type.GetValue()</strong> are supported only for the <strong>.NET 2.0 Subset</strong> profile. You can select the .NET API compatibility level in the <a href="class-PlayerSettings.html">Player Settings</a>. </p>
+
+<p>
+<strong>Note:</strong> <strong>Type.GetProperty()</strong> and <strong>Type.GetValue()</strong> might be incompatible with managed code stripping and might need to be excluded (you can supply a custom non-strippable type list during the stripping process to accomplish this). For further details, see the <a href="iphone-playerSizeOptimization.html">iOS player size optimization guide</a>.</p>
+
+<h2>The game crashes with the error message “ExecutionEngineException: Attempting to JIT compile method ‘SometType`1&lt;SomeValueType&gt;:.ctor ()’ while running with –aot-only.”</h2>
+
+<p>The Mono .NET implementation for iOS is based on AOT (ahead of time compilation to native code) technology, which has its limitations. It compiles only those generic type methods (where a value type is used as a generic parameter) which are explicitly used by other code. When such methods are used only via reflection or from native code (ie, the serialization system) then they get skipped during AOT compilation. The AOT compiler can be hinted to include code by adding a dummy method somewhere in the script code. This can refer to the missing methods and so get them compiled ahead of time.</p>
+
+<pre><code>void _unusedMethod() {
+    var tmp = new SomeType&lt;SomeValueType&gt;();
+}
+</code></pre>
+
+<p>
+<strong>Note:</strong> value types are basic types, enums and structs.</p>
+
+<h2>Various crashes occur on the device when a combination of System.Security.Cryptography and managed code stripping is used</h2>
+
+<p>.NET Cryptography services rely heavily on reflection and so are not compatible with managed code stripping since this involves static code analysis. Sometimes the easiest solution to the crashes is to exclude the whole <strong>System.Security.Crypography</strong> namespace from the stripping process.</p>
+
+<p>The stripping process can be customized by adding a custom <strong>link.xml</strong> file to the <strong>Assets</strong> folder of your Unity project. This specifies which types and namespaces should be excluded from stripping. Further details can be found in the <a href="iphone-playerSizeOptimization.html">iOS player size optimization guide</a>.</p>
+
+<h3>link.xml</h3>
+
+<pre><code>&lt;linker&gt;
+       &lt;assembly fullname=&quot;mscorlib&quot;&gt;
+               &lt;namespace fullname=&quot;System.Security.Cryptography&quot; preserve=&quot;all&quot;/&gt;
+       &lt;/assembly&gt;
+&lt;/linker&gt;
+</code></pre>
+
+<h3>Application crashes when using System.Security.Cryptography.MD5 with managed code stripping</h3>
+
+<p>You might consider advice listed above or can work around this problem by adding extra reference to specific class to your script code:</p>
+
+<pre><code>object obj = new MD5CryptoServiceProvider();
+</code></pre>
+
+<h2>“Ran out of trampolines of type 0/1/2” runtime error</h2>
+
+<p>This error usually happens if you use lots of recursive generics. You can hint to the AOT compiler to allocate more trampolines of type 0, type 1 or type 2. Additional AOT compiler command line options can be specified in the “Other Settings” section of the <a href="class-PlayerSettings.html">Player Settings</a>. For type 1 trampolines, specify <strong>nrgctx-trampolines=ABCD</strong>, where ABCD is the number of new trampolines required (i.e. 4096). For type 2 trampolines specify <strong>nimt-trampolines=ABCD</strong> and for type 0 trampolines specify <strong>ntrampolines=ABCD</strong>.</p>
+
+<h2>After upgrading Xcode Unity iOS runtime fails with message “You are using Unity iPhone Basic. You are not allowed to remove the Unity splash screen from your game”</h2>
+
+<p>With some latest Xcode releases there were changes introduced in PNG compression and optimization tool. These changes might cause false positives in Unity iOS runtime checks for splash screen modifications. If you encounter such problems try upgrading Unity to the latest publicly available version. If it does not help you might consider following workaround:</p>
+
+<ul>
+<li><p>Replace your Xcode project from scratch when building from Unity (instead of appending it)</p></li>
+<li><p>Delete already installed project from device</p></li>
+<li><p>Clean project in Xcode (<em>Product</em>-&gt;<em>Clean</em>)</p></li>
+<li><p>Clear Xcode’s Derived Data folders (<em>Xcode</em>-&gt;<em>Preferences</em>-&gt;<em>Locations</em>)
+If this still does not help try disabling PNG re-compression in Xcode:</p></li>
+<li><p>Open your Xcode project</p></li>
+<li><p>Select “Unity-iPhone” project there</p></li>
+<li><p>Select “Build Settings” tab there</p></li>
+<li><p>Look for “Compress PNG files” option and set it to NO</p></li>
+</ul>
+
+<h2>App Store submission fails with “iPhone/iPod Touch: application executable is missing a required architecture. At least one of the following architecture(s) must be present: armv6” message</h2>
+
+<p>You might get such message when updating already existing application, which previously was submitted with armv6 support. Unity 4.x and Xcode 4.5 does not support armv6 platform anymore. To solve submission problem just set <strong>Target OS Version</strong> in Unity <strong>Player Settings</strong> to <strong>4.3</strong> or higher.</p>
+
+<h2>WWW downloads are working fine in Unity Editor and on Android, but not on iOS</h2>
+
+<p>Most common mistake is to assume that WWW downloads are always happening on separate thread. On some platforms this might be true, but you should not take it for granted. Best way to track WWW status is either to use <em>yield</em> statement or check status in <em>Update</em> method. You should <strong>not</strong> use busy <em>while</em> loops for that.</p>
+
+<h2>“PlayerLoop called recursively!” error occurs when using Cocoa via a native function called from a script</h2>
+
+<p>Some operations with the UI will result in iOS redrawing the window immediately (the most common example is adding a UIView with a UIViewController to the main UIWindow). If you call a native function from a script, it will happen inside Unity’s PlayerLoop, resulting in PlayerLoop being called recursively. In such cases, you should consider using the <a href="http://developer.apple.com/library/mac/#documentation/Cocoa/Reference/Foundation/Classes/NSObject_Class/Reference/Reference.html#/apple_ref/occ/instm/NSObject/performSelectorOnMainThread:withObject:waitUntilDone:">performSelectorOnMainThread</a> method with waitUntilDone set to false. It will inform iOS to schedule the operation to run between Unity’s PlayerLoop calls.</p>
+
+<h2>Profiler or Debugger unable to see game running on iOS device</h2>
+
+<ul>
+<li>Check that you have built a Development build, and ticked the “Enable Script Debugging” and “Autoconnect profiler” boxes (as appropriate).</li>
+<li>The application running on the device will make a multicast broadcast to 225.0.0.222 on UDP port 54997. Check that your network settings allow this traffic. Then, the profiler will make a connection to the remote device on a port in the range 55000 - 55511 to fetch profiler data from the device. These ports will need to be open for UDP access.</li>
+</ul>
+
+<h2>Missing DLLs</h2>
+
+<p>If your application runs ok in editor but you get errors in your iOS project this may be caused by missing DLLs (e.g. I18N.dll, I19N.West.dll). In this case, try copying those dlls from within the Unity.app to your project’s Assets/Plugins folder. The location of the DLLs within the unity app is:
+ Unity.app/Contents/Frameworks/Mono/lib/mono/unity
+You should then also check the stripping level of your project to ensure the classes in the DLLs aren’t being removed when the build is optimised. Refer to the <a href="iphone-playerSizeOptimization.html">iOS Optimisation Page</a> for more information on iOS Stripping Levels.</p>
+
+<h2>Xcode Debugger console reports: ExecutionEngineException: Attempting to JIT compile method ‘(wrapper native-to-managed) Test:TestFunc (int)’ while running with –aot-only</h2>
+
+<p>Typically such message is received when managed function delegate is passed to the native function, but required wrapper code wasn’t generated when building application. You can help AOT compiler by hinting which methods will be passed as delegates to the native code. This can be done by adding “MonoPInvokeCallbackAttribute” custom attribute. Currently only static methods can be passed as delegates to the native code.</p>
+
+<p>Sample code:</p>
+
+<pre><code>using UnityEngine;
+using System.Collections;
+using System;
+using System.Runtime.InteropServices;
+using AOT;
+
+public class NewBehaviourScript : MonoBehaviour {
+    [DllImport (&quot;__Internal&quot;)]
+    private static extern void DoSomething (NoParamDelegate del1, StringParamDelegate del2);
+
+    delegate void NoParamDelegate ();
+    delegate void StringParamDelegate (string str);
+    
+    [MonoPInvokeCallback(typeof(NoParamDelegate))]
+    public static void NoParamCallback() {
+        Debug.Log (&quot;Hello from NoParamCallback&quot;);
+    }
+    
+    [MonoPInvokeCallback(typeof(StringParamDelegate))]
+    public static void StringParamCallback(string str) {
+        Debug.Log(string.Format(&quot;Hello from StringParamCallback {0}&quot;, str));
+    }
+
+    // Use this for initialization
+    void Start() {
+        DoSomething(NoParamCallback, StringParamCallback);
+    }
+}
+</code></pre>
+
+<h2>Xcode throws compilation error: “ld : unable to insert branch island. No insertion point available. for architecture armv7”, “clang: error: linker command failed with exit code 1 (use -v to see invocation)”</h2>
+
+<p>That error usually means there is just too much code in single module. Typically it is caused by having lots of script code or having big external .NET assemblies included into build. And enabling script debugging might make things worse, because it adds quite few additional instructions to each function, so it is easier to hit that limit.</p>
+
+<p>Enabling managed code stripping in <a href="class-PlayerSettings.html">player settings</a> might help with this problem, especially if big external .NET assemblies are involved. But if the issue persists then the best solution is to split user script code into multiple assemblies. The easiest way to this is move some code to <strong>Plugins</strong> folder. Code at this location is put to different assembly. Also check the information about how <a href="ScriptCompileOrderFolders.html">special folder names</a> affect script compilation:</p>
+<div class="feedbackbox" id="feedbackbox">
+<div id="rating"><p>Did you find this page useful? Please give it a rating:<br><div id="ratecontent" class="c-rating"></div>
+</p></div>
+<div id="ratingThanks" style="display:none"><p>Thanks for rating this page!</p></div>
+<div id="problem"><p><a name="problem" onclick="document.getElementById('problemType').style.display = '';document.getElementById('problem').style.display = 'none';">Report a problem on this page</a></p></div>
+<div id="problemType" style="display:none"><p>What kind of problem would you like to report?<ul type="problems">
+<li><a name="needcode" onclick="                                                             document.getElementById('problemType').style.display = 'none';                                                             document.getElementById('problemThanks').style.display = '';                                                             SendFeedback('problem-needcode',window.location.href,0);                                                             document.getElementById('problemFormDescription').value='Needs code samples.';                                                             document.getElementById('problemNeedCodeForm').style.display = ''                                                         ">This page needs code samples</a></li>
+<li><a name="code" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-brokencode',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Code samples do not work.';                                                         document.getElementById('problemCodeForm').style.display = ''                                                         ">Code samples do not work</a></li>
+<li><a name="missing" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-missing',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Missing information';                                                         document.getElementById('problemMissingForm').style.display = ''                                                         ">Information is missing</a></li>
+<li><a name="incorrect" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-incorrect',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Incorrect information';                                                         document.getElementById('problemIncorrectForm').style.display = ''                                                         ">Information is incorrect</a></li>
+<li><a name="unclear" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-unclear',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Unclear or confusing information';                                                         document.getElementById('problemUnclearForm').style.display = ''                                                         ">Information is unclear or confusing</a></li>
+<li><a name="language" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-language',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Spelling or grammar error';                                                         document.getElementById('problemLanguageForm').style.display = ''                                                         ">There is a spelling/grammar error on this page</a></li>
+<li><a name="other" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-other',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='This page has a problem';                                                         document.getElementById('problemOtherForm').style.display = ''                                                         ">Something else</a></li>
+</ul>
+<p><known_issues><p>Is something described here not working as you expect it to? It might be a <b>Known Issue</b>. Please check with the Issue Tracker at <a href="https://issuetracker.unity3d.com">issuetracker.unity3d.com</a>.</p></known_issues></p>
+</p></div>
+<div id="problemThanks" style="display:none"><p>Thanks for letting us know! This page has been marked for review based on your feedback.<br><br>If you have time, you can provide more information to help us fix the problem faster.<br><br><a onclick="document.getElementById('problemMoreInfo').style.display = '';document.getElementById('problemThanks').style.display = 'none';">Provide more information</a><br>
+</p></div>
+<div id="problemMoreInfo" style="display:none">
+<p id="problemNeedCodeForm" style="display:none">You've told us this page needs code samples. If you'd like to help us further, you could provide a code sample, or tell us about what kind of code sample you'd like to see:</p>
+<p id="problemCodeForm" style="display:none">You've told us there are code samples on this page which don't work. If you know how to fix it, or have something better we could use instead, please let us know:</p>
+<p id="problemMissingForm" style="display:none">You've told us there is information missing from this page. Please tell us more about what's missing:</p>
+<p id="problemIncorrectForm" style="display:none">You've told us there is incorrect information on this page. If you know what we should change to make it correct, please tell us:</p>
+<p id="problemUnclearForm" style="display:none">You've told us this page has unclear or confusing information. Please tell us more about what you found unclear or confusing, or let us know how we could make it clearer:</p>
+<p id="problemLanguageForm" style="display:none">You've told us there is a spelling or grammar error on this page. Please tell us what's wrong:</p>
+<p id="problemOtherForm" style="display:none">You've told us this page has a problem. Please tell us more about what's wrong:</p>
+<form>
+<textarea id="problemFormSuggestionField" cols="40" rows="5"></textarea><input type="hidden" id="problemFormDescription"><input type="submit" id="problemFormDescriptionSubmit" value="Submit" onclick="                                             document.getElementById('problemMoreInfo').style.display = 'none';                                             document.getElementById('problemMoreInfoThanks').style.display = '';                                             return false;                                             ">
+</form>
+</div>
+<div id="problemMoreInfoThanks" style="display:none"><p>Thanks for helping to make the Unity documentation better!</p></div>
+<script>
+
+                                            var ratecontent = document.querySelector('#ratecontent'); // target element
+                                            var currentRating = 0; // initial rating
+                                            var maxRating= 5; // max rating
+
+                                            // callback to run after setting the rating
+                                            var callback = function(rating) {
+                                                document.getElementById('ratingThanks').style.display = '';
+                                                document.getElementById('ratecontent').style.display = 'none';
+                                                document.getElementById('rating').style.display = 'none';
+                                                SendFeedback("rating",window.location.href,rating);
+                                            };
+
+                                            // rating instance
+                                            var myRating = rating(ratecontent, currentRating, maxRating, callback);
+                                        </script>
+</div>
+<div class="nextprev clear">
+<div class="icon tt left mr1" data-distance="-40|-30|top">
+<span class="prev"><a href="iphone-unsupported.html"></a></span><div class="tip">Features currently not supported by Unity iOS</div>
+</div>
+<div class="icon tt right" data-distance="-40|-30|top">
+<span class="next"><a href="iphone-bugreporting.html"></a></span><div class="tip">Reporting crash bugs on iOS</div>
+</div>
+</div>
+</div>
+</body></html>

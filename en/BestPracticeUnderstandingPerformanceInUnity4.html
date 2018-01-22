@@ -1,0 +1,217 @@
+<html><head><title>html模版</title></head><body>Unity - Manual:  Asset auditing</br>
+<div class="breadcrumbs clear"><ul>
+<li><a href="UnityManual.html">Unity User Manual (2018.1 beta)</a></li>
+<li><a href="BestPracticeGuides.html"> Best practice guides</a></li>
+<li><a href="BestPracticeUnderstandingPerformanceInUnity.html"> Understanding optimization in Unity</a></li>
+<li> Asset auditing</li>
+</ul></div>
+<div class="mb20"><div class="nextprev clear">
+<div class="icon tt left mr1" data-distance="-40|-30|top">
+<span class="prev"><a href="BestPracticeUnderstandingPerformanceInUnity3.html"></a></span><div class="tip"> Coroutines</div>
+</div>
+<div class="icon tt right" data-distance="-40|-30|top">
+<span class="next"><a href="BestPracticeUnderstandingPerformanceInUnity4-1.html"></a></span><div class="tip"> Understanding the managed heap</div>
+</div>
+</div></div>
+<div class="otherversionswrapper" onmouseover="setOtherVersionsDisplay(true)" onmouseout="setOtherVersionsDisplay(false)">
+<a>Other Versions</a><div class="otherversionscontent" id="OtherVersionsContent" style="display: none;">Cannot access other versions offline!</div>
+</div>
+<div class="scrollToFeedback"><a id="scrollToFeedback">Leave feedback</a></div>
+<h1>Asset auditing</h1>
+<!--BeginSwitchLink--><!--EndSwitchLink-->
+<div class="clear"></div>
+
+<p>Many of the problems found in real projects occur because of honest mistakes – temporary “test” changes and misclicks by a tired developer can silently add poorly-performing Assets, or change the import settings of existing Assets.</p>
+
+<p>For any project of significant scale, it is best to have a first line of defense against human errors. It is relatively simple to write a small piece of code that ensures that no one can add a 4K uncompressed Texture to a project.</p>
+
+<p>And yet, this is a surprisingly common problem. A 4K uncompressed Texture occupies 60 megabytes of memory. On a low-end mobile device, such as an iPhone 4S, it is dangerous to consume more than about 180–200 megabytes of memory. If added by mistake, this Texture inadvertently occupies between a third and a quarter of the application’s memory budget, and causes difficult-to-diagnose out-of-memory errors.</p>
+
+<p>While it is now possible to track these issues down with the 5.3 Memory Profiler, it is arguably better to make sure such mistakes are impossible in the first place.</p>
+
+<h2>Using AssetPostprocessor</h2>
+
+<p>The <code>AssetPostprocessor</code> class in the Unity Editor can be used to enforce certain minimum standards on a Unity project. This class receives callbacks when Assets are imported. To use it, inherit from <code>AssetPostprocessor</code> and implement one or more <code>OnPreprocess</code> methods. Significant ones include:</p>
+
+<ul>
+<li><p><code>OnPreprocessTexture</code></p></li>
+<li><p><code>OnPreprocessModel</code></p></li>
+<li><p><code>OnPreprocessAnimation</code></p></li>
+<li><p><code>OnPreprocessAudio</code></p></li>
+</ul>
+
+<p>See the Scripting Reference on <a href="../ScriptReference/AssetPostprocessor.html">AssetPostprocessor</a> for more possible <code>OnPreprocess</code> methods.</p>
+
+<pre><code>
+public class ReadOnlyModelPostprocessor : AssetPostprocessor {
+
+   public void OnPreprocessModel() {
+
+        ModelImporter modelImporter =
+
+ (ModelImporter)assetImporter;
+
+        if(modelImporter.isReadable) {
+
+            modelImporter.isReadable = false;
+
+            modelImporter.SaveAndReimport();
+
+        }
+
+    }
+
+}
+
+</code></pre>
+
+<p>This is a simple example of an <code>AssetPostprocessor</code> enforcing rules on a project:</p>
+
+<p>This class is called any time a model is imported into the project, or whenever a model has its import settings changed. The code simply checks to see if the <code>Read/Write enabled</code> flag (represented by the <code>isReadable</code> property) is set to <code>true</code>. If it is, it forces the flag to be <code>false</code> and then saves and reimports the Asset.</p>
+
+<p>Note that calling <code>SaveAndReimport</code> causes this snippet of code to be called again! However, because it is now assured that <code>isReadable</code> is false, this code does not produce an infinite reimport loop.</p>
+
+<p>The reason for this change is discussed in the “Models” section, below.</p>
+
+<h2>Common Asset rules</h2>
+
+<h4>Textures</h4>
+
+<p><strong>Disable the read/write enabled flag</strong></p>
+
+<p>The <code>Read/Write enabled</code> flag causes a Texture to be kept twice in memory: once on the GPU and once in CPU-addressable memory(1) (NOTE:
+ This is because, on most platforms, readback from GPU memory is extremely slow. Reading a Texture from GPU memory into a temporary buffer for use by CPU code (e.g. Texture.GetPixel) would be very nonperformant.). In Unity, this setting is disabled by default, but it can be accidentally switched on.</p>
+
+<p>
+<code>Read/Write Enabled</code> is only necessary when manipulating Texture data outside of Shaders (such as with the <code>Texture.GetPixel</code> and <code>Texture.SetPixel</code> APIs) and should be avoided whenever possible.</p>
+
+<p><strong>Disable Mipmaps if possible</strong></p>
+
+<p>For objects that have a relatively invariant Z-depth relative to the Camera, it is possible to disable mipmaps to save about a third of the memory required to load the Texture. If an object changes Z-depth, disabling mipmaps can lead to worse Texture sampling performance on the GPU.</p>
+
+<p>In general, this is useful for UI Textures and other Textures that are displayed at a constant size on screen.</p>
+
+<p><strong>Compress all Textures</strong></p>
+
+<p>Using a texture compression format suitable for the project’s target platform is crucial for saving memory.</p>
+
+<p>If the selected texture compression format is unsuited to the target platform, Unity decompresses the Texture when the Texture is loaded, consuming both CPU time and an excessive amount of memory. This is most commonly a problem on Android devices, which often support vastly different texture compression formats depending on the chipset.</p>
+
+<p><strong>Enforce sensible Texture size limits</strong></p>
+
+<p>While this is simple, it is also very easy to forget to resize a Texture or to inadvertently alter the Texture size import setting. Determine a sensible maximum size for different types of Textures and enforce these via code.</p>
+
+<p>For many mobile applications, 2048x2048 or 1024x1024 is sufficient for Texture atlases, and 512x512 is sufficient for Textures applied to 3D models.</p>
+
+<h4>Models</h4>
+
+<p><strong>Disable the Read/Write enabled flag</strong></p>
+
+<p>The<code>Read/Write enabled</code> flag for models operates identically to the one described for Textures. However, it is enabled by default for models.</p>
+
+<p>Unity requires this flag to be enabled if a project is modifying a Mesh at runtime via script, or if the Mesh is used as the basis for a MeshCollider component. If the model is not used in a MeshCollider and is not manipulated by scripts, disable this flag to save half of the model’s memory.</p>
+
+<p><strong>Disable rigs on non-character models</strong></p>
+
+<p>By default, Unity imports a generic rig for non-character models. This causes an <code>Animator</code> component be to added if the model is instantiated at runtime. If the model is not animated via the Animation system, this adds unnecessary overhead to the animation system, because all active Animators must be ticked once per frame.</p>
+
+<p>Disable the rig on non-animated models to avoid this automatic addition of an Animator component and possible inadvertent addition of unwanted Animators to a Scene.</p>
+
+<p><strong>Enable the Optimize Game Objects option on animated models</strong></p>
+
+<p>The <strong>Optimize Game Objects</strong> option has a significant performance impact on animated models. When the option is disabled, Unity creates a large transform hierarchy mirroring the model’s bone structure whenever the model is instantiated. This transform hierarchy is expensive to update, especially if other components (such as Particle Systems or Colliders) are attached to it. It also limits Unity’s ability to multithread Mesh skinning and bone animation calculations.</p>
+
+<p>If specific locations on a model’s bone structure need to be exposed (such as exposing a model’s hands in order to dynamically attach weapon models) then these locations can be specifically whitelisted in the <code>Extra Transforms</code> list.</p>
+
+<p>Some additional details can be found in the Unity Manual page on the <a href="https://docs.unity3d.com/Manual/FBXImporter-Rig.html">Model Importer</a>.</p>
+
+<p><strong>Use Mesh compression when possible</strong></p>
+
+<p>Enabling Mesh compression reduces the number of bits used to represent the floating-point numbers for different channels of a model’s data. This can lead to a minor loss of precision, and the effects of this imprecision should be checked by artists before use in a final project.</p>
+
+<p>The specific numbers of bits that a given compression level uses are detailed in the <a href="https://docs.unity3d.com/ScriptReference/ModelImporterMeshCompression.html">ModelImporterMeshCompression</a> Scripting Reference.</p>
+
+<p>Note that it is possible to use different levels of compression for different channels, so a project may choose to compress only tangents and normals while leaving UVs and vertex positions uncompressed.</p>
+
+<p><strong>Note: Mesh Renderer Settings</strong></p>
+
+<p>When adding Mesh Renderers to Prefabs or GameObjects, take note of the settings on the component. By default, Unity enables Shadow casting and receiving, Light Probe sampling, Reflection Probe sampling, and Motion Vector calculation.</p>
+
+<p>If a project does not require one or more of these features, ensure that they’re turned off by an automated script. Any runtime code that adds MeshRenderers needs to toggle these settings as well.</p>
+
+<p>For 2D games, accidentally adding a MeshRenderer to the Scene with the shadow options turned on adds a full shadow pass to the rendering loop. This is generally a waste of performance.</p>
+
+<h4>Audio</h4>
+
+<p><strong>Platform-appropriate compression settings</strong></p>
+
+<p>Enable a compression format for audio that matches the available hardware. All iOS devices include hardware MP3 decompressors, and many Android devices support Vorbis natively.</p>
+
+<p>Further, import uncompressed audio files into Unity. Unity always recompresses audio when building a project. There is no need to import compressed audio and then recompress it; this only serves to degrade the quality of the final audio clips.</p>
+
+<p><strong>Force audio clips to mono</strong></p>
+
+<p>Few mobile devices actually have stereo speakers. On a mobile project, forcing the imported audio clips to be mono-channel halves their memory consumption. This setting is also applicable to any audio without stereo effects, such as most UI sound effects.</p>
+
+<p><strong>Reduce audio bitrate</strong></p>
+
+<p>While this requires consultation with an audio designer, attempt to minimize the bitrate of audio files in order to further save on memory consumption and built project size.</p>
+<div class="feedbackbox" id="feedbackbox">
+<div id="rating"><p>Did you find this page useful? Please give it a rating:<br><div id="ratecontent" class="c-rating"></div>
+</p></div>
+<div id="ratingThanks" style="display:none"><p>Thanks for rating this page!</p></div>
+<div id="problem"><p><a name="problem" onclick="document.getElementById('problemType').style.display = '';document.getElementById('problem').style.display = 'none';">Report a problem on this page</a></p></div>
+<div id="problemType" style="display:none"><p>What kind of problem would you like to report?<ul type="problems">
+<li><a name="needcode" onclick="                                                             document.getElementById('problemType').style.display = 'none';                                                             document.getElementById('problemThanks').style.display = '';                                                             SendFeedback('problem-needcode',window.location.href,0);                                                             document.getElementById('problemFormDescription').value='Needs code samples.';                                                             document.getElementById('problemNeedCodeForm').style.display = ''                                                         ">This page needs code samples</a></li>
+<li><a name="code" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-brokencode',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Code samples do not work.';                                                         document.getElementById('problemCodeForm').style.display = ''                                                         ">Code samples do not work</a></li>
+<li><a name="missing" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-missing',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Missing information';                                                         document.getElementById('problemMissingForm').style.display = ''                                                         ">Information is missing</a></li>
+<li><a name="incorrect" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-incorrect',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Incorrect information';                                                         document.getElementById('problemIncorrectForm').style.display = ''                                                         ">Information is incorrect</a></li>
+<li><a name="unclear" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-unclear',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Unclear or confusing information';                                                         document.getElementById('problemUnclearForm').style.display = ''                                                         ">Information is unclear or confusing</a></li>
+<li><a name="language" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-language',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Spelling or grammar error';                                                         document.getElementById('problemLanguageForm').style.display = ''                                                         ">There is a spelling/grammar error on this page</a></li>
+<li><a name="other" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-other',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='This page has a problem';                                                         document.getElementById('problemOtherForm').style.display = ''                                                         ">Something else</a></li>
+</ul>
+<p><known_issues><p>Is something described here not working as you expect it to? It might be a <b>Known Issue</b>. Please check with the Issue Tracker at <a href="https://issuetracker.unity3d.com">issuetracker.unity3d.com</a>.</p></known_issues></p>
+</p></div>
+<div id="problemThanks" style="display:none"><p>Thanks for letting us know! This page has been marked for review based on your feedback.<br><br>If you have time, you can provide more information to help us fix the problem faster.<br><br><a onclick="document.getElementById('problemMoreInfo').style.display = '';document.getElementById('problemThanks').style.display = 'none';">Provide more information</a><br>
+</p></div>
+<div id="problemMoreInfo" style="display:none">
+<p id="problemNeedCodeForm" style="display:none">You've told us this page needs code samples. If you'd like to help us further, you could provide a code sample, or tell us about what kind of code sample you'd like to see:</p>
+<p id="problemCodeForm" style="display:none">You've told us there are code samples on this page which don't work. If you know how to fix it, or have something better we could use instead, please let us know:</p>
+<p id="problemMissingForm" style="display:none">You've told us there is information missing from this page. Please tell us more about what's missing:</p>
+<p id="problemIncorrectForm" style="display:none">You've told us there is incorrect information on this page. If you know what we should change to make it correct, please tell us:</p>
+<p id="problemUnclearForm" style="display:none">You've told us this page has unclear or confusing information. Please tell us more about what you found unclear or confusing, or let us know how we could make it clearer:</p>
+<p id="problemLanguageForm" style="display:none">You've told us there is a spelling or grammar error on this page. Please tell us what's wrong:</p>
+<p id="problemOtherForm" style="display:none">You've told us this page has a problem. Please tell us more about what's wrong:</p>
+<form>
+<textarea id="problemFormSuggestionField" cols="40" rows="5"></textarea><input type="hidden" id="problemFormDescription"><input type="submit" id="problemFormDescriptionSubmit" value="Submit" onclick="                                             document.getElementById('problemMoreInfo').style.display = 'none';                                             document.getElementById('problemMoreInfoThanks').style.display = '';                                             return false;                                             ">
+</form>
+</div>
+<div id="problemMoreInfoThanks" style="display:none"><p>Thanks for helping to make the Unity documentation better!</p></div>
+<script>
+
+                                            var ratecontent = document.querySelector('#ratecontent'); // target element
+                                            var currentRating = 0; // initial rating
+                                            var maxRating= 5; // max rating
+
+                                            // callback to run after setting the rating
+                                            var callback = function(rating) {
+                                                document.getElementById('ratingThanks').style.display = '';
+                                                document.getElementById('ratecontent').style.display = 'none';
+                                                document.getElementById('rating').style.display = 'none';
+                                                SendFeedback("rating",window.location.href,rating);
+                                            };
+
+                                            // rating instance
+                                            var myRating = rating(ratecontent, currentRating, maxRating, callback);
+                                        </script>
+</div>
+<div class="nextprev clear">
+<div class="icon tt left mr1" data-distance="-40|-30|top">
+<span class="prev"><a href="BestPracticeUnderstandingPerformanceInUnity3.html"></a></span><div class="tip"> Coroutines</div>
+</div>
+<div class="icon tt right" data-distance="-40|-30|top">
+<span class="next"><a href="BestPracticeUnderstandingPerformanceInUnity4-1.html"></a></span><div class="tip"> Understanding the managed heap</div>
+</div>
+</div>
+</div>
+</body></html>

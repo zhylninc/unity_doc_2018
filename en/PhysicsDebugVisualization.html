@@ -1,0 +1,297 @@
+<html><head><title>html模版</title></head><body>Unity - Manual: Physics Debug Visualization</br>
+<div class="breadcrumbs clear"><ul>
+<li><a href="UnityManual.html">Unity User Manual (2018.1 beta)</a></li>
+<li><a href="PhysicsSection.html">Physics</a></li>
+<li><a href="PhysicsOverview.html">Physics Overview</a></li>
+<li>Physics Debug Visualization</li>
+</ul></div>
+<div class="mb20"><div class="nextprev clear">
+<div class="icon tt left mr1" data-distance="-40|-30|top">
+<span class="prev"><a href="CharacterControllers.html"></a></span><div class="tip">Character Controllers</div>
+</div>
+<div class="icon tt right" data-distance="-40|-30|top">
+<span class="next"><a href="Physics3DReference.html"></a></span><div class="tip">3D Physics Reference</div>
+</div>
+</div></div>
+<div class="otherversionswrapper" onmouseover="setOtherVersionsDisplay(true)" onmouseout="setOtherVersionsDisplay(false)">
+<a>Other Versions</a><div class="otherversionscontent" id="OtherVersionsContent" style="display: none;">Cannot access other versions offline!</div>
+</div>
+<div class="scrollToFeedback"><a id="scrollToFeedback">Leave feedback</a></div>
+<h1>Physics Debug Visualization</h1>
+<!--BeginSwitchLink--><!--EndSwitchLink-->
+<div class="clear"></div>
+
+<p>Physics Debug Visualiser allows you to quickly inspect the <a href="CollidersOverview.html">Collider</a> geometry in your <a href="CreatingScenes.html">Scene</a>, and profile common physics-based scenarios. It provides a visualisation of which GameObjects should and should not collide with each other. This is particularly useful when there are many Colliders in your Scene, or if the <a href="class-MeshRenderer.html">Render</a> and <a href="class-MeshCollider.html">Collision Meshes</a> are out of sync.</p>
+
+<p>For further guidance on improving physics performance in your project, see documentation on the <a href="ProfilerPhysics.html">Physics Profiler</a>.</p>
+
+<p>To open the Physics Debug window in the Unity Editor, go to <strong>Window </strong>&gt; <strong>Physics Debugger</strong>. </p>
+
+<figure>
+<img src="../uploads/Main/PhysicsDebugVizImage0.png" alt="Default Physics Debug Visualization settings and a Cube primitive">
+<figcaption>Default Physics Debug Visualization settings and a Cube primitive</figcaption>
+</figure>
+
+<p>From this window, you can customize visual settings and specify the types of GameObjects you want to see or hide in the visualizer.</p>
+
+<figure>
+<img src="../uploads/Main/PhysicsDebugVizImage1.png" alt="Physics Debug window with fold-out options and overlay panel ">
+<figcaption>Physics Debug window with fold-out options and overlay panel </figcaption>
+</figure>
+
+<figure>
+<img src="../uploads/Main/PhysicsDebugVizImage2.png" alt="The Physics Debug overlay panel">
+<figcaption>The Physics Debug overlay panel</figcaption>
+</figure>
+
+<p>
+<strong>Hide Selected Items</strong> is the default mode. This means that every item appears in the visualizer, and you need to tick the checkbox for each item to hide it. To change this to <strong>Show Selected Items</strong>, use the drop-down at the top of the window. This means that no items appear in the visualizer, and you need to tick the checkbox for each item to display it.</p>
+
+<table>
+<colgroup>
+<col style="text-align:left;">
+<col style="text-align:left;">
+</colgroup>
+
+<thead>
+<tr>
+	<th style="text-align:left;"><strong>Property</strong></th>
+	<th style="text-align:left;"><strong>Function</strong></th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+	<td style="text-align:left;"><strong>Reset</strong></td>
+	<td style="text-align:left;">Click this button to reset the Physics Debug window back to default settings.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>Hide Layers</strong></td>
+	<td style="text-align:left;">Use the dropdown menu to determine whether or not to display Colliders from the selected <a href="Layers.html">Layers</a>.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>Hide Static Colliders</strong></td>
+	<td style="text-align:left;">Tick this checkbox to remove static Colliders (Colliders with no Rigidbody component) from the visualization.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>Hide Triggers</strong></td>
+	<td style="text-align:left;">Tick this checkbox to remove Colliders that are also Triggers from the visualization.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>Hide Rigidbodies</strong></td>
+	<td style="text-align:left;">Tick this checkbox to remove <a href="class-Rigidbody.html">Rigidbody components</a> from the visualization.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>Hide Kinematic Bodies</strong></td>
+	<td style="text-align:left;">Tick this checkbox to remove Colliders with <strong>Kinematic </strong>Rigidbody components (which are not controlled by the physics engine) from the visualization. See documentation on <a href="RigidbodiesOverview.html">Rigidbody components</a> for more details.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>Hide Sleeping Bodies</strong></td>
+	<td style="text-align:left;">Tick this checkbox to remove Colliders with <strong>Sleeping</strong> Rigidbody components (which are not currently engaging with the physics engine) from the visualization. See documentation on <a href="RigidbodiesOverview.html">Rigidbody components: Sleeping</a> for more details.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>Collider Types</strong></td>
+	<td style="text-align:left;">Use these options to remove specific Collider types from the physics visualization.</td>
+</tr>
+<tr>
+	<td style="text-align:left;">    Hide <br>    BoxColliders</td>
+	<td style="text-align:left;">Tick this checkbox to remove <a href="class-BoxCollider.html">Box Colliders</a> from the visualization.</td>
+</tr>
+<tr>
+	<td style="text-align:left;">    Hide <br>    SphereColliders</td>
+	<td style="text-align:left;">Tick this checkbox to remove <a href="class-SphereCollider.html">Sphere Colliders</a> from the visualization.</td>
+</tr>
+<tr>
+	<td style="text-align:left;">    Hide <br>    CapsuleColliders</td>
+	<td style="text-align:left;">Tick this checkbox to remove <a href="class-CapsuleCollider.html">Capsule Colliders</a> from the visualization.</td>
+</tr>
+<tr>
+	<td style="text-align:left;">    Hide <br>    MeshColliders <br>    (convex)</td>
+	<td style="text-align:left;">Tick this checkbox to remove <strong>convex</strong> <a href="class-MeshCollider.html">Mesh Colliders</a> from the visualization.</td>
+</tr>
+<tr>
+	<td style="text-align:left;">    Hide <br>    MeshColliders <br>    (concave)</td>
+	<td style="text-align:left;">Tick this checkbox to remove <strong>concave</strong> <a href="class-MeshCollider.html">Mesh Colliders</a> from the visualization.</td>
+</tr>
+<tr>
+	<td style="text-align:left;">    Hide <br>    TerrainColliders</td>
+	<td style="text-align:left;">Tick this checkbox to remove <a href="class-TerrainCollider.html">Terrain Colliders</a> from the visualization.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>Hide None</strong></td>
+	<td style="text-align:left;">Click <strong>Hide None</strong> to clear all filtering criteria and display all Collider types in the visualization.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>Hide All</strong></td>
+	<td style="text-align:left;">Click <strong>Hide All</strong> to enable all filters and remove all Collider types from the visualization.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>Colors</strong></td>
+	<td style="text-align:left;">Use these settings to define how Unity displays physics components in the visualization.</td>
+</tr>
+<tr>
+	<td style="text-align:left;">    Static <br>    Colliders</td>
+	<td style="text-align:left;">Use this color selector to define which color indicates static Colliders (Colliders with no Rigidbody component) in the visualization.</td>
+</tr>
+<tr>
+	<td style="text-align:left;">    Triggers</td>
+	<td style="text-align:left;">Use this color selector to define which color indicates Colliders that are also Triggers in the visualization.</td>
+</tr>
+<tr>
+	<td style="text-align:left;">    Rigidbodies</td>
+	<td style="text-align:left;">Use this color selector to define which color indicates Rigidbody components in the visualization.</td>
+</tr>
+<tr>
+	<td style="text-align:left;">    Kinematic <br>    Bodies</td>
+	<td style="text-align:left;">Use this color selector to define which color indicates <strong>Kinematic </strong>Rigidbody components (which are not controlled by the physics engine) from the visualization. See documentation on <a href="RigidbodiesOverview.html">Rigidbody components</a> for more details.</td>
+</tr>
+<tr>
+	<td style="text-align:left;">    Sleeping <br>    Bodies</td>
+	<td style="text-align:left;">Use this color selector to define which color indicates <strong>Sleeping </strong>Rigidbody components (which are not currently engaging with the physics engine) from the visualization. See documentation on <a href="RigidbodiesOverview.html">Rigidbody components: Sleeping</a> for more details.</td>
+</tr>
+<tr>
+	<td style="text-align:left;">    Variation</td>
+	<td style="text-align:left;">Use the slider to set a value between 0 and 1. This defines how much of your chose color blends with a random color. Use this to visually separate Colliders by color, and to see the structure of the GameObjects.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>Rendering</strong></td>
+	<td style="text-align:left;">Use these settings to define how Unity renders and displays the physics visualization.</td>
+</tr>
+<tr>
+	<td style="text-align:left;">    Transparency</td>
+	<td style="text-align:left;">Use the slider to set the value between 0 and 1. This defines the transparency of drawn collision geometry in the visualization.</td>
+</tr>
+<tr>
+	<td style="text-align:left;">    Force <br>    Overdraw</td>
+	<td style="text-align:left;">Normal render geometry can sometimes obscure Colliders (for example, a Mesh Collider plane underneath a floor).Tick the <strong>Force Overdraw</strong> checkbox to make the visualization renderer draw Collider geometry on top of render geometry.</td>
+</tr>
+<tr>
+	<td style="text-align:left;">    View <br>    Distance</td>
+	<td style="text-align:left;">Use this to set the view distance of the visualization.</td>
+</tr>
+<tr>
+	<td style="text-align:left;">    Terrain <br>    Tiles Max</td>
+	<td style="text-align:left;">Use this to set the maximum number of Terrain tiles in the visualization.</td>
+</tr>
+</tbody>
+</table>
+
+<p>The overlay panel has further options:</p>
+
+<figure>
+<img src="../uploads/Main/PhysicsDebugVizImage2.png" alt="The Physics Debug overlay panel">
+<figcaption>The Physics Debug overlay panel</figcaption>
+</figure>
+
+<table>
+<colgroup>
+<col style="text-align:left;">
+<col style="text-align:left;">
+</colgroup>
+
+<thead>
+<tr>
+	<th style="text-align:left;"><strong>Property</strong></th>
+	<th style="text-align:left;"><strong>Function</strong></th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+	<td style="text-align:left;"><strong>Collision Geometry</strong></td>
+	<td style="text-align:left;">Tick this checkbox to enable collision geometry visualization.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>Mouse Select</strong></td>
+	<td style="text-align:left;">Tick this checkbox to enable mouse-over highlighting and mouse selection. This can be useful if you have large GameObjects obstructing each other in the visualizer.</td>
+</tr>
+</tbody>
+</table>
+
+<h3>Profiling</h3>
+
+<p>You can use Physics Debug to profile and troubleshoot physics activity in your game. You can customize which types of Colliders or Rigidbody components you can see in the visualiser, to help you find the source of activity. The two most helpful are:</p>
+
+<p>
+<strong>To see active Rigidbody components only</strong>: To see only the Rigidbody components that are active and therefore using CPU/GPU resources, tick <strong>Hide Static Colliders</strong> and <strong>Hide Sleeping Bodies</strong>.</p>
+
+<p>
+<strong>To see non-convex Mesh Colliders only:</strong> Non-convex (triangle-based) Mesh Colliders tend to generate the most contacts when their attached Rigidbody components are very near a collision with another Rigidbody or Collider. To visualize only the non-convex Mesh Colliders, set the window to <strong>Show Selected Items</strong> mode, click the <strong>Select None</strong> button, then tick the <strong>Show MeshColliders (concave)</strong> checkbox.</p>
+
+<h3>Scripting API Reference</h3>
+
+<p>See Unity Scripting API Reference for: </p>
+
+<ul>
+<li><p><a href="../ScriptReference/PhysicsDebugWindow.html">PhysicsDebugWindow</a></p></li>
+<li><p><a href="../ScriptReference/PhysicsVisualizationSettings.html">PhysicsVisualizationSettings</a></p></li>
+</ul>
+
+<p><br></p>
+
+<hr>
+
+<ul>
+<li><p><span class="page-edit">2017–06–01 Page amended with <a href="DocumentationEditorialReview.html">editorial review</a>
+</span></p></li>
+<li><p><span class="page-history">Physics Debug Visualization is a new feature in Unity 5.6</span></p></li>
+</ul>
+<div class="feedbackbox" id="feedbackbox">
+<div id="rating"><p>Did you find this page useful? Please give it a rating:<br><div id="ratecontent" class="c-rating"></div>
+</p></div>
+<div id="ratingThanks" style="display:none"><p>Thanks for rating this page!</p></div>
+<div id="problem"><p><a name="problem" onclick="document.getElementById('problemType').style.display = '';document.getElementById('problem').style.display = 'none';">Report a problem on this page</a></p></div>
+<div id="problemType" style="display:none"><p>What kind of problem would you like to report?<ul type="problems">
+<li><a name="needcode" onclick="                                                             document.getElementById('problemType').style.display = 'none';                                                             document.getElementById('problemThanks').style.display = '';                                                             SendFeedback('problem-needcode',window.location.href,0);                                                             document.getElementById('problemFormDescription').value='Needs code samples.';                                                             document.getElementById('problemNeedCodeForm').style.display = ''                                                         ">This page needs code samples</a></li>
+<li><a name="code" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-brokencode',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Code samples do not work.';                                                         document.getElementById('problemCodeForm').style.display = ''                                                         ">Code samples do not work</a></li>
+<li><a name="missing" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-missing',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Missing information';                                                         document.getElementById('problemMissingForm').style.display = ''                                                         ">Information is missing</a></li>
+<li><a name="incorrect" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-incorrect',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Incorrect information';                                                         document.getElementById('problemIncorrectForm').style.display = ''                                                         ">Information is incorrect</a></li>
+<li><a name="unclear" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-unclear',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Unclear or confusing information';                                                         document.getElementById('problemUnclearForm').style.display = ''                                                         ">Information is unclear or confusing</a></li>
+<li><a name="language" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-language',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Spelling or grammar error';                                                         document.getElementById('problemLanguageForm').style.display = ''                                                         ">There is a spelling/grammar error on this page</a></li>
+<li><a name="other" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-other',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='This page has a problem';                                                         document.getElementById('problemOtherForm').style.display = ''                                                         ">Something else</a></li>
+</ul>
+<p><known_issues><p>Is something described here not working as you expect it to? It might be a <b>Known Issue</b>. Please check with the Issue Tracker at <a href="https://issuetracker.unity3d.com">issuetracker.unity3d.com</a>.</p></known_issues></p>
+</p></div>
+<div id="problemThanks" style="display:none"><p>Thanks for letting us know! This page has been marked for review based on your feedback.<br><br>If you have time, you can provide more information to help us fix the problem faster.<br><br><a onclick="document.getElementById('problemMoreInfo').style.display = '';document.getElementById('problemThanks').style.display = 'none';">Provide more information</a><br>
+</p></div>
+<div id="problemMoreInfo" style="display:none">
+<p id="problemNeedCodeForm" style="display:none">You've told us this page needs code samples. If you'd like to help us further, you could provide a code sample, or tell us about what kind of code sample you'd like to see:</p>
+<p id="problemCodeForm" style="display:none">You've told us there are code samples on this page which don't work. If you know how to fix it, or have something better we could use instead, please let us know:</p>
+<p id="problemMissingForm" style="display:none">You've told us there is information missing from this page. Please tell us more about what's missing:</p>
+<p id="problemIncorrectForm" style="display:none">You've told us there is incorrect information on this page. If you know what we should change to make it correct, please tell us:</p>
+<p id="problemUnclearForm" style="display:none">You've told us this page has unclear or confusing information. Please tell us more about what you found unclear or confusing, or let us know how we could make it clearer:</p>
+<p id="problemLanguageForm" style="display:none">You've told us there is a spelling or grammar error on this page. Please tell us what's wrong:</p>
+<p id="problemOtherForm" style="display:none">You've told us this page has a problem. Please tell us more about what's wrong:</p>
+<form>
+<textarea id="problemFormSuggestionField" cols="40" rows="5"></textarea><input type="hidden" id="problemFormDescription"><input type="submit" id="problemFormDescriptionSubmit" value="Submit" onclick="                                             document.getElementById('problemMoreInfo').style.display = 'none';                                             document.getElementById('problemMoreInfoThanks').style.display = '';                                             return false;                                             ">
+</form>
+</div>
+<div id="problemMoreInfoThanks" style="display:none"><p>Thanks for helping to make the Unity documentation better!</p></div>
+<script>
+
+                                            var ratecontent = document.querySelector('#ratecontent'); // target element
+                                            var currentRating = 0; // initial rating
+                                            var maxRating= 5; // max rating
+
+                                            // callback to run after setting the rating
+                                            var callback = function(rating) {
+                                                document.getElementById('ratingThanks').style.display = '';
+                                                document.getElementById('ratecontent').style.display = 'none';
+                                                document.getElementById('rating').style.display = 'none';
+                                                SendFeedback("rating",window.location.href,rating);
+                                            };
+
+                                            // rating instance
+                                            var myRating = rating(ratecontent, currentRating, maxRating, callback);
+                                        </script>
+</div>
+<div class="nextprev clear">
+<div class="icon tt left mr1" data-distance="-40|-30|top">
+<span class="prev"><a href="CharacterControllers.html"></a></span><div class="tip">Character Controllers</div>
+</div>
+<div class="icon tt right" data-distance="-40|-30|top">
+<span class="next"><a href="Physics3DReference.html"></a></span><div class="tip">3D Physics Reference</div>
+</div>
+</div>
+</div>
+</body></html>

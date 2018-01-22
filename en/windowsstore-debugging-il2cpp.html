@@ -1,0 +1,210 @@
+<html><head><title>html模版</title></head><body>Unity - Manual: Universal Windows Platform: Debugging on IL2CPP Scripting Backend</br>
+<div class="breadcrumbs clear"><ul>
+<li><a href="UnityManual.html">Unity User Manual (2018.1 beta)</a></li>
+<li><a href="PlatformSpecific.html">Platform-specific</a></li>
+<li><a href="Windows.html">Windows</a></li>
+<li><a href="WindowsStore.html">Universal Windows Platform</a></li>
+<li><a href="windowsstore-scriptingbackends.html"> Scripting Backends</a></li>
+<li><a href="windowsstore-il2cpp.html">Universal Windows Platform: IL2CPP scripting back end</a></li>
+<li>Universal Windows Platform: Debugging on IL2CPP Scripting Backend</li>
+</ul></div>
+<div class="mb20"><div class="nextprev clear">
+<div class="icon tt left mr1" data-distance="-40|-30|top">
+<span class="prev"><a href="windowsstore-plugins-il2cpp.html"></a></span><div class="tip">Universal Windows Platform: Plugins on IL2CPP Scripting Backend</div>
+</div>
+<div class="icon tt right" data-distance="-40|-30|top">
+<span class="next"><a href="windowsstore-faq.html"></a></span><div class="tip">﻿FAQ</div>
+</div>
+</div></div>
+<div class="otherversionswrapper" onmouseover="setOtherVersionsDisplay(true)" onmouseout="setOtherVersionsDisplay(false)">
+<a>Other Versions</a><div class="otherversionscontent" id="OtherVersionsContent" style="display: none;">Cannot access other versions offline!</div>
+</div>
+<div class="scrollToFeedback"><a id="scrollToFeedback">Leave feedback</a></div>
+<h1>Universal Windows Platform: Debugging on IL2CPP Scripting Backend</h1>
+<!--BeginSwitchLink--><!--EndSwitchLink-->
+<div class="clear"></div>
+
+<p>Although IL2CPP does not have a C# debugger at this time, it’s still possible to debug generated C++ code using Visual Studio. </p>
+
+<h2>Class and method naming in generated C++ code</h2>
+
+<p>IL2CPP classes look like this: <code>&lt;ClassName&gt;_t#number</code>, where <code>&lt;ClassName&gt;</code> is plain name of a class, while #number is a unique type number. #number is not present on some of the core types. For example:</p>
+
+<pre><code>String_t
+Object_t
+Type_t
+Char_t34
+StringBuilder_t26
+GuidParser_t1539
+</code></pre>
+
+<p>IL2CPP methods look like this: <code>&lt;ClassName&gt;_&lt;MethodName&gt;_m#number</code>, where <code>&lt;ClassName&gt;</code> is the plain class name of methods declaring type, <code>&lt;MethodName&gt;</code> is a plain method name and <code>#number</code> is unique method number. For example:</p>
+
+<pre><code>GuidParser_ParseHex_m10003
+ConfigurationSection_DoDeserializeSection_m1275
+String_Format_m4102
+Mathf_Sqrt_m289
+Thing_Start_m1
+</code></pre>
+
+<p>Static field structures are named like this: <code>&lt;ClassName&gt;_t#number_StaticFields</code>, where the first part of the structure name is identical to the declaring type, for example:</p>
+
+<pre><code>StringBuilder_t26_StaticFields
+Thing_t24_StaticFields
+</code></pre>
+
+<p>Furthermore, above each class/method definition there is a C++ comment stating full class/method name. For example:</p>
+
+<pre><code>// System.String
+struct String_t : public Object_t
+{
+    // System.Int32 System.String::length
+    int32_t _length_0;
+    // System.Char System.String::start_char
+    uint16_t _start_char_1;
+};
+
+// System.Text.StringBuilder
+struct StringBuilder_t26  : public Object_t
+{
+    // System.Int32 System.Text.StringBuilder::_length
+    int32_t length_1;
+    // System.String System.Text.StringBuilder::_str
+    String_t* str_2;
+    // System.String System.Text.StringBuilder::_cached_str
+    String_t* cached_str_3;
+    // System.Int32 System.Text.StringBuilder::_maxCapacity
+    int32_t maxCapacity_4;
+};
+
+// System.Void MyData::.ctor()
+extern &quot;C&quot; void MyData_ctor_m0 (MyData_t2 * this, const MethodInfo* method)
+{
+    ...
+}
+
+// Thing
+struct Thing_t24 : public MonoBehaviour_t25
+{
+    // MyData Thing::m_Data
+    MyData_t2 * _m_Data_2;
+    // System.Text.StringBuilder Thing::m_Builder
+    StringBuilder_t26 * _m_Builder_3;
+};
+struct Thing_t24_StaticFields
+{
+    // System.Int32 Thing::s_SomeStaticField
+    int32_t _s_SomeStaticField_4;
+};
+</code></pre>
+
+<h2>Observing variable values</h2>
+
+<p>One of the most important parts of debugging is observing values of various variables. Visual Studio allows to do that relatively easily by either mousing over the variable of adding it into the watch window. For example:</p>
+
+<p>
+<img src="../uploads/Main/IL2CPP_Debugging_1.png" alt="">
+<img src="../uploads/Main/IL2CPP_Debugging_2.png" alt="">
+</p>
+
+<p>Observing static fields is a little bit harder. In IL2CPP, static fields are stored on a Il2CppClass instance itself. So in order to observe a static field, we’ll first need a pointer to Il2CppClass structure of that type. These pointers are in scope of methods that use them, but after observing it once, it will remain at the same memory address for the duration of application run. Il2CppClass structure has “static_fields” field, which is a pointer to a memory block containing static fields for that particular type. To view the actual values, this pointer has to be cast to appropriate static field structure: each type has its own. For example, let’s observe the static fields of class <code>Thing_t24</code>:</p>
+
+<figure>
+<img src="../uploads/Main/IL2CPP_Debugging_3.png" alt="">
+</figure>
+
+<h2>Investigating exceptions</h2>
+
+<p>IL2CPP uses native C++ exceptions to implement .NET exceptions. When any exception is supposed to be thrown, IL2CPP throws Il2CppExceptionWrapper object, which is defined as the following:</p>
+
+<pre><code>struct Il2CppExceptionWrapper
+{
+    Il2CppException* ex;
+
+    Il2CppExceptionWrapper (Il2CppException* ex) : ex (ex) {}
+};
+</code></pre>
+
+<p>These exception objects can be easily investigated in the watch window:</p>
+
+<figure>
+<img src="../uploads/Main/IL2CPP_Debugging_4.png" alt="">
+</figure>
+
+<p>Lastly, it might be beneficial to enable debugger-break on exception so the source of the exception can be caught red-handed. To do so, hit CTRL+ALT+E in Visual Studio, and make sure that C++ exceptions checkbox is checked in the opened window:</p>
+
+<figure>
+<img src="../uploads/Main/IL2CPP_Debugging_5.png" alt="">
+</figure>
+
+<p>After enabling this setting, Visual Studio will automatically stop execution whenever an exception is thrown:</p>
+
+<figure>
+<img src="../uploads/Main/IL2CPP_Debugging_6.png" alt="">
+</figure>
+
+<hr>
+
+<p>
+<span class="page-edit">• 2017–05–16 Page amended with no <a href="DocumentationEditorialReview.html">editorial review</a>
+</span><br>
+</p>
+<div class="feedbackbox" id="feedbackbox">
+<div id="rating"><p>Did you find this page useful? Please give it a rating:<br><div id="ratecontent" class="c-rating"></div>
+</p></div>
+<div id="ratingThanks" style="display:none"><p>Thanks for rating this page!</p></div>
+<div id="problem"><p><a name="problem" onclick="document.getElementById('problemType').style.display = '';document.getElementById('problem').style.display = 'none';">Report a problem on this page</a></p></div>
+<div id="problemType" style="display:none"><p>What kind of problem would you like to report?<ul type="problems">
+<li><a name="needcode" onclick="                                                             document.getElementById('problemType').style.display = 'none';                                                             document.getElementById('problemThanks').style.display = '';                                                             SendFeedback('problem-needcode',window.location.href,0);                                                             document.getElementById('problemFormDescription').value='Needs code samples.';                                                             document.getElementById('problemNeedCodeForm').style.display = ''                                                         ">This page needs code samples</a></li>
+<li><a name="code" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-brokencode',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Code samples do not work.';                                                         document.getElementById('problemCodeForm').style.display = ''                                                         ">Code samples do not work</a></li>
+<li><a name="missing" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-missing',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Missing information';                                                         document.getElementById('problemMissingForm').style.display = ''                                                         ">Information is missing</a></li>
+<li><a name="incorrect" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-incorrect',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Incorrect information';                                                         document.getElementById('problemIncorrectForm').style.display = ''                                                         ">Information is incorrect</a></li>
+<li><a name="unclear" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-unclear',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Unclear or confusing information';                                                         document.getElementById('problemUnclearForm').style.display = ''                                                         ">Information is unclear or confusing</a></li>
+<li><a name="language" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-language',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Spelling or grammar error';                                                         document.getElementById('problemLanguageForm').style.display = ''                                                         ">There is a spelling/grammar error on this page</a></li>
+<li><a name="other" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-other',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='This page has a problem';                                                         document.getElementById('problemOtherForm').style.display = ''                                                         ">Something else</a></li>
+</ul>
+<p><known_issues><p>Is something described here not working as you expect it to? It might be a <b>Known Issue</b>. Please check with the Issue Tracker at <a href="https://issuetracker.unity3d.com">issuetracker.unity3d.com</a>.</p></known_issues></p>
+</p></div>
+<div id="problemThanks" style="display:none"><p>Thanks for letting us know! This page has been marked for review based on your feedback.<br><br>If you have time, you can provide more information to help us fix the problem faster.<br><br><a onclick="document.getElementById('problemMoreInfo').style.display = '';document.getElementById('problemThanks').style.display = 'none';">Provide more information</a><br>
+</p></div>
+<div id="problemMoreInfo" style="display:none">
+<p id="problemNeedCodeForm" style="display:none">You've told us this page needs code samples. If you'd like to help us further, you could provide a code sample, or tell us about what kind of code sample you'd like to see:</p>
+<p id="problemCodeForm" style="display:none">You've told us there are code samples on this page which don't work. If you know how to fix it, or have something better we could use instead, please let us know:</p>
+<p id="problemMissingForm" style="display:none">You've told us there is information missing from this page. Please tell us more about what's missing:</p>
+<p id="problemIncorrectForm" style="display:none">You've told us there is incorrect information on this page. If you know what we should change to make it correct, please tell us:</p>
+<p id="problemUnclearForm" style="display:none">You've told us this page has unclear or confusing information. Please tell us more about what you found unclear or confusing, or let us know how we could make it clearer:</p>
+<p id="problemLanguageForm" style="display:none">You've told us there is a spelling or grammar error on this page. Please tell us what's wrong:</p>
+<p id="problemOtherForm" style="display:none">You've told us this page has a problem. Please tell us more about what's wrong:</p>
+<form>
+<textarea id="problemFormSuggestionField" cols="40" rows="5"></textarea><input type="hidden" id="problemFormDescription"><input type="submit" id="problemFormDescriptionSubmit" value="Submit" onclick="                                             document.getElementById('problemMoreInfo').style.display = 'none';                                             document.getElementById('problemMoreInfoThanks').style.display = '';                                             return false;                                             ">
+</form>
+</div>
+<div id="problemMoreInfoThanks" style="display:none"><p>Thanks for helping to make the Unity documentation better!</p></div>
+<script>
+
+                                            var ratecontent = document.querySelector('#ratecontent'); // target element
+                                            var currentRating = 0; // initial rating
+                                            var maxRating= 5; // max rating
+
+                                            // callback to run after setting the rating
+                                            var callback = function(rating) {
+                                                document.getElementById('ratingThanks').style.display = '';
+                                                document.getElementById('ratecontent').style.display = 'none';
+                                                document.getElementById('rating').style.display = 'none';
+                                                SendFeedback("rating",window.location.href,rating);
+                                            };
+
+                                            // rating instance
+                                            var myRating = rating(ratecontent, currentRating, maxRating, callback);
+                                        </script>
+</div>
+<div class="nextprev clear">
+<div class="icon tt left mr1" data-distance="-40|-30|top">
+<span class="prev"><a href="windowsstore-plugins-il2cpp.html"></a></span><div class="tip">Universal Windows Platform: Plugins on IL2CPP Scripting Backend</div>
+</div>
+<div class="icon tt right" data-distance="-40|-30|top">
+<span class="next"><a href="windowsstore-faq.html"></a></span><div class="tip">﻿FAQ</div>
+</div>
+</div>
+</div>
+</body></html>

@@ -1,0 +1,233 @@
+<html><head><title>html模版</title></head><body>Unity - Manual:  Sprite Atlas</br>
+<div class="breadcrumbs clear"><ul>
+<li><a href="UnityManual.html">Unity User Manual (2018.1 beta)</a></li>
+<li><a href="Unity2D.html">2D</a></li>
+<li><a href="Sprites.html">Sprites</a></li>
+<li> Sprite Atlas</li>
+</ul></div>
+<div class="mb20"><div class="nextprev clear">
+<div class="icon tt left mr1" data-distance="-40|-30|top">
+<span class="prev"><a href="class-SpriteMask.html"></a></span><div class="tip"> Sprite Masks</div>
+</div>
+<div class="icon tt right" data-distance="-40|-30|top">
+<span class="next"><a href="Tilemap.html"></a></span><div class="tip"> Tilemap</div>
+</div>
+</div></div>
+<div class="otherversionswrapper" onmouseover="setOtherVersionsDisplay(true)" onmouseout="setOtherVersionsDisplay(false)">
+<a>Other Versions</a><div class="otherversionscontent" id="OtherVersionsContent" style="display: none;">Cannot access other versions offline!</div>
+</div>
+<div class="scrollToFeedback"><a id="scrollToFeedback">Leave feedback</a></div>
+<h1>Sprite Atlas</h1>
+<!--BeginSwitchLink--><!--EndSwitchLink-->
+<div class="clear"></div>
+
+<p>Sprite Atlas is an asset</p>
+
+<p>Sprite Atlas is created via the menu option in the Editor and will stay as an asset in the project’s folder (*.spriteatlas).</p>
+
+<h3>Unified Settings</h3>
+
+<p>Sprite Atlas asset provides a set of texture settings for the packed texture. Regardless what was the texture settings of the sprite being pack in an atlas, the result atlas texture will only respect the settings in the atlas asset. </p>
+
+<h3>Runtime access</h3>
+
+<p>Sprite Atlas asset has a runtime representation which can be accessed during Runtime.</p>
+
+<h3>Variants</h3>
+
+<p>User will be able to create another Sprite Atlas asset and declared it is a variant of one existing Sprite Atlas in the project. It then will duplicate the master’s atlas texture and resize it according to a multiplier.</p>
+
+<p>The Sprite Packer is disabled by default but you can configure it from the Editor settings (<strong>File Menu: Edit -&gt; Project Settings -&gt; Editor</strong>). The sprite packing mode can be changed from Disabled to <strong>Enabled for Builds</strong> where packing is used for builds only and not Play mode or <strong>Always Enabled</strong> (Atlases will be packed before entering Play mode and for builds).</p>
+
+<figure>
+<img src="../uploads/Main/SpriteAtlas1.png" alt="">
+</figure>
+
+<h2>How to create a Sprite Atlas</h2>
+
+<p>The Sprite Atlas is a type of Asset in Unity projects. You can create them, and they are ready to use, via the Project View. To create a Sprite Atlas select <strong>Asset -&gt; Create -&gt; Sprite Atlas</strong> from the main menu.</p>
+
+<h2>Properties</h2>
+
+<figure>
+<img src="../uploads/Main/SpriteAtlas2.png" alt="">
+</figure>
+
+<table>
+<colgroup>
+<col style="text-align:left;">
+<col style="text-align:left;">
+</colgroup>
+
+<thead>
+<tr>
+	<th style="text-align:left;">Property</th>
+	<th style="text-align:left;">Function</th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+	<td style="text-align:left;">Type</td>
+	<td style="text-align:left;">Sets the type of atlas to be either a Master or Variant Atlas.</td>
+</tr>
+<tr>
+	<td style="text-align:left;">Include in build</td>
+	<td style="text-align:left;">Always includes the Atlas Asset in the build.</td>
+</tr>
+<tr>
+	<td style="text-align:left;">Allow Rotation</td>
+	<td style="text-align:left;">Allows sprites to be rotated for packing</td>
+</tr>
+<tr>
+	<td style="text-align:left;">Tight Packing</td>
+	<td style="text-align:left;">Non-rectangle packing</td>
+</tr>
+<tr>
+	<td style="text-align:left;">Read/Write Enabled</td>
+	<td style="text-align:left;">Set this to true if you want texture data to be readable from scripts. Set it to false to prevent scripts from reading texture data.</td>
+</tr>
+<tr>
+	<td style="text-align:left;">Generate Mip Maps</td>
+	<td style="text-align:left;">Select this to enable mip-map generation. Mip maps are smaller versions of the Texture that get used when the Texture is very small on screen.</td>
+</tr>
+<tr>
+	<td style="text-align:left;">Filter Mode</td>
+	<td style="text-align:left;">Select how the Texture is filtered</td>
+</tr>
+<tr>
+	<td style="text-align:left;">Platform-specific overrides panel</td>
+	<td style="text-align:left;">Use the Platform-specific overrides panel to set default options (using Default), and then override them for a specific platform using the buttons along the top of the panel.<br><a href="class-TextureImporterOverride.html">https://docs.unity3d.com/Manual/class-TextureImporterOverride.html</a>
+</td>
+</tr>
+<tr>
+	<td style="text-align:left;">Objects For Packing</td>
+	<td style="text-align:left;">The objects to be included in the packed Atlas. Folders, Textures or individual sprites can be added to the list.</td>
+</tr>
+</tbody>
+</table>
+
+<h3>Assigning assets to be atlased</h3>
+
+<p>Folders, Textures or Sprites can be assigned to the Sprite Atlas. Entire folders can be assigned to the Sprite Atlas asset, all Textures within that folder including subfolders will be packed. When assigning an individual Texture, all defined sprites will be included. Single sprites can also be assigned to the atlas and other sprites within the same Texture will not be considered.</p>
+
+<figure>
+<img src="../uploads/Main/SpriteAtlas3.png" alt="">
+</figure>
+
+<ol>
+<li><p>To include assets to be atlased, select the Atlas asset and add them by either adding new entry to the list or dragging and dropping them from the Project onto the list area in the inspector. You can add the folders, textures, sprites to the atlas.</p></li>
+<li><p>Set the desired settings for the generated atlas. Changes to the setting will always mark this atlas as modified and will be packed again during the packing phase.</p></li>
+<li><p>The packed atlas can be previewed by pressing the “Pack Preview” button in the inspector. This will trigger a packing for this atlas. Once the packing is done, the texture will appear in the preview section.</p></li>
+<li><p>All atlases with modified settings will be packed before entering Play Mode (if <strong>Always Enabled</strong> is selected).</p></li>
+</ol>
+
+<h3>Down-scaled variant (HD/SD)</h3>
+
+<p>User will be able to create another Sprite Atlas asset and declare it is a variant of an existing Sprite Atlas in the project. It will then duplicate the Master’s atlas texture and resize it according to a multiplier.</p>
+
+<h3>Creating a Sprite Atlas variant</h3>
+
+<figure>
+<img src="../uploads/Main/SpriteAtlas4.png" alt="">
+</figure>
+
+<ol>
+<li><p>Set the Type for the Sprite Atlas to Variant.
+<img src="../uploads/Main/SpriteAtlas5.png" alt="">
+</p></li>
+<li><p>Assign an atlas to the Master Atlas slot.
+<img src="../uploads/Main/SpriteAtlas6.png" alt="">
+</p></li>
+<li><p>Set the scaling factor for the variant. Value can be from 0.1 to 1.</p></li>
+<li><p>To bind the variant atlas as default instead of the master, just check the “Include in build” option in the variant and uncheck the option in master.</p></li>
+<li><p>Checking both will randomly include one of the atlas (master/variant). You might want to uncheck both to have late binding, mentioned below.</p></li>
+</ol>
+
+<h3>Runtime sprites enumeration</h3>
+
+<ol>
+<li><p>Create a custom component that takes a “SpriteAtlas” as a variable.</p></li>
+<li><p>Assign any of your existing Sprite Atlas to the field.</p></li>
+<li><p>Enter play mode or run the player.</p></li>
+<li><p>Access the variable and notice you can now call the property “.GetSprites” to get the array of Sprites packed in this atlas.</p></li>
+</ol>
+
+<h3>Late Binding</h3>
+
+<p>A Sprite can be started in runtime as “packed but not referencing any atlas” and will appear blank until an atlas is bound to it. The benefit of this behaviour is to allow user to have chance to do late binding if the source of the atlas is not available during startup e.g. asset bundles downloaded from the web.</p>
+
+<h3>Late Binding via callback</h3>
+
+<ol>
+<li><p>As long as the Sprite is packed into any Sprite Atlas but the sprite atlas is not bound as default (e.g. unchecked “Include in build” option) the Sprite will be invisible in the scene.</p></li>
+<li><p>User can listen to callback SpriteAtlas.atlasRequested.</p></li>
+<li><p>This delegate method will provide a tag of atlas which suppose to bind and a System.Action which takes in a SpriteAtlas asset. User is expected to load the asset by any mean (script references, Resources.load, Asset bundle) and supply the asset to the System.Action.</p></li>
+</ol>
+
+<h2><br></h2>
+
+<ul>
+<li><p><span class="page-edit">2017–05–26 Page published with no <a href="DocumentationEditorialReview.html">editorial review</a>
+</span></p></li>
+<li><p><span class="page-history">New in Unity <a href="../Manual/30_search.html?q=newin20171">2017.1</a> <span class="search-words">NewIn20171</span></span></p></li>
+</ul>
+<div class="feedbackbox" id="feedbackbox">
+<div id="rating"><p>Did you find this page useful? Please give it a rating:<br><div id="ratecontent" class="c-rating"></div>
+</p></div>
+<div id="ratingThanks" style="display:none"><p>Thanks for rating this page!</p></div>
+<div id="problem"><p><a name="problem" onclick="document.getElementById('problemType').style.display = '';document.getElementById('problem').style.display = 'none';">Report a problem on this page</a></p></div>
+<div id="problemType" style="display:none"><p>What kind of problem would you like to report?<ul type="problems">
+<li><a name="needcode" onclick="                                                             document.getElementById('problemType').style.display = 'none';                                                             document.getElementById('problemThanks').style.display = '';                                                             SendFeedback('problem-needcode',window.location.href,0);                                                             document.getElementById('problemFormDescription').value='Needs code samples.';                                                             document.getElementById('problemNeedCodeForm').style.display = ''                                                         ">This page needs code samples</a></li>
+<li><a name="code" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-brokencode',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Code samples do not work.';                                                         document.getElementById('problemCodeForm').style.display = ''                                                         ">Code samples do not work</a></li>
+<li><a name="missing" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-missing',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Missing information';                                                         document.getElementById('problemMissingForm').style.display = ''                                                         ">Information is missing</a></li>
+<li><a name="incorrect" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-incorrect',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Incorrect information';                                                         document.getElementById('problemIncorrectForm').style.display = ''                                                         ">Information is incorrect</a></li>
+<li><a name="unclear" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-unclear',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Unclear or confusing information';                                                         document.getElementById('problemUnclearForm').style.display = ''                                                         ">Information is unclear or confusing</a></li>
+<li><a name="language" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-language',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Spelling or grammar error';                                                         document.getElementById('problemLanguageForm').style.display = ''                                                         ">There is a spelling/grammar error on this page</a></li>
+<li><a name="other" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-other',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='This page has a problem';                                                         document.getElementById('problemOtherForm').style.display = ''                                                         ">Something else</a></li>
+</ul>
+<p><known_issues><p>Is something described here not working as you expect it to? It might be a <b>Known Issue</b>. Please check with the Issue Tracker at <a href="https://issuetracker.unity3d.com">issuetracker.unity3d.com</a>.</p></known_issues></p>
+</p></div>
+<div id="problemThanks" style="display:none"><p>Thanks for letting us know! This page has been marked for review based on your feedback.<br><br>If you have time, you can provide more information to help us fix the problem faster.<br><br><a onclick="document.getElementById('problemMoreInfo').style.display = '';document.getElementById('problemThanks').style.display = 'none';">Provide more information</a><br>
+</p></div>
+<div id="problemMoreInfo" style="display:none">
+<p id="problemNeedCodeForm" style="display:none">You've told us this page needs code samples. If you'd like to help us further, you could provide a code sample, or tell us about what kind of code sample you'd like to see:</p>
+<p id="problemCodeForm" style="display:none">You've told us there are code samples on this page which don't work. If you know how to fix it, or have something better we could use instead, please let us know:</p>
+<p id="problemMissingForm" style="display:none">You've told us there is information missing from this page. Please tell us more about what's missing:</p>
+<p id="problemIncorrectForm" style="display:none">You've told us there is incorrect information on this page. If you know what we should change to make it correct, please tell us:</p>
+<p id="problemUnclearForm" style="display:none">You've told us this page has unclear or confusing information. Please tell us more about what you found unclear or confusing, or let us know how we could make it clearer:</p>
+<p id="problemLanguageForm" style="display:none">You've told us there is a spelling or grammar error on this page. Please tell us what's wrong:</p>
+<p id="problemOtherForm" style="display:none">You've told us this page has a problem. Please tell us more about what's wrong:</p>
+<form>
+<textarea id="problemFormSuggestionField" cols="40" rows="5"></textarea><input type="hidden" id="problemFormDescription"><input type="submit" id="problemFormDescriptionSubmit" value="Submit" onclick="                                             document.getElementById('problemMoreInfo').style.display = 'none';                                             document.getElementById('problemMoreInfoThanks').style.display = '';                                             return false;                                             ">
+</form>
+</div>
+<div id="problemMoreInfoThanks" style="display:none"><p>Thanks for helping to make the Unity documentation better!</p></div>
+<script>
+
+                                            var ratecontent = document.querySelector('#ratecontent'); // target element
+                                            var currentRating = 0; // initial rating
+                                            var maxRating= 5; // max rating
+
+                                            // callback to run after setting the rating
+                                            var callback = function(rating) {
+                                                document.getElementById('ratingThanks').style.display = '';
+                                                document.getElementById('ratecontent').style.display = 'none';
+                                                document.getElementById('rating').style.display = 'none';
+                                                SendFeedback("rating",window.location.href,rating);
+                                            };
+
+                                            // rating instance
+                                            var myRating = rating(ratecontent, currentRating, maxRating, callback);
+                                        </script>
+</div>
+<div class="nextprev clear">
+<div class="icon tt left mr1" data-distance="-40|-30|top">
+<span class="prev"><a href="class-SpriteMask.html"></a></span><div class="tip"> Sprite Masks</div>
+</div>
+<div class="icon tt right" data-distance="-40|-30|top">
+<span class="next"><a href="Tilemap.html"></a></span><div class="tip"> Tilemap</div>
+</div>
+</div>
+</div>
+</body></html>

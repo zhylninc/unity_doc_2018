@@ -1,0 +1,144 @@
+<html><head><title>html模版</title></head><body>Unity - Manual: Reducing the file size of your build</br>
+<div class="breadcrumbs clear"><ul>
+<li><a href="UnityManual.html">Unity User Manual (2018.1 beta)</a></li>
+<li><a href="UnityOverview.html">Working in Unity</a></li>
+<li><a href="AdvancedDevelopment.html">Advanced Development</a></li>
+<li>Reducing the file size of your build</li>
+</ul></div>
+<div class="mb20"><div class="nextprev clear">
+<div class="icon tt left mr1" data-distance="-40|-30|top">
+<span class="prev"><a href="AssetBundles-Browser.html"></a></span><div class="tip"> Unity Asset Bundle Browser tool</div>
+</div>
+<div class="icon tt right" data-distance="-40|-30|top">
+<span class="next"><a href="net-SocialAPI.html"></a></span><div class="tip">Social API</div>
+</div>
+</div></div>
+<div class="otherversionswrapper" onmouseover="setOtherVersionsDisplay(true)" onmouseout="setOtherVersionsDisplay(false)">
+<a>Other Versions</a><div class="otherversionscontent" id="OtherVersionsContent" style="display: none;">Cannot access other versions offline!</div>
+</div>
+<div class="scrollToFeedback"><a id="scrollToFeedback">Leave feedback</a></div>
+<h1>Reducing the file size of your build</h1>
+<!--BeginSwitchLink--><!--EndSwitchLink-->
+<div class="clear"></div>
+
+<p>Keeping the file size of the built app to a minimum is important, especially for mobile devices or for app stores that impose a size limit. The first step in reducing the size is to determine which Assets contribute most to it, because these Assets are the most likely candidates for optimization. This information is available in the Editor Log just after you have performed the build. Go to the Console window (menu: <strong>Window</strong> &lt; <strong>Console</strong>), click the small drop-down panel in the top right, and select <strong>Open Editor Log</strong>.</p>
+
+<figure>
+<img src="../uploads/Main/FileSizeOptimization.png" alt="The Editor Log just after a build">
+<figcaption>The Editor Log just after a build</figcaption>
+</figure>
+
+<p>The Editor Log provides a summary of Assets broken down by type, and then lists all the individual Assets in order of size contribution. Typically, things like Textures, Sounds and Animations take up the most storage, while Scripts, Levels and Shaders usually have the smallest impact. The <strong>File headers</strong> mentioned in the list are not Assets - they are actually the extra data that is added to “raw” Asset files to store references and settings. The headers normally make very little difference to Asset size, but the value might be large if you have numerous large Assets in the Resources folder.</p>
+
+<p>The Editor Log helps you identify Assets that you might want to remove or optimize, but you should consider the following before you start:</p>
+
+<ul>
+<li><p>Unity re-codes imported Assets into its own internal formats, so the choice of source Asset type is not relevant. For example, if you have a multi-layer Photoshop Texture in the Project, it is flattened and compressed before building. Exporting the Texture as a .png file does not make any difference to build size, so you should stick to the format that is most convenient for you during development.</p></li>
+<li><p>Unity strips most unused Assets during the build, so you don’t gain anything by manually removing Assets from the Project. The only Assets that are not removed are scripts (which are generally very small anyway) and Assets in the Resources folder (because Unity can’t determine which of these are needed and which are not). With this in mind, you should make sure that the only Assets in the Resources folder are the ones you need for the game. You might be able to replace Assets in the Resources folder with <a href="AssetBundlesIntro.html">AssetBundles</a> - this means that Unity loads Assets dynamically, thereby reducing the player size.</p></li>
+</ul>
+
+<h2>Suggestions for reducing build size</h2>
+
+<h3>Textures</h3>
+
+<p>Textures usually take up the most space in the build. The first solution to this is to use compressed Texture formats. See documentation on <a href="class-TextureImporterOverride.html">platform-specific Texture compression</a> for more information.</p>
+
+<p>If that doesn’t reduce the file size enough, try to reduce the physical size (in pixels) of the Texture images. To do this without modifying the actual source content, select the Texture in the Project view, and in the Inspector window reduce the <strong>Max Size</strong>. To see how this looks in-game, zoom in on a GameObject that uses the Texture, then adjust the <strong>Max Size</strong> until it starts looking worse in the Scene view. Changing the maximum Texture size does not affect your Texture Asset, just its resolution in the game.</p>
+
+<figure>
+<img src="../uploads/Main/FileSizeOptimizationTexture.png" alt="Changing the Maximum Texture Size does not affect your Texture Asset, just its resolution in the game">
+<figcaption>Changing the Maximum Texture Size does not affect your Texture Asset, just its resolution in the game</figcaption>
+</figure>
+
+<p>By default, Unity compresses all Textures when importing. For faster workflow in the Editor, go to <strong>Unity</strong> &lt; <strong>Preferences</strong> and untick the checkbox for <strong>Compress Assets on Import</strong>. All Textures are compressed in the build, regardless of this setting.</p>
+
+<h3>Meshes and Animations</h3>
+
+<p>You can compress <a href="class-Mesh.html">Meshes</a> and imported Animation Clips so that they take up less space in your game file. To enable Mesh compression, select the Mesh, then in the Inspector window set the <strong>Mesh Compression</strong> to <strong>Low</strong>, <strong>Medium</strong> or <strong>High</strong>. Mesh and Animation compression uses quantization, which means it takes less space, but the compression can introduce some inaccuracies. Experiment with what level of compression is acceptable for your models.</p>
+
+<p>Note that Mesh compression only produces smaller data files, and does not use less memory at run time. Animation keyframe reduction produces smaller data files and uses less memory at run time; generally you should always have it enabled. See documentation on <a href="class-AnimationClip.html">Animation Clips</a> for more information about this.</p>
+
+<h3>DLLs</h3>
+
+<p>By default, Unity includes only the following DLLs in the built player:</p>
+
+<ul>
+<li><p>mscorlib.dll</p></li>
+<li><p>Boo.Lang.dll</p></li>
+<li><p>UnityScript.Lang.dll</p></li>
+<li><p>UnityEngine.dll</p></li>
+</ul>
+
+<p>When building a player, you should avoid any dependencies on <em>System.dll</em> or <em>System.Xml.dll</em>. Unity does not include these in the built player by default, but if you use their classes, they are included. These DLLs add about a megabyte to the player’s storage size. If you need to parse XML in your game, you can use a library like <a href="https://docs.unity3d.com/550/Documentation/uploads/Examples/Mono.Xml.zip">Mono.Xml.zip</a> as a smaller alternative to the system libraries. While most Generic containers are contained in mscorlib, Stack and few others are in System.dll, so you should avoid these if possible.</p>
+
+<figure>
+<img src="../uploads/Main/FileSizeMonoDependency.png" alt="Unity includes System.Xml.dll and System.dll when building a player">
+<figcaption>Unity includes System.Xml.dll and System.dll when building a player</figcaption>
+</figure>
+
+<h3>Reducing mobile .NET library size</h3>
+
+<p>Unity supports two .NET API compatibility levels for some mobile devices: .NET 2.0 and a subset of .NET 2.0. Select the appropriate level for your build in the <a href="class-PlayerSettings.html">Player Settings</a>.</p>
+
+<p>The .NET 2.0 API profile is similar to the full .NET 2.0 API. Most library routines are fully implemented, so this option offers the best compatibility with pre-existing .NET code. However, for many games, the full library is not needed and the superfluous code takes up valuable memory space.</p>
+
+<p>To avoid wasted memory, Unity also supports the .NET 2.0 Subset API profile. This is very similar to the Mono “monotouch” profile, so many limitations of the “monotouch” profile also apply to Unity’s .NET 2.0 Subset profile. See the Mono Project’s documentation on <a href="http://www.mono-project.com/archived/monotouchlimitations/">MonoTouch limitations</a> for more information. Many library routines that are not commonly needed in games are left out of this profile in order to save memory. However, this also means that code with dependencies on those routines do not work correctly. This option can be a useful optimization, but you should check that existing code still works after it is applied.</p>
+<div class="feedbackbox" id="feedbackbox">
+<div id="rating"><p>Did you find this page useful? Please give it a rating:<br><div id="ratecontent" class="c-rating"></div>
+</p></div>
+<div id="ratingThanks" style="display:none"><p>Thanks for rating this page!</p></div>
+<div id="problem"><p><a name="problem" onclick="document.getElementById('problemType').style.display = '';document.getElementById('problem').style.display = 'none';">Report a problem on this page</a></p></div>
+<div id="problemType" style="display:none"><p>What kind of problem would you like to report?<ul type="problems">
+<li><a name="needcode" onclick="                                                             document.getElementById('problemType').style.display = 'none';                                                             document.getElementById('problemThanks').style.display = '';                                                             SendFeedback('problem-needcode',window.location.href,0);                                                             document.getElementById('problemFormDescription').value='Needs code samples.';                                                             document.getElementById('problemNeedCodeForm').style.display = ''                                                         ">This page needs code samples</a></li>
+<li><a name="code" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-brokencode',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Code samples do not work.';                                                         document.getElementById('problemCodeForm').style.display = ''                                                         ">Code samples do not work</a></li>
+<li><a name="missing" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-missing',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Missing information';                                                         document.getElementById('problemMissingForm').style.display = ''                                                         ">Information is missing</a></li>
+<li><a name="incorrect" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-incorrect',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Incorrect information';                                                         document.getElementById('problemIncorrectForm').style.display = ''                                                         ">Information is incorrect</a></li>
+<li><a name="unclear" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-unclear',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Unclear or confusing information';                                                         document.getElementById('problemUnclearForm').style.display = ''                                                         ">Information is unclear or confusing</a></li>
+<li><a name="language" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-language',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Spelling or grammar error';                                                         document.getElementById('problemLanguageForm').style.display = ''                                                         ">There is a spelling/grammar error on this page</a></li>
+<li><a name="other" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-other',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='This page has a problem';                                                         document.getElementById('problemOtherForm').style.display = ''                                                         ">Something else</a></li>
+</ul>
+<p><known_issues><p>Is something described here not working as you expect it to? It might be a <b>Known Issue</b>. Please check with the Issue Tracker at <a href="https://issuetracker.unity3d.com">issuetracker.unity3d.com</a>.</p></known_issues></p>
+</p></div>
+<div id="problemThanks" style="display:none"><p>Thanks for letting us know! This page has been marked for review based on your feedback.<br><br>If you have time, you can provide more information to help us fix the problem faster.<br><br><a onclick="document.getElementById('problemMoreInfo').style.display = '';document.getElementById('problemThanks').style.display = 'none';">Provide more information</a><br>
+</p></div>
+<div id="problemMoreInfo" style="display:none">
+<p id="problemNeedCodeForm" style="display:none">You've told us this page needs code samples. If you'd like to help us further, you could provide a code sample, or tell us about what kind of code sample you'd like to see:</p>
+<p id="problemCodeForm" style="display:none">You've told us there are code samples on this page which don't work. If you know how to fix it, or have something better we could use instead, please let us know:</p>
+<p id="problemMissingForm" style="display:none">You've told us there is information missing from this page. Please tell us more about what's missing:</p>
+<p id="problemIncorrectForm" style="display:none">You've told us there is incorrect information on this page. If you know what we should change to make it correct, please tell us:</p>
+<p id="problemUnclearForm" style="display:none">You've told us this page has unclear or confusing information. Please tell us more about what you found unclear or confusing, or let us know how we could make it clearer:</p>
+<p id="problemLanguageForm" style="display:none">You've told us there is a spelling or grammar error on this page. Please tell us what's wrong:</p>
+<p id="problemOtherForm" style="display:none">You've told us this page has a problem. Please tell us more about what's wrong:</p>
+<form>
+<textarea id="problemFormSuggestionField" cols="40" rows="5"></textarea><input type="hidden" id="problemFormDescription"><input type="submit" id="problemFormDescriptionSubmit" value="Submit" onclick="                                             document.getElementById('problemMoreInfo').style.display = 'none';                                             document.getElementById('problemMoreInfoThanks').style.display = '';                                             return false;                                             ">
+</form>
+</div>
+<div id="problemMoreInfoThanks" style="display:none"><p>Thanks for helping to make the Unity documentation better!</p></div>
+<script>
+
+                                            var ratecontent = document.querySelector('#ratecontent'); // target element
+                                            var currentRating = 0; // initial rating
+                                            var maxRating= 5; // max rating
+
+                                            // callback to run after setting the rating
+                                            var callback = function(rating) {
+                                                document.getElementById('ratingThanks').style.display = '';
+                                                document.getElementById('ratecontent').style.display = 'none';
+                                                document.getElementById('rating').style.display = 'none';
+                                                SendFeedback("rating",window.location.href,rating);
+                                            };
+
+                                            // rating instance
+                                            var myRating = rating(ratecontent, currentRating, maxRating, callback);
+                                        </script>
+</div>
+<div class="nextprev clear">
+<div class="icon tt left mr1" data-distance="-40|-30|top">
+<span class="prev"><a href="AssetBundles-Browser.html"></a></span><div class="tip"> Unity Asset Bundle Browser tool</div>
+</div>
+<div class="icon tt right" data-distance="-40|-30|top">
+<span class="next"><a href="net-SocialAPI.html"></a></span><div class="tip">Social API</div>
+</div>
+</div>
+</div>
+</body></html>

@@ -1,0 +1,155 @@
+<html><head><title>html模版</title></head><body>Unity - Manual: Special folder names</br>
+<div class="breadcrumbs clear"><ul>
+<li><a href="UnityManual.html">Unity User Manual (2018.1 beta)</a></li>
+<li><a href="UnityOverview.html">Working in Unity</a></li>
+<li><a href="EditorFeatures.html">Editor Features</a></li>
+<li>Special folder names</li>
+</ul></div>
+<div class="mb20"><div class="nextprev clear">
+<div class="icon tt left mr1" data-distance="-40|-30|top">
+<span class="prev"><a href="IMEInput.html"></a></span><div class="tip">IME in Unity</div>
+</div>
+<div class="icon tt right" data-distance="-40|-30|top">
+<span class="next"><a href="HOWTO-exportpackage.html"></a></span><div class="tip">Exporting Packages</div>
+</div>
+</div></div>
+<div class="otherversionswrapper" onmouseover="setOtherVersionsDisplay(true)" onmouseout="setOtherVersionsDisplay(false)">
+<a>Other Versions</a><div class="otherversionscontent" id="OtherVersionsContent" style="display: none;">Cannot access other versions offline!</div>
+</div>
+<div class="scrollToFeedback"><a id="scrollToFeedback">Leave feedback</a></div>
+<h1>Special folder names</h1>
+<!--BeginSwitchLink--><!--EndSwitchLink-->
+<div class="clear"></div>
+
+<p>You can usually choose any name you like for the folders you create to organise your Unity project. However, there are a number of folder names that Unity interprets as an instruction that the folder’s contents should be treated in a special way. For example, you must place Editor scripts in a folder called <strong>Editor</strong> for them to work correctly. </p>
+
+<p>This page contains the full list of special folder names used by Unity.</p>
+
+<h2>Assets</h2>
+
+<p>The <strong>Assets</strong> folder is the main folder that contains the Assets used by a Unity project. The contents of the Project window in the Editor correspond directly to the contents of the Assets folder. Most API functions assume that everything is located in the Assets folder, and so don’t require it to be mentioned explicitly. However, some functions do need to have the Assets folder included as part of a pathname (for example, certain functions in the <a href="../ScriptReference/AssetDatabase.html">AssetDatabase</a> class).</p>
+
+<h2>Editor</h2>
+
+<p>Scripts placed in a folder called <strong>Editor</strong> are treated as Editor scripts rather than runtime scripts. These scripts add functionality to the Editor during development, and are not available in builds at runtime.</p>
+
+<p>You can have multiple Editor folders placed anywhere inside the Assets folder. Place your Editor scripts inside an Editor folder or a subfolder within it.</p>
+
+<p>The exact location of an Editor folder affects the time at which its scripts will be compiled relative to other scripts (see documentation on <a href="ScriptCompileOrderFolders.html">Special Folders and Script Compilation Order</a> for a full description of this). Use the <a href="../ScriptReference/EditorGUIUtility.Load.html">EditorGUIUtility.Load</a> function in Editor scripts to load Assets from a Resources folder within an Editor folder. These Assets can only be loaded via Editor scripts, and are stripped from builds. </p>
+
+<p>
+<strong>Note:</strong> Unity does not allow components derived from MonoBehaviour to be assigned to GameObjects if the scripts are in the Editor folder.</p>
+
+<h2>Editor Default Resources</h2>
+
+<p>Editor scripts can make use of Asset files loaded on-demand using the <a href="../ScriptReference/EditorGUIUtility.Load.html">EditorGUIUtility.Load</a> function. This function looks for the Asset files in a folder called <strong>Editor Default Resources</strong>.</p>
+
+<p>You can only have one Editor Default Resources folder and it must be placed in the root of the Project; directly within the Assets folder. Place the needed Asset files in this Editor Default Resources folder or a subfolder within it. Always include the subfolder path in the path passed to the <a href="../ScriptReference/EditorGUIUtility.Load.html">EditorGUIUtility.Load</a> function if your Asset files are in subfolders.</p>
+
+<h2>Gizmos</h2>
+
+<p>
+<a href="../ScriptReference/Gizmos.html">Gizmos</a> allow you to add graphics to the Scene View to help visualise design details that are otherwise invisible. The <a href="../ScriptReference/Gizmos.DrawIcon.html">Gizmos.DrawIcon</a> function places an icon in the Scene to act as a marker for a special object or position. You must place the image file used to draw this icon in a folder called <strong>Gizmos</strong> in order for it to be located by the DrawIcon function.</p>
+
+<p>You can only have one Gizmos folder and it must be placed in the root of the Project; directly within the Assets folder. Place the needed Asset files in this Gizmos folder or a subfolder within it. Always include the subfolder path in the path passed to the <a href="../ScriptReference/Gizmos.DrawIcon.html">Gizmos.DrawIcon</a> function if your Asset files are in subfolders.</p>
+
+<h2>Plug-ins</h2>
+
+<p>You can add <a href="Plugins.html">plug-ins</a> to your Project to extend Unity’s features. Plug-ins are native DLLs that are typically written in C/C++. They can access third-party code libraries, system calls and other Unity built-in functionality. Always place plug-ins in a folder called <strong>Plugins</strong> for them to be detected by Unity.</p>
+
+<p>You can only have one Plugins folder and it must be placed in the root of the Project; directly within the Assets folder.</p>
+
+<p>See <a href="ScriptCompileOrderFolders.html">Special folders and script compilation order</a> for more information on how this folder affects script compilation, and <a href="PluginInspector.html">Plugin Inspector</a> for more information on managing plug-ins for different target platforms.</p>
+
+<h2>Resources</h2>
+
+<p>You can load Assets on-demand from a script instead of creating instances of Assets in a Scene for use in gameplay. You do this by placing the Assets in a folder called <strong>Resources</strong>. Load these Assets by using the <a href="../ScriptReference/Resources.Load.html">Resources.Load</a> function.</p>
+
+<p>You can have multiple Resources folders placed anywhere inside the Assets folder. Place the needed Asset files in a Resources folder or a subfolder within it. Always include the subfolder path in the path passed to the <a href="../ScriptReference/Resources.Load.html">Resources.Load</a> function if your Asset files are in subfolders. </p>
+
+<p>Note that if the Resources folder is an Editor subfolder, the Assets in it are loadable from Editor scripts but are stripped from builds.</p>
+
+<h2>Standard Assets</h2>
+
+<p>When you import a Standard Asset package (menu: <strong>Assets</strong> &gt; <strong>Import Package</strong>) the Assets are placed in a folder called <strong>Standard Assets</strong>. As well as containing the Assets, these folders also have an effect on script compilation order; see the page on <a href="ScriptCompileOrderFolders.html">Special Folders and Script Compilation Order</a> for further details.</p>
+
+<p>You can only have one Standard Assets folder and it must be placed in the root of the Project; directly within the Assets folder. Place the needed Assets files in this Standard Assets folder or a subfolder within it.</p>
+
+<h2>StreamingAssets</h2>
+
+<p>You may want the Asset to be available as a separate file in its original format although it is more common to directly incorporate Assets into a build. For example, you need to access a video file from the filesystem rather than use it as a MovieTexture to play that video on iOS. Place a file in a folder called <strong>StreamingAssets</strong>, so it is copied unchanged to the target machine, where it is then available from a specific folder. See the page about <a href="StreamingAssets.html">Streaming Assets</a> for further details.</p>
+
+<p>You can only have one StreamingAssets folder and it must be placed in the root of the Project; directly within the Assets folder. Place the needed Assets files in this StreamingAssets folder or a subfolder within it. Always include the subfolder path in the path used to reference the streaming asset if your Asset files are in subfolders.</p>
+
+<h2>Hidden Assets</h2>
+
+<p>During the import process, Unity completely ignores the following files and folders in the <strong>Assets</strong> folder (or a sub-folder within it):</p>
+
+<ul>
+<li>Hidden folders.</li>
+<li>Files and folders which start with ‘<strong>.</strong>’.</li>
+<li>Files and folders which end with ‘<strong>~</strong>’.</li>
+<li>Files and folders named <strong>cvs</strong>.</li>
+<li>Files with the extension <strong>.tmp</strong>.</li>
+</ul>
+
+<p>This is used to prevent importing special and temporary files created by the operating system or other applications.</p>
+<div class="feedbackbox" id="feedbackbox">
+<div id="rating"><p>Did you find this page useful? Please give it a rating:<br><div id="ratecontent" class="c-rating"></div>
+</p></div>
+<div id="ratingThanks" style="display:none"><p>Thanks for rating this page!</p></div>
+<div id="problem"><p><a name="problem" onclick="document.getElementById('problemType').style.display = '';document.getElementById('problem').style.display = 'none';">Report a problem on this page</a></p></div>
+<div id="problemType" style="display:none"><p>What kind of problem would you like to report?<ul type="problems">
+<li><a name="needcode" onclick="                                                             document.getElementById('problemType').style.display = 'none';                                                             document.getElementById('problemThanks').style.display = '';                                                             SendFeedback('problem-needcode',window.location.href,0);                                                             document.getElementById('problemFormDescription').value='Needs code samples.';                                                             document.getElementById('problemNeedCodeForm').style.display = ''                                                         ">This page needs code samples</a></li>
+<li><a name="code" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-brokencode',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Code samples do not work.';                                                         document.getElementById('problemCodeForm').style.display = ''                                                         ">Code samples do not work</a></li>
+<li><a name="missing" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-missing',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Missing information';                                                         document.getElementById('problemMissingForm').style.display = ''                                                         ">Information is missing</a></li>
+<li><a name="incorrect" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-incorrect',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Incorrect information';                                                         document.getElementById('problemIncorrectForm').style.display = ''                                                         ">Information is incorrect</a></li>
+<li><a name="unclear" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-unclear',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Unclear or confusing information';                                                         document.getElementById('problemUnclearForm').style.display = ''                                                         ">Information is unclear or confusing</a></li>
+<li><a name="language" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-language',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Spelling or grammar error';                                                         document.getElementById('problemLanguageForm').style.display = ''                                                         ">There is a spelling/grammar error on this page</a></li>
+<li><a name="other" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-other',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='This page has a problem';                                                         document.getElementById('problemOtherForm').style.display = ''                                                         ">Something else</a></li>
+</ul>
+<p><known_issues><p>Is something described here not working as you expect it to? It might be a <b>Known Issue</b>. Please check with the Issue Tracker at <a href="https://issuetracker.unity3d.com">issuetracker.unity3d.com</a>.</p></known_issues></p>
+</p></div>
+<div id="problemThanks" style="display:none"><p>Thanks for letting us know! This page has been marked for review based on your feedback.<br><br>If you have time, you can provide more information to help us fix the problem faster.<br><br><a onclick="document.getElementById('problemMoreInfo').style.display = '';document.getElementById('problemThanks').style.display = 'none';">Provide more information</a><br>
+</p></div>
+<div id="problemMoreInfo" style="display:none">
+<p id="problemNeedCodeForm" style="display:none">You've told us this page needs code samples. If you'd like to help us further, you could provide a code sample, or tell us about what kind of code sample you'd like to see:</p>
+<p id="problemCodeForm" style="display:none">You've told us there are code samples on this page which don't work. If you know how to fix it, or have something better we could use instead, please let us know:</p>
+<p id="problemMissingForm" style="display:none">You've told us there is information missing from this page. Please tell us more about what's missing:</p>
+<p id="problemIncorrectForm" style="display:none">You've told us there is incorrect information on this page. If you know what we should change to make it correct, please tell us:</p>
+<p id="problemUnclearForm" style="display:none">You've told us this page has unclear or confusing information. Please tell us more about what you found unclear or confusing, or let us know how we could make it clearer:</p>
+<p id="problemLanguageForm" style="display:none">You've told us there is a spelling or grammar error on this page. Please tell us what's wrong:</p>
+<p id="problemOtherForm" style="display:none">You've told us this page has a problem. Please tell us more about what's wrong:</p>
+<form>
+<textarea id="problemFormSuggestionField" cols="40" rows="5"></textarea><input type="hidden" id="problemFormDescription"><input type="submit" id="problemFormDescriptionSubmit" value="Submit" onclick="                                             document.getElementById('problemMoreInfo').style.display = 'none';                                             document.getElementById('problemMoreInfoThanks').style.display = '';                                             return false;                                             ">
+</form>
+</div>
+<div id="problemMoreInfoThanks" style="display:none"><p>Thanks for helping to make the Unity documentation better!</p></div>
+<script>
+
+                                            var ratecontent = document.querySelector('#ratecontent'); // target element
+                                            var currentRating = 0; // initial rating
+                                            var maxRating= 5; // max rating
+
+                                            // callback to run after setting the rating
+                                            var callback = function(rating) {
+                                                document.getElementById('ratingThanks').style.display = '';
+                                                document.getElementById('ratecontent').style.display = 'none';
+                                                document.getElementById('rating').style.display = 'none';
+                                                SendFeedback("rating",window.location.href,rating);
+                                            };
+
+                                            // rating instance
+                                            var myRating = rating(ratecontent, currentRating, maxRating, callback);
+                                        </script>
+</div>
+<div class="nextprev clear">
+<div class="icon tt left mr1" data-distance="-40|-30|top">
+<span class="prev"><a href="IMEInput.html"></a></span><div class="tip">IME in Unity</div>
+</div>
+<div class="icon tt right" data-distance="-40|-30|top">
+<span class="next"><a href="HOWTO-exportpackage.html"></a></span><div class="tip">Exporting Packages</div>
+</div>
+</div>
+</div>
+</body></html>

@@ -1,0 +1,201 @@
+<html><head><title>html模版</title></head><body>Unity - Manual:  Scripted Importers</br>
+<div class="breadcrumbs clear"><ul>
+<li><a href="UnityManual.html">Unity User Manual (2018.1 beta)</a></li>
+<li><a href="Experimental.html"> Experimental</a></li>
+<li> Scripted Importers</li>
+</ul></div>
+<div class="mb20"><div class="nextprev clear">
+<div class="icon tt left mr1" data-distance="-40|-30|top">
+<span class="prev"><a href="Lightmapping-SeamStitching.html"></a></span><div class="tip"> Lightmap seam stitching</div>
+</div>
+<div class="icon tt right" data-distance="-40|-30|top">
+<span class="next"><a href="LookDev.html"></a></span><div class="tip"> Look Dev</div>
+</div>
+</div></div>
+<div class="otherversionswrapper" onmouseover="setOtherVersionsDisplay(true)" onmouseout="setOtherVersionsDisplay(false)">
+<a>Other Versions</a><div class="otherversionscontent" id="OtherVersionsContent" style="display: none;">Cannot access other versions offline!</div>
+</div>
+<div class="scrollToFeedback"><a id="scrollToFeedback">Leave feedback</a></div>
+<h2>Scripted Importers</h2>
+
+<p>Scripted Importers are part of the <a href="ScriptingSection.html">Unity Scripting API</a>. Use Scripted Importers to write custom Asset importers in C# for file formats not natively supported by Unity.</p>
+
+<p>Create a custom importer by specializing the abstract class <a href="../ScriptReference/Experimental.AssetImporters.ScriptedImporter.html">ScriptedImporter</a> and applying the <a href="../ScriptReference/Experimental.AssetImporters.ScriptedImporterAttribute.html">ScriptedImporter</a> attribute. This registers your custom importer to handle one or more file extensions. When a file matching the registered file extensions is detected by the Asset pipeline as being new or changed, Unity invokes the method <code>OnImportAsset</code> of your custom importer.</p>
+
+<p>Note: Scripted Importers cannot handle a file extension that is already natively handled by Unity.</p>
+
+<p><strong>Note: Limitation</strong></p>
+
+<p>This is an experimental release of the Scripted Importer feature and as such is limited to assets that can be created using the Unity Scripting API. This is not a limitation of the implementation or design of the this feature, but does impose limits on its real-world use.</p>
+
+<h3>Example</h3>
+
+<p>Below is a simple example as Scripted Importer: It imports asset files with the extension “cube” into a Unity Prefab with a cube primitive as the main Asset and a default material with a color fetched from the Asset file:</p>
+
+<pre><code>using System.IO;
+using System.Text;
+using UnityEditor.Experimental.AssetImporters;
+using UnityEngine;
+
+[ScriptedImporter(1, &quot;cube&quot;)]
+public class CubeImporter : ScriptedImporter
+{
+    [SerializeField]
+    float m_ColorShift = 0f;
+
+    public override void OnImportAsset(AssetImportContext ctx)
+    {
+        // Main asset
+        var cube = GameObject.CreatePrimitive(PrimitiveType.Cube);
+        ctx.SetMainAsset(&quot;MainAsset&quot;, cube);
+
+        // Material as sub-asset
+        string text = File.ReadAllText(ctx.assetPath, Encoding.UTF8);
+        var channels = text.Split(',');
+        var color = new Color(float.Parse(channels[0]) + m_ColorShift,
+                              float.Parse(channels[1]) + m_ColorShift,
+                              float.Parse(channels[2]) + m_ColorShift);
+
+        var material = new Material(Shader.Find(&quot;Standard&quot;)) { color = color };
+        cube.GetComponent&lt;Renderer&gt;().material = material;
+        ctx.AddSubAsset(&quot;Material&quot;, material);
+    }
+}
+</code></pre>
+
+<p>
+<strong>Note</strong>: </p>
+
+<ul>
+<li>The importer is registered with Unity’s Asset pipeline by placing the the <code>ScriptedImporter</code> attribute on the CubeImporter class.</li>
+<li>The CubeImporter class implements the abstract <code>ScriptedImporter</code> base class.</li>
+<li>
+<code>OnImportAsset</code>’s ctx argument contains both input and output data for the import event.</li>
+<li>Each import event must generate one (and only one) call to <code>SetMainAsset</code>.</li>
+<li>Each import event may generate as many calls to <code>AddSubAsset</code> as necessary.</li>
+<li>Please refer to the <a href="ScrptRef:Experimental.AssetImporters.ScriptedImporter.html">Scripting API documentation</a> for more details.</li>
+</ul>
+
+<p>You may also implement a custom Import Settings Editor by specializing <a href="../ScriptReference/Experimental.AssetImporters.ScriptedImporterEditor.html">ScriptedImporterEditor</a> class and decorating it with the class attribute <code>CustomEditor</code> to tell it what type of importer it is used for.</p>
+
+<p>For example:</p>
+
+<pre><code>using UnityEditor;
+using UnityEditor.Experimental.AssetImporters;
+using UnityEditor.SceneManagement;
+using UnityEngine;
+
+[CustomEditor(typeof(CubeImporter))]
+public class CubeImporterEditor: ScriptedImporterEditor
+{
+    public override void OnInspectorGUI()
+    {
+        var colorShift = new GUIContent(&quot;Color Shift&quot;);
+        var prop = serializedObject.FindProperty(&quot;m_ColorShift&quot;);
+        EditorGUILayout.PropertyField(prop, colorShift);
+        base.ApplyRevertGUI();
+    }
+}
+</code></pre>
+
+<h3>Using a Scripted Importer</h3>
+
+<p>Once you have added a scripted importer class to a project, you may use it just like any other native file type supported by Unity:</p>
+
+<ul>
+<li>Drop a supported file in the Asset directory hierarchy to import.</li>
+<li>Restarting the Unity Editor reimports any files that have changed since last update.</li>
+<li>Editing the Asset file on disk and returning to the Unity Editor triggers a reimport.</li>
+<li>Import a new asset using <strong>Asset</strong> &gt; <strong>Import New Asset…</strong>.</li>
+<li>Explicitly trigger a re-import via the menu: <strong>Asset</strong> &gt; <strong>Reimport</strong>.</li>
+<li>Click on the Asset to see its settings in the <a href="UsingTheInspector.html">Inspector window</a>. To modify its settings, edit them in the Inspector window and click <strong>Apply</strong> .
+<br><br>
+</li>
+</ul>
+
+<figure>
+<img src="../uploads/Main/ScriptedImporters-2.png" alt="The Inspector window of an Asset (An Alembic Girl) imported by the Scripted Importer">
+<figcaption>The Inspector window of an Asset (An Alembic Girl) imported by the Scripted Importer</figcaption>
+</figure>
+
+<h3>Real-world use of Scripted Importers</h3>
+
+<ul>
+<li><p>
+<strong>Alembic</strong>: The Alembic importer plug-in has been updated to use a Scripted Importer. For more information, visit <a href="https://github.com/unity3d-jp/AlembicImporter">Unity github: AlembicImporter</a>.</p></li>
+<li><p>
+<strong>USD</strong>: The USD importer plug-in has been updated to use a Scripted Importer.
+For more information, please visit <a href="https://github.com/unity3d-jp/USDForUnity">Unity github:: USDForUnity</a>.</p></li>
+</ul>
+
+<p>
+<br>
+<br>
+</p>
+
+<hr>
+
+<ul>
+<li><p><span class="page-history">New feature in <a href="https://docs.unity3d.com/2017.1/Documentation/Manual/30_search.html?q=newin20171">2017.1</a> <span class="search-words">NewIn20171</span></span></p></li>
+<li><p><span class="page-edit">2017–07–27 Page amended with no <a href="DocumentationEditorialReview.html">editorial review</a>
+</span></p></li>
+</ul>
+<div class="feedbackbox" id="feedbackbox">
+<div id="rating"><p>Did you find this page useful? Please give it a rating:<br><div id="ratecontent" class="c-rating"></div>
+</p></div>
+<div id="ratingThanks" style="display:none"><p>Thanks for rating this page!</p></div>
+<div id="problem"><p><a name="problem" onclick="document.getElementById('problemType').style.display = '';document.getElementById('problem').style.display = 'none';">Report a problem on this page</a></p></div>
+<div id="problemType" style="display:none"><p>What kind of problem would you like to report?<ul type="problems">
+<li><a name="needcode" onclick="                                                             document.getElementById('problemType').style.display = 'none';                                                             document.getElementById('problemThanks').style.display = '';                                                             SendFeedback('problem-needcode',window.location.href,0);                                                             document.getElementById('problemFormDescription').value='Needs code samples.';                                                             document.getElementById('problemNeedCodeForm').style.display = ''                                                         ">This page needs code samples</a></li>
+<li><a name="code" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-brokencode',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Code samples do not work.';                                                         document.getElementById('problemCodeForm').style.display = ''                                                         ">Code samples do not work</a></li>
+<li><a name="missing" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-missing',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Missing information';                                                         document.getElementById('problemMissingForm').style.display = ''                                                         ">Information is missing</a></li>
+<li><a name="incorrect" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-incorrect',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Incorrect information';                                                         document.getElementById('problemIncorrectForm').style.display = ''                                                         ">Information is incorrect</a></li>
+<li><a name="unclear" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-unclear',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Unclear or confusing information';                                                         document.getElementById('problemUnclearForm').style.display = ''                                                         ">Information is unclear or confusing</a></li>
+<li><a name="language" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-language',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Spelling or grammar error';                                                         document.getElementById('problemLanguageForm').style.display = ''                                                         ">There is a spelling/grammar error on this page</a></li>
+<li><a name="other" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-other',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='This page has a problem';                                                         document.getElementById('problemOtherForm').style.display = ''                                                         ">Something else</a></li>
+</ul>
+<p><known_issues><p>Is something described here not working as you expect it to? It might be a <b>Known Issue</b>. Please check with the Issue Tracker at <a href="https://issuetracker.unity3d.com">issuetracker.unity3d.com</a>.</p></known_issues></p>
+</p></div>
+<div id="problemThanks" style="display:none"><p>Thanks for letting us know! This page has been marked for review based on your feedback.<br><br>If you have time, you can provide more information to help us fix the problem faster.<br><br><a onclick="document.getElementById('problemMoreInfo').style.display = '';document.getElementById('problemThanks').style.display = 'none';">Provide more information</a><br>
+</p></div>
+<div id="problemMoreInfo" style="display:none">
+<p id="problemNeedCodeForm" style="display:none">You've told us this page needs code samples. If you'd like to help us further, you could provide a code sample, or tell us about what kind of code sample you'd like to see:</p>
+<p id="problemCodeForm" style="display:none">You've told us there are code samples on this page which don't work. If you know how to fix it, or have something better we could use instead, please let us know:</p>
+<p id="problemMissingForm" style="display:none">You've told us there is information missing from this page. Please tell us more about what's missing:</p>
+<p id="problemIncorrectForm" style="display:none">You've told us there is incorrect information on this page. If you know what we should change to make it correct, please tell us:</p>
+<p id="problemUnclearForm" style="display:none">You've told us this page has unclear or confusing information. Please tell us more about what you found unclear or confusing, or let us know how we could make it clearer:</p>
+<p id="problemLanguageForm" style="display:none">You've told us there is a spelling or grammar error on this page. Please tell us what's wrong:</p>
+<p id="problemOtherForm" style="display:none">You've told us this page has a problem. Please tell us more about what's wrong:</p>
+<form>
+<textarea id="problemFormSuggestionField" cols="40" rows="5"></textarea><input type="hidden" id="problemFormDescription"><input type="submit" id="problemFormDescriptionSubmit" value="Submit" onclick="                                             document.getElementById('problemMoreInfo').style.display = 'none';                                             document.getElementById('problemMoreInfoThanks').style.display = '';                                             return false;                                             ">
+</form>
+</div>
+<div id="problemMoreInfoThanks" style="display:none"><p>Thanks for helping to make the Unity documentation better!</p></div>
+<script>
+
+                                            var ratecontent = document.querySelector('#ratecontent'); // target element
+                                            var currentRating = 0; // initial rating
+                                            var maxRating= 5; // max rating
+
+                                            // callback to run after setting the rating
+                                            var callback = function(rating) {
+                                                document.getElementById('ratingThanks').style.display = '';
+                                                document.getElementById('ratecontent').style.display = 'none';
+                                                document.getElementById('rating').style.display = 'none';
+                                                SendFeedback("rating",window.location.href,rating);
+                                            };
+
+                                            // rating instance
+                                            var myRating = rating(ratecontent, currentRating, maxRating, callback);
+                                        </script>
+</div>
+<div class="nextprev clear">
+<div class="icon tt left mr1" data-distance="-40|-30|top">
+<span class="prev"><a href="Lightmapping-SeamStitching.html"></a></span><div class="tip"> Lightmap seam stitching</div>
+</div>
+<div class="icon tt right" data-distance="-40|-30|top">
+<span class="next"><a href="LookDev.html"></a></span><div class="tip"> Look Dev</div>
+</div>
+</div>
+</div>
+</body></html>

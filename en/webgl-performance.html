@@ -1,0 +1,112 @@
+<html><head><title>html模版</title></head><body>Unity - Manual: WebGL performance considerations</br>
+<div class="breadcrumbs clear"><ul>
+<li><a href="UnityManual.html">Unity User Manual (2018.1 beta)</a></li>
+<li><a href="PlatformSpecific.html">Platform-specific</a></li>
+<li><a href="webgl.html">WebGL</a></li>
+<li><a href="webgl-gettingstarted.html">Getting started with WebGL development</a></li>
+<li>WebGL performance considerations</li>
+</ul></div>
+<div class="mb20"><div class="nextprev clear">
+<div class="icon tt left mr1" data-distance="-40|-30|top">
+<span class="prev"><a href="webgl-audio.html"></a></span><div class="tip">Using Audio In WebGL</div>
+</div>
+<div class="icon tt right" data-distance="-40|-30|top">
+<span class="next"><a href="webgl-memory.html"></a></span><div class="tip">Memory Considerations when targeting WebGL</div>
+</div>
+</div></div>
+<div class="otherversionswrapper" onmouseover="setOtherVersionsDisplay(true)" onmouseout="setOtherVersionsDisplay(false)">
+<a>Other Versions</a><div class="otherversionscontent" id="OtherVersionsContent" style="display: none;">Cannot access other versions offline!</div>
+</div>
+<div class="scrollToFeedback"><a id="scrollToFeedback">Leave feedback</a></div>
+<h1>WebGL performance considerations</h1>
+<!--BeginSwitchLink--><!--EndSwitchLink-->
+<div class="clear"></div>
+
+<h2>What kind of performance can you expect on WebGL?</h2>
+
+<p>This is a bit difficult to answer, as it depends on many factors. </p>
+
+<p>In general, you can assume that you will get performance close to native apps for the GPU side, as the WebGL graphics API uses your GPU for hardware accelerated rendering - there is just a little overhead for translating WebGL API calls and shaders to your OS graphics API (typically DirectX on Windows or OpenGL on Mac or Linux).</p>
+
+<p>For the CPU side, all your code is translated into asm.js JavaScript. So what kind of performance you can expect depends a lot on the JavaScript engine of the web browser used, and there are some pretty significant differences there currently. At the point of this writing (November 2015), Microsoft Edge and Mozilla Firefox deliver the best performance on Unity code, as these are currently the only browsers which make use of the asm.js spec to use an optimized AOT compilation path of JavaScript code for that case, which delivers performance within a factor of less then 2x slowdown compared to native code for many programming benchmarks - and that factor also matches results we’ve seen from different unity content we deployed to WebGL and ran in Firefox and Edge.</p>
+
+<p>There are some other considerations, though. Currently, the JavaScript language does neither support multi-threading, nor SIMD. So, any code which benefits from these features will see bigger slowdowns then other code. You cannot write threading or SIMD code in WebGL in your scripts, but some engine parts are normally multi-threaded or SIMD optimized, and will run less performant on WebGL because of this. An example is the skinning code, which is both multi-threaded and SIMD-optimized. You can use the new timeline <a href="Profiler.html">profiler</a> in Unity to see how Unity distributes work to different threads on non-WebGL platforms. Longer term, we are hoping that these features will become available on WebGL as well.</p>
+
+<h2>WebGL-specific settings which affect performance</h2>
+
+<p>For best performance, set the optimization level to “Fastest” in the Build Player dialog, and set “Exception support” to “None” in the player settings for WebGL.</p>
+
+<h2>Profiling WebGL</h2>
+
+<p>The Unity profiler is supported in WebGL, see <a href="Profiler.html">here</a> how to set it up.</p>
+
+<h2>WebGL content in background tabs</h2>
+
+<p>If the <em>Run in background</em> is enabled in the <a href="class-PlayerSettingsWebGL.html">WebGL Player Settings</a>, or if you enable <strong><a href="../ScriptReference/Application-runInBackground.html">Application.runInBackground</a></strong>, then your content will continue to run when the canvas or the browser window loses focus.</p>
+
+<p>However, it should be noted that browsers may throttle content running in background tabs. If the tab with your content is not visible, your content will only be updated once a second in most browsers. Note that this will cause <strong><a href="../ScriptReference/Time-time.html">Time.time</a></strong> to progress slower than usual with the default settings, as the default value of <strong><a href="../ScriptReference/Time-maximumDeltaTime.html">Time.maximumDeltaTime</a></strong> is lower than one second.</p>
+
+<h2>Throttling WebGL performance</h2>
+
+<p>You may want to run your WebGL content at a lower frame rate in some situations to reduce CPU usage. Like on other platforms, you can use the <a href="../ScriptReference/Application-targetFrameRate.html">Application.targetFrameRate</a> API to do so.</p>
+
+<p>When you don’t want to throttle performance, set this API to the default value of –1, rather then to a high value. This allows the browser to adjust the frame rate for the smoothest animation in the browser’s render loop, and may produce better results than Unity trying to do its own main loop timing to match a target frame rate.</p>
+<div class="feedbackbox" id="feedbackbox">
+<div id="rating"><p>Did you find this page useful? Please give it a rating:<br><div id="ratecontent" class="c-rating"></div>
+</p></div>
+<div id="ratingThanks" style="display:none"><p>Thanks for rating this page!</p></div>
+<div id="problem"><p><a name="problem" onclick="document.getElementById('problemType').style.display = '';document.getElementById('problem').style.display = 'none';">Report a problem on this page</a></p></div>
+<div id="problemType" style="display:none"><p>What kind of problem would you like to report?<ul type="problems">
+<li><a name="needcode" onclick="                                                             document.getElementById('problemType').style.display = 'none';                                                             document.getElementById('problemThanks').style.display = '';                                                             SendFeedback('problem-needcode',window.location.href,0);                                                             document.getElementById('problemFormDescription').value='Needs code samples.';                                                             document.getElementById('problemNeedCodeForm').style.display = ''                                                         ">This page needs code samples</a></li>
+<li><a name="code" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-brokencode',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Code samples do not work.';                                                         document.getElementById('problemCodeForm').style.display = ''                                                         ">Code samples do not work</a></li>
+<li><a name="missing" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-missing',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Missing information';                                                         document.getElementById('problemMissingForm').style.display = ''                                                         ">Information is missing</a></li>
+<li><a name="incorrect" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-incorrect',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Incorrect information';                                                         document.getElementById('problemIncorrectForm').style.display = ''                                                         ">Information is incorrect</a></li>
+<li><a name="unclear" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-unclear',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Unclear or confusing information';                                                         document.getElementById('problemUnclearForm').style.display = ''                                                         ">Information is unclear or confusing</a></li>
+<li><a name="language" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-language',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Spelling or grammar error';                                                         document.getElementById('problemLanguageForm').style.display = ''                                                         ">There is a spelling/grammar error on this page</a></li>
+<li><a name="other" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-other',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='This page has a problem';                                                         document.getElementById('problemOtherForm').style.display = ''                                                         ">Something else</a></li>
+</ul>
+<p><known_issues><p>Is something described here not working as you expect it to? It might be a <b>Known Issue</b>. Please check with the Issue Tracker at <a href="https://issuetracker.unity3d.com">issuetracker.unity3d.com</a>.</p></known_issues></p>
+</p></div>
+<div id="problemThanks" style="display:none"><p>Thanks for letting us know! This page has been marked for review based on your feedback.<br><br>If you have time, you can provide more information to help us fix the problem faster.<br><br><a onclick="document.getElementById('problemMoreInfo').style.display = '';document.getElementById('problemThanks').style.display = 'none';">Provide more information</a><br>
+</p></div>
+<div id="problemMoreInfo" style="display:none">
+<p id="problemNeedCodeForm" style="display:none">You've told us this page needs code samples. If you'd like to help us further, you could provide a code sample, or tell us about what kind of code sample you'd like to see:</p>
+<p id="problemCodeForm" style="display:none">You've told us there are code samples on this page which don't work. If you know how to fix it, or have something better we could use instead, please let us know:</p>
+<p id="problemMissingForm" style="display:none">You've told us there is information missing from this page. Please tell us more about what's missing:</p>
+<p id="problemIncorrectForm" style="display:none">You've told us there is incorrect information on this page. If you know what we should change to make it correct, please tell us:</p>
+<p id="problemUnclearForm" style="display:none">You've told us this page has unclear or confusing information. Please tell us more about what you found unclear or confusing, or let us know how we could make it clearer:</p>
+<p id="problemLanguageForm" style="display:none">You've told us there is a spelling or grammar error on this page. Please tell us what's wrong:</p>
+<p id="problemOtherForm" style="display:none">You've told us this page has a problem. Please tell us more about what's wrong:</p>
+<form>
+<textarea id="problemFormSuggestionField" cols="40" rows="5"></textarea><input type="hidden" id="problemFormDescription"><input type="submit" id="problemFormDescriptionSubmit" value="Submit" onclick="                                             document.getElementById('problemMoreInfo').style.display = 'none';                                             document.getElementById('problemMoreInfoThanks').style.display = '';                                             return false;                                             ">
+</form>
+</div>
+<div id="problemMoreInfoThanks" style="display:none"><p>Thanks for helping to make the Unity documentation better!</p></div>
+<script>
+
+                                            var ratecontent = document.querySelector('#ratecontent'); // target element
+                                            var currentRating = 0; // initial rating
+                                            var maxRating= 5; // max rating
+
+                                            // callback to run after setting the rating
+                                            var callback = function(rating) {
+                                                document.getElementById('ratingThanks').style.display = '';
+                                                document.getElementById('ratecontent').style.display = 'none';
+                                                document.getElementById('rating').style.display = 'none';
+                                                SendFeedback("rating",window.location.href,rating);
+                                            };
+
+                                            // rating instance
+                                            var myRating = rating(ratecontent, currentRating, maxRating, callback);
+                                        </script>
+</div>
+<div class="nextprev clear">
+<div class="icon tt left mr1" data-distance="-40|-30|top">
+<span class="prev"><a href="webgl-audio.html"></a></span><div class="tip">Using Audio In WebGL</div>
+</div>
+<div class="icon tt right" data-distance="-40|-30|top">
+<span class="next"><a href="webgl-memory.html"></a></span><div class="tip">Memory Considerations when targeting WebGL</div>
+</div>
+</div>
+</div>
+</body></html>

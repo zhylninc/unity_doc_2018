@@ -1,0 +1,384 @@
+<html><head><title>html模版</title></head><body>Unity - Manual: Unity Google VR Video Async Reprojection</br>
+<div class="breadcrumbs clear"><ul>
+<li><a href="UnityManual.html">Unity User Manual (2018.1 beta)</a></li>
+<li><a href="XR.html">XR</a></li>
+<li><a href="XR-SDK_overviews.html"> XR SDKs</a></li>
+<li>Unity Google VR Video Async Reprojection</li>
+</ul></div>
+<div class="mb20"><div class="nextprev clear">
+<div class="icon tt left mr1" data-distance="-40|-30|top">
+<span class="prev"><a href="VRDevices-GoogleVR.html"></a></span><div class="tip"> Google VR SDK Overview</div>
+</div>
+<div class="icon tt right" data-distance="-40|-30|top">
+<span class="next"><a href="vuforia-sdk-overview.html"></a></span><div class="tip"> Vuforia SDK overview</div>
+</div>
+</div></div>
+<div class="otherversionswrapper" onmouseover="setOtherVersionsDisplay(true)" onmouseout="setOtherVersionsDisplay(false)">
+<a>Other Versions</a><div class="otherversionscontent" id="OtherVersionsContent" style="display: none;">Cannot access other versions offline!</div>
+</div>
+<div class="scrollToFeedback"><a id="scrollToFeedback">Leave feedback</a></div>
+<h1>Unity Google VR Video Async Reprojection</h1>
+<!--BeginSwitchLink--><!--EndSwitchLink-->
+<div class="clear"></div>
+
+<h2>What is Video Async Reprojection?</h2>
+
+<p>Async Reprojection Video is a layer (referred to as an <strong>external surface</strong>) that an application can use to feed video frames directly into the async reprojection system. The main advantages to using the API are:</p>
+
+<ol>
+<li><p>Without the API, the video is sampled once to render it into the app’s color buffer, then the color buffer is sampled again to perform distortion correction. This introduces double sampling artifacts. The external surface passes video directly to the EDS compositor, so it’s only sampled once, thus improving visual quality of the video.</p></li>
+<li><p>When using the external surface API, video frame rate is decoupled from the app frame rate. The application can take 1 second to render a new frame and the only result is that the user will see black bars when they move their head, the video will keep playing normally. This should significantly reduce dropped video frames, and maintain AV sync</p></li>
+<li><p>The application can mark that it wants to playback DRM video, and the API will create a protected path that shows protected video and maintains Async Reprojection frame rate.</p></li>
+</ol>
+
+<h2>Known issues:</h2>
+
+<ol>
+<li><p>When using Video Async Reprojection, the camera must start at the origin (0,0,0). Errors may occur if the camera’s position is not set to 0,0,0.</p></li>
+<li><p>There is no publicly accessible C# interface for Async Reprojection. The public API is Java only.</p></li>
+</ol>
+
+<h2>Enabling Async Video Reprojection</h2>
+
+<p>Async Video Reprojection is a part of the Daydream VR Device settings. </p>
+
+<figure>
+<img src="../uploads/Main/GoogleVRVideoAsyncReprojection0.png" alt="Adding Daydream to the Virtual Reality SDKs list settings">
+<figcaption>Adding Daydream to the Virtual Reality SDKs list settings</figcaption>
+</figure>
+
+<p>Click the grey arrow next to Daydream and then check the <strong>Enable Video Surface</strong> box to enable use of the Async Video Reprojection feature</p>
+
+<figure>
+<img src="../uploads/Main/GoogleVRVideoAsyncReprojection1.png" alt="Virtual Reality SDKs List Daydream settings">
+<figcaption>Virtual Reality SDKs List Daydream settings</figcaption>
+</figure>
+
+<p>Select the <strong>Use Protected Memory</strong> option only if you require memory protection for all of your content as enabling this means that it is enabled for the lifetime of the application.</p>
+
+<figure>
+<img src="../uploads/Main/GoogleVRVideoAsyncReprojection2.png" alt="Enable Video Surface checkbox to enable Async Video Reprojection">
+<figcaption>Enable Video Surface checkbox to enable Async Video Reprojection</figcaption>
+</figure>
+
+<h2>API documentation</h2>
+
+<p>To take advantage of the Google VR API you will need to extend the UnityPlayerActivity. For more information, see documentation on <a href="AndroidUnityPlayerActivity.html">Extending the UnityPlayerActivity</a>.</p>
+
+<p>Java plug-ins cannot directly access Objects in your scene, so you will need to provide a simple API to your C# code that will allow you to pass a transform to the Java side and tell your Java code when to start rendering.</p>
+
+<p>
+<strong>Note:</strong> This code is not complete. It contains no implementation of a video player as that is a client specific implementation detail. It also doesn’t have any playback controls, which would have to be implemented as objects in the scene and actions on those objects would need to call into Java.</p>
+
+<p>For information on using Java in Unity and extending the UnityPlayerActivity, see documentation on <a href="android.html">Android development in Unity</a>.</p>
+
+<p>For information about the Google Video Async Reprojection system, refer to the Android Developer Network documentation on <a href="https://developers.google.com/vr/reference/android-ndk/gvr-ndk-rendering#using_video_viewports">Video Viewports</a>.</p>
+
+<h3>Java sample code:</h3>
+
+<pre><code>package com.unity3d.samplevideoplayer;
+
+import com.unity3d.player.GoogleVrVideo;
+
+import com.unity3d.player.GoogleVrApi;
+
+import android.app.Activity;
+
+import android.os.Bundle;
+
+import android.util.Log;
+
+import android.view.Surface;
+
+public class GoogleAVRPlayer implements GoogleVrVideo.GoogleVrVideoCallbacks {
+
+    private static final String TAG = GoogleAVRPlayer.class.getSimpleName();
+
+    private MyOwnVideoPlayer videoPlayer;
+
+    private boolean canPlayVideo = false;
+
+    private boolean isSceneLoaded = false;
+
+    // API you present to your C# code to handle initialization of your
+
+    // video system.
+
+    public void initVideoPlayer(UnityPlayerActivity activity) {
+
+     // Initialize Video player and any other support you need…
+
+     // Register this instance as the Google Vr Video Listener to get
+
+     // lifetime and control callbacks.
+
+         GoogleVrVideo gvrv = GoogleVrApi.getGoogleVrVideo();
+
+         if (gvrv != null) gvrv.registerGoogleVrVideoListener(this); 
+
+    }
+
+ 
+
+    // API you present to your C# code to start your video system
+
+    // playing a video.
+
+    public void play()
+
+    {
+
+           if (canPlayVideo &amp;&amp; videoPlayer != null &amp;&amp; videoPlayer.isPaused())
+
+            videoPlayer.play();
+
+    }
+
+    // API you present to your C# code to stop your video system
+
+    // playing a video
+
+    public void pause()
+
+    {
+
+            if (canPlayVideo &amp;&amp; videoPlayer != null &amp;&amp; !videoPlayer.isPaused())
+
+            videoPlayer.pause();        
+
+    }
+
+    // Google Vr Video Listener
+
+    @Override
+
+    public void onSurfaceAvailable(Surface surface) {
+
+     // Google Vr has a surface available for you to render into.
+
+     // Use this surface with your video player as needed.
+
+         if (videoPlayer != null){
+
+            videoPlayer.setSurface(surface);
+
+            canPlayVideo = true;
+
+            if (isSceneLoaded)
+
+            {
+
+                videoPlayer.play();
+
+            }
+
+          }
+
+    }
+
+    @Override
+
+    public void onSurfaceUnavailable() {
+
+     // The Google Vr Video Surface is going away. You need to remove
+
+     // it from anything you have holding it and stop your video player.
+
+        if (videoPlayer != null){
+
+            videoPlayer.pause();
+
+            canPlayVideo = false;
+
+          }
+
+     }
+
+    @Override
+
+    public void onFrameAvailable() {
+
+     // Handle Google Vr frame available callback
+
+    }
+}
+
+</code></pre>
+
+<h3>Unity C# sample code:</h3>
+
+<pre><code>using System;
+
+using System.Collections;
+
+using System.Collections.Generic;
+
+using System.Text;
+
+using UnityEngine;
+
+public class GoogleVRVideo : MonoBehaviour {
+
+ private AndroidJavaObject googleAvrPlayer = null;
+
+ private AndroidJavaObject googleVrVideo = null;
+
+ void Awake()
+
+ {
+
+    if (googleAvrPlayer == null)
+
+    {
+
+      googleAvrPlayer = new AndroidJavaObject(&quot;com.unity3d.samplevideoplayer.GoogleAVRPlayer&quot;);
+
+    }
+
+    AndroidJavaObject googleVrApi = new AndroidJavaClass(&quot;com.unity3d.player.GoogleVrApi&quot;);
+
+    if (googleVrApi != null) googleVrVideo = googleVrApi.CallStatic&lt;AndroidJavaObject&gt;(&quot;getGoogleVrVideo&quot;);
+
+ }
+
+ void Start()
+
+ {
+
+  if (googleVrVideo != null)
+
+  {
+
+   // We need to tell Google VR the location of the video suface in
+
+   // world space. Since there isn't a way to get at that info from
+
+   // Java, we can do it here and then pass the calculated matrix
+
+   // down to the api we expose on our UnityPlayerActivity subclass.
+
+   Matrix4x4 wm = transform.localToWorldMatrix;
+   
+   wm = Camera.main.transform.parent.worldToLocalMatrix * wm;
+   
+   wm = wm * Matrix4x4.Scale(new Vector3(0.5f, 0.5f, 1));
+
+
+   // Convert 4x4 Row Ordered matrix into a 16 element column ordered
+
+   // flat array. The transposition is to make sure that the matrix is
+
+   // in the order that Google uses and the we flatten it to make passing
+
+   // over the JNI boundary easier. The complication being that you have to
+
+   // then convert it back to an 4x4 matrix on the Java side.
+
+   float[] matrix = new float[16];
+
+   for (int i = 0; i &lt; 4; i++)
+
+   {
+
+    for (int j = 0; j &lt; 4; j++)
+
+    {
+
+     matrix[i * 4 + j] = wm[j,i];
+
+    }
+
+   }
+
+   googleVrVideo.Call(&quot;setVideoLocationTransform&quot;, matrix);  
+
+  }
+
+  
+
+  if (googleAvrPlayer != null)
+
+  {
+
+    AndroidJavaClass jc = new AndroidJavaClass(&quot;com.unity3d.player.UnityPlayer&quot;);
+
+    AndroidJavaObject jo = jc.GetStatic&lt;AndroidJavaObject&gt;(&quot;currentActivity&quot;);
+
+    googleAvrPlayer.Call(&quot;initVideoPlayer&quot;, jo);
+
+    googleAvrPlayer.Call(&quot;play&quot;);
+
+  }
+
+ }
+
+}
+
+</code></pre>
+
+<hr>
+
+<ul>
+<li><span class="page-edit">2017–08–03 Page published with limited <a href="DocumentationEditorialReview.html">editorial review</a>
+</span></li>
+<li><span class="page-history">Added in <a href="https://docs.unity3d.com/2017.2/Documentation/Manual/30_search.html?q=newin20172">2017.2</a> <span class="search-words">NewIn20172</span></span></li>
+</ul>
+<div class="feedbackbox" id="feedbackbox">
+<div id="rating"><p>Did you find this page useful? Please give it a rating:<br><div id="ratecontent" class="c-rating"></div>
+</p></div>
+<div id="ratingThanks" style="display:none"><p>Thanks for rating this page!</p></div>
+<div id="problem"><p><a name="problem" onclick="document.getElementById('problemType').style.display = '';document.getElementById('problem').style.display = 'none';">Report a problem on this page</a></p></div>
+<div id="problemType" style="display:none"><p>What kind of problem would you like to report?<ul type="problems">
+<li><a name="needcode" onclick="                                                             document.getElementById('problemType').style.display = 'none';                                                             document.getElementById('problemThanks').style.display = '';                                                             SendFeedback('problem-needcode',window.location.href,0);                                                             document.getElementById('problemFormDescription').value='Needs code samples.';                                                             document.getElementById('problemNeedCodeForm').style.display = ''                                                         ">This page needs code samples</a></li>
+<li><a name="code" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-brokencode',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Code samples do not work.';                                                         document.getElementById('problemCodeForm').style.display = ''                                                         ">Code samples do not work</a></li>
+<li><a name="missing" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-missing',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Missing information';                                                         document.getElementById('problemMissingForm').style.display = ''                                                         ">Information is missing</a></li>
+<li><a name="incorrect" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-incorrect',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Incorrect information';                                                         document.getElementById('problemIncorrectForm').style.display = ''                                                         ">Information is incorrect</a></li>
+<li><a name="unclear" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-unclear',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Unclear or confusing information';                                                         document.getElementById('problemUnclearForm').style.display = ''                                                         ">Information is unclear or confusing</a></li>
+<li><a name="language" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-language',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Spelling or grammar error';                                                         document.getElementById('problemLanguageForm').style.display = ''                                                         ">There is a spelling/grammar error on this page</a></li>
+<li><a name="other" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-other',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='This page has a problem';                                                         document.getElementById('problemOtherForm').style.display = ''                                                         ">Something else</a></li>
+</ul>
+<p><known_issues><p>Is something described here not working as you expect it to? It might be a <b>Known Issue</b>. Please check with the Issue Tracker at <a href="https://issuetracker.unity3d.com">issuetracker.unity3d.com</a>.</p></known_issues></p>
+</p></div>
+<div id="problemThanks" style="display:none"><p>Thanks for letting us know! This page has been marked for review based on your feedback.<br><br>If you have time, you can provide more information to help us fix the problem faster.<br><br><a onclick="document.getElementById('problemMoreInfo').style.display = '';document.getElementById('problemThanks').style.display = 'none';">Provide more information</a><br>
+</p></div>
+<div id="problemMoreInfo" style="display:none">
+<p id="problemNeedCodeForm" style="display:none">You've told us this page needs code samples. If you'd like to help us further, you could provide a code sample, or tell us about what kind of code sample you'd like to see:</p>
+<p id="problemCodeForm" style="display:none">You've told us there are code samples on this page which don't work. If you know how to fix it, or have something better we could use instead, please let us know:</p>
+<p id="problemMissingForm" style="display:none">You've told us there is information missing from this page. Please tell us more about what's missing:</p>
+<p id="problemIncorrectForm" style="display:none">You've told us there is incorrect information on this page. If you know what we should change to make it correct, please tell us:</p>
+<p id="problemUnclearForm" style="display:none">You've told us this page has unclear or confusing information. Please tell us more about what you found unclear or confusing, or let us know how we could make it clearer:</p>
+<p id="problemLanguageForm" style="display:none">You've told us there is a spelling or grammar error on this page. Please tell us what's wrong:</p>
+<p id="problemOtherForm" style="display:none">You've told us this page has a problem. Please tell us more about what's wrong:</p>
+<form>
+<textarea id="problemFormSuggestionField" cols="40" rows="5"></textarea><input type="hidden" id="problemFormDescription"><input type="submit" id="problemFormDescriptionSubmit" value="Submit" onclick="                                             document.getElementById('problemMoreInfo').style.display = 'none';                                             document.getElementById('problemMoreInfoThanks').style.display = '';                                             return false;                                             ">
+</form>
+</div>
+<div id="problemMoreInfoThanks" style="display:none"><p>Thanks for helping to make the Unity documentation better!</p></div>
+<script>
+
+                                            var ratecontent = document.querySelector('#ratecontent'); // target element
+                                            var currentRating = 0; // initial rating
+                                            var maxRating= 5; // max rating
+
+                                            // callback to run after setting the rating
+                                            var callback = function(rating) {
+                                                document.getElementById('ratingThanks').style.display = '';
+                                                document.getElementById('ratecontent').style.display = 'none';
+                                                document.getElementById('rating').style.display = 'none';
+                                                SendFeedback("rating",window.location.href,rating);
+                                            };
+
+                                            // rating instance
+                                            var myRating = rating(ratecontent, currentRating, maxRating, callback);
+                                        </script>
+</div>
+<div class="nextprev clear">
+<div class="icon tt left mr1" data-distance="-40|-30|top">
+<span class="prev"><a href="VRDevices-GoogleVR.html"></a></span><div class="tip"> Google VR SDK Overview</div>
+</div>
+<div class="icon tt right" data-distance="-40|-30|top">
+<span class="next"><a href="vuforia-sdk-overview.html"></a></span><div class="tip"> Vuforia SDK overview</div>
+</div>
+</div>
+</div>
+</body></html>

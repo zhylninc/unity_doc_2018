@@ -1,0 +1,214 @@
+<html><head><title>html模版</title></head><body>Unity - Manual: Line Renderer</br>
+<div class="breadcrumbs clear"><ul>
+<li><a href="UnityManual.html">Unity User Manual (2018.1 beta)</a></li>
+<li><a href="Graphics.html">Graphics</a></li>
+<li><a href="GraphicsReference.html">Graphics Reference</a></li>
+<li><a href="comp-Effects.html">Visual Effects Reference</a></li>
+<li>Line Renderer</li>
+</ul></div>
+<div class="mb20"><div class="nextprev clear">
+<div class="icon tt left mr1" data-distance="-40|-30|top">
+<span class="prev"><a href="class-Flare.html"></a></span><div class="tip">Flare</div>
+</div>
+<div class="icon tt right" data-distance="-40|-30|top">
+<span class="next"><a href="class-TrailRenderer.html"></a></span><div class="tip">Trail Renderer</div>
+</div>
+</div></div>
+<div class="otherversionswrapper" onmouseover="setOtherVersionsDisplay(true)" onmouseout="setOtherVersionsDisplay(false)">
+<a>Other Versions</a><div class="otherversionscontent" id="OtherVersionsContent" style="display: none;">Cannot access other versions offline!</div>
+</div>
+<div class="scrollToFeedback"><a id="scrollToFeedback">Leave feedback</a></div>
+<h1>Line Renderer</h1>
+<!--BeginSwitchLink--><a href='../ScriptReference/LineRenderer.html' title='Go to LineRenderer page in the Scripting Reference' class='switch-link gray-btn sbtn left'>Switch to Scripting</a><!--EndSwitchLink-->
+<div class="clear"></div>
+
+<p>The <strong>Line Renderer</strong> component takes an array of two or more points in 3D space, and draws a straight line between each one. A single Line Renderer component can therefore be used to draw anything from a simple straight line to a complex spiral. The line is always continuous; if you need to draw two or more completely separate lines, you should use multiple GameObjects, each with its own Line Renderer.</p>
+
+<p>The Line Renderer does not render one-pixel-wide lines. It renders billboard lines (polygons that always face the camera) that have a width in world units and can be textured. It uses the same algorithm for line rendering as the <a href="class-TrailRenderer.html">Trail Renderer</a>.</p>
+
+<figure>
+<img src="../uploads/Main/Inspector-LineRenderer.png" alt="">
+</figure>
+
+<h2>Properties</h2>
+
+<table>
+<colgroup>
+<col style="text-align:left;">
+<col style="text-align:left;">
+</colgroup>
+
+<thead>
+<tr>
+	<th style="text-align:left;"><strong><em>Property</em></strong></th>
+	<th style="text-align:left;"><strong><em>Function</em></strong></th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+	<td style="text-align:left;"><strong>Cast Shadows</strong></td>
+	<td style="text-align:left;">Determines whether the line casts shadows, whether they should be cast from one or both sides of the line, or whether the line should only cast shadows and not otherwise be drawn. See <a href="../ScriptReference/Renderer-shadowCastingMode.html">Renderer.shadowCastingMode</a> in the Scripting API reference documentation to learn more.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>Receive Shadows</strong></td>
+	<td style="text-align:left;">If enabled, the line receives shadows.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>Motion Vectors</strong></td>
+	<td style="text-align:left;">Select the Motion Vector type to use for this Line Renderer. See <a href="../ScriptReference/Renderer-motionVectorGenerationMode.html">Renderer.motionVectorGenerationMode</a> in the Scripting API reference documentation to learn more.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>Materials</strong></td>
+	<td style="text-align:left;">These properties describe an array of Materials used for rendering the line. The line will be drawn once for each material in the array.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>Light Parameters</strong></td>
+	<td style="text-align:left;">Reference a <a href="LightmapParameters.html">Lightmap Parameters</a> Asset here to enable the line to interact with the global illumination system.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>Positions</strong></td>
+	<td style="text-align:left;">These properties describe an array of Vector3 points to connect.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>Use World Space</strong></td>
+	<td style="text-align:left;">If enabled, the points are considered as world space coordinates, instead of being subject to the transform of the GameObject to which this component is attached.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>Loop</strong></td>
+	<td style="text-align:left;">Enable this to connect the first and last positions of the line. This forms a closed loop.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>Width</strong></td>
+	<td style="text-align:left;">Define a width value and a curve to control the width of your line at various points between its start and end. The curve is only sampled at each vertex, so its accuracy is limited by the number of vertices present in your line. The overall width of the line is controlled by the width value.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>Color</strong></td>
+	<td style="text-align:left;">Define a gradient to control the color of the line along its length.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>Corner Vertices</strong></td>
+	<td style="text-align:left;">This property dictates how many extra vertices are used when drawing corners in a line. Increase this value to make the line corners appear rounder.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>End Cap Vertices</strong></td>
+	<td style="text-align:left;">This property dictates how many extra vertices are used to create end caps on the line. Increase this value to make the line caps appear rounder.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>Alignment</strong></td>
+	<td style="text-align:left;">Set to <strong>View</strong> to make the line face the Camera, or <strong>Local</strong> to align it based on the orientation of its Transform component.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>Texture Mode</strong></td>
+	<td style="text-align:left;">Control how the Texture is applied to the line. Use <strong>Stretch</strong> to apply the Texture Map along the entire length of the line, or use <strong>Wrap</strong> to make the Texture repeat along the length of the line. Use the Tiling parameters in the Material to control the repeat rate.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>Generate Lighting Data</strong></td>
+	<td style="text-align:left;">If enabled (the box is checked), the Line geometry is built with Normals and Tangents included. This allows it to use Materials that use the scene lighting, for example via the Standard Shader, or by using a custom shader.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>Light Probes</strong></td>
+	<td style="text-align:left;">Probe-based lighting interpolation mode.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>Reflection Probes</strong></td>
+	<td style="text-align:left;">If enabled and reflection probes are present in the Scene, a reflection Texture is picked for this Line Renderer and set as a built-in Shader uniform variable.</td>
+</tr>
+</tbody>
+</table>
+
+<h2>Details</h2>
+
+<p>To create a Line Renderer:</p>
+
+<ol>
+<li>In the Unity menu bar, go to <strong>GameObject</strong> &gt; <strong>Create Empty</strong>
+</li>
+<li>In the Unity menu bar, go to <strong>Component</strong> &gt; <strong>Effects</strong> &gt; <strong>Line Renderer</strong>
+</li>
+<li>Drag a Texture or Material onto the Line Renderer. It looks best if you use a Particle Shader in the Material.</li>
+</ol>
+
+<h2>Hints</h2>
+
+<ul>
+<li>Line Renderers are useful for effects where you need to lay out all the vertices in one frame.</li>
+<li>The lines might appear to rotate as you move the Camera. This is intentional when <strong>Alignment</strong> is set to <strong>View</strong>. Set <strong>Alignment</strong> to <strong>Local</strong> to disable this.</li>
+<li>The Line Renderer should be the only Renderer on a GameObject.</li>
+<li>Unity samples colors from the Color Gradient at each vertex. Between each vertex, Unity applies linear interpolation to colors. Adding more vertices to your Line Renderer might give a closer approximation of a detailed Color Gradient.</li>
+</ul>
+
+<h2>Line Renderer example setup</h2>
+
+<figure>
+<img src="../uploads/Main/LineRenderer-example.png" alt="">
+</figure>
+
+<p><br></p>
+
+<hr>
+
+<ul>
+<li><p><span class="page-edit">2017–05–31 Page amended with <a href="DocumentationEditorialReview.html">editorial review</a>
+</span></p></li>
+<li><p><span class="page-history">Some properties added in Unity <a href="../Manual/30_search.html?q=newin20171">2017.1</a> <span class="search-words">NewIn20171</span></span></p></li>
+</ul>
+<div class="feedbackbox" id="feedbackbox">
+<div id="rating"><p>Did you find this page useful? Please give it a rating:<br><div id="ratecontent" class="c-rating"></div>
+</p></div>
+<div id="ratingThanks" style="display:none"><p>Thanks for rating this page!</p></div>
+<div id="problem"><p><a name="problem" onclick="document.getElementById('problemType').style.display = '';document.getElementById('problem').style.display = 'none';">Report a problem on this page</a></p></div>
+<div id="problemType" style="display:none"><p>What kind of problem would you like to report?<ul type="problems">
+<li><a name="needcode" onclick="                                                             document.getElementById('problemType').style.display = 'none';                                                             document.getElementById('problemThanks').style.display = '';                                                             SendFeedback('problem-needcode',window.location.href,0);                                                             document.getElementById('problemFormDescription').value='Needs code samples.';                                                             document.getElementById('problemNeedCodeForm').style.display = ''                                                         ">This page needs code samples</a></li>
+<li><a name="code" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-brokencode',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Code samples do not work.';                                                         document.getElementById('problemCodeForm').style.display = ''                                                         ">Code samples do not work</a></li>
+<li><a name="missing" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-missing',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Missing information';                                                         document.getElementById('problemMissingForm').style.display = ''                                                         ">Information is missing</a></li>
+<li><a name="incorrect" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-incorrect',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Incorrect information';                                                         document.getElementById('problemIncorrectForm').style.display = ''                                                         ">Information is incorrect</a></li>
+<li><a name="unclear" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-unclear',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Unclear or confusing information';                                                         document.getElementById('problemUnclearForm').style.display = ''                                                         ">Information is unclear or confusing</a></li>
+<li><a name="language" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-language',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Spelling or grammar error';                                                         document.getElementById('problemLanguageForm').style.display = ''                                                         ">There is a spelling/grammar error on this page</a></li>
+<li><a name="other" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-other',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='This page has a problem';                                                         document.getElementById('problemOtherForm').style.display = ''                                                         ">Something else</a></li>
+</ul>
+<p><known_issues><p>Is something described here not working as you expect it to? It might be a <b>Known Issue</b>. Please check with the Issue Tracker at <a href="https://issuetracker.unity3d.com">issuetracker.unity3d.com</a>.</p></known_issues></p>
+</p></div>
+<div id="problemThanks" style="display:none"><p>Thanks for letting us know! This page has been marked for review based on your feedback.<br><br>If you have time, you can provide more information to help us fix the problem faster.<br><br><a onclick="document.getElementById('problemMoreInfo').style.display = '';document.getElementById('problemThanks').style.display = 'none';">Provide more information</a><br>
+</p></div>
+<div id="problemMoreInfo" style="display:none">
+<p id="problemNeedCodeForm" style="display:none">You've told us this page needs code samples. If you'd like to help us further, you could provide a code sample, or tell us about what kind of code sample you'd like to see:</p>
+<p id="problemCodeForm" style="display:none">You've told us there are code samples on this page which don't work. If you know how to fix it, or have something better we could use instead, please let us know:</p>
+<p id="problemMissingForm" style="display:none">You've told us there is information missing from this page. Please tell us more about what's missing:</p>
+<p id="problemIncorrectForm" style="display:none">You've told us there is incorrect information on this page. If you know what we should change to make it correct, please tell us:</p>
+<p id="problemUnclearForm" style="display:none">You've told us this page has unclear or confusing information. Please tell us more about what you found unclear or confusing, or let us know how we could make it clearer:</p>
+<p id="problemLanguageForm" style="display:none">You've told us there is a spelling or grammar error on this page. Please tell us what's wrong:</p>
+<p id="problemOtherForm" style="display:none">You've told us this page has a problem. Please tell us more about what's wrong:</p>
+<form>
+<textarea id="problemFormSuggestionField" cols="40" rows="5"></textarea><input type="hidden" id="problemFormDescription"><input type="submit" id="problemFormDescriptionSubmit" value="Submit" onclick="                                             document.getElementById('problemMoreInfo').style.display = 'none';                                             document.getElementById('problemMoreInfoThanks').style.display = '';                                             return false;                                             ">
+</form>
+</div>
+<div id="problemMoreInfoThanks" style="display:none"><p>Thanks for helping to make the Unity documentation better!</p></div>
+<script>
+
+                                            var ratecontent = document.querySelector('#ratecontent'); // target element
+                                            var currentRating = 0; // initial rating
+                                            var maxRating= 5; // max rating
+
+                                            // callback to run after setting the rating
+                                            var callback = function(rating) {
+                                                document.getElementById('ratingThanks').style.display = '';
+                                                document.getElementById('ratecontent').style.display = 'none';
+                                                document.getElementById('rating').style.display = 'none';
+                                                SendFeedback("rating",window.location.href,rating);
+                                            };
+
+                                            // rating instance
+                                            var myRating = rating(ratecontent, currentRating, maxRating, callback);
+                                        </script>
+</div>
+<div class="nextprev clear">
+<div class="icon tt left mr1" data-distance="-40|-30|top">
+<span class="prev"><a href="class-Flare.html"></a></span><div class="tip">Flare</div>
+</div>
+<div class="icon tt right" data-distance="-40|-30|top">
+<span class="next"><a href="class-TrailRenderer.html"></a></span><div class="tip">Trail Renderer</div>
+</div>
+</div>
+</div>
+</body></html>

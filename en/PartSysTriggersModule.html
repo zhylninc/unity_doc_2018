@@ -1,0 +1,211 @@
+<html><head><title>html模版</title></head><body>Unity - Manual:  Triggers module</br>
+<div class="breadcrumbs clear"><ul>
+<li><a href="UnityManual.html">Unity User Manual (2018.1 beta)</a></li>
+<li><a href="Graphics.html">Graphics</a></li>
+<li><a href="GraphicsReference.html">Graphics Reference</a></li>
+<li><a href="PartSysReference.html">Particle Systems reference</a></li>
+<li><a href="ParticleSystemModules.html">Particle System modules</a></li>
+<li> Triggers module</li>
+</ul></div>
+<div class="mb20"><div class="nextprev clear">
+<div class="icon tt left mr1" data-distance="-40|-30|top">
+<span class="prev"><a href="PartSysCollisionModule.html"></a></span><div class="tip">Collision module</div>
+</div>
+<div class="icon tt right" data-distance="-40|-30|top">
+<span class="next"><a href="PartSysSubEmitModule.html"></a></span><div class="tip">Sub Emitters module</div>
+</div>
+</div></div>
+<div class="otherversionswrapper" onmouseover="setOtherVersionsDisplay(true)" onmouseout="setOtherVersionsDisplay(false)">
+<a>Other Versions</a><div class="otherversionscontent" id="OtherVersionsContent" style="display: none;">Cannot access other versions offline!</div>
+</div>
+<div class="scrollToFeedback"><a id="scrollToFeedback">Leave feedback</a></div>
+<h1>Triggers module</h1>
+<!--BeginSwitchLink--><!--EndSwitchLink-->
+<div class="clear"></div>
+
+<p>Particle Systems have the ability to trigger a Callback whenever they interact with one or more Colliders in the Scene. The Callback can be triggered when a particle enters or exits a Collider, or during the time that a particle is inside or outside of the Collider.</p>
+
+<p>You can use the Callback as a simple way to destroy a particle when it enters the Collider (for example, to prevent raindrops from penetrating a rooftop), or it can be used to modify any or all particles’ properties.</p>
+
+<p>The Triggers module also offers the <strong>Kill</strong> option to remove particles automatically, and the <strong>Ignore</strong> option to ignore collision events, shown below. </p>
+
+<figure>
+<img src="../uploads/Main/PartSysTriggersModule.png" alt="Particle Systems Triggers module">
+<figcaption>Particle Systems Triggers module</figcaption>
+</figure>
+
+<p>To use the module, first add the Colliders you wish to create triggers for, then select which events to use. </p>
+
+<p>You can elect to trigger an event whenever the particle is:</p>
+
+<ul>
+<li>Inside a Collider’s bounds</li>
+<li>Outside a Collider’s bounds</li>
+<li>Entering a Collider’s bounds</li>
+<li>Exiting a Collider’s bounds</li>
+</ul>
+
+<table>
+<colgroup>
+<col style="text-align:left;">
+<col style="text-align:left;">
+</colgroup>
+
+<thead>
+<tr>
+	<th style="text-align:left;"><strong><em>Property:</em></strong></th>
+	<th style="text-align:left;"><strong><em>Function:</em></strong></th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+	<td style="text-align:left;"><strong>Inside</strong></td>
+	<td style="text-align:left;">Select Callback if you want the event to trigger when the particle is inside the Collider. Select Ignore for the event <strong>not</strong> to trigger when the particle is inside the Collider. Select Kill to destroy particles inside the Collider.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>Outside</strong></td>
+	<td style="text-align:left;">Select Callback if you want the event to trigger when the particle is outside the Collider. Select Ignore for the event <strong>not</strong> to trigger when the particle is outside the Collider. Select Kill to destroy particles outside the Collider.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>Enter</strong></td>
+	<td style="text-align:left;">Select Callback if you want the event to trigger when the particle enters the Collider. Select Ignore for the event <strong>not</strong> to trigger when the particle enters the Collider. Select Kill to destroy particles when they enter the Collider.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>Exit</strong></td>
+	<td style="text-align:left;">Select Callback if you want the event to trigger when the particle exits the Collider. Select Ignore for the event <strong>not</strong> to trigger when the particle exits the Collider. Select Kill to destroy particles when they exit the Collider.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>Radius Scale</strong></td>
+	<td style="text-align:left;">This parameter sets the particle’s Collider bounds, allowing an event to appear to happen before or after the particle touches the Collider. For example, you may want a particle to appear to penetrate a Collider object’s surface a little before bouncing off, in which case you would set the Radius Scale to be a little less than 1. Note that this setting does not change when the event actually triggers, but can delay or advance the visual effect of the trigger. <br>- Enter 1 for the event to appear to happen as a Particle touches the Collider <br>- Enter a value less than 1 for the trigger to appear to happen after a Particle penetrates the Collider <br>- Enter a value greater than 1 for the trigger to appear to happen after a Particle penetrates the Collider</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>Visualize Bounds</strong></td>
+	<td style="text-align:left;">This allows you to display the Particle’s Collider bounds in the Editor window.</td>
+</tr>
+</tbody>
+</table>
+
+<p>Inside the Callback, use <a href="../ScriptReference/ParticlePhysicsExtensions.GetTriggerParticles.html">ParticlePhysicsExtensions.GetTriggerParticles()</a> (along with the <a href="../ScriptReference/ParticleSystemTriggerEventType.html">ParticleSystemTriggerEventType</a> you want to specify) to determine which particles meet which criteria.</p>
+
+<p>The example below causes particles to turn red as they enter the Collider, then turn green as they leave the Collider’s bounds.</p>
+
+<pre><code>using UnityEngine;
+using System.Collections;
+using System.Collections.Generic;
+
+[ExecuteInEditMode]
+public class TriggerScript : MonoBehaviour
+{
+    ParticleSystem ps;
+
+    // these lists are used to contain the particles which match
+    // the trigger conditions each frame.
+    List&lt;ParticleSystem.Particle&gt; enter = new List&lt;ParticleSystem.Particle&gt;();
+    List&lt;ParticleSystem.Particle&gt; exit = new List&lt;ParticleSystem.Particle&gt;();
+
+    void OnEnable()
+    {
+        ps = GetComponent&lt;ParticleSystem&gt;();
+    }
+
+    void OnParticleTrigger()
+    {
+        // get the particles which matched the trigger conditions this frame
+        int numEnter = ps.GetTriggerParticles(ParticleSystemTriggerEventType.Enter, enter);
+        int numExit = ps.GetTriggerParticles(ParticleSystemTriggerEventType.Exit, exit);
+
+        // iterate through the particles which entered the trigger and make them red
+        for (int i = 0; i &lt; numEnter; i++)
+        {
+            ParticleSystem.Particle p = enter[i];
+            p.startColor = new Color32(255, 0, 0, 255);
+            enter[i] = p;
+        }
+
+        // iterate through the particles which exited the trigger and make them green
+        for (int i = 0; i &lt; numExit; i++)
+        {
+            ParticleSystem.Particle p = exit[i];
+            p.startColor = new Color32(0, 255, 0, 255);
+            exit[i] = p;
+        }
+
+        // re-assign the modified particles back into the particle system
+        ps.SetTriggerParticles(ParticleSystemTriggerEventType.Enter, enter);
+        ps.SetTriggerParticles(ParticleSystemTriggerEventType.Exit, exit);
+    }
+}
+
+</code></pre>
+
+<p>The result of this is demonstrated in the images below:</p>
+
+<figure>
+<img src="../uploads/Main/PartSysTriggersModule-ExampleEditorView.png" alt="Editor view">
+<figcaption>Editor view</figcaption>
+</figure>
+
+<figure>
+<img src="../uploads/Main/PartSysTriggersModule-ExampleGameView.png" alt="Game view">
+<figcaption>Game view</figcaption>
+</figure>
+<div class="feedbackbox" id="feedbackbox">
+<div id="rating"><p>Did you find this page useful? Please give it a rating:<br><div id="ratecontent" class="c-rating"></div>
+</p></div>
+<div id="ratingThanks" style="display:none"><p>Thanks for rating this page!</p></div>
+<div id="problem"><p><a name="problem" onclick="document.getElementById('problemType').style.display = '';document.getElementById('problem').style.display = 'none';">Report a problem on this page</a></p></div>
+<div id="problemType" style="display:none"><p>What kind of problem would you like to report?<ul type="problems">
+<li><a name="needcode" onclick="                                                             document.getElementById('problemType').style.display = 'none';                                                             document.getElementById('problemThanks').style.display = '';                                                             SendFeedback('problem-needcode',window.location.href,0);                                                             document.getElementById('problemFormDescription').value='Needs code samples.';                                                             document.getElementById('problemNeedCodeForm').style.display = ''                                                         ">This page needs code samples</a></li>
+<li><a name="code" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-brokencode',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Code samples do not work.';                                                         document.getElementById('problemCodeForm').style.display = ''                                                         ">Code samples do not work</a></li>
+<li><a name="missing" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-missing',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Missing information';                                                         document.getElementById('problemMissingForm').style.display = ''                                                         ">Information is missing</a></li>
+<li><a name="incorrect" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-incorrect',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Incorrect information';                                                         document.getElementById('problemIncorrectForm').style.display = ''                                                         ">Information is incorrect</a></li>
+<li><a name="unclear" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-unclear',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Unclear or confusing information';                                                         document.getElementById('problemUnclearForm').style.display = ''                                                         ">Information is unclear or confusing</a></li>
+<li><a name="language" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-language',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Spelling or grammar error';                                                         document.getElementById('problemLanguageForm').style.display = ''                                                         ">There is a spelling/grammar error on this page</a></li>
+<li><a name="other" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-other',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='This page has a problem';                                                         document.getElementById('problemOtherForm').style.display = ''                                                         ">Something else</a></li>
+</ul>
+<p><known_issues><p>Is something described here not working as you expect it to? It might be a <b>Known Issue</b>. Please check with the Issue Tracker at <a href="https://issuetracker.unity3d.com">issuetracker.unity3d.com</a>.</p></known_issues></p>
+</p></div>
+<div id="problemThanks" style="display:none"><p>Thanks for letting us know! This page has been marked for review based on your feedback.<br><br>If you have time, you can provide more information to help us fix the problem faster.<br><br><a onclick="document.getElementById('problemMoreInfo').style.display = '';document.getElementById('problemThanks').style.display = 'none';">Provide more information</a><br>
+</p></div>
+<div id="problemMoreInfo" style="display:none">
+<p id="problemNeedCodeForm" style="display:none">You've told us this page needs code samples. If you'd like to help us further, you could provide a code sample, or tell us about what kind of code sample you'd like to see:</p>
+<p id="problemCodeForm" style="display:none">You've told us there are code samples on this page which don't work. If you know how to fix it, or have something better we could use instead, please let us know:</p>
+<p id="problemMissingForm" style="display:none">You've told us there is information missing from this page. Please tell us more about what's missing:</p>
+<p id="problemIncorrectForm" style="display:none">You've told us there is incorrect information on this page. If you know what we should change to make it correct, please tell us:</p>
+<p id="problemUnclearForm" style="display:none">You've told us this page has unclear or confusing information. Please tell us more about what you found unclear or confusing, or let us know how we could make it clearer:</p>
+<p id="problemLanguageForm" style="display:none">You've told us there is a spelling or grammar error on this page. Please tell us what's wrong:</p>
+<p id="problemOtherForm" style="display:none">You've told us this page has a problem. Please tell us more about what's wrong:</p>
+<form>
+<textarea id="problemFormSuggestionField" cols="40" rows="5"></textarea><input type="hidden" id="problemFormDescription"><input type="submit" id="problemFormDescriptionSubmit" value="Submit" onclick="                                             document.getElementById('problemMoreInfo').style.display = 'none';                                             document.getElementById('problemMoreInfoThanks').style.display = '';                                             return false;                                             ">
+</form>
+</div>
+<div id="problemMoreInfoThanks" style="display:none"><p>Thanks for helping to make the Unity documentation better!</p></div>
+<script>
+
+                                            var ratecontent = document.querySelector('#ratecontent'); // target element
+                                            var currentRating = 0; // initial rating
+                                            var maxRating= 5; // max rating
+
+                                            // callback to run after setting the rating
+                                            var callback = function(rating) {
+                                                document.getElementById('ratingThanks').style.display = '';
+                                                document.getElementById('ratecontent').style.display = 'none';
+                                                document.getElementById('rating').style.display = 'none';
+                                                SendFeedback("rating",window.location.href,rating);
+                                            };
+
+                                            // rating instance
+                                            var myRating = rating(ratecontent, currentRating, maxRating, callback);
+                                        </script>
+</div>
+<div class="nextprev clear">
+<div class="icon tt left mr1" data-distance="-40|-30|top">
+<span class="prev"><a href="PartSysCollisionModule.html"></a></span><div class="tip">Collision module</div>
+</div>
+<div class="icon tt right" data-distance="-40|-30|top">
+<span class="next"><a href="PartSysSubEmitModule.html"></a></span><div class="tip">Sub Emitters module</div>
+</div>
+</div>
+</div>
+</body></html>

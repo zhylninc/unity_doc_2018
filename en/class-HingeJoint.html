@@ -1,0 +1,237 @@
+<html><head><title>html模版</title></head><body>Unity - Manual: Hinge Joint</br>
+<div class="breadcrumbs clear"><ul>
+<li><a href="UnityManual.html">Unity User Manual (2018.1 beta)</a></li>
+<li><a href="PhysicsSection.html">Physics</a></li>
+<li><a href="Physics3DReference.html">3D Physics Reference</a></li>
+<li>Hinge Joint</li>
+</ul></div>
+<div class="mb20"><div class="nextprev clear">
+<div class="icon tt left mr1" data-distance="-40|-30|top">
+<span class="prev"><a href="class-FixedJoint.html"></a></span><div class="tip">Fixed Joint</div>
+</div>
+<div class="icon tt right" data-distance="-40|-30|top">
+<span class="next"><a href="class-MeshCollider.html"></a></span><div class="tip">Mesh Collider</div>
+</div>
+</div></div>
+<div class="otherversionswrapper" onmouseover="setOtherVersionsDisplay(true)" onmouseout="setOtherVersionsDisplay(false)">
+<a>Other Versions</a><div class="otherversionscontent" id="OtherVersionsContent" style="display: none;">Cannot access other versions offline!</div>
+</div>
+<div class="scrollToFeedback"><a id="scrollToFeedback">Leave feedback</a></div>
+<h1>Hinge Joint</h1>
+<!--BeginSwitchLink--><a href='../ScriptReference/HingeJoint.html' title='Go to HingeJoint page in the Scripting Reference' class='switch-link gray-btn sbtn left'>Switch to Scripting</a><!--EndSwitchLink-->
+<div class="clear"></div>
+
+<p>The <strong>Hinge Joint</strong> groups together two <a href="class-Rigidbody.html">Rigidbodies</a>, constraining them to move like they are connected by a hinge. It is perfect for doors, but can also be used to model chains, pendulums, etc.</p>
+
+<figure>
+<img src="../uploads/Main/Inspector-HingeJoint.png" alt="">
+</figure>
+
+<h2>Properties</h2>
+
+<table>
+<colgroup>
+<col style="text-align:left;">
+<col style="text-align:left;">
+</colgroup>
+
+<thead>
+<tr>
+	<th style="text-align:left;"><strong><em>Property:</em></strong></th>
+	<th style="text-align:left;"><strong><em>Function:</em></strong></th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+	<td style="text-align:left;"><strong>Connected Body</strong></td>
+	<td style="text-align:left;">Optional reference to the Rigidbody that the joint is dependent upon. If not set, the joint connects to the world.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>Anchor</strong></td>
+	<td style="text-align:left;">The position of the axis around which the body swings. The position is defined in local space.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>Axis</strong></td>
+	<td style="text-align:left;">The direction of the axis around which the body swings. The direction is defined in local space.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>Auto Configure Connected Anchor</strong></td>
+	<td style="text-align:left;">If this is enabled, then the Connected Anchor position will be calculated automatically to match the global position of the anchor property. This is the default behavior. If this is disabled, you can configure the position of the connected anchor manually.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>Connected Anchor</strong></td>
+	<td style="text-align:left;">Manual configuration of the connected anchor position.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>Use Spring</strong></td>
+	<td style="text-align:left;">Spring makes the Rigidbody reach for a specific angle compared to its connected body.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>Spring</strong></td>
+	<td style="text-align:left;">Properties of the Spring that are used if <strong>Use Spring</strong> is enabled.</td>
+</tr>
+<tr>
+	<td style="text-align:left;">        <strong>Spring</strong>
+</td>
+	<td style="text-align:left;">The force the object asserts to move into the position.</td>
+</tr>
+<tr>
+	<td style="text-align:left;">        <strong>Damper</strong>
+</td>
+	<td style="text-align:left;">The higher this value, the more the object will slow down.</td>
+</tr>
+<tr>
+	<td style="text-align:left;">        <strong>Target Position</strong>
+</td>
+	<td style="text-align:left;">Target angle of the spring. The spring pulls towards this angle measured in degrees.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>Use Motor</strong></td>
+	<td style="text-align:left;">The motor makes the object spin around.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>Motor</strong></td>
+	<td style="text-align:left;">Properties of the Motor that are used if <strong>Use Motor</strong> is enabled.</td>
+</tr>
+<tr>
+	<td style="text-align:left;">        <strong>Target Velocity</strong>
+</td>
+	<td style="text-align:left;">The speed the object tries to attain.</td>
+</tr>
+<tr>
+	<td style="text-align:left;">        <strong>Force</strong>
+</td>
+	<td style="text-align:left;">The force applied in order to attain the speed.</td>
+</tr>
+<tr>
+	<td style="text-align:left;">        <strong>Free Spin</strong>
+</td>
+	<td style="text-align:left;">If enabled, the motor is never used to brake the spinning, only accelerate it.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>Use Limits</strong></td>
+	<td style="text-align:left;">If enabled, the angle of the hinge will be restricted within the <strong>Min</strong> &amp; <strong>Max</strong> values.</td>
+</tr>
+<tr>
+	<td style="text-align:left;">
+<strong>Limits __ |Properties of the Limits that are used if </strong>Use Limits__ is enabled.</td>
+</tr>
+<tr>
+	<td style="text-align:left;">        <strong>Min</strong>
+</td>
+	<td style="text-align:left;">The lowest angle the rotation can go.</td>
+</tr>
+<tr>
+	<td style="text-align:left;">        <strong>Max</strong>
+</td>
+	<td style="text-align:left;">The highest angle the rotation can go.</td>
+</tr>
+<tr>
+	<td style="text-align:left;">        <strong>Bounciness</strong>
+</td>
+	<td style="text-align:left;">How much the object bounces when it hits the minimum or maximum stop limit.</td>
+</tr>
+<tr>
+	<td style="text-align:left;">        <strong>Contact Distance</strong>
+</td>
+	<td style="text-align:left;">Within the contact distance from the limit contacts will persist in order to avoid jitter.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>Break Force</strong></td>
+	<td style="text-align:left;">The force that needs to be applied for this joint to break.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>Break Torque</strong></td>
+	<td style="text-align:left;">The torque that needs to be applied for this joint to break.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>Enable Collision</strong></td>
+	<td style="text-align:left;">When checked, this enables collisions between bodies connected with a joint.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>Enable Preprocessing</strong></td>
+	<td style="text-align:left;">Disabling preprocessing helps to stabilize impossible-to-fulfil configurations.</td>
+</tr>
+</tbody>
+</table>
+
+<h2>Details</h2>
+
+<p>A single Hinge Joint should be applied to a <strong>GameObject</strong>. The hinge will rotate at the point specified by the <strong>Anchor</strong> property, moving around the specified <strong>Axis</strong> property. You <strong>do not</strong> need to assign a GameObject to the joint’s <strong>Connected Body</strong> property. You should only assign a GameObject to the <strong>Connected Body</strong> property if you want the joint’s <strong>Transform</strong> to be dependent on the attached object’s Transform.</p>
+
+<p>Think about how the hinge of a door works. The <strong>Axis</strong> in this case is up, positive along the Y axis. The <strong>Anchor</strong> is placed somewhere at the intersection between door and wall. You would not need to assign the wall to the <strong>Connected Body</strong>, because the joint will be connected to the world by default.</p>
+
+<p>Now think about a doggy door hinge. The doggy door’s <strong>Axis</strong> would be sideways, positive along the relative X axis. The main door should be assigned as the <strong>Connected Body</strong>, so the doggy door’s hinge is dependent on the main door’s Rigidbody.</p>
+
+<h3>Chains</h3>
+
+<p>Multiple Hinge Joints can also be strung together to create a chain. Add a joint to each link in the chain, and attach the next link as the <strong>Connected Body</strong>.</p>
+
+<h2>Hints</h2>
+
+<ul>
+<li>You do not need to assign a <strong>Connected Body</strong> to your joint for it to work.</li>
+<li>Use <strong>Break Force</strong> in order to make dynamic damage systems. This is really cool as it allows the player to break a door off its hinge by blasting it with a rocket launcher or running into it with a car.</li>
+<li>The <strong>Spring</strong>, <strong>Motor</strong>, and <strong>Limits</strong> properties allow you to fine-tune your joint’s behaviors.</li>
+<li>Use of <strong>Spring</strong>, <strong>Motor</strong> are intended to be mutually exclusive. Using both at the same time leads to unpredictable results.</li>
+</ul>
+<div class="feedbackbox" id="feedbackbox">
+<div id="rating"><p>Did you find this page useful? Please give it a rating:<br><div id="ratecontent" class="c-rating"></div>
+</p></div>
+<div id="ratingThanks" style="display:none"><p>Thanks for rating this page!</p></div>
+<div id="problem"><p><a name="problem" onclick="document.getElementById('problemType').style.display = '';document.getElementById('problem').style.display = 'none';">Report a problem on this page</a></p></div>
+<div id="problemType" style="display:none"><p>What kind of problem would you like to report?<ul type="problems">
+<li><a name="needcode" onclick="                                                             document.getElementById('problemType').style.display = 'none';                                                             document.getElementById('problemThanks').style.display = '';                                                             SendFeedback('problem-needcode',window.location.href,0);                                                             document.getElementById('problemFormDescription').value='Needs code samples.';                                                             document.getElementById('problemNeedCodeForm').style.display = ''                                                         ">This page needs code samples</a></li>
+<li><a name="code" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-brokencode',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Code samples do not work.';                                                         document.getElementById('problemCodeForm').style.display = ''                                                         ">Code samples do not work</a></li>
+<li><a name="missing" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-missing',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Missing information';                                                         document.getElementById('problemMissingForm').style.display = ''                                                         ">Information is missing</a></li>
+<li><a name="incorrect" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-incorrect',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Incorrect information';                                                         document.getElementById('problemIncorrectForm').style.display = ''                                                         ">Information is incorrect</a></li>
+<li><a name="unclear" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-unclear',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Unclear or confusing information';                                                         document.getElementById('problemUnclearForm').style.display = ''                                                         ">Information is unclear or confusing</a></li>
+<li><a name="language" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-language',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Spelling or grammar error';                                                         document.getElementById('problemLanguageForm').style.display = ''                                                         ">There is a spelling/grammar error on this page</a></li>
+<li><a name="other" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-other',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='This page has a problem';                                                         document.getElementById('problemOtherForm').style.display = ''                                                         ">Something else</a></li>
+</ul>
+<p><known_issues><p>Is something described here not working as you expect it to? It might be a <b>Known Issue</b>. Please check with the Issue Tracker at <a href="https://issuetracker.unity3d.com">issuetracker.unity3d.com</a>.</p></known_issues></p>
+</p></div>
+<div id="problemThanks" style="display:none"><p>Thanks for letting us know! This page has been marked for review based on your feedback.<br><br>If you have time, you can provide more information to help us fix the problem faster.<br><br><a onclick="document.getElementById('problemMoreInfo').style.display = '';document.getElementById('problemThanks').style.display = 'none';">Provide more information</a><br>
+</p></div>
+<div id="problemMoreInfo" style="display:none">
+<p id="problemNeedCodeForm" style="display:none">You've told us this page needs code samples. If you'd like to help us further, you could provide a code sample, or tell us about what kind of code sample you'd like to see:</p>
+<p id="problemCodeForm" style="display:none">You've told us there are code samples on this page which don't work. If you know how to fix it, or have something better we could use instead, please let us know:</p>
+<p id="problemMissingForm" style="display:none">You've told us there is information missing from this page. Please tell us more about what's missing:</p>
+<p id="problemIncorrectForm" style="display:none">You've told us there is incorrect information on this page. If you know what we should change to make it correct, please tell us:</p>
+<p id="problemUnclearForm" style="display:none">You've told us this page has unclear or confusing information. Please tell us more about what you found unclear or confusing, or let us know how we could make it clearer:</p>
+<p id="problemLanguageForm" style="display:none">You've told us there is a spelling or grammar error on this page. Please tell us what's wrong:</p>
+<p id="problemOtherForm" style="display:none">You've told us this page has a problem. Please tell us more about what's wrong:</p>
+<form>
+<textarea id="problemFormSuggestionField" cols="40" rows="5"></textarea><input type="hidden" id="problemFormDescription"><input type="submit" id="problemFormDescriptionSubmit" value="Submit" onclick="                                             document.getElementById('problemMoreInfo').style.display = 'none';                                             document.getElementById('problemMoreInfoThanks').style.display = '';                                             return false;                                             ">
+</form>
+</div>
+<div id="problemMoreInfoThanks" style="display:none"><p>Thanks for helping to make the Unity documentation better!</p></div>
+<script>
+
+                                            var ratecontent = document.querySelector('#ratecontent'); // target element
+                                            var currentRating = 0; // initial rating
+                                            var maxRating= 5; // max rating
+
+                                            // callback to run after setting the rating
+                                            var callback = function(rating) {
+                                                document.getElementById('ratingThanks').style.display = '';
+                                                document.getElementById('ratecontent').style.display = 'none';
+                                                document.getElementById('rating').style.display = 'none';
+                                                SendFeedback("rating",window.location.href,rating);
+                                            };
+
+                                            // rating instance
+                                            var myRating = rating(ratecontent, currentRating, maxRating, callback);
+                                        </script>
+</div>
+<div class="nextprev clear">
+<div class="icon tt left mr1" data-distance="-40|-30|top">
+<span class="prev"><a href="class-FixedJoint.html"></a></span><div class="tip">Fixed Joint</div>
+</div>
+<div class="icon tt right" data-distance="-40|-30|top">
+<span class="next"><a href="class-MeshCollider.html"></a></span><div class="tip">Mesh Collider</div>
+</div>
+</div>
+</div>
+</body></html>

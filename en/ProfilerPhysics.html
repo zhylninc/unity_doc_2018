@@ -1,0 +1,172 @@
+<html><head><title>html模版</title></head><body>Unity - Manual: Physics Profiler</br>
+<div class="breadcrumbs clear"><ul>
+<li><a href="UnityManual.html">Unity User Manual (2018.1 beta)</a></li>
+<li><a href="UnityOverview.html">Working in Unity</a></li>
+<li><a href="AdvancedDevelopment.html">Advanced Development</a></li>
+<li><a href="Profiler.html">Profiler overview</a></li>
+<li>Physics Profiler</li>
+</ul></div>
+<div class="mb20"><div class="nextprev clear">
+<div class="icon tt left mr1" data-distance="-40|-30|top">
+<span class="prev"><a href="ProfilerAudio.html"></a></span><div class="tip"> Audio Profiler</div>
+</div>
+<div class="icon tt right" data-distance="-40|-30|top">
+<span class="next"><a href="ProfilerGPU.html"></a></span><div class="tip"> GPU Profiler</div>
+</div>
+</div></div>
+<div class="otherversionswrapper" onmouseover="setOtherVersionsDisplay(true)" onmouseout="setOtherVersionsDisplay(false)">
+<a>Other Versions</a><div class="otherversionscontent" id="OtherVersionsContent" style="display: none;">Cannot access other versions offline!</div>
+</div>
+<div class="scrollToFeedback"><a id="scrollToFeedback">Leave feedback</a></div>
+<h1>Physics Profiler</h1>
+<!--BeginSwitchLink--><!--EndSwitchLink-->
+<div class="clear"></div>
+
+<p>The Physics Profiler displays statistics about physics that have been processed by the physics engine in your Scene. This information can help you diagnose and resolve performance issues or unexpected discrepancies related to the physics in your Scene. </p>
+
+<p>See also <a href="PhysicsDebugVisualization.html">Physics Debug Visualization</a>.</p>
+
+<figure>
+<img src="../uploads/Main/physicsProfiler0.png" alt="Physics Profiler">
+<figcaption>Physics Profiler</figcaption>
+</figure>
+
+<h2>Properties</h2>
+
+<table>
+<colgroup>
+<col style="text-align:left;">
+<col style="text-align:left;">
+</colgroup>
+
+<thead>
+<tr>
+	<th style="text-align:left;"><strong>Property</strong></th>
+	<th style="text-align:left;"><strong>Function</strong></th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+	<td style="text-align:left;"><strong>Active Dynamic</strong></td>
+	<td style="text-align:left;">The number of non-Kinematic Rigidbody components that are not sleeping.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>Active Kinematic</strong></td>
+	<td style="text-align:left;">The number of Kinematic Rigidbody components that are not sleeping. Note that Kinematic Rigidbody components with joints attached may be processed multiple times per frame, and this contributes to the number shown. A Kinematic Rigidbody is active when <a href="../ScriptReference/Rigidbody.MovePosition.html">MovePosition</a> or <a href="../ScriptReference/Rigidbody.MoveRotation.html">MoveRotation</a> is called in a frame, and remains active in the next frame.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>Static Colliders</strong></td>
+	<td style="text-align:left;">The number of Collider components on GameObjects that don’t have Rigidbody components attached to the GameObjects or their parent GameObjects. If such GameObjects or their parent GameObjects have Rigidbody components, the Colliders will not count as Static Colliders. Those Colliders are instead referred to as Compound Colliders. These help to arrange multiple Colliders of a body in a convenient way, rather than having all the Colliders on the same GameObject as the Rigidbody component.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>Rigidbody</strong></td>
+	<td style="text-align:left;">The number of Rigidbody components processed by the physics engine, irrespective of the components’ sleeping state.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>Trigger Overlaps</strong></td>
+	<td style="text-align:left;">The number of overlapping triggers (counted in pairs).</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>Active Constraints</strong></td>
+	<td style="text-align:left;">The number of primitive constraints processed by the physics engine. Constraints are used as a building block of Joints as well as collision response. For example, restricting a linear or rotational degree of freedom of a <a href="../ScriptReference/ConfigurableJoint.html">ConfigurableJoint</a> involves a primitive constraint per each restriction.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>Contacts</strong></td>
+	<td style="text-align:left;">The total number of contact pairs between all Colliders in the Scene, including the amount of trigger overlap pairs as well. Note that contact pairs are created per Collider pair once the distance between them is below a certain user configurable limit, so you may see contacts generated for Rigidbody components that are not yet touching or overlapping. Refer to <a href="../ScriptReference/Collider-contactOffset.html">Collider.contactOffset</a> and <a href="../ScriptReference/ContactPoint-separation.html">ContactPoint.separation</a> for more details.</td>
+</tr>
+</tbody>
+</table>
+
+<p>
+<strong>Notes</strong>:</p>
+
+<ul>
+<li><p>The numbers might not correspond to the exact number of GameObjects with physics components in your Scene. This is because some physics components are processed at a different rate depending on which other components affect it (for example, an attached Joint component). To calculate the exact number of GameObjects with specific physics components attached, write a custom script using the <a href="https://docs.unity3d.com/ScriptReference/Object.FindObjectsOfType.html">FindObjectsOfType</a> function.</p></li>
+<li><p>The Physics Profiler does not show the number of sleeping Rigidbody components. These are components which are not engaging with the physics engine, and are therefore not processed by the Physics Profiler. Refer to <a href="RigidbodiesOverview.html">Rigidbody overview: Sleeping</a> for more information on sleeping Rigidbody components.</p></li>
+</ul>
+
+<h2>Using the Physics Profiler to understand performance issues</h2>
+
+<p>The physics simulation runs on a separate fixed frequency update cycle from the main logic’s update loop, and can only advance time via a <code>Time.fixedDeltaTime</code> per call. This is similar to the difference between <code>Update()</code> and <code>FixedUpdate()</code> (see documentation on the <a href="class-TimeManager.html">Time Manager</a> for more). </p>
+
+<p>When a heavy logics or graphics frame occurs that takes a long amount of time, the Physics Profiler has to call the physics simulation multiple times per frame. This means that an already resource-intensive frame takes even more time and resources, which can easily cause the physics simulation to temporarily stop due to the <strong>Maximum Allowed Timestep</strong> value (which can be set in <strong>Edit</strong> &gt; <strong>Project Settings</strong> &gt; <strong>Time</strong>). </p>
+
+<p>You can detect this in your project by selecting the <a href="ProfilerCPU.html">CPU Usage Profiler</a> and checking the number of calls for <strong>Physics.Processing</strong> or <strong>Physics.Simulate</strong> in the <strong>Overview</strong> section. </p>
+
+<figure>
+<img src="../uploads/Main/physicsProfiler1.png" alt="Physics Profiler with the value of 1 in the Calls column">
+<figcaption>Physics Profiler with the value of 1 in the <strong>Calls</strong> column</figcaption>
+</figure>
+
+<p>In this example image, the value of 1 in the <strong>Calls</strong> column indicates that the physics simulation was called one time over the last logical frame. </p>
+
+<p>A call count close to 10 might indicate an issue. As a first solution, reduce the frequency of the physics simulation; if the issue continues, check what could have caused the heavy frame right before the Physics Profiler had to use that many simulation calls in order to catch up with the game time. Sometimes, a heavy graphics frame may cause more physics simulation calls later on in a Scene. </p>
+
+<p>For more detailed information about the physics simulation in your Scene, click the triangle arrow to expand <strong>Physics.Processing</strong> as shown in the screenshot above. This displays the actual names of the physics engine tasks that run to update your Scene. The two most common names you’re likely to see are:</p>
+
+<ul>
+<li><p>
+<strong>Pxs</strong>: short for ‘PhysX solver’, which are physics engine tasks required by joints as well as resolving contacts for overlapping bodies.</p></li>
+<li><p>
+<strong>ScScene</strong>: used for tasks required for updating the Scene, running the broad phase and narrow phase, and integrating bodies (moving them in space due to forces and impulses). See <a href="http://planning.cs.uiuc.edu/node214.html">Steven M. LaValle’s work on Planning Algorithms</a> for a definition on two-phase collision detection phases.</p></li>
+</ul>
+<div class="feedbackbox" id="feedbackbox">
+<div id="rating"><p>Did you find this page useful? Please give it a rating:<br><div id="ratecontent" class="c-rating"></div>
+</p></div>
+<div id="ratingThanks" style="display:none"><p>Thanks for rating this page!</p></div>
+<div id="problem"><p><a name="problem" onclick="document.getElementById('problemType').style.display = '';document.getElementById('problem').style.display = 'none';">Report a problem on this page</a></p></div>
+<div id="problemType" style="display:none"><p>What kind of problem would you like to report?<ul type="problems">
+<li><a name="needcode" onclick="                                                             document.getElementById('problemType').style.display = 'none';                                                             document.getElementById('problemThanks').style.display = '';                                                             SendFeedback('problem-needcode',window.location.href,0);                                                             document.getElementById('problemFormDescription').value='Needs code samples.';                                                             document.getElementById('problemNeedCodeForm').style.display = ''                                                         ">This page needs code samples</a></li>
+<li><a name="code" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-brokencode',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Code samples do not work.';                                                         document.getElementById('problemCodeForm').style.display = ''                                                         ">Code samples do not work</a></li>
+<li><a name="missing" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-missing',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Missing information';                                                         document.getElementById('problemMissingForm').style.display = ''                                                         ">Information is missing</a></li>
+<li><a name="incorrect" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-incorrect',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Incorrect information';                                                         document.getElementById('problemIncorrectForm').style.display = ''                                                         ">Information is incorrect</a></li>
+<li><a name="unclear" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-unclear',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Unclear or confusing information';                                                         document.getElementById('problemUnclearForm').style.display = ''                                                         ">Information is unclear or confusing</a></li>
+<li><a name="language" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-language',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Spelling or grammar error';                                                         document.getElementById('problemLanguageForm').style.display = ''                                                         ">There is a spelling/grammar error on this page</a></li>
+<li><a name="other" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-other',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='This page has a problem';                                                         document.getElementById('problemOtherForm').style.display = ''                                                         ">Something else</a></li>
+</ul>
+<p><known_issues><p>Is something described here not working as you expect it to? It might be a <b>Known Issue</b>. Please check with the Issue Tracker at <a href="https://issuetracker.unity3d.com">issuetracker.unity3d.com</a>.</p></known_issues></p>
+</p></div>
+<div id="problemThanks" style="display:none"><p>Thanks for letting us know! This page has been marked for review based on your feedback.<br><br>If you have time, you can provide more information to help us fix the problem faster.<br><br><a onclick="document.getElementById('problemMoreInfo').style.display = '';document.getElementById('problemThanks').style.display = 'none';">Provide more information</a><br>
+</p></div>
+<div id="problemMoreInfo" style="display:none">
+<p id="problemNeedCodeForm" style="display:none">You've told us this page needs code samples. If you'd like to help us further, you could provide a code sample, or tell us about what kind of code sample you'd like to see:</p>
+<p id="problemCodeForm" style="display:none">You've told us there are code samples on this page which don't work. If you know how to fix it, or have something better we could use instead, please let us know:</p>
+<p id="problemMissingForm" style="display:none">You've told us there is information missing from this page. Please tell us more about what's missing:</p>
+<p id="problemIncorrectForm" style="display:none">You've told us there is incorrect information on this page. If you know what we should change to make it correct, please tell us:</p>
+<p id="problemUnclearForm" style="display:none">You've told us this page has unclear or confusing information. Please tell us more about what you found unclear or confusing, or let us know how we could make it clearer:</p>
+<p id="problemLanguageForm" style="display:none">You've told us there is a spelling or grammar error on this page. Please tell us what's wrong:</p>
+<p id="problemOtherForm" style="display:none">You've told us this page has a problem. Please tell us more about what's wrong:</p>
+<form>
+<textarea id="problemFormSuggestionField" cols="40" rows="5"></textarea><input type="hidden" id="problemFormDescription"><input type="submit" id="problemFormDescriptionSubmit" value="Submit" onclick="                                             document.getElementById('problemMoreInfo').style.display = 'none';                                             document.getElementById('problemMoreInfoThanks').style.display = '';                                             return false;                                             ">
+</form>
+</div>
+<div id="problemMoreInfoThanks" style="display:none"><p>Thanks for helping to make the Unity documentation better!</p></div>
+<script>
+
+                                            var ratecontent = document.querySelector('#ratecontent'); // target element
+                                            var currentRating = 0; // initial rating
+                                            var maxRating= 5; // max rating
+
+                                            // callback to run after setting the rating
+                                            var callback = function(rating) {
+                                                document.getElementById('ratingThanks').style.display = '';
+                                                document.getElementById('ratecontent').style.display = 'none';
+                                                document.getElementById('rating').style.display = 'none';
+                                                SendFeedback("rating",window.location.href,rating);
+                                            };
+
+                                            // rating instance
+                                            var myRating = rating(ratecontent, currentRating, maxRating, callback);
+                                        </script>
+</div>
+<div class="nextprev clear">
+<div class="icon tt left mr1" data-distance="-40|-30|top">
+<span class="prev"><a href="ProfilerAudio.html"></a></span><div class="tip"> Audio Profiler</div>
+</div>
+<div class="icon tt right" data-distance="-40|-30|top">
+<span class="next"><a href="ProfilerGPU.html"></a></span><div class="tip"> GPU Profiler</div>
+</div>
+</div>
+</div>
+</body></html>

@@ -1,0 +1,192 @@
+<html><head><title>html模版</title></head><body>Unity - Manual: Input Manager</br>
+<div class="breadcrumbs clear"><ul>
+<li><a href="UnityManual.html">Unity User Manual (2018.1 beta)</a></li>
+<li><a href="UnityOverview.html">Working in Unity</a></li>
+<li><a href="EditorFeatures.html">Editor Features</a></li>
+<li><a href="comp-ManagerGroup.html">Settings Managers</a></li>
+<li>Input Manager</li>
+</ul></div>
+<div class="mb20"><div class="nextprev clear">
+<div class="icon tt left mr1" data-distance="-40|-30|top">
+<span class="prev"><a href="class-EditorManager.html"></a></span><div class="tip"> Editor Settings</div>
+</div>
+<div class="icon tt right" data-distance="-40|-30|top">
+<span class="next"><a href="class-NetworkManager.html"></a></span><div class="tip">Network Manager</div>
+</div>
+</div></div>
+<div class="otherversionswrapper" onmouseover="setOtherVersionsDisplay(true)" onmouseout="setOtherVersionsDisplay(false)">
+<a>Other Versions</a><div class="otherversionscontent" id="OtherVersionsContent" style="display: none;">Cannot access other versions offline!</div>
+</div>
+<div class="scrollToFeedback"><a id="scrollToFeedback">Leave feedback</a></div>
+<h1>Input Manager</h1>
+<!--BeginSwitchLink--><!--EndSwitchLink-->
+<div class="clear"></div>
+
+<p>The <strong>Input Manager</strong> is where you define all the different input axes and game actions for your project.</p>
+
+<figure>
+<img src="../uploads/Main/InputSetAll.png" alt="The Input Manager">
+<figcaption>The Input Manager</figcaption>
+</figure>
+
+<p>To see the Input Manager choose: <strong>Edit-&gt;Project Settings-&gt;Input</strong>.</p>
+
+<h2>Properties</h2>
+
+<table>
+<colgroup>
+<col style="text-align:left;">
+<col style="text-align:left;">
+</colgroup>
+
+<thead>
+<tr>
+	<th style="text-align:left;"><strong><em>Property:</em></strong></th>
+	<th style="text-align:left;"><strong><em>Function:</em></strong></th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+	<td style="text-align:left;"><strong>Axes</strong></td>
+	<td style="text-align:left;">Contains all the defined input axes for the current project: <strong>Size</strong> is the number of different input axes in this project, <strong>Element 0, 1, …</strong> are the particular axes to modify.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>Name</strong></td>
+	<td style="text-align:left;">The string that refers to the axis in the game launcher and through scripting.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>Descriptive Name</strong></td>
+	<td style="text-align:left;">A detailed definition of the <strong>Positive Button</strong> function that is displayed in the game launcher.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>Descriptive Negative Name</strong></td>
+	<td style="text-align:left;">A detailed definition of the <strong>Negative Button</strong> function that is displayed in the game launcher.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>Negative Button</strong></td>
+	<td style="text-align:left;">The button that will send a negative value to the axis.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>Positive Button</strong></td>
+	<td style="text-align:left;">The button that will send a positive value to the axis.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>Alt Negative Button</strong></td>
+	<td style="text-align:left;">The secondary button that will send a negative value to the axis.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>Alt Positive Button</strong></td>
+	<td style="text-align:left;">The secondary button that will send a positive value to the axis.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>Gravity</strong></td>
+	<td style="text-align:left;">How fast will the input recenter. Only used when the <strong>Type</strong> is <strong>key / mouse button</strong>.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>Dead</strong></td>
+	<td style="text-align:left;">Any positive or negative values that are less than this number will register as zero. Useful for joysticks.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>Sensitivity</strong></td>
+	<td style="text-align:left;">For keyboard input, a larger value will result in faster response time. A lower value will be more smooth. For Mouse delta the value will scale the actual mouse delta.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>Snap</strong></td>
+	<td style="text-align:left;">If enabled, the axis value will be immediately reset to zero after it receives opposite inputs. Only used when the <strong>Type</strong> is <strong>key / mouse button</strong>.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>Invert</strong></td>
+	<td style="text-align:left;">If enabled, the positive buttons will send negative values to the axis, and vice versa.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>Type</strong></td>
+	<td style="text-align:left;">Use <strong>Key / Mouse Button</strong> for any kind of buttons, Mouse Movement for mouse delta and scrollwheels, <strong>Joystick Axis</strong> for analog joystick axes and <strong>Window Movement</strong> for when the user shakes the window.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>Axis</strong></td>
+	<td style="text-align:left;">Axis of input from the device (joystick, mouse, gamepad, etc.)</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>Joy Num</strong></td>
+	<td style="text-align:left;">Which joystick should be used. By default this is set to retrieve the input from all joysticks. This is only used for input axes and not buttons.</td>
+</tr>
+</tbody>
+</table>
+
+<h2>Details</h2>
+
+<p>All the axes that you set up in the Input Manager serve two purposes:</p>
+
+<ul>
+<li>They allow you to reference your inputs by axis name in scripting</li>
+<li>They allow the players of your game to customize the controls to their liking</li>
+</ul>
+
+<p>All defined axes will be presented to the player in the game launcher, where they will see its name, detailed description, and default buttons. From here, they will have the option to change any of the buttons defined in the axes. Therefore, it is best to write your scripts making use of axes instead of individual buttons, as the player may want to customize the buttons for your game.</p>
+
+<figure>
+<img src="../uploads/Main/Input-GameLauncher.png" alt="The game launchers Input window is displayed when your game is run">
+<figcaption>The game launcher’s Input window is displayed when your game is run</figcaption>
+</figure>
+
+<p>See also: <a href="Input.html">Input</a>.</p>
+<div class="feedbackbox" id="feedbackbox">
+<div id="rating"><p>Did you find this page useful? Please give it a rating:<br><div id="ratecontent" class="c-rating"></div>
+</p></div>
+<div id="ratingThanks" style="display:none"><p>Thanks for rating this page!</p></div>
+<div id="problem"><p><a name="problem" onclick="document.getElementById('problemType').style.display = '';document.getElementById('problem').style.display = 'none';">Report a problem on this page</a></p></div>
+<div id="problemType" style="display:none"><p>What kind of problem would you like to report?<ul type="problems">
+<li><a name="needcode" onclick="                                                             document.getElementById('problemType').style.display = 'none';                                                             document.getElementById('problemThanks').style.display = '';                                                             SendFeedback('problem-needcode',window.location.href,0);                                                             document.getElementById('problemFormDescription').value='Needs code samples.';                                                             document.getElementById('problemNeedCodeForm').style.display = ''                                                         ">This page needs code samples</a></li>
+<li><a name="code" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-brokencode',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Code samples do not work.';                                                         document.getElementById('problemCodeForm').style.display = ''                                                         ">Code samples do not work</a></li>
+<li><a name="missing" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-missing',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Missing information';                                                         document.getElementById('problemMissingForm').style.display = ''                                                         ">Information is missing</a></li>
+<li><a name="incorrect" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-incorrect',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Incorrect information';                                                         document.getElementById('problemIncorrectForm').style.display = ''                                                         ">Information is incorrect</a></li>
+<li><a name="unclear" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-unclear',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Unclear or confusing information';                                                         document.getElementById('problemUnclearForm').style.display = ''                                                         ">Information is unclear or confusing</a></li>
+<li><a name="language" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-language',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Spelling or grammar error';                                                         document.getElementById('problemLanguageForm').style.display = ''                                                         ">There is a spelling/grammar error on this page</a></li>
+<li><a name="other" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-other',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='This page has a problem';                                                         document.getElementById('problemOtherForm').style.display = ''                                                         ">Something else</a></li>
+</ul>
+<p><known_issues><p>Is something described here not working as you expect it to? It might be a <b>Known Issue</b>. Please check with the Issue Tracker at <a href="https://issuetracker.unity3d.com">issuetracker.unity3d.com</a>.</p></known_issues></p>
+</p></div>
+<div id="problemThanks" style="display:none"><p>Thanks for letting us know! This page has been marked for review based on your feedback.<br><br>If you have time, you can provide more information to help us fix the problem faster.<br><br><a onclick="document.getElementById('problemMoreInfo').style.display = '';document.getElementById('problemThanks').style.display = 'none';">Provide more information</a><br>
+</p></div>
+<div id="problemMoreInfo" style="display:none">
+<p id="problemNeedCodeForm" style="display:none">You've told us this page needs code samples. If you'd like to help us further, you could provide a code sample, or tell us about what kind of code sample you'd like to see:</p>
+<p id="problemCodeForm" style="display:none">You've told us there are code samples on this page which don't work. If you know how to fix it, or have something better we could use instead, please let us know:</p>
+<p id="problemMissingForm" style="display:none">You've told us there is information missing from this page. Please tell us more about what's missing:</p>
+<p id="problemIncorrectForm" style="display:none">You've told us there is incorrect information on this page. If you know what we should change to make it correct, please tell us:</p>
+<p id="problemUnclearForm" style="display:none">You've told us this page has unclear or confusing information. Please tell us more about what you found unclear or confusing, or let us know how we could make it clearer:</p>
+<p id="problemLanguageForm" style="display:none">You've told us there is a spelling or grammar error on this page. Please tell us what's wrong:</p>
+<p id="problemOtherForm" style="display:none">You've told us this page has a problem. Please tell us more about what's wrong:</p>
+<form>
+<textarea id="problemFormSuggestionField" cols="40" rows="5"></textarea><input type="hidden" id="problemFormDescription"><input type="submit" id="problemFormDescriptionSubmit" value="Submit" onclick="                                             document.getElementById('problemMoreInfo').style.display = 'none';                                             document.getElementById('problemMoreInfoThanks').style.display = '';                                             return false;                                             ">
+</form>
+</div>
+<div id="problemMoreInfoThanks" style="display:none"><p>Thanks for helping to make the Unity documentation better!</p></div>
+<script>
+
+                                            var ratecontent = document.querySelector('#ratecontent'); // target element
+                                            var currentRating = 0; // initial rating
+                                            var maxRating= 5; // max rating
+
+                                            // callback to run after setting the rating
+                                            var callback = function(rating) {
+                                                document.getElementById('ratingThanks').style.display = '';
+                                                document.getElementById('ratecontent').style.display = 'none';
+                                                document.getElementById('rating').style.display = 'none';
+                                                SendFeedback("rating",window.location.href,rating);
+                                            };
+
+                                            // rating instance
+                                            var myRating = rating(ratecontent, currentRating, maxRating, callback);
+                                        </script>
+</div>
+<div class="nextprev clear">
+<div class="icon tt left mr1" data-distance="-40|-30|top">
+<span class="prev"><a href="class-EditorManager.html"></a></span><div class="tip"> Editor Settings</div>
+</div>
+<div class="icon tt right" data-distance="-40|-30|top">
+<span class="next"><a href="class-NetworkManager.html"></a></span><div class="tip">Network Manager</div>
+</div>
+</div>
+</div>
+</body></html>

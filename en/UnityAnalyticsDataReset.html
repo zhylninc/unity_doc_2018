@@ -1,0 +1,143 @@
+<html><head><title>html模版</title></head><body>Unity - Manual:  Data reset</br>
+<div class="breadcrumbs clear"><ul>
+<li><a href="UnityManual.html">Unity User Manual (2018.1 beta)</a></li>
+<li><a href="UnityServices.html">Unity Services &amp; Dashboard</a></li>
+<li><a href="UnityAnalytics.html">Unity Analytics</a></li>
+<li> Data reset</li>
+</ul></div>
+<div class="mb20"><div class="nextprev clear">
+<div class="icon tt left mr1" data-distance="-40|-30|top">
+<span class="prev"><a href="UnityAnalyticsRawDataExport.html"></a></span><div class="tip">Unity Analytics Raw Data Export</div>
+</div>
+<div class="icon tt right" data-distance="-40|-30|top">
+<span class="next"><a href="UnityAnalyticsUpgrading.html"></a></span><div class="tip">Upgrading Unity Analytics</div>
+</div>
+</div></div>
+<div class="otherversionswrapper" onmouseover="setOtherVersionsDisplay(true)" onmouseout="setOtherVersionsDisplay(false)">
+<a>Other Versions</a><div class="otherversionscontent" id="OtherVersionsContent" style="display: none;">Cannot access other versions offline!</div>
+</div>
+<div class="scrollToFeedback"><a id="scrollToFeedback">Leave feedback</a></div>
+<h1>Data reset</h1>
+<!--BeginSwitchLink--><!--EndSwitchLink-->
+<div class="clear"></div>
+
+<p>Unity Analytics allows you to permanently clear all data from your Analytics dashboard by performing a data reset. This action <strong>cannot be undone</strong>, so read this documentation and the confirmation message in the Analytics dashboard carefully before carrying out this action. </p>
+
+<p>This page describes when data reset might be useful, and what impact it has on the data in your Analytics project.</p>
+
+<h2>When to perform a data reset</h2>
+
+<p>The main scenario that calls for resetting data in an Analytics project is to wipe data from your dashboard immediately prior to launching (or re-releasing) your game. This ensures that the data you collect after the reset is clean and not mixed with previously collected data, which may skew your analyses.</p>
+
+<p>Other common scenarios:</p>
+
+<ul>
+<li><p>Wiping data collected during development and testing prior to launching your game.</p></li>
+<li><p>Wiping data from a pre-release or beta version.</p></li>
+<li><p>Wiping data prior to launching your game in a store.</p></li>
+<li><p>Wiping data prior to a product re-launch.</p></li>
+</ul>
+
+<p>Please note that performing a data reset is optional - you may never need to use this feature.</p>
+
+<h2>How this impacts your data</h2>
+
+<p>Due to Unity Technologies’ data processing cycles, all data resets occur at 00:00 UTC the following day. See the Configure page for the exact time (in your timezone) your data is due to be reset.</p>
+
+<figure>
+<img src="../uploads/Main/AnalyticsDataReset1.png" alt="">
+</figure>
+
+<p>Data is collected from the time the reset occurs, but might take up to 4 hours to populate in your dashboard. You cannot specify another date to reset your data on.</p>
+
+<p>Resetting your data affects these Analytics elements as follows:</p>
+
+<ul>
+<li><p>
+<strong>Dashboard:</strong> This is permanently wiped of all visible data, including data in charts.</p></li>
+<li><p>
+<strong>Custom event data:</strong> This is permanently wiped from the dashboard. Note that custom events you have instrumented in your project don’t need to be re-validated.</p></li>
+<li><p>
+<strong>Reports, Funnels, Segments:</strong> All data associated with these configurations (that you have created in your project) is permanently wiped from the dashboard. However, the configurations themselves are not deleted. For example, if you create a three-step funnel, populate it with data, and then perform a data reset, the three-step funnel is still present in your dashboard but is no longer populated with the data.</p></li>
+<li><p>
+<strong>Livestream:</strong> This is not affected by performing a data reset.</p></li>
+<li><p>
+<strong>Raw Data Export:</strong> This is not affected by performing a data reset. You can still perform an export to access historical data, and all previous exports you have run are still present in the Activity table on the Raw Data Export page.</p></li>
+</ul>
+
+<h2>How to perform a data reset</h2>
+
+<p>To perform a data reset, open the Unity Services Dashboard for the Analytics project that you want to reset, go to <strong>Configure</strong>, and click on <strong>Reset Data</strong>. Make sure to read the confirmation message carefully. Type the name of your project into the text box and click <strong>Reset</strong>. The data reset occurs immediately.</p>
+
+<figure>
+<img src="../uploads/Main/UnityAnalyticsDataReset55.png" alt="">
+</figure>
+
+<p>When the data is reset, the following details are provided about the last reset in the <strong>Configure</strong> page:</p>
+
+<ul>
+<li><p>Date and time the reset occurred.</p></li>
+<li><p>User who performed the reset.</p></li>
+</ul>
+
+<p>
+<strong>Note:</strong> Only Project Owners and Managers can perform this action. Project Users do not have permission to perform a reset.</p>
+<div class="feedbackbox" id="feedbackbox">
+<div id="rating"><p>Did you find this page useful? Please give it a rating:<br><div id="ratecontent" class="c-rating"></div>
+</p></div>
+<div id="ratingThanks" style="display:none"><p>Thanks for rating this page!</p></div>
+<div id="problem"><p><a name="problem" onclick="document.getElementById('problemType').style.display = '';document.getElementById('problem').style.display = 'none';">Report a problem on this page</a></p></div>
+<div id="problemType" style="display:none"><p>What kind of problem would you like to report?<ul type="problems">
+<li><a name="needcode" onclick="                                                             document.getElementById('problemType').style.display = 'none';                                                             document.getElementById('problemThanks').style.display = '';                                                             SendFeedback('problem-needcode',window.location.href,0);                                                             document.getElementById('problemFormDescription').value='Needs code samples.';                                                             document.getElementById('problemNeedCodeForm').style.display = ''                                                         ">This page needs code samples</a></li>
+<li><a name="code" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-brokencode',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Code samples do not work.';                                                         document.getElementById('problemCodeForm').style.display = ''                                                         ">Code samples do not work</a></li>
+<li><a name="missing" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-missing',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Missing information';                                                         document.getElementById('problemMissingForm').style.display = ''                                                         ">Information is missing</a></li>
+<li><a name="incorrect" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-incorrect',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Incorrect information';                                                         document.getElementById('problemIncorrectForm').style.display = ''                                                         ">Information is incorrect</a></li>
+<li><a name="unclear" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-unclear',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Unclear or confusing information';                                                         document.getElementById('problemUnclearForm').style.display = ''                                                         ">Information is unclear or confusing</a></li>
+<li><a name="language" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-language',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Spelling or grammar error';                                                         document.getElementById('problemLanguageForm').style.display = ''                                                         ">There is a spelling/grammar error on this page</a></li>
+<li><a name="other" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-other',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='This page has a problem';                                                         document.getElementById('problemOtherForm').style.display = ''                                                         ">Something else</a></li>
+</ul>
+<p><known_issues><p>Is something described here not working as you expect it to? It might be a <b>Known Issue</b>. Please check with the Issue Tracker at <a href="https://issuetracker.unity3d.com">issuetracker.unity3d.com</a>.</p></known_issues></p>
+</p></div>
+<div id="problemThanks" style="display:none"><p>Thanks for letting us know! This page has been marked for review based on your feedback.<br><br>If you have time, you can provide more information to help us fix the problem faster.<br><br><a onclick="document.getElementById('problemMoreInfo').style.display = '';document.getElementById('problemThanks').style.display = 'none';">Provide more information</a><br>
+</p></div>
+<div id="problemMoreInfo" style="display:none">
+<p id="problemNeedCodeForm" style="display:none">You've told us this page needs code samples. If you'd like to help us further, you could provide a code sample, or tell us about what kind of code sample you'd like to see:</p>
+<p id="problemCodeForm" style="display:none">You've told us there are code samples on this page which don't work. If you know how to fix it, or have something better we could use instead, please let us know:</p>
+<p id="problemMissingForm" style="display:none">You've told us there is information missing from this page. Please tell us more about what's missing:</p>
+<p id="problemIncorrectForm" style="display:none">You've told us there is incorrect information on this page. If you know what we should change to make it correct, please tell us:</p>
+<p id="problemUnclearForm" style="display:none">You've told us this page has unclear or confusing information. Please tell us more about what you found unclear or confusing, or let us know how we could make it clearer:</p>
+<p id="problemLanguageForm" style="display:none">You've told us there is a spelling or grammar error on this page. Please tell us what's wrong:</p>
+<p id="problemOtherForm" style="display:none">You've told us this page has a problem. Please tell us more about what's wrong:</p>
+<form>
+<textarea id="problemFormSuggestionField" cols="40" rows="5"></textarea><input type="hidden" id="problemFormDescription"><input type="submit" id="problemFormDescriptionSubmit" value="Submit" onclick="                                             document.getElementById('problemMoreInfo').style.display = 'none';                                             document.getElementById('problemMoreInfoThanks').style.display = '';                                             return false;                                             ">
+</form>
+</div>
+<div id="problemMoreInfoThanks" style="display:none"><p>Thanks for helping to make the Unity documentation better!</p></div>
+<script>
+
+                                            var ratecontent = document.querySelector('#ratecontent'); // target element
+                                            var currentRating = 0; // initial rating
+                                            var maxRating= 5; // max rating
+
+                                            // callback to run after setting the rating
+                                            var callback = function(rating) {
+                                                document.getElementById('ratingThanks').style.display = '';
+                                                document.getElementById('ratecontent').style.display = 'none';
+                                                document.getElementById('rating').style.display = 'none';
+                                                SendFeedback("rating",window.location.href,rating);
+                                            };
+
+                                            // rating instance
+                                            var myRating = rating(ratecontent, currentRating, maxRating, callback);
+                                        </script>
+</div>
+<div class="nextprev clear">
+<div class="icon tt left mr1" data-distance="-40|-30|top">
+<span class="prev"><a href="UnityAnalyticsRawDataExport.html"></a></span><div class="tip">Unity Analytics Raw Data Export</div>
+</div>
+<div class="icon tt right" data-distance="-40|-30|top">
+<span class="next"><a href="UnityAnalyticsUpgrading.html"></a></span><div class="tip">Upgrading Unity Analytics</div>
+</div>
+</div>
+</div>
+</body></html>

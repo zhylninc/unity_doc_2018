@@ -1,0 +1,203 @@
+<html><head><title>html模版</title></head><body>Unity - Manual: Slider Joint 2D</br>
+<div class="breadcrumbs clear"><ul>
+<li><a href="UnityManual.html">Unity User Manual (2018.1 beta)</a></li>
+<li><a href="Unity2D.html">2D</a></li>
+<li><a href="Physics2DReference.html">Physics Reference 2D</a></li>
+<li><a href="Joints2D.html"> 2D Joints</a></li>
+<li>Slider Joint 2D</li>
+</ul></div>
+<div class="mb20"><div class="nextprev clear">
+<div class="icon tt left mr1" data-distance="-40|-30|top">
+<span class="prev"><a href="class-RelativeJoint2D.html"></a></span><div class="tip">Relative Joint 2D</div>
+</div>
+<div class="icon tt right" data-distance="-40|-30|top">
+<span class="next"><a href="class-SpringJoint2D.html"></a></span><div class="tip">Spring Joint 2D</div>
+</div>
+</div></div>
+<div class="otherversionswrapper" onmouseover="setOtherVersionsDisplay(true)" onmouseout="setOtherVersionsDisplay(false)">
+<a>Other Versions</a><div class="otherversionscontent" id="OtherVersionsContent" style="display: none;">Cannot access other versions offline!</div>
+</div>
+<div class="scrollToFeedback"><a id="scrollToFeedback">Leave feedback</a></div>
+<h1>Slider Joint 2D</h1>
+<!--BeginSwitchLink--><a href='../ScriptReference/SliderJoint2D.html' title='Go to SliderJoint2D page in the Scripting Reference' class='switch-link gray-btn sbtn left'>Switch to Scripting</a><!--EndSwitchLink-->
+<div class="clear"></div>
+
+<p>This joint allows a game object controlled by rigidbody physics to slide along a line in space, like sliding doors, for example. The object can freely move anywhere along the line in response to collisions or forces or, alternatively, it can be moved along by a motor force, with limits applied to keep its position within a certain section of the line.</p>
+
+<figure>
+<img src="../uploads/Main/SliderJoint2DInspector.png" alt="">
+</figure>
+
+<table>
+<colgroup>
+<col style="text-align:left;">
+<col style="text-align:left;">
+</colgroup>
+
+<thead>
+<tr>
+	<th style="text-align:left;"><strong><em>Property:</em></strong></th>
+	<th style="text-align:left;"><strong><em>Function:</em></strong></th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+	<td style="text-align:left;"><strong>Enable Collision</strong></td>
+	<td style="text-align:left;">Can the two connected objects collide with each other? Check the box for yes.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>Connected Rigid Body</strong></td>
+	<td style="text-align:left;">Specify here the other object this joint connects to. Leave this as <strong>None</strong> and the other end of the joint will be fixed at a point in space defined by the <strong>Connected Anchor</strong> setting. Select the circle to the right of the field to view a list of objects to connect to.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>Auto Configure Connected Anchor</strong></td>
+	<td style="text-align:left;">Check this box to automatically set the anchor location for the other object this joint connects to. (Check this instead of completing the <strong>Connected Anchor</strong> fields.)</td>
+</tr>
+</tbody>
+
+<tbody>
+<tr>
+	<td style="text-align:left;"><strong>Anchor</strong></td>
+	<td style="text-align:left;">The place (in terms of X, Y co-ordinates on the <strong>RigidBody</strong>) where the end point of the joint connects to <em>this</em> object.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>Connected Anchor</strong></td>
+	<td style="text-align:left;">The place (in terms of X, Y co-ordinates on the <strong>RigidBody</strong>) where the end point of the joint connects to <em>the other</em> object.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>Auto Configure Angle</strong></td>
+	<td style="text-align:left;">Check this box to automtically detect the angle between the two objects and set it as the angle that the joint keeps between the two objects. (By selecting this, you don’t need to manually specify the angle.)</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>Angle</strong></td>
+	<td style="text-align:left;">Enter the the angle that the joint keeps between the two objects.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>Use Motor</strong></td>
+	<td style="text-align:left;">Use the sliding motor? Check the box for yes.</td>
+</tr>
+</tbody>
+
+<tbody>
+<tr>
+	<td style="text-align:left;"><strong>Motor</strong></td>
+	<td style="text-align:left;"></td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>Motor Speed</strong></td>
+	<td style="text-align:left;">Target motor speed (m/sec).</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>Maximum Motor Force</strong></td>
+	<td style="text-align:left;">The maximum force the motor can apply while attempting to reach the target speed.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>Use Limits</strong></td>
+	<td style="text-align:left;">Should there be limits to the linear (straight line) force? Check the box for yes.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>Translation Limits</strong></td>
+	<td style="text-align:left;"></td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>Lower Translation</strong></td>
+	<td style="text-align:left;">The minimum distance the object can be from the connected anchor point.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>Upper Translation</strong></td>
+	<td style="text-align:left;">The maximum distance the object can be from the connected anchor point.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>Break Force</strong></td>
+	<td style="text-align:left;">Specify the linear (straight line) force level needed to break and so delete the joint. <strong>Infinity</strong> means it is unbreakable.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>Break Torque</strong></td>
+	<td style="text-align:left;">Specify the torque (rotation) level needed to break and so delete the joint. <strong>Infinity</strong> means it is unbreakable.</td>
+</tr>
+</tbody>
+</table>
+
+<h2>Details</h2>
+
+<p>(See also <a href="Joints2D.html">Joints 2D</a>: <em>Details and Hints</em> for useful background information on all 2D joints.)</p>
+
+<p>Use this joint to make objects slide! The aim of this joint is to maintain the position of two points on a configurable line that extends to infinity. Those two points can be two <strong>Rigidbody2D</strong> components or a <strong>Rigidbody2D</strong> component and a fixed position in the world. (Connect to a fixed position in the world by setting <strong>Connected Rigidbody</strong> to None). </p>
+
+<p>The joint applies a linear force to both connected rigid body objects to keep them on the line. It also has a simulated linear motor that applies linear force to move the ridid body objects along the line. You can turn the motor off or on. Athough the line is infinite, you can specify just a segment of the line that you want to use, using the <strong>Translation Limits</strong> option. </p>
+
+<p>This joint has three simultaneous constraints. All are optional:</p>
+
+<ul>
+<li>Maintain a relative linear distance away from a specified line between two anchor points on two rigid body objects.</li>
+<li>Maintain a linear speed between two anchor points on two rigid body objects along a specified line. (The speed is limited with a maximum force.)</li>
+<li>Maintain a linear distance between two points along the specified line.</li>
+</ul>
+
+<p><strong>For Example:</strong></p>
+
+<p>You can use this joint to construct physical objects that need to react as if they are connected together on a line. Such as:</p>
+
+<ul>
+<li>A platform which can move up or down. The platform reacts by moving down when something lands on it but must never move sideways. You can use this joint to ensure platform to never moves up or down beyond certain limits. Use the motor to make the platform move up.</li>
+</ul>
+<div class="feedbackbox" id="feedbackbox">
+<div id="rating"><p>Did you find this page useful? Please give it a rating:<br><div id="ratecontent" class="c-rating"></div>
+</p></div>
+<div id="ratingThanks" style="display:none"><p>Thanks for rating this page!</p></div>
+<div id="problem"><p><a name="problem" onclick="document.getElementById('problemType').style.display = '';document.getElementById('problem').style.display = 'none';">Report a problem on this page</a></p></div>
+<div id="problemType" style="display:none"><p>What kind of problem would you like to report?<ul type="problems">
+<li><a name="needcode" onclick="                                                             document.getElementById('problemType').style.display = 'none';                                                             document.getElementById('problemThanks').style.display = '';                                                             SendFeedback('problem-needcode',window.location.href,0);                                                             document.getElementById('problemFormDescription').value='Needs code samples.';                                                             document.getElementById('problemNeedCodeForm').style.display = ''                                                         ">This page needs code samples</a></li>
+<li><a name="code" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-brokencode',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Code samples do not work.';                                                         document.getElementById('problemCodeForm').style.display = ''                                                         ">Code samples do not work</a></li>
+<li><a name="missing" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-missing',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Missing information';                                                         document.getElementById('problemMissingForm').style.display = ''                                                         ">Information is missing</a></li>
+<li><a name="incorrect" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-incorrect',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Incorrect information';                                                         document.getElementById('problemIncorrectForm').style.display = ''                                                         ">Information is incorrect</a></li>
+<li><a name="unclear" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-unclear',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Unclear or confusing information';                                                         document.getElementById('problemUnclearForm').style.display = ''                                                         ">Information is unclear or confusing</a></li>
+<li><a name="language" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-language',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Spelling or grammar error';                                                         document.getElementById('problemLanguageForm').style.display = ''                                                         ">There is a spelling/grammar error on this page</a></li>
+<li><a name="other" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-other',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='This page has a problem';                                                         document.getElementById('problemOtherForm').style.display = ''                                                         ">Something else</a></li>
+</ul>
+<p><known_issues><p>Is something described here not working as you expect it to? It might be a <b>Known Issue</b>. Please check with the Issue Tracker at <a href="https://issuetracker.unity3d.com">issuetracker.unity3d.com</a>.</p></known_issues></p>
+</p></div>
+<div id="problemThanks" style="display:none"><p>Thanks for letting us know! This page has been marked for review based on your feedback.<br><br>If you have time, you can provide more information to help us fix the problem faster.<br><br><a onclick="document.getElementById('problemMoreInfo').style.display = '';document.getElementById('problemThanks').style.display = 'none';">Provide more information</a><br>
+</p></div>
+<div id="problemMoreInfo" style="display:none">
+<p id="problemNeedCodeForm" style="display:none">You've told us this page needs code samples. If you'd like to help us further, you could provide a code sample, or tell us about what kind of code sample you'd like to see:</p>
+<p id="problemCodeForm" style="display:none">You've told us there are code samples on this page which don't work. If you know how to fix it, or have something better we could use instead, please let us know:</p>
+<p id="problemMissingForm" style="display:none">You've told us there is information missing from this page. Please tell us more about what's missing:</p>
+<p id="problemIncorrectForm" style="display:none">You've told us there is incorrect information on this page. If you know what we should change to make it correct, please tell us:</p>
+<p id="problemUnclearForm" style="display:none">You've told us this page has unclear or confusing information. Please tell us more about what you found unclear or confusing, or let us know how we could make it clearer:</p>
+<p id="problemLanguageForm" style="display:none">You've told us there is a spelling or grammar error on this page. Please tell us what's wrong:</p>
+<p id="problemOtherForm" style="display:none">You've told us this page has a problem. Please tell us more about what's wrong:</p>
+<form>
+<textarea id="problemFormSuggestionField" cols="40" rows="5"></textarea><input type="hidden" id="problemFormDescription"><input type="submit" id="problemFormDescriptionSubmit" value="Submit" onclick="                                             document.getElementById('problemMoreInfo').style.display = 'none';                                             document.getElementById('problemMoreInfoThanks').style.display = '';                                             return false;                                             ">
+</form>
+</div>
+<div id="problemMoreInfoThanks" style="display:none"><p>Thanks for helping to make the Unity documentation better!</p></div>
+<script>
+
+                                            var ratecontent = document.querySelector('#ratecontent'); // target element
+                                            var currentRating = 0; // initial rating
+                                            var maxRating= 5; // max rating
+
+                                            // callback to run after setting the rating
+                                            var callback = function(rating) {
+                                                document.getElementById('ratingThanks').style.display = '';
+                                                document.getElementById('ratecontent').style.display = 'none';
+                                                document.getElementById('rating').style.display = 'none';
+                                                SendFeedback("rating",window.location.href,rating);
+                                            };
+
+                                            // rating instance
+                                            var myRating = rating(ratecontent, currentRating, maxRating, callback);
+                                        </script>
+</div>
+<div class="nextprev clear">
+<div class="icon tt left mr1" data-distance="-40|-30|top">
+<span class="prev"><a href="class-RelativeJoint2D.html"></a></span><div class="tip">Relative Joint 2D</div>
+</div>
+<div class="icon tt right" data-distance="-40|-30|top">
+<span class="next"><a href="class-SpringJoint2D.html"></a></span><div class="tip">Spring Joint 2D</div>
+</div>
+</div>
+</div>
+</body></html>

@@ -1,0 +1,164 @@
+<html><head><title>html模版</title></head><body>Unity - Manual: Creating a New Animation Clip</br>
+<div class="breadcrumbs clear"><ul>
+<li><a href="UnityManual.html">Unity User Manual (2018.1 beta)</a></li>
+<li><a href="AnimationSection.html">Animation</a></li>
+<li><a href="AnimationClips.html">Animation Clips</a></li>
+<li><a href="AnimationEditorGuide.html">Animation Window Guide</a></li>
+<li>Creating a New Animation Clip</li>
+</ul></div>
+<div class="mb20"><div class="nextprev clear">
+<div class="icon tt left mr1" data-distance="-40|-30|top">
+<span class="prev"><a href="animeditor-UsingAnimationEditor.html"></a></span><div class="tip">Using the Animation view</div>
+</div>
+<div class="icon tt right" data-distance="-40|-30|top">
+<span class="next"><a href="animeditor-AnimatingAGameObject.html"></a></span><div class="tip">Animating a GameObject</div>
+</div>
+</div></div>
+<div class="otherversionswrapper" onmouseover="setOtherVersionsDisplay(true)" onmouseout="setOtherVersionsDisplay(false)">
+<a>Other Versions</a><div class="otherversionscontent" id="OtherVersionsContent" style="display: none;">Cannot access other versions offline!</div>
+</div>
+<div class="scrollToFeedback"><a id="scrollToFeedback">Leave feedback</a></div>
+<h1>Creating a New Animation Clip</h1>
+<!--BeginSwitchLink--><!--EndSwitchLink-->
+<div class="clear"></div>
+
+<p>To animate Game Objects in Unity, the object or objects need an <strong>Animator Component</strong> attached. This Animator Component must reference an <strong>Animator Controller</strong>, which in turn contains references to one or more <strong>Animation Clips</strong>.</p>
+
+<p>When using the Animation View to begin animating a GameObject in Unity, all these items will be automatically created, attached and set-up for you. </p>
+
+<p>To create a new <strong>Animation Clip</strong> for the selected GameObject, and make sure the <strong>Animation Window</strong> is visible.</p>
+
+<p>If the GameObject does not yet have any Animation Clips assigned, you will see the “Create” button in the centre of the Animation Window timeline area. Click the Create button. You will then be prompted to save your new empty Animation Clip somewhere in your <strong>Assets</strong> folder. </p>
+
+<figure>
+<img src="../uploads/Main/AnimationEditorNewClip.png" alt="Create a new Animation Clip">
+<figcaption>Create a new Animation Clip</figcaption>
+</figure>
+
+<p>Once you have saved this new empty Animation Clip, a number of things happen automatically:</p>
+
+<ul>
+<li>A new Animator Controller asset will be will be created</li>
+<li>The new clip being created will be added into the Animator Controller as the default state</li>
+<li>An Animator Component will be added to the GameObject being animated</li>
+<li>The Animator Component will have the new Animator Controller assigned to it</li>
+</ul>
+
+<p>The result of this automatic sequence is that all the required elements of the animation system are set up for you, and you can now begin animating the objects.</p>
+
+<h2>Adding another Animation Clip</h2>
+
+<p>If the Game Object already has one or more Animation Clips assigned, the “Create” button will not be visible. Instead, one of the clips will be visible in the animation window. You can switch between which Animation Clip is visible in the window by using the menu in the top-left of the Animation window, just under the playback controls.</p>
+
+<p>If you want to create a new Animation Clip on an object that already has animations, you must select “Create New Clip” from this menu. Again, you will be prompted to save your new empty Animation Clip before being able to work with it.</p>
+
+<figure>
+<img src="../uploads/Main/AnimationEditorNewClipMenu.png" alt="Adding an additional new Animation Clip to an object which already has some clips assigned">
+<figcaption>Adding an additional new Animation Clip to an object which already has some clips assigned</figcaption>
+</figure>
+
+<h2>How it fits together</h2>
+
+<p>While the above steps automatically set up the relevant components and references, it can useful to understand which pieces must be connected together.</p>
+
+<ul>
+<li>A GameObject must have an <strong>Animator</strong> component</li>
+<li>The Animator component must have an <strong>Animator Controller</strong> asset assigned</li>
+<li>The Animator Controller asset must have one or more Animation Clips assigned</li>
+</ul>
+
+<p>The diagram below shows how these pieces are assigned, starting from the new animation clip created in the Animation Window:</p>
+
+<figure>
+<img src="../uploads/Main/AnimationNewClipAutoSetup.png" alt="A new clip is created, and saved as an asset. The clip is automatically added as the default state to a new Animator Controller which is also saved as an asset. The Animator Controller is assigned to an Animator Component which is added to the GameObject. ">
+<figcaption>A new clip is created, and saved as an asset. The clip is automatically added as the default state to a new Animator Controller which is also saved as an asset. The Animator Controller is assigned to an Animator Component which is added to the GameObject. </figcaption>
+</figure>
+
+<p>In the image below, you can see a GameObject selected (“Cube”) that is not yet animated. We have just a simple cube, with no Animator component. The Animation, Hierarchy, Project and Inspector windows are arranged side-by-side for clarity. </p>
+
+<figure>
+<img src="../uploads/Main/AnimationEditorNewAnimationBefore.png" alt="Before: An un-animated gameobject (Cube) is selected. It does not yet have an Animator Component, and no Animator Controller exists.">
+<figcaption>Before: An un-animated gameobject (“Cube”) is selected. It does not yet have an Animator Component, and no Animator Controller exists.</figcaption>
+</figure>
+
+<p>By pressing the create button in the Animation view, a new animation clip is created. Unity will ask to pick the name &amp; location to save this new Animation Clip. Unity also creates an Animator Controller asset with the same name as the selected GameObject, adds an Animator component to the GameObject, and connects the assets up appropriately. </p>
+
+<figure>
+<img src="../uploads/Main/AnimationEditorNewAnimationAdded.png" alt="After: After creating a new clip, you can see the new assets created in the project window, and the Animator Component assigned in the Inspector window (far right). You can also see the new clip assigned as the default state in the Animator Window">
+<figcaption>After: After creating a new clip, you can see the new assets created in the project window, and the Animator Component assigned in the Inspector window (far right). You can also see the new clip assigned as the default state in the Animator Window</figcaption>
+</figure>
+
+<p>In the new view above, you can see:</p>
+
+<ul>
+<li>The Animation Window (top left) now shows a timeline with a white playback head line, ready to record new keyframes. The clip’s name is visible in the clip menu, just below the playback controls.</li>
+<li>The Inspector (center) shows that the Cube GameObject now has an <strong>Animator Component</strong> added, and the “Controller” field of the component shows that an Animator Controller asset called “Cube” is assigned</li>
+<li>The Project Window (bottom right) shows that two new assets have been created - An Animator Controller asset called “Cube” and an Animation Clip asset called “Cube Animation Clip”</li>
+<li>The Animator Window (bottom left) shows the contents of the Animator Controller - you can see that the Cube Animation Clip has been added to the controller, and that it is the “default state” as indicated by the orange color. Subsequent clips added to the controller would have a grey color, indicating they are not the default state.</li>
+</ul>
+
+<hr>
+
+<ul>
+<li><span class="page-edit">2017–09–05 Page amended with limited <a href="DocumentationEditorialReview.html">editorial review</a>
+</span></li>
+</ul>
+<div class="feedbackbox" id="feedbackbox">
+<div id="rating"><p>Did you find this page useful? Please give it a rating:<br><div id="ratecontent" class="c-rating"></div>
+</p></div>
+<div id="ratingThanks" style="display:none"><p>Thanks for rating this page!</p></div>
+<div id="problem"><p><a name="problem" onclick="document.getElementById('problemType').style.display = '';document.getElementById('problem').style.display = 'none';">Report a problem on this page</a></p></div>
+<div id="problemType" style="display:none"><p>What kind of problem would you like to report?<ul type="problems">
+<li><a name="needcode" onclick="                                                             document.getElementById('problemType').style.display = 'none';                                                             document.getElementById('problemThanks').style.display = '';                                                             SendFeedback('problem-needcode',window.location.href,0);                                                             document.getElementById('problemFormDescription').value='Needs code samples.';                                                             document.getElementById('problemNeedCodeForm').style.display = ''                                                         ">This page needs code samples</a></li>
+<li><a name="code" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-brokencode',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Code samples do not work.';                                                         document.getElementById('problemCodeForm').style.display = ''                                                         ">Code samples do not work</a></li>
+<li><a name="missing" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-missing',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Missing information';                                                         document.getElementById('problemMissingForm').style.display = ''                                                         ">Information is missing</a></li>
+<li><a name="incorrect" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-incorrect',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Incorrect information';                                                         document.getElementById('problemIncorrectForm').style.display = ''                                                         ">Information is incorrect</a></li>
+<li><a name="unclear" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-unclear',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Unclear or confusing information';                                                         document.getElementById('problemUnclearForm').style.display = ''                                                         ">Information is unclear or confusing</a></li>
+<li><a name="language" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-language',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Spelling or grammar error';                                                         document.getElementById('problemLanguageForm').style.display = ''                                                         ">There is a spelling/grammar error on this page</a></li>
+<li><a name="other" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-other',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='This page has a problem';                                                         document.getElementById('problemOtherForm').style.display = ''                                                         ">Something else</a></li>
+</ul>
+<p><known_issues><p>Is something described here not working as you expect it to? It might be a <b>Known Issue</b>. Please check with the Issue Tracker at <a href="https://issuetracker.unity3d.com">issuetracker.unity3d.com</a>.</p></known_issues></p>
+</p></div>
+<div id="problemThanks" style="display:none"><p>Thanks for letting us know! This page has been marked for review based on your feedback.<br><br>If you have time, you can provide more information to help us fix the problem faster.<br><br><a onclick="document.getElementById('problemMoreInfo').style.display = '';document.getElementById('problemThanks').style.display = 'none';">Provide more information</a><br>
+</p></div>
+<div id="problemMoreInfo" style="display:none">
+<p id="problemNeedCodeForm" style="display:none">You've told us this page needs code samples. If you'd like to help us further, you could provide a code sample, or tell us about what kind of code sample you'd like to see:</p>
+<p id="problemCodeForm" style="display:none">You've told us there are code samples on this page which don't work. If you know how to fix it, or have something better we could use instead, please let us know:</p>
+<p id="problemMissingForm" style="display:none">You've told us there is information missing from this page. Please tell us more about what's missing:</p>
+<p id="problemIncorrectForm" style="display:none">You've told us there is incorrect information on this page. If you know what we should change to make it correct, please tell us:</p>
+<p id="problemUnclearForm" style="display:none">You've told us this page has unclear or confusing information. Please tell us more about what you found unclear or confusing, or let us know how we could make it clearer:</p>
+<p id="problemLanguageForm" style="display:none">You've told us there is a spelling or grammar error on this page. Please tell us what's wrong:</p>
+<p id="problemOtherForm" style="display:none">You've told us this page has a problem. Please tell us more about what's wrong:</p>
+<form>
+<textarea id="problemFormSuggestionField" cols="40" rows="5"></textarea><input type="hidden" id="problemFormDescription"><input type="submit" id="problemFormDescriptionSubmit" value="Submit" onclick="                                             document.getElementById('problemMoreInfo').style.display = 'none';                                             document.getElementById('problemMoreInfoThanks').style.display = '';                                             return false;                                             ">
+</form>
+</div>
+<div id="problemMoreInfoThanks" style="display:none"><p>Thanks for helping to make the Unity documentation better!</p></div>
+<script>
+
+                                            var ratecontent = document.querySelector('#ratecontent'); // target element
+                                            var currentRating = 0; // initial rating
+                                            var maxRating= 5; // max rating
+
+                                            // callback to run after setting the rating
+                                            var callback = function(rating) {
+                                                document.getElementById('ratingThanks').style.display = '';
+                                                document.getElementById('ratecontent').style.display = 'none';
+                                                document.getElementById('rating').style.display = 'none';
+                                                SendFeedback("rating",window.location.href,rating);
+                                            };
+
+                                            // rating instance
+                                            var myRating = rating(ratecontent, currentRating, maxRating, callback);
+                                        </script>
+</div>
+<div class="nextprev clear">
+<div class="icon tt left mr1" data-distance="-40|-30|top">
+<span class="prev"><a href="animeditor-UsingAnimationEditor.html"></a></span><div class="tip">Using the Animation view</div>
+</div>
+<div class="icon tt right" data-distance="-40|-30|top">
+<span class="next"><a href="animeditor-AnimatingAGameObject.html"></a></span><div class="tip">Animating a GameObject</div>
+</div>
+</div>
+</div>
+</body></html>

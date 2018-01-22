@@ -1,0 +1,124 @@
+<html><head><title>html模版</title></head><body>Unity - Manual:  Custom lighting models in Surface Shaders</br>
+<div class="breadcrumbs clear"><ul>
+<li><a href="UnityManual.html">Unity User Manual (2018.1 beta)</a></li>
+<li><a href="Graphics.html">Graphics</a></li>
+<li><a href="GraphicsReference.html">Graphics Reference</a></li>
+<li><a href="SL-Reference.html"> Shader Reference</a></li>
+<li><a href="SL-SurfaceShaders.html"> Writing Surface Shaders</a></li>
+<li> Custom lighting models in Surface Shaders</li>
+</ul></div>
+<div class="mb20"><div class="nextprev clear">
+<div class="icon tt left mr1" data-distance="-40|-30|top">
+<span class="prev"><a href="SL-SurfaceShaderExamples.html"></a></span><div class="tip">Surface Shader examples</div>
+</div>
+<div class="icon tt right" data-distance="-40|-30|top">
+<span class="next"><a href="SL-SurfaceShaderLightingExamples.html"></a></span><div class="tip">Surface Shader lighting examples</div>
+</div>
+</div></div>
+<div class="otherversionswrapper" onmouseover="setOtherVersionsDisplay(true)" onmouseout="setOtherVersionsDisplay(false)">
+<a>Other Versions</a><div class="otherversionscontent" id="OtherVersionsContent" style="display: none;">Cannot access other versions offline!</div>
+</div>
+<div class="scrollToFeedback"><a id="scrollToFeedback">Leave feedback</a></div>
+<h1>Custom lighting models in Surface Shaders</h1>
+<!--BeginSwitchLink--><!--EndSwitchLink-->
+<div class="clear"></div>
+
+<p>When writing <a href="SL-SurfaceShaders.html">Surface Shaders</a>, you describe the properties of a surface (such as albedo color and normal), and a <strong>Lighting Model</strong> computes the lighting interaction. </p>
+
+<p>There are two built-in lighting models: <code>Lambert</code> for diffuse lighting, and <code>BlinnPhong</code> for specular lighting. The <em>Lighting.cginc</em> file inside Unity defines these models (Windows: <em>&lt;unity install path&gt;/Data/CGIncludes/Lighting.cginc</em>; macOS: <em>/Applications/Unity/Unity.app/Contents/CGIncludes/Lighting.cginc</em>).</p>
+
+<p>Sometimes you might want to use a custom lighting model. You can do this with Surface Shaders. A lighting model is simply a couple of Cg/HLSL functions that match some conventions. </p>
+
+<h2>Declaring lighting models</h2>
+
+<p>A lighting model consists of regular functions with names that begin <code>Lighting</code>. You can declare them anywhere in your shader file, or one of the included files. The functions are:</p>
+
+<ol>
+<li><p>
+<code>half4 Lighting&lt;Name&gt; (SurfaceOutput s, UnityGI gi);</code>
+ Use this in forward rendering paths for light models that are <em>not</em> dependent on the view direction.</p></li>
+<li><p>
+<code>half4 Lighting&lt;Name&gt; (SurfaceOutput s, half3 viewDir, UnityGI gi);</code>
+ Use this in forward rendering paths for light models that <em>are</em> dependent on the view direction.</p></li>
+<li><p>
+<code>half4 Lighting&lt;Name&gt;_Deferred (SurfaceOutput s, UnityGI gi, out half4 outDiffuseOcclusion, out half4 outSpecSmoothness, out half4 outNormal);</code>
+ Use this in deferred lighting paths.</p></li>
+<li><p>
+<code>half4 Lighting&lt;Name&gt;_PrePass (SurfaceOutput s, half4 light);</code>
+ Use this in light prepass (legacy deferred) lighting paths.</p></li>
+</ol>
+
+<p>Note that you don’t need to declare all functions. A lighting model either uses view direction or it does not. Similarly, if the lighting model only works in forward rendering, do not declare the <code>_Deferred</code> or <code>_Prepass</code> function. This ensures that Shaders that use it only compile to forward rendering.</p>
+
+<h2>Custom GI</h2>
+
+<p>Declare the following function to customize the decoding lightmap data and probes:</p>
+
+<ol>
+<li><code>half4 Lighting&lt;Name&gt;_GI (SurfaceOutput s, UnityGIInput data, inout UnityGI gi);</code></li>
+</ol>
+
+<p>Note that to decode standard Unity lightmaps and SH probes, you can use the built-in <code>DecodeLightmap</code> and <code>ShadeSHPerPixel</code> functions, as seen in <code>UnityGI_Base</code> in the <em>UnityGlobalIllumination.cginc</em> file inside Unity (Windows: <em>&lt;unity install path&gt;/Data/CGIncludes/UnityGlobalIllumination.cginc</em>; macOS: <em>/Applications/Unity/Unity.app/Contents/CGIncludes/UnityGlobalIllumination.cginc</em>_).</p>
+
+<h2>Examples</h2>
+
+<p>See documentation on <a href="SL-SurfaceShaderLightingExamples.html">Surface Shader Lighting Examples</a> for more information.</p>
+<div class="feedbackbox" id="feedbackbox">
+<div id="rating"><p>Did you find this page useful? Please give it a rating:<br><div id="ratecontent" class="c-rating"></div>
+</p></div>
+<div id="ratingThanks" style="display:none"><p>Thanks for rating this page!</p></div>
+<div id="problem"><p><a name="problem" onclick="document.getElementById('problemType').style.display = '';document.getElementById('problem').style.display = 'none';">Report a problem on this page</a></p></div>
+<div id="problemType" style="display:none"><p>What kind of problem would you like to report?<ul type="problems">
+<li><a name="needcode" onclick="                                                             document.getElementById('problemType').style.display = 'none';                                                             document.getElementById('problemThanks').style.display = '';                                                             SendFeedback('problem-needcode',window.location.href,0);                                                             document.getElementById('problemFormDescription').value='Needs code samples.';                                                             document.getElementById('problemNeedCodeForm').style.display = ''                                                         ">This page needs code samples</a></li>
+<li><a name="code" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-brokencode',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Code samples do not work.';                                                         document.getElementById('problemCodeForm').style.display = ''                                                         ">Code samples do not work</a></li>
+<li><a name="missing" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-missing',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Missing information';                                                         document.getElementById('problemMissingForm').style.display = ''                                                         ">Information is missing</a></li>
+<li><a name="incorrect" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-incorrect',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Incorrect information';                                                         document.getElementById('problemIncorrectForm').style.display = ''                                                         ">Information is incorrect</a></li>
+<li><a name="unclear" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-unclear',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Unclear or confusing information';                                                         document.getElementById('problemUnclearForm').style.display = ''                                                         ">Information is unclear or confusing</a></li>
+<li><a name="language" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-language',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Spelling or grammar error';                                                         document.getElementById('problemLanguageForm').style.display = ''                                                         ">There is a spelling/grammar error on this page</a></li>
+<li><a name="other" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-other',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='This page has a problem';                                                         document.getElementById('problemOtherForm').style.display = ''                                                         ">Something else</a></li>
+</ul>
+<p><known_issues><p>Is something described here not working as you expect it to? It might be a <b>Known Issue</b>. Please check with the Issue Tracker at <a href="https://issuetracker.unity3d.com">issuetracker.unity3d.com</a>.</p></known_issues></p>
+</p></div>
+<div id="problemThanks" style="display:none"><p>Thanks for letting us know! This page has been marked for review based on your feedback.<br><br>If you have time, you can provide more information to help us fix the problem faster.<br><br><a onclick="document.getElementById('problemMoreInfo').style.display = '';document.getElementById('problemThanks').style.display = 'none';">Provide more information</a><br>
+</p></div>
+<div id="problemMoreInfo" style="display:none">
+<p id="problemNeedCodeForm" style="display:none">You've told us this page needs code samples. If you'd like to help us further, you could provide a code sample, or tell us about what kind of code sample you'd like to see:</p>
+<p id="problemCodeForm" style="display:none">You've told us there are code samples on this page which don't work. If you know how to fix it, or have something better we could use instead, please let us know:</p>
+<p id="problemMissingForm" style="display:none">You've told us there is information missing from this page. Please tell us more about what's missing:</p>
+<p id="problemIncorrectForm" style="display:none">You've told us there is incorrect information on this page. If you know what we should change to make it correct, please tell us:</p>
+<p id="problemUnclearForm" style="display:none">You've told us this page has unclear or confusing information. Please tell us more about what you found unclear or confusing, or let us know how we could make it clearer:</p>
+<p id="problemLanguageForm" style="display:none">You've told us there is a spelling or grammar error on this page. Please tell us what's wrong:</p>
+<p id="problemOtherForm" style="display:none">You've told us this page has a problem. Please tell us more about what's wrong:</p>
+<form>
+<textarea id="problemFormSuggestionField" cols="40" rows="5"></textarea><input type="hidden" id="problemFormDescription"><input type="submit" id="problemFormDescriptionSubmit" value="Submit" onclick="                                             document.getElementById('problemMoreInfo').style.display = 'none';                                             document.getElementById('problemMoreInfoThanks').style.display = '';                                             return false;                                             ">
+</form>
+</div>
+<div id="problemMoreInfoThanks" style="display:none"><p>Thanks for helping to make the Unity documentation better!</p></div>
+<script>
+
+                                            var ratecontent = document.querySelector('#ratecontent'); // target element
+                                            var currentRating = 0; // initial rating
+                                            var maxRating= 5; // max rating
+
+                                            // callback to run after setting the rating
+                                            var callback = function(rating) {
+                                                document.getElementById('ratingThanks').style.display = '';
+                                                document.getElementById('ratecontent').style.display = 'none';
+                                                document.getElementById('rating').style.display = 'none';
+                                                SendFeedback("rating",window.location.href,rating);
+                                            };
+
+                                            // rating instance
+                                            var myRating = rating(ratecontent, currentRating, maxRating, callback);
+                                        </script>
+</div>
+<div class="nextprev clear">
+<div class="icon tt left mr1" data-distance="-40|-30|top">
+<span class="prev"><a href="SL-SurfaceShaderExamples.html"></a></span><div class="tip">Surface Shader examples</div>
+</div>
+<div class="icon tt right" data-distance="-40|-30|top">
+<span class="next"><a href="SL-SurfaceShaderLightingExamples.html"></a></span><div class="tip">Surface Shader lighting examples</div>
+</div>
+</div>
+</div>
+</body></html>

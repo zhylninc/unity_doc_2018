@@ -1,0 +1,190 @@
+<html><head><title>html模版</title></head><body>Unity - Manual:  Using sampler states</br>
+<div class="breadcrumbs clear"><ul>
+<li><a href="UnityManual.html">Unity User Manual (2018.1 beta)</a></li>
+<li><a href="Graphics.html">Graphics</a></li>
+<li><a href="GraphicsReference.html">Graphics Reference</a></li>
+<li><a href="SL-Reference.html"> Shader Reference</a></li>
+<li><a href="SL-ShaderPrograms.html">Writing vertex and fragment shaders</a></li>
+<li> Using sampler states</li>
+</ul></div>
+<div class="mb20"><div class="nextprev clear">
+<div class="icon tt left mr1" data-distance="-40|-30|top">
+<span class="prev"><a href="SL-DataTypesAndPrecision.html"></a></span><div class="tip"> Shader data types and precision</div>
+</div>
+<div class="icon tt right" data-distance="-40|-30|top">
+<span class="next"><a href="SL-Shader.html"></a></span><div class="tip">ShaderLab Syntax</div>
+</div>
+</div></div>
+<div class="otherversionswrapper" onmouseover="setOtherVersionsDisplay(true)" onmouseout="setOtherVersionsDisplay(false)">
+<a>Other Versions</a><div class="otherversionscontent" id="OtherVersionsContent" style="display: none;">Cannot access other versions offline!</div>
+</div>
+<div class="scrollToFeedback"><a id="scrollToFeedback">Leave feedback</a></div>
+<h1>Using sampler states</h1>
+<!--BeginSwitchLink--><!--EndSwitchLink-->
+<div class="clear"></div>
+
+<h2>Coupled textures and samplers</h2>
+
+<p>Most of the time when sampling textures in shaders, the texture sampling state should come form <a href="class-TextureImporter.html">texture settings</a> – essentially, textures and samplers are coupled together. This is default behavior when using DX9-style shader syntax:</p>
+
+<pre><code>sampler2D _MainTex;
+// ...
+half4 color = tex2D(_MainTex, uv);
+</code></pre>
+
+<p>Using sampler2D, sampler3D, samplerCUBE HLSL keywords declares both texture and sampler.</p>
+
+<p>Most of the time this is what you want, and is the only supported option on older graphics APIs (OpenGL ES).</p>
+
+<h2>Separate textures and samplers</h2>
+
+<p>Many graphics APIs and GPUs allow using fewer samplers than textures, and coupled texture+sampler syntax might not allow more complex shaders to be written. For example Direct3D 11 allows using up to 128 textures in a single shader, but only up to 16 samplers.</p>
+
+<p>Unity allows declaring textures and samplers using DX11-style HLSL syntax, with a special naming convention to match them up: samplers that have names in the form of “sampler”+TextureName will take sampling states from that texture.</p>
+
+<p>The shader snippet from section above could be rewritten in DX11-style HLSL syntax, and it would do the same thing:</p>
+
+<pre><code>Texture2D _MainTex;
+SamplerState sampler_MainTex; // &quot;sampler&quot; + “_MainTex”
+// ...
+half4 color = _MainTex.Sample(sampler_MainTex, uv);
+</code></pre>
+
+<p>However, this way a shader could be written to “reuse” samplers from other textures, while sampling more than one texture. In the example below, three textures are sampled, but only one sampler is used for all of them:</p>
+
+<pre><code>Texture2D _MainTex;
+Texture2D _SecondTex;
+Texture2D _ThirdTex;
+SamplerState sampler_MainTex; // &quot;sampler&quot; + “_MainTex”
+// ...
+half4 color = _MainTex.Sample(sampler_MainTex, uv);
+color += _SecondTex.Sample(sampler_MainTex, uv);
+color += _ThirdTex.Sample(sampler_MainTex, uv);
+</code></pre>
+
+<p>Note however that DX11-style HLSL syntax does not work on some older platforms (e.g. OpenGL ES 2.0), see <a href="SL-ShadingLanguage.html">shading language</a> for details. You might want to specify <code>#pragma target 3.5</code> (see <a href="SL-ShaderCompileTargets.html">shader compilation targets</a> to skip older platforms from using the shader.</p>
+
+<p>Unity provides several shader macros to help with declaring and sampling textures using this “separate samplers” approach, see <a href="SL-BuiltinMacros.html">built-in macros</a>. The example above could be rewritten this way, using said macros:</p>
+
+<pre><code>UNITY_DECLARE_TEX2D(_MainTex);
+UNITY_DECLARE_TEX2D_NOSAMPLER(_SecondTex);
+UNITY_DECLARE_TEX2D_NOSAMPLER(_ThirdTex);
+// ...
+half4 color = UNITY_SAMPLE_TEX2D(_MainTex, uv);
+color += UNITY_SAMPLE_TEX2D_SAMPLER(_SecondTex, _MainTex, uv);
+color += UNITY_SAMPLE_TEX2D_SAMPLER(_ThirdTex, _MainTex, uv);
+</code></pre>
+
+<p>The above would compile on all platforms supported by Unity, but would fallback to using three samplers on older platforms like DX9.</p>
+
+<h2>Inline sampler states</h2>
+
+<p>In addition to recognizing HLSL SamplerState objects named as “sampler”+TextureName, Unity also recognizes some other patterns in sampler names. This is useful for declaring simple hardcoded sampling states directly in the shaders. An example:</p>
+
+<pre><code>Texture2D _MainTex;
+SamplerState my_point_clamp_sampler;
+// ...
+half4 color = _MainTex.Sample(my_point_clamp_sampler, uv);
+</code></pre>
+
+<p>The name “my_point_clamp_sampler” will be recognized as a sampler that should use Point (nearest) texture filtering, and Clamp texture wrapping mode.</p>
+
+<p>Sampler names recognized as “inline” sampler states (all case insensitive):</p>
+
+<ul>
+<li><p>“Point”, “Linear” or “Trilinear” (required) set up texture filtering mode.</p></li>
+<li>
+<p>“Clamp”, “Repeat”, “Mirror” or “MirrorOnce” (required) set up texture wrap mode.</p>
+
+<ul>
+<li>Wrap modes can be specified per-axis (UVW), e.g. “ClampU_RepeatV”.</li>
+</ul>
+</li>
+<li><p>“Compare” (optional) set up sampler for depth comparison; use with HLSL SamplerComparisonState type and SampleCmp / SampleCmpLevelZero functions.</p></li>
+</ul>
+
+<p>Here’s an example of sampling texture with <code>sampler_linear_repeat</code> and <code>sampler_point_repeat</code> SamplerStates respectively, illustrating how the name controls filtering mode:</p>
+
+<figure>
+<img src="../uploads/Main/SamplerStates1.png" alt="">
+</figure>
+
+<p>Here’s an example with <code>SmpClampPoint</code>, <code>SmpRepeatPoint</code>, <code>SmpMirrorPoint</code>, <code>SmpMirrorOncePoint</code>, <code>Smp_ClampU_RepeatV_Point</code> SamplerStates respectively, illustrating how the name controls wrapping mode. In the last example, different wrap modes are set for horizontal (U) and vertical (V) axes. In all cases texture coordinates go from –2.0 to +2.0.</p>
+
+<figure>
+<img src="../uploads/Main/SamplerStates2.png" alt="">
+</figure>
+
+<p>Just like separate texture + sampler syntax, inline sampler states are not supported on some platforms. Currently they are implemented on Direct3D 11/12, PS4, XboxOne and Metal.</p>
+
+<p>Note that “MirrorOnce” texture wrapping mode is not supported on most mobile GPUs/APIs, and will fallback to Mirror mode when support is not present.
+<br>
+<br>
+</p>
+
+<hr>
+
+<ul>
+<li><p><span class="page-edit">2017–06–01 Page published with no <a href="DocumentationEditorialReview.html">editorial review</a>
+</span></p></li>
+<li><p><span class="page-history">New feature in <a href="https://docs.unity3d.com/2017.1/Documentation/Manual/30_search.html?q=newin20171">2017.1</a> <span class="search-words">NewIn20171</span></span></p></li>
+</ul>
+<div class="feedbackbox" id="feedbackbox">
+<div id="rating"><p>Did you find this page useful? Please give it a rating:<br><div id="ratecontent" class="c-rating"></div>
+</p></div>
+<div id="ratingThanks" style="display:none"><p>Thanks for rating this page!</p></div>
+<div id="problem"><p><a name="problem" onclick="document.getElementById('problemType').style.display = '';document.getElementById('problem').style.display = 'none';">Report a problem on this page</a></p></div>
+<div id="problemType" style="display:none"><p>What kind of problem would you like to report?<ul type="problems">
+<li><a name="needcode" onclick="                                                             document.getElementById('problemType').style.display = 'none';                                                             document.getElementById('problemThanks').style.display = '';                                                             SendFeedback('problem-needcode',window.location.href,0);                                                             document.getElementById('problemFormDescription').value='Needs code samples.';                                                             document.getElementById('problemNeedCodeForm').style.display = ''                                                         ">This page needs code samples</a></li>
+<li><a name="code" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-brokencode',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Code samples do not work.';                                                         document.getElementById('problemCodeForm').style.display = ''                                                         ">Code samples do not work</a></li>
+<li><a name="missing" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-missing',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Missing information';                                                         document.getElementById('problemMissingForm').style.display = ''                                                         ">Information is missing</a></li>
+<li><a name="incorrect" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-incorrect',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Incorrect information';                                                         document.getElementById('problemIncorrectForm').style.display = ''                                                         ">Information is incorrect</a></li>
+<li><a name="unclear" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-unclear',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Unclear or confusing information';                                                         document.getElementById('problemUnclearForm').style.display = ''                                                         ">Information is unclear or confusing</a></li>
+<li><a name="language" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-language',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Spelling or grammar error';                                                         document.getElementById('problemLanguageForm').style.display = ''                                                         ">There is a spelling/grammar error on this page</a></li>
+<li><a name="other" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-other',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='This page has a problem';                                                         document.getElementById('problemOtherForm').style.display = ''                                                         ">Something else</a></li>
+</ul>
+<p><known_issues><p>Is something described here not working as you expect it to? It might be a <b>Known Issue</b>. Please check with the Issue Tracker at <a href="https://issuetracker.unity3d.com">issuetracker.unity3d.com</a>.</p></known_issues></p>
+</p></div>
+<div id="problemThanks" style="display:none"><p>Thanks for letting us know! This page has been marked for review based on your feedback.<br><br>If you have time, you can provide more information to help us fix the problem faster.<br><br><a onclick="document.getElementById('problemMoreInfo').style.display = '';document.getElementById('problemThanks').style.display = 'none';">Provide more information</a><br>
+</p></div>
+<div id="problemMoreInfo" style="display:none">
+<p id="problemNeedCodeForm" style="display:none">You've told us this page needs code samples. If you'd like to help us further, you could provide a code sample, or tell us about what kind of code sample you'd like to see:</p>
+<p id="problemCodeForm" style="display:none">You've told us there are code samples on this page which don't work. If you know how to fix it, or have something better we could use instead, please let us know:</p>
+<p id="problemMissingForm" style="display:none">You've told us there is information missing from this page. Please tell us more about what's missing:</p>
+<p id="problemIncorrectForm" style="display:none">You've told us there is incorrect information on this page. If you know what we should change to make it correct, please tell us:</p>
+<p id="problemUnclearForm" style="display:none">You've told us this page has unclear or confusing information. Please tell us more about what you found unclear or confusing, or let us know how we could make it clearer:</p>
+<p id="problemLanguageForm" style="display:none">You've told us there is a spelling or grammar error on this page. Please tell us what's wrong:</p>
+<p id="problemOtherForm" style="display:none">You've told us this page has a problem. Please tell us more about what's wrong:</p>
+<form>
+<textarea id="problemFormSuggestionField" cols="40" rows="5"></textarea><input type="hidden" id="problemFormDescription"><input type="submit" id="problemFormDescriptionSubmit" value="Submit" onclick="                                             document.getElementById('problemMoreInfo').style.display = 'none';                                             document.getElementById('problemMoreInfoThanks').style.display = '';                                             return false;                                             ">
+</form>
+</div>
+<div id="problemMoreInfoThanks" style="display:none"><p>Thanks for helping to make the Unity documentation better!</p></div>
+<script>
+
+                                            var ratecontent = document.querySelector('#ratecontent'); // target element
+                                            var currentRating = 0; // initial rating
+                                            var maxRating= 5; // max rating
+
+                                            // callback to run after setting the rating
+                                            var callback = function(rating) {
+                                                document.getElementById('ratingThanks').style.display = '';
+                                                document.getElementById('ratecontent').style.display = 'none';
+                                                document.getElementById('rating').style.display = 'none';
+                                                SendFeedback("rating",window.location.href,rating);
+                                            };
+
+                                            // rating instance
+                                            var myRating = rating(ratecontent, currentRating, maxRating, callback);
+                                        </script>
+</div>
+<div class="nextprev clear">
+<div class="icon tt left mr1" data-distance="-40|-30|top">
+<span class="prev"><a href="SL-DataTypesAndPrecision.html"></a></span><div class="tip"> Shader data types and precision</div>
+</div>
+<div class="icon tt right" data-distance="-40|-30|top">
+<span class="next"><a href="SL-Shader.html"></a></span><div class="tip">ShaderLab Syntax</div>
+</div>
+</div>
+</div>
+</body></html>

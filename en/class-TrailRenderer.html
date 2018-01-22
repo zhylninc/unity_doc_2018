@@ -1,0 +1,220 @@
+<html><head><title>html模版</title></head><body>Unity - Manual: Trail Renderer</br>
+<div class="breadcrumbs clear"><ul>
+<li><a href="UnityManual.html">Unity User Manual (2018.1 beta)</a></li>
+<li><a href="Graphics.html">Graphics</a></li>
+<li><a href="GraphicsReference.html">Graphics Reference</a></li>
+<li><a href="comp-Effects.html">Visual Effects Reference</a></li>
+<li>Trail Renderer</li>
+</ul></div>
+<div class="mb20"><div class="nextprev clear">
+<div class="icon tt left mr1" data-distance="-40|-30|top">
+<span class="prev"><a href="class-LineRenderer.html"></a></span><div class="tip">Line Renderer</div>
+</div>
+<div class="icon tt right" data-distance="-40|-30|top">
+<span class="next"><a href="class-BillboardRenderer.html"></a></span><div class="tip">Billboard Renderer</div>
+</div>
+</div></div>
+<div class="otherversionswrapper" onmouseover="setOtherVersionsDisplay(true)" onmouseout="setOtherVersionsDisplay(false)">
+<a>Other Versions</a><div class="otherversionscontent" id="OtherVersionsContent" style="display: none;">Cannot access other versions offline!</div>
+</div>
+<div class="scrollToFeedback"><a id="scrollToFeedback">Leave feedback</a></div>
+<h1>Trail Renderer</h1>
+<!--BeginSwitchLink--><a href='../ScriptReference/TrailRenderer.html' title='Go to TrailRenderer page in the Scripting Reference' class='switch-link gray-btn sbtn left'>Switch to Scripting</a><!--EndSwitchLink-->
+<div class="clear"></div>
+
+<p>The <strong>Trail Renderer</strong> is used to make trails behind GameObjects in the Scene as they move.</p>
+
+<figure>
+<img src="../uploads/Main/Inspector-TrailRenderer.png" alt="">
+</figure>
+
+<h2>Properties</h2>
+
+<table>
+<colgroup>
+<col style="text-align:left;">
+<col style="text-align:left;">
+</colgroup>
+
+<thead>
+<tr>
+	<th style="text-align:left;"><strong><em>Property:</em></strong></th>
+	<th style="text-align:left;"><strong><em>Function:</em></strong></th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+	<td style="text-align:left;"><strong>Cast Shadows</strong></td>
+	<td style="text-align:left;">Determines whether the trail casts shadows, whether they should be cast from one or both sides of the trail, or whether the trail should only cast shadows and not otherwise be drawn. See <a href="../ScriptReference/Renderer-shadowCastingMode.html">Renderer.shadowCastingMode</a> in the Scripting API reference documentation to learn more.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>Receive Shadows</strong></td>
+	<td style="text-align:left;">If enabled, the trail receives shadows.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>Motion Vectors</strong></td>
+	<td style="text-align:left;">Select the Motion Vector type to use for this Trail Renderer. See <a href="../ScriptReference/Renderer-motionVectorGenerationMode.html">Renderer.motionVectorGenerationMode</a> in the Scripting API reference documentation to learn more.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>Materials</strong></td>
+	<td style="text-align:left;">These properties describe an array of Materials used for rendering the trail. Particle Shaders work best for trails.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>Lightmap Parameters</strong></td>
+	<td style="text-align:left;">Reference a <a href="LightmapParameters.html">Lightmap Parameters</a> Asset here to enable the trail to interact with the global illumination system.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>Time</strong></td>
+	<td style="text-align:left;">Define the length of the trail, measured in seconds.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>Min Vertex Distance</strong></td>
+	<td style="text-align:left;">The minimum distance between anchor points of the trail (see <strong>Minimum vertex separation</strong> below).</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>AutoDestruct</strong></td>
+	<td style="text-align:left;">Enable this to destroy the GameObject once it has been idle for <strong>Time</strong> seconds.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>Width</strong></td>
+	<td style="text-align:left;">Define a width value and a curve to control the width of your trail at various points between its start and end. The curve is applied from the beginning to the end of the trail, and sampled at each vertex. The overall width of the curve is controlled by the width value.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>Color</strong></td>
+	<td style="text-align:left;">Define a gradient to control the color of the trail along its length.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>Corner Vertices</strong></td>
+	<td style="text-align:left;">This property dictates how many extra vertices are used when drawing corners in a trail. Increase this value to make the trail corners appear rounder.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>End Cap Vertices</strong></td>
+	<td style="text-align:left;">This property dictates how many extra vertices are used to create end caps on the trail. Increase this value to make the trail caps appear rounder.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>Alignment</strong></td>
+	<td style="text-align:left;">Set to <strong>View</strong> to make the Trail face the camera, or <strong>Local</strong> to align it based on the orientation of its Transform component.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>Texture Mode</strong></td>
+	<td style="text-align:left;">Control how the Texture is applied to the Trail. Use <strong>Stretch</strong> to apply the Texture map along the entire length of the trail, or use <strong>Wrap</strong> to repeat the Texture along the length of the Trail. Use the <strong>Tiling</strong> parameters in the Material to control the repeat rate.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>Generate Lighting Data</strong></td>
+	<td style="text-align:left;">If enabled (the box is checked), the Trail geometry is built with Normals and Tangents included. This allows it to use Materials that use the scene lighting, for example via the Standard Shader, or by using a custom shader.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>Light Probes</strong></td>
+	<td style="text-align:left;">Probe-based lighting interpolation mode.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>Reflection Probes</strong></td>
+	<td style="text-align:left;">If enabled and reflection probes are present in the Scene, a reflection Texture is picked for this Trail Renderer and set as a built-in Shader uniform variable.</td>
+</tr>
+</tbody>
+</table>
+
+<h2>Details</h2>
+
+<p>The Trail Renderer renders a trail of polygons behind a moving GameObject. This can be used to give an emphasized feeling of motion to a moving object, or to highlight the path or position of moving objects. A trail behind a projectile adds visual clarity to its trajectory; contrails from the tip of a plane’s wings are an example of a trail effect that happens in real life.</p>
+
+<p>A Trail Renderer should be the only renderer used on the attached GameObject. It is best to create an empty GameObject, and attach a Trail Renderer as the only renderer. You can then parent the Trail Renderer to whatever GameObject you would like it to follow.</p>
+
+<h3>Materials</h3>
+
+<p>A Trail Renderer component should use a Material that has a Particle Shader. The Texture used for the Material should be of square dimensions (for example 256x256, or 512x512). The trail is rendered once for each Material present in the array.</p>
+
+<h3>Minimum vertex separation</h3>
+
+<p>The <strong>Min Vertex Distance</strong> value determines how far an object that contains a trail must travel before a segment of that trail is solidified. Low values like 0.1 create trail segments more often, creating smoother trails. Higher values like 1.5 create segments that are more jagged in appearance. There is a slight performance trade-off when using lower values/smoother trails, so try to use the largest possible value to achieve the effect you are trying to create. Additionally, wide trails may exhibit visual artifacts when the vertices are very close together and the trail changes direction significantly over a short distance.</p>
+
+<h3>Hints</h3>
+
+<ul>
+<li>Use Particle Materials with the Trail Renderer.</li>
+<li>Trail Renderers must be laid out over a sequence of frames; they cannot appear instantaneously.</li>
+<li>Trail Renderers rotate to display the face toward the camera, similar to other Particle Systems.</li>
+<li>Unity samples colors from the Color Gradient at each vertex. Between each vertex, Unity applies linear interpolation to colors. Adding more vertices to your Line Renderer might give a closer approximation of a detailed Color Gradient.</li>
+</ul>
+
+<h2>Trail Renderer example setup</h2>
+
+<figure>
+<img src="../uploads/Main/TrailRenderer-example1.png" alt="A Trail Renderer component as it appears in the Inspector window, set up to create a multicoloured trail that gets thinner and then much wider ">
+<figcaption>A Trail Renderer component as it appears in the Inspector window, set up to create a multicoloured trail that gets thinner and then much wider </figcaption>
+</figure>
+
+<figure>
+<img src="../uploads/Main/TrailRenderer-example2.png" alt="The resulting trail created by the above component setup">
+<figcaption>The resulting trail created by the above component setup</figcaption>
+</figure>
+
+<p><br></p>
+
+<hr>
+
+<ul>
+<li><p><span class="page-edit">2017–05–31 Page amended with <a href="DocumentationEditorialReview.html">editorial review</a>
+</span></p></li>
+<li><p><span class="page-history">Properties added in Unity <a href="../Manual/30_search.html?q=newin20171">2017.1</a> <span class="search-words">NewIn20171</span></span></p></li>
+</ul>
+<div class="feedbackbox" id="feedbackbox">
+<div id="rating"><p>Did you find this page useful? Please give it a rating:<br><div id="ratecontent" class="c-rating"></div>
+</p></div>
+<div id="ratingThanks" style="display:none"><p>Thanks for rating this page!</p></div>
+<div id="problem"><p><a name="problem" onclick="document.getElementById('problemType').style.display = '';document.getElementById('problem').style.display = 'none';">Report a problem on this page</a></p></div>
+<div id="problemType" style="display:none"><p>What kind of problem would you like to report?<ul type="problems">
+<li><a name="needcode" onclick="                                                             document.getElementById('problemType').style.display = 'none';                                                             document.getElementById('problemThanks').style.display = '';                                                             SendFeedback('problem-needcode',window.location.href,0);                                                             document.getElementById('problemFormDescription').value='Needs code samples.';                                                             document.getElementById('problemNeedCodeForm').style.display = ''                                                         ">This page needs code samples</a></li>
+<li><a name="code" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-brokencode',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Code samples do not work.';                                                         document.getElementById('problemCodeForm').style.display = ''                                                         ">Code samples do not work</a></li>
+<li><a name="missing" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-missing',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Missing information';                                                         document.getElementById('problemMissingForm').style.display = ''                                                         ">Information is missing</a></li>
+<li><a name="incorrect" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-incorrect',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Incorrect information';                                                         document.getElementById('problemIncorrectForm').style.display = ''                                                         ">Information is incorrect</a></li>
+<li><a name="unclear" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-unclear',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Unclear or confusing information';                                                         document.getElementById('problemUnclearForm').style.display = ''                                                         ">Information is unclear or confusing</a></li>
+<li><a name="language" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-language',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Spelling or grammar error';                                                         document.getElementById('problemLanguageForm').style.display = ''                                                         ">There is a spelling/grammar error on this page</a></li>
+<li><a name="other" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-other',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='This page has a problem';                                                         document.getElementById('problemOtherForm').style.display = ''                                                         ">Something else</a></li>
+</ul>
+<p><known_issues><p>Is something described here not working as you expect it to? It might be a <b>Known Issue</b>. Please check with the Issue Tracker at <a href="https://issuetracker.unity3d.com">issuetracker.unity3d.com</a>.</p></known_issues></p>
+</p></div>
+<div id="problemThanks" style="display:none"><p>Thanks for letting us know! This page has been marked for review based on your feedback.<br><br>If you have time, you can provide more information to help us fix the problem faster.<br><br><a onclick="document.getElementById('problemMoreInfo').style.display = '';document.getElementById('problemThanks').style.display = 'none';">Provide more information</a><br>
+</p></div>
+<div id="problemMoreInfo" style="display:none">
+<p id="problemNeedCodeForm" style="display:none">You've told us this page needs code samples. If you'd like to help us further, you could provide a code sample, or tell us about what kind of code sample you'd like to see:</p>
+<p id="problemCodeForm" style="display:none">You've told us there are code samples on this page which don't work. If you know how to fix it, or have something better we could use instead, please let us know:</p>
+<p id="problemMissingForm" style="display:none">You've told us there is information missing from this page. Please tell us more about what's missing:</p>
+<p id="problemIncorrectForm" style="display:none">You've told us there is incorrect information on this page. If you know what we should change to make it correct, please tell us:</p>
+<p id="problemUnclearForm" style="display:none">You've told us this page has unclear or confusing information. Please tell us more about what you found unclear or confusing, or let us know how we could make it clearer:</p>
+<p id="problemLanguageForm" style="display:none">You've told us there is a spelling or grammar error on this page. Please tell us what's wrong:</p>
+<p id="problemOtherForm" style="display:none">You've told us this page has a problem. Please tell us more about what's wrong:</p>
+<form>
+<textarea id="problemFormSuggestionField" cols="40" rows="5"></textarea><input type="hidden" id="problemFormDescription"><input type="submit" id="problemFormDescriptionSubmit" value="Submit" onclick="                                             document.getElementById('problemMoreInfo').style.display = 'none';                                             document.getElementById('problemMoreInfoThanks').style.display = '';                                             return false;                                             ">
+</form>
+</div>
+<div id="problemMoreInfoThanks" style="display:none"><p>Thanks for helping to make the Unity documentation better!</p></div>
+<script>
+
+                                            var ratecontent = document.querySelector('#ratecontent'); // target element
+                                            var currentRating = 0; // initial rating
+                                            var maxRating= 5; // max rating
+
+                                            // callback to run after setting the rating
+                                            var callback = function(rating) {
+                                                document.getElementById('ratingThanks').style.display = '';
+                                                document.getElementById('ratecontent').style.display = 'none';
+                                                document.getElementById('rating').style.display = 'none';
+                                                SendFeedback("rating",window.location.href,rating);
+                                            };
+
+                                            // rating instance
+                                            var myRating = rating(ratecontent, currentRating, maxRating, callback);
+                                        </script>
+</div>
+<div class="nextprev clear">
+<div class="icon tt left mr1" data-distance="-40|-30|top">
+<span class="prev"><a href="class-LineRenderer.html"></a></span><div class="tip">Line Renderer</div>
+</div>
+<div class="icon tt right" data-distance="-40|-30|top">
+<span class="next"><a href="class-BillboardRenderer.html"></a></span><div class="tip">Billboard Renderer</div>
+</div>
+</div>
+</div>
+</body></html>

@@ -1,0 +1,411 @@
+<html><head><title>html模版</title></head><body>Unity - Manual: How do I import models from my 3D app?</br>
+<div class="breadcrumbs clear"><ul>
+<li><a href="UnityManual.html">Unity User Manual (2018.1 beta)</a></li>
+<li><a href="Graphics.html">Graphics</a></li>
+<li><a href="GraphicsHowTos.html">Graphics HOWTOs</a></li>
+<li>How do I import models from my 3D app?</li>
+</ul></div>
+<div class="mb20"><div class="nextprev clear">
+<div class="icon tt left mr1" data-distance="-40|-30|top">
+<span class="prev"><a href="HOWTO-ArtAssetBestPracticeGuide.html"></a></span><div class="tip"> Art Asset best practice guide</div>
+</div>
+<div class="icon tt right" data-distance="-40|-30|top">
+<span class="next"><a href="HOWTO-exportFBX.html"></a></span><div class="tip">FBX export guide</div>
+</div>
+</div></div>
+<div class="otherversionswrapper" onmouseover="setOtherVersionsDisplay(true)" onmouseout="setOtherVersionsDisplay(false)">
+<a>Other Versions</a><div class="otherversionscontent" id="OtherVersionsContent" style="display: none;">Cannot access other versions offline!</div>
+</div>
+<div class="scrollToFeedback"><a id="scrollToFeedback">Leave feedback</a></div>
+<h1>How do I import models from my 3D app?</h1>
+<!--BeginSwitchLink--><!--EndSwitchLink-->
+<div class="clear"></div>
+
+<p>There are two ways to import 3D models into Unity:</p>
+
+<ul>
+<li>Drag the 3D model file from your file browser straight into the Unity Project window.</li>
+<li>Copy the 3D model file into the Project’s Assets folder.</li>
+</ul>
+
+<p>Select the file in the <strong>Project</strong> view and navigate to the <strong>Model</strong> tab in the Inspector window to configure import options. See documentation on <a href="FBXImporter-Model.html">Models</a> for more information about import options.</p>
+
+<p>Unity supports importing models from most popular 3D applications. For more guidance on how to import from specific 3D packages, see the following pages:</p>
+
+<ul>
+<li><a href="HOWTO-ImportObjectMaya.html">Maya</a></li>
+<li><a href="HOWTO-ImportObjectCinema4D.html">Cinema 4D</a></li>
+<li><a href="HOWTO-ImportObjectMax.html">3ds Max</a></li>
+<li><a href="HOWTO-ImportObjectCheetah3D.html">Cheetah3D</a></li>
+<li><a href="HOWTO-ImportObjectModo.html">Modo</a></li>
+<li><a href="HOWTO-importObjectLightwave.html">Lightwave</a></li>
+<li><a href="HOWTO-ImportObjectBlender.html">Blender</a></li>
+<li><a href="HOWTO-ImportObjectSketchUp.html">SketchUp</a></li>
+</ul>
+
+<h2>Textures</h2>
+
+<p>You must store Textures in a folder called <strong>Textures</strong>, placed inside the <strong>Assets</strong> folder (next to the exported Mesh) within your Unity Project. This enables the Unity Editor to find the Textures and connect them to the generated Materials. For more information, see documentation on <a href="class-TextureImporter.html">Importing Textures</a>.</p>
+
+<h1>3D formats</h1>
+
+<p>Unity supports importing <a href="class-Mesh.html">Meshes</a> from two different types of files:</p>
+
+<ol>
+<li>
+<strong>Exported 3D file formats</strong>, such as .fbx or .obj. You can export files from 3D modeling software in generic formats that can be imported and edited by a wide variety of different software.</li>
+<li>
+<strong>Proprietary 3D or DCC (Digital Content Creation) application files</strong>, such as .max and .blend file formats from <a href="http://www.autodesk.co.uk/products/3ds-max/overview">3D Studio Max</a> or <a href="https://www.blender.org/">Blender</a>, for example. You can only edit proprietary files in the software that created them. Proprietary files are generally not directly editable by other software without first being converted and imported. An exception to this is <a href="https://www.sketchup.com/">SketchUp</a> .skp files, which both by SketchUp and Unity can read.</li>
+</ol>
+
+<p>Unity can import and use both types of files, and each come with their own advantages and disadvantages.</p>
+
+<h2>Exported 3D files</h2>
+
+<p>Unity can read <a href="HOWTO-exportFBX.html">.fbx</a>, .dae (<a href="https://www.khronos.org/collada/">Collada</a>), .3ds, .dxf, .obj, and .skp files. Refer to your 3D modeling software documentation for information about exporting 3D files.</p>
+
+<p><strong>Advantages:</strong></p>
+
+<ul>
+<li>Instead of importing the whole model into Unity, you can import only the parts of the model you need.</li>
+<li>Exported generic files are often smaller than the proprietary equivalent.</li>
+<li>Using exported generic files encourages a modular approach (for example, using different components for collision types or interactivity).</li>
+<li>You can import these files from software that Unity does not directly support.</li>
+<li>Exported 3D files (.fbx, .obj) can be reimported into 3D modeling software after exporting, to ensure that all of the information has been exported correctly.</li>
+</ul>
+
+<p><strong>Disadvantages:</strong></p>
+
+<ul>
+<li>Models must be re-exported manually if changes are made to the original file.</li>
+<li>Extra care must be taken to keep track of versions between the source file and the files imported into Unity.</li>
+</ul>
+
+<h2>Proprietary 3D application files</h2>
+
+<p>Unity can import proprietary files from the following DCC software: <strong>Max</strong>, <strong>Maya</strong>, <strong>Blender</strong>, <strong>Cinema4D</strong>, <strong>Modo</strong>, <strong>Lightwave</strong> &amp; <strong>Cheetah3D</strong>. Files imported this way are converted into .fbx files by Unity during the import process.</p>
+
+<p><strong>Advantages:</strong></p>
+
+<ul>
+<li>Updates made to the original model are automatically imported into Unity.</li>
+<li>This is initially simple - but it can become more complex later in development.</li>
+</ul>
+
+<p><strong>Disadvantages:</strong></p>
+
+<ul>
+<li>A licensed copy of the software used must be installed on all machines using the Unity project.</li>
+<li>Software versions should be the same on each machine using the Unity project. Using a different software version can cause errors or unexpected behavior when importing 3D models.</li>
+<li>Files can become bloated with unnecessary data.</li>
+<li>Big files can slow down Unity project imports or Asset re-imports, because you have to run the DCC software you use as a background process when you import the model into Unity.</li>
+<li>Unity exports proprietary files to .fbx internally, during the import process. This makes it difficult to verify the .fbx data and troubleshoot problems.</li>
+</ul>
+
+<p>
+<strong>Note</strong>: Assets saved as .ma, .mb, .max, .c4d, or .blend files fail to import unless you have the corresponding DCC software installed in your computer. This means that everybody working on your Unity project must have the correct software installed. For example, if you use <a href="http://www.autodesk.com/education/free-software/maya">Maya</a> to create <em>ExampleModel.mb</em> and copy it into your project, anyone else opening that project also needs to have Maya installed on their computer. </p>
+
+<h1>Model Importer: Model</h1>
+
+<p>Model files that are placed in the Assets folder in your Unity project are automatically imported and stored as Unity Assets.</p>
+
+<p>A model file can contain a 3D model, such as a character, a building, or a piece of furniture. The model is imported as multiple Assets. In the Project window, the main imported object is a model Prefab. Usually there are also several Mesh objects that are referenced by the model Prefab.</p>
+
+<p>A model file can also contain animation data, which can be used to animate this model or other models. The animation data is imported as one or more Animation Clips.</p>
+
+<figure>
+<img src="../uploads/Main/MeshExample40.png" alt="A Mesh Filter together with the Mesh Renderer makes the model appear on screen">
+<figcaption>A <a href="class-MeshFilter.html">Mesh Filter</a> together with the <a href="class-MeshRenderer.html">Mesh Renderer</a> makes the model appear on screen</figcaption>
+</figure>
+
+<h2>Import settings for Meshes</h2>
+
+<p>The <strong>Import Settings</strong> for a model file is displayed in the <strong>Model</strong> tab of the FBX importer’s Inspector window when the model is selected. These affect the <strong>Mesh</strong> and its <strong>Normals</strong>. Settings are applied per Asset on disk, so if you need Assets with different settings, make (and rename accordingly) a duplicate file.</p>
+
+<table>
+<colgroup>
+<col style="text-align:left;">
+<col style="text-align:left;">
+<col style="text-align:left;">
+</colgroup>
+
+<thead>
+<tr>
+	<th style="text-align:left;" colspan="2"><strong><em>Property</em></strong></th>
+	<th style="text-align:left;"><strong><em>Function</em></strong></th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+	<td style="text-align:left;" colspan="3"><strong>Meshes</strong></td>
+</tr>
+<tr>
+	<td style="text-align:left;" colspan="2"><strong>Scale Factor</strong></td>
+	<td style="text-align:left;">Unity’s physics system expects 1 meter in the game world to be 1 unit in the imported file. If you prefer to model at a different scale then you can compensate for it here. Defaults for different 3D packages are as follows:<br> .fbx, .max, .jas, .c4d = <strong>0.01</strong><br> .mb, .ma, .lxo, .dxf, .blend, .dae = <strong>1</strong> <br>.3ds = <strong>0.1</strong>
+</td>
+</tr>
+<tr>
+	<td style="text-align:left;" colspan="2"><strong>Use File Scale</strong></td>
+	<td style="text-align:left;">Tick the checkbox to use the default model scaling, or untick to use a custom scaling value for your model. Unity’s physics system expects 1 meter in the game world to be 1 unit in the imported file. If you prefer to model at a different scale then you can compensate for it here.</td>
+</tr>
+<tr>
+	<td style="text-align:left;" colspan="2">    File Scale</td>
+	<td style="text-align:left;">Use this value field to set the scale you want to use for your model.</td>
+</tr>
+<tr>
+	<td style="text-align:left;" colspan="2"><strong>Mesh Compression</strong></td>
+	<td style="text-align:left;">Increasing this value reduces the file size of the Mesh, but might introduce irregularities. It’s best to turn it up as high as possible without the Mesh looking too different from the uncompressed version. This is useful for <a href="ReducingFilesize.html">optimizing game size</a>.</td>
+</tr>
+<tr>
+	<td style="text-align:left;" colspan="2"><strong>Read/Write Enabled</strong></td>
+	<td style="text-align:left;">If enabled, Mesh data is kept in memory so that a custom script can read and change it. Disabling this option saves memory, because Unity can unload a copy of Mesh data in the game. However, in certain cases when the Mesh is used with a <a href="class-MeshCollider.html">Mesh Collider</a>, this option must be enabled. These cases include: <br>- Negative scaling (for example, (–1, 1, 1)). <br>- Shear transform (for example, when a rotated Mesh has a scaled parent transform).</td>
+</tr>
+<tr>
+	<td style="text-align:left;" colspan="2"><strong>Optimize Mesh</strong></td>
+	<td style="text-align:left;">Tick this checkbox if you want Unity to determine the order in which triangles are listed in the Mesh.</td>
+</tr>
+<tr>
+	<td style="text-align:left;" colspan="2"><strong>Import Blendshapes</strong></td>
+	<td style="text-align:left;">Tick this checkbox if you want Unity to allow BlendShapes to be imported with your Mesh.</td>
+</tr>
+<tr>
+	<td style="text-align:left;" colspan="2"><strong>Generate Colliders</strong></td>
+	<td style="text-align:left;">If this is enabled, your Meshes are imported with Mesh Colliders automatically attached. This is useful for quickly generating a collision Mesh for environment geometry, but should be avoided for geometry you are moving.</td>
+</tr>
+<tr>
+	<td style="text-align:left;" colspan="2"><strong>Keep Quads</strong></td>
+	<td style="text-align:left;">Unity can import any type of polygon ( triangle to N-gon ). Polygons that have more than 4 vertices are always converted to triangles. Quads are only converted to triangles if “Keep Quads” is off. Quads might be preferable over polygons when using Tessellation shaders. See documentation on <a href="SL-SurfaceShaderTessellation.html">Surface Shader Tessellation</a> for more information.</td>
+</tr>
+<tr>
+	<td style="text-align:left;" colspan="2"><strong>Index Format</strong></td>
+	<td style="text-align:left;">Defines the size of the mesh index buffer. <strong>Note:</strong> For bandwidth and memory storage size reasons, you generally want to keep <strong>16 bit</strong> indices as default, and only use <strong>32 bit</strong> when necessary.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;"><strong>Auto</strong></td>
+	<td style="text-align:left;">Allows Unity to choose whether to use 16 or 32 bit indices when importing a mesh, depending on the mesh vertex count. This is the default for assets added in Unity 2017.3 and onwards.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;"><strong>16 bit</strong></td>
+	<td style="text-align:left;">Makes Unity always use 16 bit indices when importing a mesh. If the mesh is larger, then it is split into &lt;64k vertex chunks. Assets that already exist in projects made in Unity 2017.2 or previous versions will use this setting.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;"><strong>32 bit</strong></td>
+	<td style="text-align:left;">Makes Unity always use 32 bit indices when importing a mesh. This might be useful if you are doing GPU-based rendering pipelines (for example with compute shader triangle culling). This ensures that all meshes use the same index format and allows you to have simpler compute shaders, because they only need to handle one format.</td>
+</tr>
+<tr>
+	<td style="text-align:left;" colspan="2"><strong>Weld Vertices</strong></td>
+	<td style="text-align:left;">Tick this checkbox to combine vertices that share the same position in space. This optimizes the vertex count on Meshes by reducing their overall number. This checkbox is ticked by default. <br><br>Note that there is also a <code>WeldVertices</code> parameter on the <a href="../ScriptReference/ModelImporter.html">ModelImporter</a> class, which does the same thing via scripting. <br><br>In some cases, you might need to switch this optimization off when importing your Meshes; for example, if you have constructed your Mesh in such a way that you intentionally have duplicate vertices which occupy the same position, and you want to use scripting to read or manipulate the individual vertex or triangle data. .</td>
+</tr>
+<tr>
+	<td style="text-align:left;" colspan="2"><strong>Import Cameras</strong></td>
+	<td style="text-align:left;">Tick this checkbox to import cameras from your .FBX file</td>
+</tr>
+<tr>
+	<td style="text-align:left;" colspan="2"><strong>Import Lights</strong></td>
+	<td style="text-align:left;">Tick this checkbox to import lights from your .FBX file</td>
+</tr>
+<tr>
+	<td style="text-align:left;" colspan="2"><strong>Swap UVs</strong></td>
+	<td style="text-align:left;">Tick this checkbox if lightmapped objects are picking up the wrong UV channels. This swaps your primary and secondary UV channels.</td>
+</tr>
+<tr>
+	<td style="text-align:left;" colspan="2"><strong>Generate Lightmap UVs</strong></td>
+	<td style="text-align:left;">Tick this checkbox if you want Unity to create a second UV channel to be used for Lightmapping. See documentation on <a href="GIIntro.html">Lightmapping</a> for more information.</td>
+</tr>
+<tr>
+	<td style="text-align:left;" colspan="3"><strong>Normals &amp; Tangents</strong></td>
+</tr>
+<tr>
+	<td style="text-align:left;" colspan="2"><strong>Normals</strong></td>
+	<td style="text-align:left;">Defines if and how normals should be calculated. This is useful for <a href="ReducingFilesize.html">optimizing game size</a>.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;"><strong>Import</strong></td>
+	<td style="text-align:left;">Default option. Imports normals from the file.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;"><strong>Calculate</strong></td>
+	<td style="text-align:left;">Calculates normals based on <strong>Smoothing angle</strong>. If selected, the <strong>Smoothing Angle</strong> becomes enabled.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;"><strong>None</strong></td>
+	<td style="text-align:left;">Disables normals. Use this option if the Mesh is neither normal mapped nor affected by realtime lighting.</td>
+</tr>
+<tr>
+	<td style="text-align:left;" colspan="2"><strong>Normals Mode</strong></td>
+	<td style="text-align:left;">Define how the normals are calculated by Unity. This is only available when <strong>Normals</strong> is set to <strong>Calculate</strong>.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;"><strong>Unweighted Legacy</strong></td>
+	<td style="text-align:left;">The legacy method of computing the normals (prior to version 2017.1). In some cases it gives slightly different results compared to the current implementation. It is the default for all FBX prefabs imported before the migration of the project to the latest version of Unity.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;"><strong>Unweighted</strong></td>
+	<td style="text-align:left;">The normals are not weighted.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;"><strong>Area Weighted</strong></td>
+	<td style="text-align:left;">The normals are weighted by face area.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;"><strong>Angle Weighted</strong></td>
+	<td style="text-align:left;">The normals are weighted by the vertex angle on each face.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;"><strong>Area and Angle Weighted</strong></td>
+	<td style="text-align:left;">Default option. The normals are weighted by both the face area and the vertex angle on each face. This is the default option.</td>
+</tr>
+<tr>
+	<td style="text-align:left;" colspan="2"><strong>Tangents</strong></td>
+	<td style="text-align:left;">Defines if and how tangents and binormals should be calculated. This is useful for <a href="ReducingFilesize.html">optimizing game size</a>.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;"><strong>Import</strong></td>
+	<td style="text-align:left;">Imports tangents and binormals from the file. This option is available only for FBX, Maya and 3dsMax files and only when normals are imported from the file.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;"><strong>Calculate</strong></td>
+	<td style="text-align:left;">Default option. Calculates tangents and binormals. This option is available only when normals are either imported or calculated.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;"><strong>None</strong></td>
+	<td style="text-align:left;">Disables tangents and binormals. The Mesh has no Tangents, so won’t work with normal-mapped shaders.</td>
+</tr>
+<tr>
+	<td style="text-align:left;" colspan="2"><strong>Smoothing Angle</strong></td>
+	<td style="text-align:left;">Sets how sharp an edge has to be in order to be treated as a hard edge. It is also used to split normal map tangents.</td>
+</tr>
+<tr>
+	<td style="text-align:left;" colspan="2"><strong>Split Tangents</strong></td>
+	<td style="text-align:left;">Enable this if normal map lighting is broken by seams on your Mesh. This usually only applies to characters.</td>
+</tr>
+</tbody>
+</table>
+
+<h2>Light and Camera import</h2>
+
+<h3>Cameras</h3>
+
+<p>The following Camera properties are supported when importing Cameras from an .FBX file:</p>
+
+<ul>
+<li><p>Field of View</p></li>
+<li><p>Projection mode ( Orthographic or perspective )</p></li>
+<li><p>Near plane distance </p></li>
+<li><p>Far plane distance</p></li>
+</ul>
+
+<h3>Lights</h3>
+
+<p>The following light types are supported: </p>
+
+<ul>
+<li>Omni</li>
+<li>Spot</li>
+<li>Directional</li>
+<li>Area</li>
+</ul>
+
+<p>The following light properties are supported:</p>
+
+<ul>
+<li>Intensity</li>
+<li>Color</li>
+<li>Range (the FarAttenuationEndValue is used if UseFarAttenuation is enabled)</li>
+<li>Spot Angle (spot lights only)</li>
+</ul>
+
+<hr>
+
+<ul>
+<li><p><span class="page-edit"> 2017–09–04 Page amended with limited <a href="DocumentationEditorialReview.html">editorial review</a>
+</span></p></li>
+<li><p><span class="page-edit"> 2017–12–05 Page amended with limited <a href="DocumentationEditorialReview.html">editorial review</a>
+</span></p></li>
+<li><p><span class="page-history">Existing (pre Unity 5.6) functionality of <strong>Keep Quads</strong> first documented in User Manual 5.6</span></p></li>
+<li><p><span class="page-history"><strong>Normals Mode</strong>, <strong>Light</strong> and <strong>Camera</strong> import options added in Unity <a href="../Manual/30_search.html?q=newin20171">2017.1</a> <span class="search-words">NewIn20171</span></span></p></li>
+<li><p><span class="page-history"><strong>Materials</strong> tab added in <a href="https://docs.unity3d.com/2017.2/Documentation/Manual/30_search.html?q=newin20172">2017.2</a> <span class="search-words">NewIn20172</span></span></p></li>
+<li><p><span class="page-history"><strong>Index Format</strong> property added in <a href="https://docs.unity3d.com/2017.3/Documentation/Manual/30_search.html?q=newin20173">2017.3</a> <span class="search-words">NewIn20173</span></span></p></li>
+</ul>
+
+<h2>See also</h2>
+
+<ul>
+<li><a href="ModelingOptimizedCharacters.html">Modeling optimized characters</a></li>
+<li><a href="class-Mesh.html">Mesh import settings</a></li>
+<li><a href="HOWTO-FixZAxisIsUp.html">How do I fix the rotation of an imported model?</a></li>
+</ul>
+<div class="feedbackbox" id="feedbackbox">
+<div id="rating"><p>Did you find this page useful? Please give it a rating:<br><div id="ratecontent" class="c-rating"></div>
+</p></div>
+<div id="ratingThanks" style="display:none"><p>Thanks for rating this page!</p></div>
+<div id="problem"><p><a name="problem" onclick="document.getElementById('problemType').style.display = '';document.getElementById('problem').style.display = 'none';">Report a problem on this page</a></p></div>
+<div id="problemType" style="display:none"><p>What kind of problem would you like to report?<ul type="problems">
+<li><a name="needcode" onclick="                                                             document.getElementById('problemType').style.display = 'none';                                                             document.getElementById('problemThanks').style.display = '';                                                             SendFeedback('problem-needcode',window.location.href,0);                                                             document.getElementById('problemFormDescription').value='Needs code samples.';                                                             document.getElementById('problemNeedCodeForm').style.display = ''                                                         ">This page needs code samples</a></li>
+<li><a name="code" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-brokencode',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Code samples do not work.';                                                         document.getElementById('problemCodeForm').style.display = ''                                                         ">Code samples do not work</a></li>
+<li><a name="missing" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-missing',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Missing information';                                                         document.getElementById('problemMissingForm').style.display = ''                                                         ">Information is missing</a></li>
+<li><a name="incorrect" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-incorrect',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Incorrect information';                                                         document.getElementById('problemIncorrectForm').style.display = ''                                                         ">Information is incorrect</a></li>
+<li><a name="unclear" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-unclear',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Unclear or confusing information';                                                         document.getElementById('problemUnclearForm').style.display = ''                                                         ">Information is unclear or confusing</a></li>
+<li><a name="language" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-language',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Spelling or grammar error';                                                         document.getElementById('problemLanguageForm').style.display = ''                                                         ">There is a spelling/grammar error on this page</a></li>
+<li><a name="other" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-other',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='This page has a problem';                                                         document.getElementById('problemOtherForm').style.display = ''                                                         ">Something else</a></li>
+</ul>
+<p><known_issues><p>Is something described here not working as you expect it to? It might be a <b>Known Issue</b>. Please check with the Issue Tracker at <a href="https://issuetracker.unity3d.com">issuetracker.unity3d.com</a>.</p></known_issues></p>
+</p></div>
+<div id="problemThanks" style="display:none"><p>Thanks for letting us know! This page has been marked for review based on your feedback.<br><br>If you have time, you can provide more information to help us fix the problem faster.<br><br><a onclick="document.getElementById('problemMoreInfo').style.display = '';document.getElementById('problemThanks').style.display = 'none';">Provide more information</a><br>
+</p></div>
+<div id="problemMoreInfo" style="display:none">
+<p id="problemNeedCodeForm" style="display:none">You've told us this page needs code samples. If you'd like to help us further, you could provide a code sample, or tell us about what kind of code sample you'd like to see:</p>
+<p id="problemCodeForm" style="display:none">You've told us there are code samples on this page which don't work. If you know how to fix it, or have something better we could use instead, please let us know:</p>
+<p id="problemMissingForm" style="display:none">You've told us there is information missing from this page. Please tell us more about what's missing:</p>
+<p id="problemIncorrectForm" style="display:none">You've told us there is incorrect information on this page. If you know what we should change to make it correct, please tell us:</p>
+<p id="problemUnclearForm" style="display:none">You've told us this page has unclear or confusing information. Please tell us more about what you found unclear or confusing, or let us know how we could make it clearer:</p>
+<p id="problemLanguageForm" style="display:none">You've told us there is a spelling or grammar error on this page. Please tell us what's wrong:</p>
+<p id="problemOtherForm" style="display:none">You've told us this page has a problem. Please tell us more about what's wrong:</p>
+<form>
+<textarea id="problemFormSuggestionField" cols="40" rows="5"></textarea><input type="hidden" id="problemFormDescription"><input type="submit" id="problemFormDescriptionSubmit" value="Submit" onclick="                                             document.getElementById('problemMoreInfo').style.display = 'none';                                             document.getElementById('problemMoreInfoThanks').style.display = '';                                             return false;                                             ">
+</form>
+</div>
+<div id="problemMoreInfoThanks" style="display:none"><p>Thanks for helping to make the Unity documentation better!</p></div>
+<script>
+
+                                            var ratecontent = document.querySelector('#ratecontent'); // target element
+                                            var currentRating = 0; // initial rating
+                                            var maxRating= 5; // max rating
+
+                                            // callback to run after setting the rating
+                                            var callback = function(rating) {
+                                                document.getElementById('ratingThanks').style.display = '';
+                                                document.getElementById('ratecontent').style.display = 'none';
+                                                document.getElementById('rating').style.display = 'none';
+                                                SendFeedback("rating",window.location.href,rating);
+                                            };
+
+                                            // rating instance
+                                            var myRating = rating(ratecontent, currentRating, maxRating, callback);
+                                        </script>
+</div>
+<div class="nextprev clear">
+<div class="icon tt left mr1" data-distance="-40|-30|top">
+<span class="prev"><a href="HOWTO-ArtAssetBestPracticeGuide.html"></a></span><div class="tip"> Art Asset best practice guide</div>
+</div>
+<div class="icon tt right" data-distance="-40|-30|top">
+<span class="next"><a href="HOWTO-exportFBX.html"></a></span><div class="tip">FBX export guide</div>
+</div>
+</div>
+</div>
+</body></html>

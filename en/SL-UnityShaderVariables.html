@@ -1,0 +1,510 @@
+<html><head><title>html模版</title></head><body>Unity - Manual: Built-in shader variables</br>
+<div class="breadcrumbs clear"><ul>
+<li><a href="UnityManual.html">Unity User Manual (2018.1 beta)</a></li>
+<li><a href="Graphics.html">Graphics</a></li>
+<li><a href="GraphicsReference.html">Graphics Reference</a></li>
+<li><a href="SL-Reference.html"> Shader Reference</a></li>
+<li><a href="SL-ShaderPrograms.html">Writing vertex and fragment shaders</a></li>
+<li>Built-in shader variables</li>
+</ul></div>
+<div class="mb20"><div class="nextprev clear">
+<div class="icon tt left mr1" data-distance="-40|-30|top">
+<span class="prev"><a href="SL-BuiltinFunctions.html"></a></span><div class="tip"> Built-in shader helper functions</div>
+</div>
+<div class="icon tt right" data-distance="-40|-30|top">
+<span class="next"><a href="SL-MultipleProgramVariants.html"></a></span><div class="tip">Making multiple shader program variants</div>
+</div>
+</div></div>
+<div class="otherversionswrapper" onmouseover="setOtherVersionsDisplay(true)" onmouseout="setOtherVersionsDisplay(false)">
+<a>Other Versions</a><div class="otherversionscontent" id="OtherVersionsContent" style="display: none;">Cannot access other versions offline!</div>
+</div>
+<div class="scrollToFeedback"><a id="scrollToFeedback">Leave feedback</a></div>
+<h1>Built-in shader variables</h1>
+<!--BeginSwitchLink--><!--EndSwitchLink-->
+<div class="clear"></div>
+
+<p>Unity provides a handful of built-in global variables for your shaders: things like current object’s transformation matrices, light parameters, current time and so on. You use them in <a href="SL-ShaderPrograms.html">shader programs</a> like any other variable, the only difference is that you don’t have to declare them - they are all declared in <code>UnityShaderVariables.cginc</code> include file that is included automatically.</p>
+
+<h2>Transformations</h2>
+
+<p>All these matrices are <code>float4x4</code> type.</p>
+
+<table>
+<colgroup>
+<col style="text-align:left;">
+<col style="text-align:left;">
+</colgroup>
+
+<thead>
+<tr>
+	<th style="text-align:left;"></th>
+	<th style="text-align:left;"></th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+	<td style="text-align:left;"><strong>Name</strong></td>
+	<td style="text-align:left;"><strong>Value</strong></td>
+</tr>
+<tr>
+	<td style="text-align:left;">UNITY_MATRIX_MVP</td>
+	<td style="text-align:left;">Current model * view * projection matrix.</td>
+</tr>
+<tr>
+	<td style="text-align:left;">UNITY_MATRIX_MV</td>
+	<td style="text-align:left;">Current model * view matrix.</td>
+</tr>
+<tr>
+	<td style="text-align:left;">UNITY_MATRIX_V</td>
+	<td style="text-align:left;">Current view matrix.</td>
+</tr>
+<tr>
+	<td style="text-align:left;">UNITY_MATRIX_P</td>
+	<td style="text-align:left;">Current projection matrix.</td>
+</tr>
+<tr>
+	<td style="text-align:left;">UNITY_MATRIX_VP</td>
+	<td style="text-align:left;">Current view * projection matrix.</td>
+</tr>
+<tr>
+	<td style="text-align:left;">UNITY_MATRIX_T_MV</td>
+	<td style="text-align:left;">Transpose of model * view matrix.</td>
+</tr>
+<tr>
+	<td style="text-align:left;">UNITY_MATRIX_IT_MV</td>
+	<td style="text-align:left;">Inverse transpose of model * view matrix.</td>
+</tr>
+<tr>
+	<td style="text-align:left;">_Object2World</td>
+	<td style="text-align:left;">Current model matrix.</td>
+</tr>
+<tr>
+	<td style="text-align:left;">_World2Object</td>
+	<td style="text-align:left;">Inverse of current world matrix.</td>
+</tr>
+</tbody>
+</table>
+
+<h2>Camera and screen</h2>
+
+<p>These variables will correspond to the <a href="class-Camera.html">Camera</a> that is rendering. For example during shadowmap rendering,
+they will still refer to the Camera component values, and not the “virtual camera” that is used for the shadowmap projection.</p>
+
+<table>
+<colgroup>
+<col style="text-align:left;">
+<col style="text-align:left;">
+<col style="text-align:left;">
+</colgroup>
+
+<thead>
+<tr>
+	<th style="text-align:left;"></th>
+	<th style="text-align:left;"></th>
+	<th style="text-align:left;"></th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+	<td style="text-align:left;"><strong>Name</strong></td>
+	<td style="text-align:left;"><strong>Type</strong></td>
+	<td style="text-align:left;"><strong>Value</strong></td>
+</tr>
+<tr>
+	<td style="text-align:left;">_WorldSpaceCameraPos</td>
+	<td style="text-align:left;">float3</td>
+	<td style="text-align:left;">World space position of the camera.</td>
+</tr>
+<tr>
+	<td style="text-align:left;">_ProjectionParams</td>
+	<td style="text-align:left;">float4</td>
+	<td style="text-align:left;">
+<code>x</code> is 1.0 (or –1.0 if currently rendering with a <a href="SL-PlatformDifferences.html">flipped projection matrix</a>), <code>y</code> is the camera’s near plane, <code>z</code> is the camera’s far plane and <code>w</code> is 1/FarPlane.</td>
+</tr>
+<tr>
+	<td style="text-align:left;">_ScreenParams</td>
+	<td style="text-align:left;">float4</td>
+	<td style="text-align:left;">
+<code>x</code> is the width of the camera’s target texture in pixels, <code>y</code> is the height of the camera’s target texture in pixels, <code>z</code> is 1.0 + 1.0/width and <code>w</code> is 1.0 + 1.0/height.</td>
+</tr>
+<tr>
+	<td style="text-align:left;">_ZBufferParams</td>
+	<td style="text-align:left;">float4</td>
+	<td style="text-align:left;">Used to linearize Z buffer values. <code>x</code> is (1-far/near), <code>y</code> is (far/near), <code>z</code> is (x/far) and <code>w</code> is (y/far).</td>
+</tr>
+<tr>
+	<td style="text-align:left;">unity_OrthoParams</td>
+	<td style="text-align:left;">float4</td>
+	<td style="text-align:left;">
+<code>x</code> is orthographic camera’s width, <code>y</code> is orthographic camera’s height, <code>z</code> is unused and <code>w</code> is 1.0 when camera is orthographic, 0.0 when perspective.</td>
+</tr>
+<tr>
+	<td style="text-align:left;">unity_CameraProjection</td>
+	<td style="text-align:left;">float4x4</td>
+	<td style="text-align:left;">Camera’s projection matrix.</td>
+</tr>
+<tr>
+	<td style="text-align:left;">unity_CameraInvProjection</td>
+	<td style="text-align:left;">float4x4</td>
+	<td style="text-align:left;">Inverse of camera’s projection matrix.</td>
+</tr>
+<tr>
+	<td style="text-align:left;">unity_CameraWorldClipPlanes[6]</td>
+	<td style="text-align:left;">float4</td>
+	<td style="text-align:left;">Camera frustum plane world space equations, in this order: left, right, bottom, top, near, far.</td>
+</tr>
+</tbody>
+</table>
+
+<h2>Time</h2>
+
+<table>
+<colgroup>
+<col style="text-align:left;">
+<col style="text-align:left;">
+<col style="text-align:left;">
+</colgroup>
+
+<thead>
+<tr>
+	<th style="text-align:left;"></th>
+	<th style="text-align:left;"></th>
+	<th style="text-align:left;"></th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+	<td style="text-align:left;"><strong>Name</strong></td>
+	<td style="text-align:left;"><strong>Type</strong></td>
+	<td style="text-align:left;"><strong>Value</strong></td>
+</tr>
+<tr>
+	<td style="text-align:left;">_Time</td>
+	<td style="text-align:left;">float4</td>
+	<td style="text-align:left;">Time since level load (t/20, t, t*2, t*3), use to animate things inside the shaders.</td>
+</tr>
+<tr>
+	<td style="text-align:left;">_SinTime</td>
+	<td style="text-align:left;">float4</td>
+	<td style="text-align:left;">Sine of time: (t/8, t/4, t/2, t).</td>
+</tr>
+<tr>
+	<td style="text-align:left;">_CosTime</td>
+	<td style="text-align:left;">float4</td>
+	<td style="text-align:left;">Cosine of time: (t/8, t/4, t/2, t).</td>
+</tr>
+<tr>
+	<td style="text-align:left;">unity_DeltaTime</td>
+	<td style="text-align:left;">float4</td>
+	<td style="text-align:left;">Delta time: (dt, 1/dt, smoothDt, 1/smoothDt).</td>
+</tr>
+</tbody>
+</table>
+
+<h2>Lighting</h2>
+
+<p>Light parameters are passed to shaders in different ways depending on which <a href="RenderingPaths.html">Rendering Path</a> is used,
+and which LightMode <a href="SL-PassTags.html">Pass Tag</a> is used in the shader.</p>
+
+<p>
+<a href="RenderTech-ForwardRendering.html">Forward rendering</a> (<code>ForwardBase</code> and <code>ForwardAdd</code> pass types):</p>
+
+<table>
+<colgroup>
+<col style="text-align:left;">
+<col style="text-align:left;">
+<col style="text-align:left;">
+</colgroup>
+
+<thead>
+<tr>
+	<th style="text-align:left;"></th>
+	<th style="text-align:left;"></th>
+	<th style="text-align:left;"></th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+	<td style="text-align:left;"><strong>Name</strong></td>
+	<td style="text-align:left;"><strong>Type</strong></td>
+	<td style="text-align:left;"><strong>Value</strong></td>
+</tr>
+<tr>
+	<td style="text-align:left;">_LightColor0 <em>(declared in Lighting.cginc)</em>
+</td>
+	<td style="text-align:left;">fixed4</td>
+	<td style="text-align:left;">Light color.</td>
+</tr>
+<tr>
+	<td style="text-align:left;">_WorldSpaceLightPos0</td>
+	<td style="text-align:left;">float4</td>
+	<td style="text-align:left;">Directional lights: (world space direction, 0). Other lights: (world space position, 1).</td>
+</tr>
+<tr>
+	<td style="text-align:left;">_LightMatrix0 <em>(declared in AutoLight.cginc)</em>
+</td>
+	<td style="text-align:left;">float4x4</td>
+	<td style="text-align:left;">World-to-light matrix. Used to sample cookie &amp; attenuation textures.</td>
+</tr>
+<tr>
+	<td style="text-align:left;">unity_4LightPosX0, unity_4LightPosY0, unity_4LightPosZ0</td>
+	<td style="text-align:left;">float4</td>
+	<td style="text-align:left;">
+<em>(ForwardBase pass only)</em> world space positions of first four non-important point lights.</td>
+</tr>
+<tr>
+	<td style="text-align:left;">unity_4LightAtten0</td>
+	<td style="text-align:left;">float4</td>
+	<td style="text-align:left;">
+<em>(ForwardBase pass only)</em> attenuation factors of first four non-important point lights.</td>
+</tr>
+<tr>
+	<td style="text-align:left;">unity_LightColor</td>
+	<td style="text-align:left;">half4[4]</td>
+	<td style="text-align:left;">
+<em>(ForwardBase pass only)</em> colors of of first four non-important point lights.</td>
+</tr>
+</tbody>
+</table>
+
+<p>Deferred shading and deferred lighting, used in the lighting pass shader (all declared in UnityDeferredLibrary.cginc):</p>
+
+<table>
+<colgroup>
+<col style="text-align:left;">
+<col style="text-align:left;">
+<col style="text-align:left;">
+</colgroup>
+
+<thead>
+<tr>
+	<th style="text-align:left;"></th>
+	<th style="text-align:left;"></th>
+	<th style="text-align:left;"></th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+	<td style="text-align:left;"><strong>Name</strong></td>
+	<td style="text-align:left;"><strong>Type</strong></td>
+	<td style="text-align:left;"><strong>Value</strong></td>
+</tr>
+<tr>
+	<td style="text-align:left;">_LightColor</td>
+	<td style="text-align:left;">float4</td>
+	<td style="text-align:left;">Light color.</td>
+</tr>
+<tr>
+	<td style="text-align:left;">_LightMatrix0</td>
+	<td style="text-align:left;">float4x4</td>
+	<td style="text-align:left;">World-to-light matrix. Used to sample cookie &amp; attenuation textures.</td>
+</tr>
+</tbody>
+</table>
+
+<p>Spherical harmonics coefficients (used by ambient and light probes) are set up for <code>ForwardBase</code>, <code>PrePassFinal</code> and <code>Deferred</code>
+pass types. They contain 3rd order SH to be evaluated by world space normal (see <code>ShadeSH9</code> from <a href="SL-BuiltinIncludes.html">UnityCG.cginc</a>).
+The variables are all half4 type, <code>unity_SHAr</code> and similar names.</p>
+
+<p>
+<a href="RenderTech-VertexLit.html">Vertex-lit rendering</a> (<code>Vertex</code> pass type):</p>
+
+<p>Up to 8 lights are set up for a <code>Vertex</code> pass type; always sorted starting from the brightest one. So if you want
+to render objects affected by two lights at once, you can just take first two entries in the arrays. If there are less
+lights affecting the object than 8, the rest will have their color set to black.</p>
+
+<table>
+<colgroup>
+<col style="text-align:left;">
+<col style="text-align:left;">
+<col style="text-align:left;">
+</colgroup>
+
+<thead>
+<tr>
+	<th style="text-align:left;"></th>
+	<th style="text-align:left;"></th>
+	<th style="text-align:left;"></th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+	<td style="text-align:left;"><strong>Name</strong></td>
+	<td style="text-align:left;"><strong>Type</strong></td>
+	<td style="text-align:left;"><strong>Value</strong></td>
+</tr>
+<tr>
+	<td style="text-align:left;">unity_LightColor</td>
+	<td style="text-align:left;">half4[8]</td>
+	<td style="text-align:left;">Light colors.</td>
+</tr>
+<tr>
+	<td style="text-align:left;">unity_LightPosition</td>
+	<td style="text-align:left;">float4[8]</td>
+	<td style="text-align:left;">View-space light positions. (-direction,0) for directional lights; (position,1) for point/spot lights.</td>
+</tr>
+<tr>
+	<td style="text-align:left;">unity_LightAtten</td>
+	<td style="text-align:left;">half4[8]</td>
+	<td style="text-align:left;">Light attenuation factors. <em>x</em> is cos(spotAngle/2) or –1 for non-spot lights; <em>y</em> is 1/cos(spotAngle/4) or 1 for non-spot lights; <em>z</em> is quadratic attenuation; <em>w</em> is squared light range.</td>
+</tr>
+<tr>
+	<td style="text-align:left;">unity_SpotDirection</td>
+	<td style="text-align:left;">float4[8]</td>
+	<td style="text-align:left;">View-space spot light positions; (0,0,1,0) for non-spot lights.</td>
+</tr>
+</tbody>
+</table>
+
+<h2>Fog and Ambient</h2>
+
+<table>
+<colgroup>
+<col style="text-align:left;">
+<col style="text-align:left;">
+<col style="text-align:left;">
+</colgroup>
+
+<thead>
+<tr>
+	<th style="text-align:left;"></th>
+	<th style="text-align:left;"></th>
+	<th style="text-align:left;"></th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+	<td style="text-align:left;"><strong>Name</strong></td>
+	<td style="text-align:left;"><strong>Type</strong></td>
+	<td style="text-align:left;"><strong>Value</strong></td>
+</tr>
+<tr>
+	<td style="text-align:left;">unity_AmbientSky</td>
+	<td style="text-align:left;">fixed4</td>
+	<td style="text-align:left;">Sky ambient lighting color in gradient ambient lighting case.</td>
+</tr>
+<tr>
+	<td style="text-align:left;">unity_AmbientEquator</td>
+	<td style="text-align:left;">fixed4</td>
+	<td style="text-align:left;">Equator ambient lighting color in gradient ambient lighting case.</td>
+</tr>
+<tr>
+	<td style="text-align:left;">unity_AmbientGround</td>
+	<td style="text-align:left;">fixed4</td>
+	<td style="text-align:left;">Ground ambient lighting color in gradient ambient lighting case.</td>
+</tr>
+<tr>
+	<td style="text-align:left;">UNITY_LIGHTMODEL_AMBIENT</td>
+	<td style="text-align:left;">fixed4</td>
+	<td style="text-align:left;">Ambient lighting color (sky color in gradient ambient case). Legacy variable.</td>
+</tr>
+<tr>
+	<td style="text-align:left;">unity_FogColor</td>
+	<td style="text-align:left;">fixed4</td>
+	<td style="text-align:left;">Fog color.</td>
+</tr>
+<tr>
+	<td style="text-align:left;">unity_FogParams</td>
+	<td style="text-align:left;">float4</td>
+	<td style="text-align:left;">Parameters for fog calculation: (density / sqrt(ln(2)), density / ln(2), –1/(end-start), end/(end-start)). <em>x</em> is useful for Exp2 fog mode, <em>y</em> for Exp mode, <em>z</em> and <em>w</em> for Linear mode.</td>
+</tr>
+</tbody>
+</table>
+
+<h2>Various</h2>
+
+<table>
+<colgroup>
+<col style="text-align:left;">
+<col style="text-align:left;">
+<col style="text-align:left;">
+</colgroup>
+
+<thead>
+<tr>
+	<th style="text-align:left;"></th>
+	<th style="text-align:left;"></th>
+	<th style="text-align:left;"></th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+	<td style="text-align:left;"><strong>Name</strong></td>
+	<td style="text-align:left;"><strong>Type</strong></td>
+	<td style="text-align:left;"><strong>Value</strong></td>
+</tr>
+<tr>
+	<td style="text-align:left;">unity_LODFade</td>
+	<td style="text-align:left;">float4</td>
+	<td style="text-align:left;">Level-of-detail fade when using <a href="class-LODGroup.html">LODGroup</a>. <em>x</em> is fade (0..1), <em>y</em> is fade quantized to 16 levels, <em>z</em> and <em>w</em> unused.</td>
+</tr>
+</tbody>
+</table>
+
+<div class="feedbackbox" id="feedbackbox">
+<div id="rating"><p>Did you find this page useful? Please give it a rating:<br><div id="ratecontent" class="c-rating"></div>
+</p></div>
+<div id="ratingThanks" style="display:none"><p>Thanks for rating this page!</p></div>
+<div id="problem"><p><a name="problem" onclick="document.getElementById('problemType').style.display = '';document.getElementById('problem').style.display = 'none';">Report a problem on this page</a></p></div>
+<div id="problemType" style="display:none"><p>What kind of problem would you like to report?<ul type="problems">
+<li><a name="needcode" onclick="                                                             document.getElementById('problemType').style.display = 'none';                                                             document.getElementById('problemThanks').style.display = '';                                                             SendFeedback('problem-needcode',window.location.href,0);                                                             document.getElementById('problemFormDescription').value='Needs code samples.';                                                             document.getElementById('problemNeedCodeForm').style.display = ''                                                         ">This page needs code samples</a></li>
+<li><a name="code" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-brokencode',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Code samples do not work.';                                                         document.getElementById('problemCodeForm').style.display = ''                                                         ">Code samples do not work</a></li>
+<li><a name="missing" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-missing',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Missing information';                                                         document.getElementById('problemMissingForm').style.display = ''                                                         ">Information is missing</a></li>
+<li><a name="incorrect" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-incorrect',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Incorrect information';                                                         document.getElementById('problemIncorrectForm').style.display = ''                                                         ">Information is incorrect</a></li>
+<li><a name="unclear" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-unclear',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Unclear or confusing information';                                                         document.getElementById('problemUnclearForm').style.display = ''                                                         ">Information is unclear or confusing</a></li>
+<li><a name="language" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-language',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Spelling or grammar error';                                                         document.getElementById('problemLanguageForm').style.display = ''                                                         ">There is a spelling/grammar error on this page</a></li>
+<li><a name="other" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-other',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='This page has a problem';                                                         document.getElementById('problemOtherForm').style.display = ''                                                         ">Something else</a></li>
+</ul>
+<p><known_issues><p>Is something described here not working as you expect it to? It might be a <b>Known Issue</b>. Please check with the Issue Tracker at <a href="https://issuetracker.unity3d.com">issuetracker.unity3d.com</a>.</p></known_issues></p>
+</p></div>
+<div id="problemThanks" style="display:none"><p>Thanks for letting us know! This page has been marked for review based on your feedback.<br><br>If you have time, you can provide more information to help us fix the problem faster.<br><br><a onclick="document.getElementById('problemMoreInfo').style.display = '';document.getElementById('problemThanks').style.display = 'none';">Provide more information</a><br>
+</p></div>
+<div id="problemMoreInfo" style="display:none">
+<p id="problemNeedCodeForm" style="display:none">You've told us this page needs code samples. If you'd like to help us further, you could provide a code sample, or tell us about what kind of code sample you'd like to see:</p>
+<p id="problemCodeForm" style="display:none">You've told us there are code samples on this page which don't work. If you know how to fix it, or have something better we could use instead, please let us know:</p>
+<p id="problemMissingForm" style="display:none">You've told us there is information missing from this page. Please tell us more about what's missing:</p>
+<p id="problemIncorrectForm" style="display:none">You've told us there is incorrect information on this page. If you know what we should change to make it correct, please tell us:</p>
+<p id="problemUnclearForm" style="display:none">You've told us this page has unclear or confusing information. Please tell us more about what you found unclear or confusing, or let us know how we could make it clearer:</p>
+<p id="problemLanguageForm" style="display:none">You've told us there is a spelling or grammar error on this page. Please tell us what's wrong:</p>
+<p id="problemOtherForm" style="display:none">You've told us this page has a problem. Please tell us more about what's wrong:</p>
+<form>
+<textarea id="problemFormSuggestionField" cols="40" rows="5"></textarea><input type="hidden" id="problemFormDescription"><input type="submit" id="problemFormDescriptionSubmit" value="Submit" onclick="                                             document.getElementById('problemMoreInfo').style.display = 'none';                                             document.getElementById('problemMoreInfoThanks').style.display = '';                                             return false;                                             ">
+</form>
+</div>
+<div id="problemMoreInfoThanks" style="display:none"><p>Thanks for helping to make the Unity documentation better!</p></div>
+<script>
+
+                                            var ratecontent = document.querySelector('#ratecontent'); // target element
+                                            var currentRating = 0; // initial rating
+                                            var maxRating= 5; // max rating
+
+                                            // callback to run after setting the rating
+                                            var callback = function(rating) {
+                                                document.getElementById('ratingThanks').style.display = '';
+                                                document.getElementById('ratecontent').style.display = 'none';
+                                                document.getElementById('rating').style.display = 'none';
+                                                SendFeedback("rating",window.location.href,rating);
+                                            };
+
+                                            // rating instance
+                                            var myRating = rating(ratecontent, currentRating, maxRating, callback);
+                                        </script>
+</div>
+<div class="nextprev clear">
+<div class="icon tt left mr1" data-distance="-40|-30|top">
+<span class="prev"><a href="SL-BuiltinFunctions.html"></a></span><div class="tip"> Built-in shader helper functions</div>
+</div>
+<div class="icon tt right" data-distance="-40|-30|top">
+<span class="next"><a href="SL-MultipleProgramVariants.html"></a></span><div class="tip">Making multiple shader program variants</div>
+</div>
+</div>
+</div>
+</body></html>

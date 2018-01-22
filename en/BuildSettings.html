@@ -1,0 +1,347 @@
+<html><head><title>html模版</title></head><body>Unity - Manual:  Build Settings</br>
+<div class="breadcrumbs clear"><ul>
+<li><a href="UnityManual.html">Unity User Manual (2018.1 beta)</a></li>
+<li><a href="UnityOverview.html">Working in Unity</a></li>
+<li><a href="EditorFeatures.html">Editor Features</a></li>
+<li> Build Settings</li>
+</ul></div>
+<div class="mb20"><div class="nextprev clear">
+<div class="icon tt left mr1" data-distance="-40|-30|top">
+<span class="prev"><a href="Preferences.html"></a></span><div class="tip">Preferences</div>
+</div>
+<div class="icon tt right" data-distance="-40|-30|top">
+<span class="next"><a href="comp-ManagerGroup.html"></a></span><div class="tip">Settings Managers</div>
+</div>
+</div></div>
+<div class="otherversionswrapper" onmouseover="setOtherVersionsDisplay(true)" onmouseout="setOtherVersionsDisplay(false)">
+<a>Other Versions</a><div class="otherversionscontent" id="OtherVersionsContent" style="display: none;">Cannot access other versions offline!</div>
+</div>
+<div class="scrollToFeedback"><a id="scrollToFeedback">Leave feedback</a></div>
+<h1>Build Settings</h1>
+<!--BeginSwitchLink--><!--EndSwitchLink-->
+<div class="clear"></div>
+
+<p>The Build Settings window allows you to choose your target platform, adjust settings for your build, and start the build process. To access the Build Settings window, select <strong>File</strong> &gt; <strong>Build Settings…</strong> . Once you have specified your build settings, you can click <strong>Build</strong> to create your build, or click the <strong>Build And Run</strong> to create and run your build on the platform you have specified.</p>
+
+<figure>
+<img src="../uploads/Main/BuildSettings.png" alt="Build Settings window">
+<figcaption>Build Settings window</figcaption>
+</figure>
+
+<h2>Scenes in Build</h2>
+
+<p>This part of the window shows you the scenes from your project that will be included in your build. If no scenes are shown then you can use the <em>Add Current</em> button to add the current scene to the build, or you can drag scene assets into this window from your project window. You can also untick scenes in this list to exclude them from the build without removing it from the list. If a scene is never needed in the build you can remove it from the list of scenes by pressing the delete key.</p>
+
+<p>Scenes that are ticked and added to the Scenes in Build list will be included in the build. The list of scenes will be used to control the order the scenes are loaded. You can adjust the order of the scenes by dragging them up or down.</p>
+
+<h2>Platform List</h2>
+
+<p>The Platform area beneath the Scenes in Build area list all the platforms which are available to your Unity version. Some platforms may be greyed out to indicate they are not part of your version or invite you to download the platform specific build options. Selecting one of the platforms will control which platform will be built. If you change the target platform, you need to press the “Switch Platform” button to apply your change. This may take some time making the switch, because your assets may need to be re-imported in formats that match your target platform. The currently selected platform is indicated with a Unity icon to the right of the platform name.</p>
+
+<p>The selected platform will show a list of options that can be adjusted for the build. Each platform may have different options. These options are listed below. Options that are common across many platforms are listed at the very bottom of this section under the “Generic items across builds” details.</p>
+
+<h3>PC, Mac &amp; Linux Standalone</h3>
+
+<table>
+<colgroup>
+<col style="text-align:left;">
+<col style="text-align:left;">
+</colgroup>
+
+<thead>
+<tr>
+	<th style="text-align:left;">Option</th>
+	<th style="text-align:left;">Purpose</th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+	<td style="text-align:left;" colspan="2">Target Platform</td>
+</tr>
+<tr>
+	<td style="text-align:left;">        Windows</td>
+	<td style="text-align:left;">Build for Windows</td>
+</tr>
+<tr>
+	<td style="text-align:left;">        Mac OS X</td>
+	<td style="text-align:left;">Build for Mac</td>
+</tr>
+<tr>
+	<td style="text-align:left;">        Linux</td>
+	<td style="text-align:left;">Build for Linux</td>
+</tr>
+<tr>
+	<td style="text-align:left;">Architecture</td>
+	<td style="text-align:left;">x86</td>
+</tr>
+<tr>
+	<td style="text-align:left;">        x86</td>
+	<td style="text-align:left;">32-bit CPU</td>
+</tr>
+<tr>
+	<td style="text-align:left;">        x86_64</td>
+	<td style="text-align:left;">64-bit CPU</td>
+</tr>
+<tr>
+	<td style="text-align:left;">        Universal</td>
+	<td style="text-align:left;">All CPU devices</td>
+</tr>
+<tr>
+	<td style="text-align:left;">        x86 + x86_64 (Universal)</td>
+	<td style="text-align:left;">All CPU devices for Linux</td>
+</tr>
+<tr>
+	<td style="text-align:left;">Headless Mode</td>
+	<td style="text-align:left;">Build game for server use and with no visual elements</td>
+</tr>
+</tbody>
+</table>
+
+<h3>iOS</h3>
+
+<table>
+<colgroup>
+<col style="text-align:left;">
+<col style="text-align:left;">
+</colgroup>
+
+<thead>
+<tr>
+	<th style="text-align:left;">Option</th>
+	<th style="text-align:left;">Purpose</th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+	<td style="text-align:left;">Run in Xcode as</td>
+	<td style="text-align:left;"></td>
+</tr>
+<tr>
+	<td style="text-align:left;">        Release</td>
+	<td style="text-align:left;">Shipping version</td>
+</tr>
+<tr>
+	<td style="text-align:left;">        Debug</td>
+	<td style="text-align:left;">Testing version</td>
+</tr>
+<tr>
+	<td style="text-align:left;">Symlink Unity libraries</td>
+	<td style="text-align:left;">Reference to the Unity libraries instead of copying them into the XCode project. (Reduces the XCode project size.)</td>
+</tr>
+</tbody>
+</table>
+
+<h3>Android</h3>
+
+<table>
+<colgroup>
+<col style="text-align:left;">
+<col style="text-align:left;">
+</colgroup>
+
+<thead>
+<tr>
+	<th style="text-align:left;">Option</th>
+	<th style="text-align:left;">Purpose</th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+	<td style="text-align:left;" colspan="2">Texture Compression</td>
+</tr>
+<tr>
+	<td style="text-align:left;">        Don’t override</td>
+	<td style="text-align:left;"></td>
+</tr>
+<tr>
+	<td style="text-align:left;">        DXT Tegra)</td>
+	<td style="text-align:left;"></td>
+</tr>
+<tr>
+	<td style="text-align:left;">        PVRTC (PowerVR)</td>
+	<td style="text-align:left;"></td>
+</tr>
+<tr>
+	<td style="text-align:left;">        ATC (Adreno)</td>
+	<td style="text-align:left;"></td>
+</tr>
+<tr>
+	<td style="text-align:left;">        ETC (default)</td>
+	<td style="text-align:left;"></td>
+</tr>
+<tr>
+	<td style="text-align:left;">        ETC2 (GLES 3.0)</td>
+	<td style="text-align:left;"></td>
+</tr>
+<tr>
+	<td style="text-align:left;">        ASTC</td>
+	<td style="text-align:left;"></td>
+</tr>
+<tr>
+	<td style="text-align:left;" colspan="2">Build System</td>
+</tr>
+<tr>
+	<td style="text-align:left;">        Internal (Default)</td>
+	<td style="text-align:left;">Generate the output package (APK) using the internal Unity build process, based on Android SDK utilities.</td>
+</tr>
+<tr>
+	<td style="text-align:left;">        Gradle (New)</td>
+	<td style="text-align:left;">Generate the output package (APK) using the Gradle build system. Supports direct Build and Run and exporting the project to a directory. This is the preferred option for exporting a project, as Gradle is the native format for Android Studio.</td>
+</tr>
+<tr>
+	<td style="text-align:left;">        ADT (Legacy)</td>
+	<td style="text-align:left;">Export the project in ADT (eclipse) format. The output package (APK) can be built in eclipse or Android Studio. This project type is no longer supported by Google and is considered obsolete.</td>
+</tr>
+</tbody>
+</table>
+
+<h3>WebGL (Preview)</h3>
+
+<table>
+<colgroup>
+<col style="text-align:left;">
+<col style="text-align:left;">
+</colgroup>
+
+<thead>
+<tr>
+	<th style="text-align:left;">Option</th>
+	<th style="text-align:left;">Purpose</th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+	<td style="text-align:left;">Optimization Level</td>
+	<td style="text-align:left;">Active when Development Build is selected</td>
+</tr>
+<tr>
+	<td style="text-align:left;">        Slow (fast builds)</td>
+	<td style="text-align:left;"></td>
+</tr>
+<tr>
+	<td style="text-align:left;">        Fast</td>
+	<td style="text-align:left;"></td>
+</tr>
+<tr>
+	<td style="text-align:left;">        Fastest (very slow builds)</td>
+	<td style="text-align:left;"></td>
+</tr>
+</tbody>
+</table>
+
+<h3>Samsung TV</h3>
+
+<p>Build Settings for Samsung TV use the generic settings shown later on this page.</p>
+
+<h3>Xiaomi</h3>
+
+<p>For information about building projects for Xiaomi Game Center, see <a href="https://unity3d.com/cn/partners/xiaomi/guide">Unity Xiaomi documentation</a>.</p>
+
+<h3>Other platforms</h3>
+
+<p>Console platforms and devices which require a Unity license will be documented in the Platform Specific section of the User Guide.</p>
+
+<h3>Generic items across builds</h3>
+
+<table>
+<colgroup>
+<col style="text-align:left;">
+<col style="text-align:left;">
+</colgroup>
+
+<thead>
+<tr>
+	<th style="text-align:left;">Option</th>
+	<th style="text-align:left;">Purpose</th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+	<td style="text-align:left;">Development Build</td>
+	<td style="text-align:left;">Allow the developer to test and work out how the build is coming along.</td>
+</tr>
+<tr>
+	<td style="text-align:left;">Autoconnect Profiler</td>
+	<td style="text-align:left;">When the Development Build option is selected allow the profiler to connect to the build.</td>
+</tr>
+<tr>
+	<td style="text-align:left;">Script Debugging</td>
+	<td style="text-align:left;">When the Development Build option is selected allow the script code to be debugged. Not available on WebGL.</td>
+</tr>
+</tbody>
+</table>
+
+<hr>
+
+<ul>
+<li><p>
+<span class="page-edit">• 2017–08–24 Page amended with no <a href="DocumentationEditorialReview.html">editorial review</a>
+</span><br>
+</p></li>
+<li><p><span class="page-history">Xiaomi build target added in <a href="https://docs.unity3d.com/2017.2/Documentation/Manual/30_search.html?q=newin20172">2017.2</a> <span class="search-words">NewIn20172</span></span></p></li>
+<li><p><span class="page-history">Tizen support discontinued in <a href="https://docs.unity3d.com/2017.3/Documentation/Manual/30_search.html?q=newin20173">2017.3</a> <span class="search-words">NewIn20173</span></span></p></li>
+</ul>
+<div class="feedbackbox" id="feedbackbox">
+<div id="rating"><p>Did you find this page useful? Please give it a rating:<br><div id="ratecontent" class="c-rating"></div>
+</p></div>
+<div id="ratingThanks" style="display:none"><p>Thanks for rating this page!</p></div>
+<div id="problem"><p><a name="problem" onclick="document.getElementById('problemType').style.display = '';document.getElementById('problem').style.display = 'none';">Report a problem on this page</a></p></div>
+<div id="problemType" style="display:none"><p>What kind of problem would you like to report?<ul type="problems">
+<li><a name="needcode" onclick="                                                             document.getElementById('problemType').style.display = 'none';                                                             document.getElementById('problemThanks').style.display = '';                                                             SendFeedback('problem-needcode',window.location.href,0);                                                             document.getElementById('problemFormDescription').value='Needs code samples.';                                                             document.getElementById('problemNeedCodeForm').style.display = ''                                                         ">This page needs code samples</a></li>
+<li><a name="code" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-brokencode',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Code samples do not work.';                                                         document.getElementById('problemCodeForm').style.display = ''                                                         ">Code samples do not work</a></li>
+<li><a name="missing" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-missing',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Missing information';                                                         document.getElementById('problemMissingForm').style.display = ''                                                         ">Information is missing</a></li>
+<li><a name="incorrect" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-incorrect',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Incorrect information';                                                         document.getElementById('problemIncorrectForm').style.display = ''                                                         ">Information is incorrect</a></li>
+<li><a name="unclear" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-unclear',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Unclear or confusing information';                                                         document.getElementById('problemUnclearForm').style.display = ''                                                         ">Information is unclear or confusing</a></li>
+<li><a name="language" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-language',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Spelling or grammar error';                                                         document.getElementById('problemLanguageForm').style.display = ''                                                         ">There is a spelling/grammar error on this page</a></li>
+<li><a name="other" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-other',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='This page has a problem';                                                         document.getElementById('problemOtherForm').style.display = ''                                                         ">Something else</a></li>
+</ul>
+<p><known_issues><p>Is something described here not working as you expect it to? It might be a <b>Known Issue</b>. Please check with the Issue Tracker at <a href="https://issuetracker.unity3d.com">issuetracker.unity3d.com</a>.</p></known_issues></p>
+</p></div>
+<div id="problemThanks" style="display:none"><p>Thanks for letting us know! This page has been marked for review based on your feedback.<br><br>If you have time, you can provide more information to help us fix the problem faster.<br><br><a onclick="document.getElementById('problemMoreInfo').style.display = '';document.getElementById('problemThanks').style.display = 'none';">Provide more information</a><br>
+</p></div>
+<div id="problemMoreInfo" style="display:none">
+<p id="problemNeedCodeForm" style="display:none">You've told us this page needs code samples. If you'd like to help us further, you could provide a code sample, or tell us about what kind of code sample you'd like to see:</p>
+<p id="problemCodeForm" style="display:none">You've told us there are code samples on this page which don't work. If you know how to fix it, or have something better we could use instead, please let us know:</p>
+<p id="problemMissingForm" style="display:none">You've told us there is information missing from this page. Please tell us more about what's missing:</p>
+<p id="problemIncorrectForm" style="display:none">You've told us there is incorrect information on this page. If you know what we should change to make it correct, please tell us:</p>
+<p id="problemUnclearForm" style="display:none">You've told us this page has unclear or confusing information. Please tell us more about what you found unclear or confusing, or let us know how we could make it clearer:</p>
+<p id="problemLanguageForm" style="display:none">You've told us there is a spelling or grammar error on this page. Please tell us what's wrong:</p>
+<p id="problemOtherForm" style="display:none">You've told us this page has a problem. Please tell us more about what's wrong:</p>
+<form>
+<textarea id="problemFormSuggestionField" cols="40" rows="5"></textarea><input type="hidden" id="problemFormDescription"><input type="submit" id="problemFormDescriptionSubmit" value="Submit" onclick="                                             document.getElementById('problemMoreInfo').style.display = 'none';                                             document.getElementById('problemMoreInfoThanks').style.display = '';                                             return false;                                             ">
+</form>
+</div>
+<div id="problemMoreInfoThanks" style="display:none"><p>Thanks for helping to make the Unity documentation better!</p></div>
+<script>
+
+                                            var ratecontent = document.querySelector('#ratecontent'); // target element
+                                            var currentRating = 0; // initial rating
+                                            var maxRating= 5; // max rating
+
+                                            // callback to run after setting the rating
+                                            var callback = function(rating) {
+                                                document.getElementById('ratingThanks').style.display = '';
+                                                document.getElementById('ratecontent').style.display = 'none';
+                                                document.getElementById('rating').style.display = 'none';
+                                                SendFeedback("rating",window.location.href,rating);
+                                            };
+
+                                            // rating instance
+                                            var myRating = rating(ratecontent, currentRating, maxRating, callback);
+                                        </script>
+</div>
+<div class="nextprev clear">
+<div class="icon tt left mr1" data-distance="-40|-30|top">
+<span class="prev"><a href="Preferences.html"></a></span><div class="tip">Preferences</div>
+</div>
+<div class="icon tt right" data-distance="-40|-30|top">
+<span class="next"><a href="comp-ManagerGroup.html"></a></span><div class="tip">Settings Managers</div>
+</div>
+</div>
+</div>
+</body></html>

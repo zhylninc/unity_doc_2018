@@ -1,0 +1,220 @@
+<html><head><title>html模版</title></head><body>Unity - Manual: Specifics on the AudioMixer window</br>
+<div class="breadcrumbs clear"><ul>
+<li><a href="UnityManual.html">Unity User Manual (2018.1 beta)</a></li>
+<li><a href="Audio.html">Audio</a></li>
+<li><a href="AudioMixer.html">Audio Mixer</a></li>
+<li>Specifics on the AudioMixer window</li>
+</ul></div>
+<div class="mb20"><div class="nextprev clear">
+<div class="icon tt left mr1" data-distance="-40|-30|top">
+<span class="prev"><a href="AudioMixerOverview.html"></a></span><div class="tip">An overview of the concepts and AudioMixer</div>
+</div>
+<div class="icon tt right" data-distance="-40|-30|top">
+<span class="next"><a href="AudioMixerInspectors.html"></a></span><div class="tip">AudioGroup Inspector</div>
+</div>
+</div></div>
+<div class="otherversionswrapper" onmouseover="setOtherVersionsDisplay(true)" onmouseout="setOtherVersionsDisplay(false)">
+<a>Other Versions</a><div class="otherversionscontent" id="OtherVersionsContent" style="display: none;">Cannot access other versions offline!</div>
+</div>
+<div class="scrollToFeedback"><a id="scrollToFeedback">Leave feedback</a></div>
+<h1>Specifics on the AudioMixer window</h1>
+<!--BeginSwitchLink--><!--EndSwitchLink-->
+<div class="clear"></div>
+
+<h2>Mixers Panel</h2>
+
+<p>The Mixers Panel shows a complete list of all AudioMixers within the project. AudioMixers can be quickly switched between by selecting them within this panel. Routing one AudioMixer into the AudioGroup of another AudioMixer is also performed within this panel. </p>
+
+<p>You can also create new AudioMixers in the project my clicking the ‘+’ icon in the top right of the panel.</p>
+
+<figure>
+<img src="../uploads/Main/AudioMixerCreate.png" alt="">
+</figure>
+
+<h3>Routing AudioMixers into other AudioMixers</h3>
+
+<p>Unity supports having multiple AudioMixers used within a scene at once. By default, each AudioMixer outputs the audio signal directly to the AudioListener.</p>
+
+<p>Developers can also choose to route the audio output of an AudioMixer into an AudioGroup of another AudioMixer. This allows for flexible and dynamic routing hierarchies at game runtime.</p>
+
+<p>Routing an AudioMixer into another AudioGroup can be achieved two ways, firstly in the editor within the Mixers Panel, and the other dynamically at runtime using the AudioMixer API.</p>
+
+<ul>
+<li>To change the output of an AudioMixer within the editor, simply click on an AudioMixer within the Mixers Panel and drag it over the top of another AudioMixer.</li>
+<li>You will be presented with a dialog allowing you to select the AudioGroup of the target AudioMixer you would like to route into.</li>
+<li>Once you select an output AudioGroup, the panel will show the parenting relationship of the AudioMixers. It will also show the target AudioGroup next to the AudioMixers name.</li>
+</ul>
+
+<figure>
+<img src="../uploads/Main/AudioMixerRouting.png" alt="">
+</figure>
+
+<h2>Hierarchy Panel</h2>
+
+<p>The hierarchy view is where you define the sound categories of an AudioMixer and the mixing structure. As described above, it allows you to define your own custom categories that AudioSources can connect to and play through.</p>
+
+<figure>
+<img src="../uploads/Main/AudioMixerHierarchyPanel.png" alt="">
+</figure>
+
+<h3>Adding and Configuring AudioGroups within the Hierarchy</h3>
+
+<p>Adding and modifying the topology of an AudioMixer is done within the AudioGroup Hierarchy Panel.</p>
+
+<ul>
+<li>Adding a new AudioGroup to the hierarchy can be done in 2 ways;
+
+<ul>
+<li>Right clicking on an existing AudioGroup (there must be at least one in an AudioMixer) and selecting ‘Add child group’ or ‘Add sibling group’.</li>
+<li>Selecting an AudioGroup that you would like to add a child to and clicking the ‘+’ icon in the top right of the panel. This will add a new group to the AudioMixer under the selected one.</li>
+</ul>
+</li>
+<li>Changing the topology of an AudioMixer can be done by clicking an AudioGroup within the panel and dragging it over the top of another AudioGroup, this will parent the target AudioGroup above the one selected.</li>
+<li>Deleting an AudioGroup (including its children) is achieved 2 ways;
+
+<ul>
+<li>By selecting the group you would like to delete and pressing the Delete key.</li>
+<li>By right clicking the group you would like to delete and selecting the “Remove Group (and children)” option.</li>
+</ul>
+</li>
+<li>To duplicate an AudioGroup (and make it a sibling), right click the AudioGroup you wish to duplicate and select “Duplicate Group (and children)”. This will duplicate the group and child groups exactly, including effects contained within the groups.</li>
+<li>To rename an AudioGroup, right click on the group and select “Rename”.</li>
+</ul>
+
+<h2>AudioGroup View</h2>
+
+<figure>
+<img src="../uploads/Main/AudioMixerAudioGroupView.png" alt="">
+</figure>
+
+<p>The AudioGroup View shows a flat arrangement of the AudioGroups in the AudioMixer. This arrangement is organised horizontally within the view. The groups shown within the AudioGroup View are dictated by the current View selection (covered later).</p>
+
+<p>Each AudioGroup within the view is represented as a vertical “strip”. The layout and look and feel of the strip is common to Digital Audio Workstations and other audio editing packages. This layout is chosen to facilitate the transition of Audio Engineers from a music and video background, as well as serve as a parallel for audio hardware integration.</p>
+
+<p>The strip is made up of title bar, followed by a vertical VU meter which represents the current audio levels through that AudioGroup. Beside the VU meter is a volume selector which allows you to input the AudioGroups attenuation along the same scale as the VU meter, which is represented in dB levels.</p>
+
+<p>Below the VU meter are 3 buttons with the following functionality:</p>
+
+<ul>
+<li>
+<strong>Solo</strong> - This toggle will enable you to switch between hearing the entire mix or only the AudioSources that are playing into children of the AudioGroup being Soloed.</li>
+<li>
+<strong>Mute</strong> - This toggle allows you to switch between including the current AudioGroup in the audible mix or excluding it from being heard in the global mix.</li>
+<li>
+<strong>Bypass</strong> - This toggle allows you to bypass or enable all the effects present within the AudioGroup.</li>
+</ul>
+
+<p>The AudioGroup also contains a list of DSP Effect Units and the Attenuation Units within the AudioGroup. The attenuation can be applied anywhere within the Effect Unit chain within an AudioGroup and allows you to decide exactly where you would like the volume adjustment to be applied. This is useful for non-linear effects and Send and Receive Units (covered later).</p>
+
+<p>Each Effect Unit slot has the following functionality:</p>
+
+<ul>
+<li>It shows the name of the Effect Unit that is being applied</li>
+<li>It shows a circle on the left hand side of the effect that can be toggled to enable or bypass that individual effect.</li>
+<li>If you right click the effect and select “Allow Wet Mixing”, the coloured bar on the bottom of the effect slow becomes active, and denotes the amount of wet signal that is being passed through the effect.</li>
+<li>Effects can be dragged up and down the AudioGroup to refine their order and also across AudioGroups to move the effect to another AudioGroup.</li>
+</ul>
+
+<p>You can also add new Effect Units by right clicking on an existing effect to add before or after it, or by clicking the “Add..” button at the bottom of the strip.</p>
+
+<h2>Snapshot Panel</h2>
+
+<p>The Snapshot Panel allows you to create, switch between and tweak different Snapshots within the AudioMixer. There is always at least one snapshot active, and selection of a snapshot within the Snapshot Panel indicates that further edits of the AudioMixer are edits to that snapshot.</p>
+
+<p>Snapshots defined in the Snapshot Panel also show up as sub-assets of the AudioMixer. This allows you to access the snapshots elsewhere in the editor and within scripts.</p>
+
+<figure>
+<img src="../uploads/Main/AudioMixerSnapshotPanel1.png" alt="">
+</figure>
+
+<figure>
+<img src="../uploads/Main/AudioMixerSnapshotPanel2.png" alt="">
+</figure>
+
+<p>You also define a ‘Start Snapshot’ (indicated by the star icon on the right hand side of the snapshot list). The Start Snapshot is the snapshot that the AudioMixer will be initialised to when loaded (for example, when the scene starts)</p>
+
+<ul>
+<li>To create a new Snapshot, click the small ‘+’ icon at the top right of the panel. Enter in a name for the new snapshot.</li>
+<li>To define a different Start Snapshot, right click on the desired Snapshot and choose “Set as Start Snapshot”.</li>
+</ul>
+
+<h2>Views Panel</h2>
+
+<p>Views allow you to create groups of visible AudioGroups in the AudioMixer. With views, you can create perspectives of interest into the AudioMixer, instead of always being presented with the full hierarchy at all times. Views are purely for workflow optimisation purposes are do not affect runtime setup or performance.</p>
+
+<p>Like the Snapshot Panel, there is always one view selected and currently shown in the AudioGroup View. By default, all AudioGroups are visible in the default view. What is contained within a view is controlled by the Eye Icons in the Hierarchy Panel (see above).</p>
+
+<ul>
+<li>To add a new view to the list of views, click the small ‘+’ icon at the top right of the Views Panel. Enter a name for the new view.</li>
+<li>Change the current view by selecting between the list of views in the View Panel.</li>
+<li>To remove a view, right click on the view and select ‘Delete’</li>
+<li>To Duplicate a view (with all of the current view settings, right click on the view and select ‘Duplicate’</li>
+</ul>
+
+<h3>The ‘Eye’ Icon of an AudioGroup</h3>
+
+<p>Each AudioGroup within the hierarchy panel has a small eye icon to the left of the group. This icon serves 2 purposes;</p>
+
+<ul>
+<li>Clicking on the eye icon toggles this AudioGroup’s visibility in the currently selected View.</li>
+<li>Right clicking on the eye icon allows you to select from a range of colours to tag this AudioGroup with. Selecting a colour other than “No Colour” will give a small colour tag to the left of the eye icon as well as a colour tag under the AudioGroup’s name in the AudioGroup view. These colour indicators are a great way to visually group different concepts and collections of AudioGroups within the AudioMixer.</li>
+</ul>
+<div class="feedbackbox" id="feedbackbox">
+<div id="rating"><p>Did you find this page useful? Please give it a rating:<br><div id="ratecontent" class="c-rating"></div>
+</p></div>
+<div id="ratingThanks" style="display:none"><p>Thanks for rating this page!</p></div>
+<div id="problem"><p><a name="problem" onclick="document.getElementById('problemType').style.display = '';document.getElementById('problem').style.display = 'none';">Report a problem on this page</a></p></div>
+<div id="problemType" style="display:none"><p>What kind of problem would you like to report?<ul type="problems">
+<li><a name="needcode" onclick="                                                             document.getElementById('problemType').style.display = 'none';                                                             document.getElementById('problemThanks').style.display = '';                                                             SendFeedback('problem-needcode',window.location.href,0);                                                             document.getElementById('problemFormDescription').value='Needs code samples.';                                                             document.getElementById('problemNeedCodeForm').style.display = ''                                                         ">This page needs code samples</a></li>
+<li><a name="code" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-brokencode',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Code samples do not work.';                                                         document.getElementById('problemCodeForm').style.display = ''                                                         ">Code samples do not work</a></li>
+<li><a name="missing" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-missing',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Missing information';                                                         document.getElementById('problemMissingForm').style.display = ''                                                         ">Information is missing</a></li>
+<li><a name="incorrect" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-incorrect',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Incorrect information';                                                         document.getElementById('problemIncorrectForm').style.display = ''                                                         ">Information is incorrect</a></li>
+<li><a name="unclear" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-unclear',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Unclear or confusing information';                                                         document.getElementById('problemUnclearForm').style.display = ''                                                         ">Information is unclear or confusing</a></li>
+<li><a name="language" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-language',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Spelling or grammar error';                                                         document.getElementById('problemLanguageForm').style.display = ''                                                         ">There is a spelling/grammar error on this page</a></li>
+<li><a name="other" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-other',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='This page has a problem';                                                         document.getElementById('problemOtherForm').style.display = ''                                                         ">Something else</a></li>
+</ul>
+<p><known_issues><p>Is something described here not working as you expect it to? It might be a <b>Known Issue</b>. Please check with the Issue Tracker at <a href="https://issuetracker.unity3d.com">issuetracker.unity3d.com</a>.</p></known_issues></p>
+</p></div>
+<div id="problemThanks" style="display:none"><p>Thanks for letting us know! This page has been marked for review based on your feedback.<br><br>If you have time, you can provide more information to help us fix the problem faster.<br><br><a onclick="document.getElementById('problemMoreInfo').style.display = '';document.getElementById('problemThanks').style.display = 'none';">Provide more information</a><br>
+</p></div>
+<div id="problemMoreInfo" style="display:none">
+<p id="problemNeedCodeForm" style="display:none">You've told us this page needs code samples. If you'd like to help us further, you could provide a code sample, or tell us about what kind of code sample you'd like to see:</p>
+<p id="problemCodeForm" style="display:none">You've told us there are code samples on this page which don't work. If you know how to fix it, or have something better we could use instead, please let us know:</p>
+<p id="problemMissingForm" style="display:none">You've told us there is information missing from this page. Please tell us more about what's missing:</p>
+<p id="problemIncorrectForm" style="display:none">You've told us there is incorrect information on this page. If you know what we should change to make it correct, please tell us:</p>
+<p id="problemUnclearForm" style="display:none">You've told us this page has unclear or confusing information. Please tell us more about what you found unclear or confusing, or let us know how we could make it clearer:</p>
+<p id="problemLanguageForm" style="display:none">You've told us there is a spelling or grammar error on this page. Please tell us what's wrong:</p>
+<p id="problemOtherForm" style="display:none">You've told us this page has a problem. Please tell us more about what's wrong:</p>
+<form>
+<textarea id="problemFormSuggestionField" cols="40" rows="5"></textarea><input type="hidden" id="problemFormDescription"><input type="submit" id="problemFormDescriptionSubmit" value="Submit" onclick="                                             document.getElementById('problemMoreInfo').style.display = 'none';                                             document.getElementById('problemMoreInfoThanks').style.display = '';                                             return false;                                             ">
+</form>
+</div>
+<div id="problemMoreInfoThanks" style="display:none"><p>Thanks for helping to make the Unity documentation better!</p></div>
+<script>
+
+                                            var ratecontent = document.querySelector('#ratecontent'); // target element
+                                            var currentRating = 0; // initial rating
+                                            var maxRating= 5; // max rating
+
+                                            // callback to run after setting the rating
+                                            var callback = function(rating) {
+                                                document.getElementById('ratingThanks').style.display = '';
+                                                document.getElementById('ratecontent').style.display = 'none';
+                                                document.getElementById('rating').style.display = 'none';
+                                                SendFeedback("rating",window.location.href,rating);
+                                            };
+
+                                            // rating instance
+                                            var myRating = rating(ratecontent, currentRating, maxRating, callback);
+                                        </script>
+</div>
+<div class="nextprev clear">
+<div class="icon tt left mr1" data-distance="-40|-30|top">
+<span class="prev"><a href="AudioMixerOverview.html"></a></span><div class="tip">An overview of the concepts and AudioMixer</div>
+</div>
+<div class="icon tt right" data-distance="-40|-30|top">
+<span class="next"><a href="AudioMixerInspectors.html"></a></span><div class="tip">AudioGroup Inspector</div>
+</div>
+</div>
+</div>
+</body></html>

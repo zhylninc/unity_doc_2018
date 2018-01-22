@@ -1,0 +1,675 @@
+<html><head><title>html模版</title></head><body>Unity - Manual: Particle System Shape Module</br>
+<div class="breadcrumbs clear"><ul>
+<li><a href="UnityManual.html">Unity User Manual (2018.1 beta)</a></li>
+<li><a href="Graphics.html">Graphics</a></li>
+<li><a href="GraphicsReference.html">Graphics Reference</a></li>
+<li><a href="PartSysReference.html">Particle Systems reference</a></li>
+<li><a href="ParticleSystemModules.html">Particle System modules</a></li>
+<li>Particle System Shape Module</li>
+</ul></div>
+<div class="mb20"><div class="nextprev clear">
+<div class="icon tt left mr1" data-distance="-40|-30|top">
+<span class="prev"><a href="PartSysEmissionModule.html"></a></span><div class="tip"> Emission module</div>
+</div>
+<div class="icon tt right" data-distance="-40|-30|top">
+<span class="next"><a href="PartSysVelOverLifeModule.html"></a></span><div class="tip">Velocity over Lifetime module</div>
+</div>
+</div></div>
+<div class="otherversionswrapper" onmouseover="setOtherVersionsDisplay(true)" onmouseout="setOtherVersionsDisplay(false)">
+<a>Other Versions</a><div class="otherversionscontent" id="OtherVersionsContent" style="display: none;">Cannot access other versions offline!</div>
+</div>
+<div class="scrollToFeedback"><a id="scrollToFeedback">Leave feedback</a></div>
+<h1>Particle System Shape Module</h1>
+<!--BeginSwitchLink--><!--EndSwitchLink-->
+<div class="clear"></div>
+
+<p>This module defines the shape (the volume or surface) from which <a href="PartSysWhatIs.html">particles</a> can be emitted, and the direction of the start velocity. The <strong>Shape</strong> property defines the shape of the emission volume, and the rest of the module’s properties vary depending on the Shape you choose.</p>
+
+<p>All shapes (except <a href="class-Mesh.html">Mesh</a>) have properties that define their dimensions, such as the <strong>Radius</strong> property. To edit these, drag the handles on the wireframe emitter shape in the Scene view. The choice of shape affects the region from which particles can be launched, but also the initial direction of the particles. For example, a <strong>Sphere</strong> emits particles outward in all directions, a <strong>Cone</strong> emits a diverging stream of particles, and a <strong>Mesh</strong> emits particles in directions that are normal to the surface.</p>
+
+<p>The section below details the properties for each <strong>Shape</strong>.</p>
+
+<h2>Shapes in the Shape module</h2>
+
+<h3>Sphere, Hemisphere</h3>
+
+<figure>
+<img src="../uploads/Main/ShapeModule.png" alt="">
+</figure>
+
+<p>Note: Sphere and Hemisphere have the same properties.</p>
+
+<table>
+<colgroup>
+<col style="text-align:left;">
+<col style="text-align:left;">
+</colgroup>
+
+<thead>
+<tr>
+	<th style="text-align:left;"><strong>Property</strong></th>
+	<th style="text-align:left;"><strong>Function</strong></th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+	<td style="text-align:left;"><strong>Shape</strong></td>
+	<td style="text-align:left;">The shape of the emission volume.</td>
+</tr>
+<tr>
+	<td style="text-align:left;">Sphere</td>
+	<td style="text-align:left;">Uniform emission in all directions.</td>
+</tr>
+<tr>
+	<td style="text-align:left;">Hemisphere</td>
+	<td style="text-align:left;">Uniform emission in all directions on one side of a plane.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>Radius</strong></td>
+	<td style="text-align:left;">The radius of the circular aspect of the shape.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>Radius Thickness</strong></td>
+	<td style="text-align:left;">A value of 0 will emit from the outer surface of the shape. A value of 1 will use the entire volume. Values in between will use a proportion of the volume.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>Position</strong></td>
+	<td style="text-align:left;">Apply an offset to the emitter shape used for spawning particles.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>Rotation</strong></td>
+	<td style="text-align:left;">Rotate the emitter shape used for spawning particles.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>Scale</strong></td>
+	<td style="text-align:left;">Change the size of the emitter shape used for spawning particles.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>Align to Direction</strong></td>
+	<td style="text-align:left;">Use this checkbox to orient particles based on their initial direction of travel. This can be useful if you want to simulate, for example, chunks of car paint flying off a car’s bodywork during a collision. If the orientation is not satisfactory, you can also override it by applying a <strong>Start Rotation</strong> value in the <strong>Main</strong> module.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>Randomize Direction</strong></td>
+	<td style="text-align:left;">Use a value 0–1, to blend particle directions towards a random direction. When this is set to 0, this setting has no effect. When it is set to 1, the particle direction is completely random.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>Spherize Direction</strong></td>
+	<td style="text-align:left;">Use a value 0–1, to blend particle directions towards a spherical direction, where they travel outwards from the center of their <a href="class-Transform.html">Transform</a>. When this is set to 0, this setting has no effect. When it is set to 1, the particle direction points outwards from the center (behaving identically to when the Shape is set to Sphere).</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>Randomize Position</strong></td>
+	<td style="text-align:left;">Move particles by a random amount, up to the specified value. When this is set to 0, this setting has no effect. Any other value will apply some randomness to the spawning positions of the particles.</td>
+</tr>
+</tbody>
+</table>
+
+<h3>Cone</h3>
+
+<figure>
+<img src="../uploads/Main/ShapeModule1.png" alt="">
+</figure>
+
+<table>
+<colgroup>
+<col style="text-align:left;">
+<col style="text-align:left;">
+</colgroup>
+
+<thead>
+<tr>
+	<th style="text-align:left;"><strong>Property</strong></th>
+	<th style="text-align:left;"><strong>Function</strong></th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+	<td style="text-align:left;"><strong>Shape</strong></td>
+	<td style="text-align:left;">The shape of the emission volume.</td>
+</tr>
+<tr>
+	<td style="text-align:left;">Cone</td>
+	<td style="text-align:left;">Emission from the base or body of a cone. The particles diverge in proportion to their distance from the cone’s center line.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>Angle</strong></td>
+	<td style="text-align:left;">The angle of the cone at its point. An angle of 0 produces a cylinder while an angle of 90 gives a flat disc.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>Radius</strong></td>
+	<td style="text-align:left;">The radius of the circular aspect of the shape.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>Radius Thickness</strong></td>
+	<td style="text-align:left;">A value of 0 will emit from the outer surface of the shape. A value of 1 will use the entire volume. Values in between will use a proportion of the volume.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>Arc</strong></td>
+	<td style="text-align:left;">The angular portion of a full circle that forms the emitter’s shape.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>Mode</strong></td>
+	<td style="text-align:left;">Define how particles are generated around the arc of the shape. When set to <strong>Random</strong>, Unity generates particles randomly around the arc. If using <strong>Loop</strong>, particles are generated sequentially around the arc of the shape, and loops back to the start at the end of each cycle. <strong>Ping-Pong</strong> is the same as <strong>Loop</strong>, except each consecutive loop happens in the opposite direction to the last. Finally, <strong>Burst Spread</strong> mode distributes particle generation evenly around the shape. This can be used to give you an even spread of particles, compared to the default randomized behavior, where particles may clump together unevenly. Burst Spread is best used with burst emissions.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>Spread</strong></td>
+	<td style="text-align:left;">Control the discrete intervals around the arc where particles may be generated. For example, a value of 0 will allow particles to spawn anywhere around the arc, and a value of 0.1 will only spawn particles at 10% intervals around the shape.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>Speed</strong></td>
+	<td style="text-align:left;">Set a value for the speed the emission position moves around the arc. Using the small black drop-down next to the value field, set this to <strong>Constant</strong> for the value to always remain the same, or <strong>Curve</strong> for the value to change over time.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>Length</strong></td>
+	<td style="text-align:left;">The length of the cone. This only applies when the <strong>Emit from:</strong> property is set to <strong>Volume</strong>.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>Emit from:</strong></td>
+	<td style="text-align:left;">Selects the part of the cone to emit from: <strong>Base</strong> or <strong>Volume</strong>.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>Position</strong></td>
+	<td style="text-align:left;">Apply an offset to the emitter shape used for spawning particles.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>Rotation</strong></td>
+	<td style="text-align:left;">Rotate the emitter shape used for spawning particles.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>Scale</strong></td>
+	<td style="text-align:left;">Change the size of the emitter shape used for spawning particles.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>Align to Direction</strong></td>
+	<td style="text-align:left;">Use this checkbox to orient particles based on their initial direction of travel. This can be useful if you want to simulate, for example, chunks of car paint flying off a car’s bodywork during a collision. If the orientation is not satisfactory, you can also override it by applying a Start Rotation value in the Main module.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>Randomize Direction</strong></td>
+	<td style="text-align:left;">Use a value 0–1, to blend particle directions towards a random direction. When this is set to 0, this setting has no effect. When it is set to 1, the particle direction is completely random.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>Spherize Direction</strong></td>
+	<td style="text-align:left;">Use a value 0–1, to blend particle directions towards a spherical direction, where they travel outwards from the center of their Transform. When this is set to 0, this setting has no effect. When it is set to 1, the particle direction points outwards from the center (behaving identically to when the Shape is set to Sphere).</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>Randomize Position</strong></td>
+	<td style="text-align:left;">Move particles by a random amount, up to the specified value. When this is set to 0, this setting has no effect. Any other value will apply some randomness to the spawning positions of the particles.</td>
+</tr>
+</tbody>
+</table>
+
+<h3>Box</h3>
+
+<figure>
+<img src="../uploads/Main/ShapeModule2.png" alt="">
+</figure>
+
+<table>
+<colgroup>
+<col style="text-align:left;">
+<col style="text-align:left;">
+</colgroup>
+
+<thead>
+<tr>
+	<th style="text-align:left;"><strong>Property</strong></th>
+	<th style="text-align:left;"><strong>Function</strong></th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+	<td style="text-align:left;"><strong>Shape</strong></td>
+	<td style="text-align:left;">The shape of the emission volume.</td>
+</tr>
+<tr>
+	<td style="text-align:left;">Box</td>
+	<td style="text-align:left;">Emission from the edge, surface, or body of a box shape. The particles move in the emitter object’s forward (Z) direction.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>Emit from:</strong></td>
+	<td style="text-align:left;">Select the part of the box to emit from: <strong>Edge</strong>, <strong>Shell</strong>, or <strong>Volume</strong>.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>Position</strong></td>
+	<td style="text-align:left;">Apply an offset to the emitter shape used for spawning particles.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>Rotation</strong></td>
+	<td style="text-align:left;">Rotate the emitter shape used for spawning particles.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>Scale</strong></td>
+	<td style="text-align:left;">Change the size of the emitter shape used for spawning particles.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>Align to Direction</strong></td>
+	<td style="text-align:left;">Use this checkbox to orient particles based on their initial direction of travel. This can be useful if you want to simulate, for example, chunks of car paint flying off a car’s bodywork during a collision. If the orientation is not satisfactory, you can also override it by applying a Start Rotation value in the Main module.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>Randomize Direction</strong></td>
+	<td style="text-align:left;">Use a value 0–1, to blend particle directions towards a random direction. When this is set to 0, this setting has no effect. When it is set to 1, the particle direction is completely random.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>Spherize Direction</strong></td>
+	<td style="text-align:left;">Use a value 0–1, to blend particle directions towards a spherical direction, where they travel outwards from the center of their Transform. When this is set to 0, this setting has no effect. When it is set to 1, the particle direction points outwards from the center (behaving identically to when the Shape is set to Sphere).</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>Randomize Position</strong></td>
+	<td style="text-align:left;">Move particles by a random amount, up to the specified value. When this is set to 0, this setting has no effect. Any other value will apply some randomness to the spawning positions of the particles.</td>
+</tr>
+</tbody>
+</table>
+
+<h3>Mesh, MeshRenderer, SkinnedMeshRenderer</h3>
+
+<figure>
+<img src="../uploads/Main/ShapeModule3.png" alt="">
+</figure>
+
+<p>Mesh, MeshRenderer and SkinnedMeshRenderer have the same properties.</p>
+
+<table>
+<colgroup>
+<col style="text-align:left;">
+<col style="text-align:left;">
+</colgroup>
+
+<thead>
+<tr>
+	<th style="text-align:left;"><strong>Property</strong></th>
+	<th style="text-align:left;"><strong>Function</strong></th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+	<td style="text-align:left;"><strong>Shape</strong></td>
+	<td style="text-align:left;">The shape of the emission volume.</td>
+</tr>
+<tr>
+	<td style="text-align:left;">Mesh</td>
+	<td style="text-align:left;">Emission from any arbitrary Mesh shape supplied via the Inspector.</td>
+</tr>
+<tr>
+	<td style="text-align:left;">MeshRenderer</td>
+	<td style="text-align:left;">Emission from a reference to a GameObject’s Mesh Renderer.</td>
+</tr>
+<tr>
+	<td style="text-align:left;">SkinnedMeshRenderer</td>
+	<td style="text-align:left;">Emission from a reference to a GameObject’s Skinned Mesh Renderer.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>Emission drop-down</strong></td>
+	<td style="text-align:left;">Use this drop-down to select where particles are emitted from. Select Vertex for the particles to emit from the vertices, Edge for the particles to emit from the edges, or Triangle for the particles to emit from the triangles. This is set to Vertex by default.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>Mesh</strong></td>
+	<td style="text-align:left;">The Mesh that provides the emitter’s shape.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>Single Material</strong></td>
+	<td style="text-align:left;">Should the particles be emitted from a particular sub-Mesh (identified by the material index number). If enabled, a numeric field is shown allowing you to specify the material index number.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>Use Mesh Colors</strong></td>
+	<td style="text-align:left;">Use, or disregard, Mesh colors.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>Normal Offset</strong></td>
+	<td style="text-align:left;">Distance away from the surface of the Mesh to emit particles (in the direction of the surface normal)</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>Position</strong></td>
+	<td style="text-align:left;">Apply an offset to the emitter shape used for spawning particles.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>Rotation</strong></td>
+	<td style="text-align:left;">Rotate the emitter shape used for spawning particles.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>Scale</strong></td>
+	<td style="text-align:left;">Change the size of the emitter shape used for spawning particles.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>Align to Direction</strong></td>
+	<td style="text-align:left;">Use this checkbox to orient particles based on their initial direction of travel. This can be useful if you want to simulate, for example, chunks of car paint flying off a car’s bodywork during a collision. If the orientation is not satisfactory, you can also override it by applying a Start Rotation value in the Main module.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>Randomize Direction</strong></td>
+	<td style="text-align:left;">Use a value 0–1, to blend particle directions towards a random direction. When this is set to 0, this setting has no effect. When it is set to 1, the particle direction is completely random.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>Spherize Direction</strong></td>
+	<td style="text-align:left;">Use a value 0–1, to blend particle directions towards a spherical direction, where they travel outwards from the center of their Transform. When this is set to 0, this setting has no effect. When it is set to 1, the particle direction points outwards from the center (behaving identically to when the Shape is set to Sphere).</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>Randomize Position</strong></td>
+	<td style="text-align:left;">Move particles by a random amount, up to the specified value. When this is set to 0, this setting has no effect. Any other value will apply some randomness to the spawning positions of the particles.</td>
+</tr>
+</tbody>
+</table>
+
+<h4>Mesh details</h4>
+
+<p>It is possible to choose to emit only from a particular material (sub-Mesh) by using the Single Material checkbox, and to offset the emission position along the Mesh’s normals, by using the Normal Offset property. This option allows users to offset particles from the surface of a Mesh.</p>
+
+<p>It is also possible to ignore the color of the Mesh, with the <strong>Use Mesh Colors</strong> checkbox.</p>
+
+<h3>Circle</h3>
+
+<figure>
+<img src="../uploads/Main/ShapeModule4.png" alt="">
+</figure>
+
+<table>
+<colgroup>
+<col style="text-align:left;">
+<col style="text-align:left;">
+</colgroup>
+
+<thead>
+<tr>
+	<th style="text-align:left;"><strong>Property</strong></th>
+	<th style="text-align:left;"><strong>Function</strong></th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+	<td style="text-align:left;"><strong>Shape</strong></td>
+	<td style="text-align:left;">The shape of the emission volume.</td>
+</tr>
+<tr>
+	<td style="text-align:left;">Circle</td>
+	<td style="text-align:left;">Uniform emission from the center or edge of a circle. The particles move only in the plane of the circle.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>Radius</strong></td>
+	<td style="text-align:left;">The radius of the circular aspect of the shape.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>Radius Thickness</strong></td>
+	<td style="text-align:left;">A value of 0 will emit from the outer edge of the circle. A value of 1 will use the entire area. Values in between will use a proportion of the area.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>Arc</strong></td>
+	<td style="text-align:left;">The angular portion of a full circle that forms the emitter’s shape.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>Mode</strong></td>
+	<td style="text-align:left;">Define how particles are generated around the arc of the shape. When set to <strong>Random</strong>, Unity generates particles randomly around the arc. If using <strong>Loop</strong>, particles are generated sequentially around the arc of the shape, and loops back to the start at the end of each cycle. <strong>Ping-Pong</strong> is the same as <strong>Loop</strong>, except each consecutive loop happens in the opposite direction to the last. Finally, <strong>Burst Spread</strong> mode distributes particle generation evenly around the shape. This can be used to give you an even spread of particles, compared to the default randomized behavior, where particles may clump together unevenly. Burst Spread is best used with burst emissions.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>Spread</strong></td>
+	<td style="text-align:left;">Control the discrete intervals around the arc where particles may be generated. For example, a value of 0 will allow particles to spawn anywhere around the arc, and a value of 0.1 will only spawn particles at 10% intervals around the shape.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>Speed</strong></td>
+	<td style="text-align:left;">Set a value for the speed the emission position moves around the arc. Using the small black drop-down next to the value field, set this to <strong>Constant</strong> for the value to always remain the same, or <strong>Curve</strong> for the value to change over time.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>Position</strong></td>
+	<td style="text-align:left;">Apply an offset to the emitter shape used for spawning particles.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>Rotation</strong></td>
+	<td style="text-align:left;">Rotate the emitter shape used for spawning particles.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>Scale</strong></td>
+	<td style="text-align:left;">Change the size of the emitter shape used for spawning particles.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>Align to Direction</strong></td>
+	<td style="text-align:left;">Use this checkbox to orient particles based on their initial direction of travel. This can be useful if you want to simulate, for example, chunks of car paint flying off a car’s bodywork during a collision. If the orientation is not satisfactory, you can also override it by applying a Start Rotation value in the Main module.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>Randomize Direction</strong></td>
+	<td style="text-align:left;">Use a value 0–1, to blend particle directions towards a random direction. When this is set to 0, this setting has no effect. When it is set to 1, the particle direction is completely random.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>Spherize Direction</strong></td>
+	<td style="text-align:left;">Use a value 0–1, to blend particle directions towards a spherical direction, where they travel outwards from the center of their Transform. When this is set to 0, this setting has no effect. When it is set to 1, the particle direction points outwards from the center (behaving identically to when the Shape is set to Sphere).</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>Randomize Position</strong></td>
+	<td style="text-align:left;">Move particles by a random amount, up to the specified value. When this is set to 0, this setting has no effect. Any other value will apply some randomness to the spawning positions of the particles.</td>
+</tr>
+</tbody>
+</table>
+
+<h3>Edge</h3>
+
+<figure>
+<img src="../uploads/Main/ShapeModule5.png" alt="">
+</figure>
+
+<table>
+<colgroup>
+<col style="text-align:left;">
+<col style="text-align:left;">
+</colgroup>
+
+<thead>
+<tr>
+	<th style="text-align:left;"><strong>Property</strong></th>
+	<th style="text-align:left;"><strong>Function</strong></th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+	<td style="text-align:left;"><strong>Shape</strong></td>
+	<td style="text-align:left;">The shape of the emission volume.</td>
+</tr>
+<tr>
+	<td style="text-align:left;">Edge</td>
+	<td style="text-align:left;">Emission from a line segment. The particles move in the emitter object’s upward (Y) direction.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>Radius</strong></td>
+	<td style="text-align:left;">The radius property is used to define the length of the edge.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>Mode</strong></td>
+	<td style="text-align:left;">Define how particles are generated along the radius of the shape. When set to <strong>Random</strong>, Unity generates particles randomly along the radius. If using <strong>Loop</strong>, particles are generated sequentially along the radius of the shape, and loops back to the start at the end of each cycle. <strong>Ping-Pong</strong> is the same as <strong>Loop</strong>, except each consecutive loop happens in the opposite direction to the last. Finally, <strong>Burst Spread</strong> mode distributes particle generation evenly along the radius. This can be used to give you an even spread of particles, compared to the default randomized behavior, where particles may clump together unevenly. Burst Spread is best used with burst emissions.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>Spread</strong></td>
+	<td style="text-align:left;">Control the discrete intervals along the radius where particles may be generated. For example, a value of 0 will allow particles to spawn anywhere along the radius, and a value of 0.1 will only spawn particles at 10% intervals along the radius.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>Speed</strong></td>
+	<td style="text-align:left;">Set a value for the speed the emission position moves along the radius. Using the small black drop-down next to the value field, set this to <strong>Constant</strong> for the value to always remain the same, or <strong>Curve</strong> for the value to change over time.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>Position</strong></td>
+	<td style="text-align:left;">Apply an offset to the emitter shape used for spawning particles.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>Rotation</strong></td>
+	<td style="text-align:left;">Rotate the emitter shape used for spawning particles.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>Scale</strong></td>
+	<td style="text-align:left;">Change the size of the emitter shape used for spawning particles.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>Align to Direction</strong></td>
+	<td style="text-align:left;">Use this checkbox to orient particles based on their initial direction of travel. This can be useful if you want to simulate, for example, chunks of car paint flying off a car’s bodywork during a collision. If the orientation is not satisfactory, you can also override it by applying a <strong>Start Rotation</strong> value in the Main module.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>Randomize Direction</strong></td>
+	<td style="text-align:left;">Use a value 0–1, to blend particle directions towards a random direction. When this is set to 0, this setting has no effect. When it is set to 1, the particle direction is completely random.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>Spherize Direction</strong></td>
+	<td style="text-align:left;">Use a value 0–1, to blend particle directions towards a spherical direction, where they travel outwards from the center of their Transform. When this is set to 0, this setting has no effect. When it is set to 1, the particle direction points outwards from the center (behaving identically to when the Shape is set to Sphere).</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>Randomize Position</strong></td>
+	<td style="text-align:left;">Move particles by a random amount, up to the specified value. When this is set to 0, this setting has no effect. Any other value will apply some randomness to the spawning positions of the particles.</td>
+</tr>
+</tbody>
+</table>
+
+<h3>Donut</h3>
+
+<figure>
+<img src="../uploads/Main/ShapeModule6.png" alt="">
+</figure>
+
+<table>
+<colgroup>
+<col style="text-align:left;">
+<col style="text-align:left;">
+</colgroup>
+
+<thead>
+<tr>
+	<th style="text-align:left;"><strong>Property</strong></th>
+	<th style="text-align:left;">Function</th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+	<td style="text-align:left;"><strong>Shape</strong></td>
+	<td style="text-align:left;">The shape of the emission volume.</td>
+</tr>
+<tr>
+	<td style="text-align:left;">Donut</td>
+	<td style="text-align:left;">Emission from a Torus. The particles move outwards from the ring of the Torus.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>Radius</strong></td>
+	<td style="text-align:left;">The radius of the main donut ring.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>Donus Radius</strong></td>
+	<td style="text-align:left;">The thickness of the outer donut ring.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>Radius Thickness</strong></td>
+	<td style="text-align:left;">A value of 0 will emit from the outer edge of the circle. A value of 1 will use the entire area. Values in between will use a proportion of the area.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>Arc</strong></td>
+	<td style="text-align:left;">The angular portion of a full circle that forms the emitter’s shape.</td>
+</tr>
+<tr>
+	<td style="text-align:left;">Mode</td>
+	<td style="text-align:left;">Define how particles are generated around the arc of the shape. When set to <strong>Random</strong>, Unity generates particles randomly around the arc. If using <strong>Loop</strong>, particles are generated sequentially around the arc of the shape, and loops back to the start at the end of each cycle. <strong>Ping-Pong</strong> is the same as <strong>Loop</strong>, except each consecutive loop happens in the opposite direction to the last. Finally, <strong>Burst Spread</strong> mode distributes particle generation evenly around the shape. This can be used to give you an even spread of particles, compared to the default randomized behavior, where particles may clump together unevenly. Burst Spread is best used with burst emissions.</td>
+</tr>
+<tr>
+	<td style="text-align:left;">Spread</td>
+	<td style="text-align:left;">Control the discrete intervals around the arc where particles may be generated. For example, a value of 0 will allow particles to spawn anywhere around the arc, and a value of 0.1 will only spawn particles at 10% intervals around the shape.</td>
+</tr>
+<tr>
+	<td style="text-align:left;">Speed</td>
+	<td style="text-align:left;">Set a value for the speed the emission position moves around the arc. Using the small black drop-down next to the value field, set this to <strong>Constant</strong> for the value to always remain the same, or <strong>Curve</strong> for the value to change over time.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>Position</strong></td>
+	<td style="text-align:left;">Apply an offset to the emitter shape used for spawning particles.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>Rotation</strong></td>
+	<td style="text-align:left;">Rotate the emitter shape used for spawning particles.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>Scale</strong></td>
+	<td style="text-align:left;">Change the size of the emitter shape used for spawning particles.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>Align To Direction</strong></td>
+	<td style="text-align:left;">Use this checkbox to orient particles based on their initial direction of travel. This can be useful if you want to simulate, for example, chunks of car paint flying off a car’s bodywork during a collision. If the orientation is not satisfactory, you can also override it by applying a <strong>Start Rotation</strong> value in the Main module.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>Randomize Direction</strong></td>
+	<td style="text-align:left;">Use a value 0–1, to blend particle directions towards a random direction. When this is set to 0, this setting has no effect. When it is set to 1, the particle direction is completely random.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>Spherize Direction</strong></td>
+	<td style="text-align:left;">Use a value 0–1, to blend particle directions towards a spherical direction, where they travel outwards from the center of their Transform. When this is set to 0, this setting has no effect. When it is set to 1, the particle direction points outwards from the center (behaving identically to when the Shape is set to Sphere).</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>Randomise Position</strong></td>
+	<td style="text-align:left;">Move particles by a random amount, up to the specified value. When this is set to 0, this setting has no effect. Any other value will apply some randomness to the spawning positions of the particles.</td>
+</tr>
+</tbody>
+</table>
+
+<p>
+<br>
+<br>
+</p>
+
+<hr>
+
+<ul>
+<li><p><span class="page-edit">2017–05–30 Page amended with no <a href="DocumentationEditorialReview.html">editorial review</a>
+</span></p></li>
+<li><p><span class="page-history">Functionality of Shape Module updated in Unity <a href="../Manual/30_search.html?q=newin20171">2017.1</a> <span class="search-words">NewIn20171</span></span></p></li>
+</ul>
+<div class="feedbackbox" id="feedbackbox">
+<div id="rating"><p>Did you find this page useful? Please give it a rating:<br><div id="ratecontent" class="c-rating"></div>
+</p></div>
+<div id="ratingThanks" style="display:none"><p>Thanks for rating this page!</p></div>
+<div id="problem"><p><a name="problem" onclick="document.getElementById('problemType').style.display = '';document.getElementById('problem').style.display = 'none';">Report a problem on this page</a></p></div>
+<div id="problemType" style="display:none"><p>What kind of problem would you like to report?<ul type="problems">
+<li><a name="needcode" onclick="                                                             document.getElementById('problemType').style.display = 'none';                                                             document.getElementById('problemThanks').style.display = '';                                                             SendFeedback('problem-needcode',window.location.href,0);                                                             document.getElementById('problemFormDescription').value='Needs code samples.';                                                             document.getElementById('problemNeedCodeForm').style.display = ''                                                         ">This page needs code samples</a></li>
+<li><a name="code" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-brokencode',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Code samples do not work.';                                                         document.getElementById('problemCodeForm').style.display = ''                                                         ">Code samples do not work</a></li>
+<li><a name="missing" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-missing',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Missing information';                                                         document.getElementById('problemMissingForm').style.display = ''                                                         ">Information is missing</a></li>
+<li><a name="incorrect" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-incorrect',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Incorrect information';                                                         document.getElementById('problemIncorrectForm').style.display = ''                                                         ">Information is incorrect</a></li>
+<li><a name="unclear" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-unclear',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Unclear or confusing information';                                                         document.getElementById('problemUnclearForm').style.display = ''                                                         ">Information is unclear or confusing</a></li>
+<li><a name="language" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-language',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Spelling or grammar error';                                                         document.getElementById('problemLanguageForm').style.display = ''                                                         ">There is a spelling/grammar error on this page</a></li>
+<li><a name="other" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-other',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='This page has a problem';                                                         document.getElementById('problemOtherForm').style.display = ''                                                         ">Something else</a></li>
+</ul>
+<p><known_issues><p>Is something described here not working as you expect it to? It might be a <b>Known Issue</b>. Please check with the Issue Tracker at <a href="https://issuetracker.unity3d.com">issuetracker.unity3d.com</a>.</p></known_issues></p>
+</p></div>
+<div id="problemThanks" style="display:none"><p>Thanks for letting us know! This page has been marked for review based on your feedback.<br><br>If you have time, you can provide more information to help us fix the problem faster.<br><br><a onclick="document.getElementById('problemMoreInfo').style.display = '';document.getElementById('problemThanks').style.display = 'none';">Provide more information</a><br>
+</p></div>
+<div id="problemMoreInfo" style="display:none">
+<p id="problemNeedCodeForm" style="display:none">You've told us this page needs code samples. If you'd like to help us further, you could provide a code sample, or tell us about what kind of code sample you'd like to see:</p>
+<p id="problemCodeForm" style="display:none">You've told us there are code samples on this page which don't work. If you know how to fix it, or have something better we could use instead, please let us know:</p>
+<p id="problemMissingForm" style="display:none">You've told us there is information missing from this page. Please tell us more about what's missing:</p>
+<p id="problemIncorrectForm" style="display:none">You've told us there is incorrect information on this page. If you know what we should change to make it correct, please tell us:</p>
+<p id="problemUnclearForm" style="display:none">You've told us this page has unclear or confusing information. Please tell us more about what you found unclear or confusing, or let us know how we could make it clearer:</p>
+<p id="problemLanguageForm" style="display:none">You've told us there is a spelling or grammar error on this page. Please tell us what's wrong:</p>
+<p id="problemOtherForm" style="display:none">You've told us this page has a problem. Please tell us more about what's wrong:</p>
+<form>
+<textarea id="problemFormSuggestionField" cols="40" rows="5"></textarea><input type="hidden" id="problemFormDescription"><input type="submit" id="problemFormDescriptionSubmit" value="Submit" onclick="                                             document.getElementById('problemMoreInfo').style.display = 'none';                                             document.getElementById('problemMoreInfoThanks').style.display = '';                                             return false;                                             ">
+</form>
+</div>
+<div id="problemMoreInfoThanks" style="display:none"><p>Thanks for helping to make the Unity documentation better!</p></div>
+<script>
+
+                                            var ratecontent = document.querySelector('#ratecontent'); // target element
+                                            var currentRating = 0; // initial rating
+                                            var maxRating= 5; // max rating
+
+                                            // callback to run after setting the rating
+                                            var callback = function(rating) {
+                                                document.getElementById('ratingThanks').style.display = '';
+                                                document.getElementById('ratecontent').style.display = 'none';
+                                                document.getElementById('rating').style.display = 'none';
+                                                SendFeedback("rating",window.location.href,rating);
+                                            };
+
+                                            // rating instance
+                                            var myRating = rating(ratecontent, currentRating, maxRating, callback);
+                                        </script>
+</div>
+<div class="nextprev clear">
+<div class="icon tt left mr1" data-distance="-40|-30|top">
+<span class="prev"><a href="PartSysEmissionModule.html"></a></span><div class="tip"> Emission module</div>
+</div>
+<div class="icon tt right" data-distance="-40|-30|top">
+<span class="next"><a href="PartSysVelOverLifeModule.html"></a></span><div class="tip">Velocity over Lifetime module</div>
+</div>
+</div>
+</div>
+</body></html>

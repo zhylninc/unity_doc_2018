@@ -1,0 +1,155 @@
+<html><head><title>html模版</title></head><body>Unity - Manual: Unity Remote 3 (DEPRECATED)</br>
+<div class="breadcrumbs clear"><ul>
+<li><a href="UnityManual.html">Unity User Manual (2018.1 beta)</a></li>
+<li><a href="LegacyTopics.html">Legacy Topics</a></li>
+<li><a href="LegacyUnityRemote.html"> LegacyUnityRemote</a></li>
+<li>Unity Remote 3 (DEPRECATED)</li>
+</ul></div>
+<div class="mb20"><div class="nextprev clear">
+<div class="icon tt left mr1" data-distance="-40|-30|top">
+<span class="prev"><a href="UnityRemote5.html"></a></span><div class="tip"> Unity Remote</div>
+</div>
+<div class="icon tt right" data-distance="-40|-30|top">
+<span class="next"><a href="BestPracticeGuides.html"></a></span><div class="tip"> Best practice guides</div>
+</div>
+</div></div>
+<div class="otherversionswrapper" onmouseover="setOtherVersionsDisplay(true)" onmouseout="setOtherVersionsDisplay(false)">
+<a>Other Versions</a><div class="otherversionscontent" id="OtherVersionsContent" style="display: none;">Cannot access other versions offline!</div>
+</div>
+<div class="scrollToFeedback"><a id="scrollToFeedback">Leave feedback</a></div>
+<h1>Unity Remote 3 (DEPRECATED)</h1>
+<!--BeginSwitchLink--><!--EndSwitchLink-->
+<div class="clear"></div>
+
+<p>Unity Remote 3 (further refered to as Unity Remote) is an application that allows you to use your iOS device as a remote control for your project in Unity. This is useful during development since it is much quicker to test your project in the editor with remote control than to build and deploy it to the device after each change.</p>
+
+<h2>DEPRECATED</h2>
+
+<p>This is an old page, relating to an old version of Unity Remote. Please use the <a href="UnityRemote5.html">current version of Unity Remote</a>.</p>
+
+<h2>Where can I find Unity Remote?</h2>
+
+<p>Unity remote is available for download from the AppStore at no charge. If you prefer to build and deploy the application yourself, you can download the source from the <a href="http://unity3d.com/learn/resources/downloads">Unity Learn section</a> at the Unity website.</p>
+
+<h2>How do I build Unity Remote?</h2>
+
+<p>First, download the project source code <a href="http://download.unity3d.com/unity/download/resources/UnityRemoteSource_3_5_x.zip">here</a> and unzip it to your preferred location. The zip file contains an XCode project to build Unity Remote and install it on your device. </p>
+
+<p>Assuming you have already created the provisioning profile and successfully installed iOS builds on your device, you just need to open the Xcode project file UnityRemote.xcodeproj. Once XCode is launched, you should click “Build and Go” to install the app on your iOS device. If you have never built and run applications before, we recommend that you try building some of the Apple examples first to familiarize yourself with XCode and iOS.</p>
+
+<p>Once Unity Remote is installed, make sure your device is connected via Wi-Fi to the same network as your development machine or else connected to the machine directly via USB. Launch Unity Remote on your iPhone/iPad while Unity is running on your computer and select your computer from the list that appears. Now, whenever you enter Play mode in the Editor, your device will act as a remote control that you can use for developing and testing your game. You can control the application with the device wirelessly and you will also see a low-res version of the app on the device’s screen.</p>
+
+<p>
+<strong>Note:</strong> The Unity iOS editor cannot emulate the device’s hardware perfectly, so you may not get the exact behavior (graphics performance, touch responsiveness, sounds playback, etc) that you would on a real device.</p>
+
+<h2>Xcode shows strange errors while deploying Unity Remote to my device. What should I do?</h2>
+
+<p>This indicates that the default Identifier in the Unity Remote project is not compatible with your provisioning profile. You will have to alter this Identifier manually in your XCode project. The Identifier must match your provisioning profile.</p>
+
+<p>You will need to create an AppID with an trailing asterisk if you have not already done so; you can do this in the Program Portal on Apple’s iPhone Developer Program. First, go to the Program Portal and choose the AppIDs tab. Then, click the Add ID button in the top right corner and type your usual bundle identifier followed by dot and asterisk (eg, com.mycompany.*) in the App ID Bundle Seed ID and Bundle Identifier field. Add the new AppID to your provisioning profile, then download and reinstall it. Don’t forget to restart Xcode afterwards. If you have any problems creating the AppID, consult the <a href="http://developer.apple.com/iphone/manage/provisioningprofiles/howto.action">Provisioning How-to section</a> on Apple’s website.</p>
+
+<figure>
+<img src="../uploads/Main/target_unity_remote_info.png" alt="Dont forget to change the Identifier before you install Unity Remote on your device.">
+<figcaption>Don’t forget to change the Identifier before you install Unity Remote on your device.</figcaption>
+</figure>
+
+<p>Open the Unity Remote project with XCode. From the menu, select <strong>Project-&gt;Edit Active Target “Unity Remote”</strong>. This will open a new window entitled Target “Unity Remote” Info. Select the Properties tab. Change the Identifier property field from <strong>com.unity3d.UnityRemote</strong> to the bundle identifier in your AppID followed by “<strong>.</strong>” (dot) followed by “<strong>UnityRemote</strong>”. For example, if your provisioning profile contains ######.com.mycompany.* AppID, then change the Identifier field to <strong>com.mycompany.UnityRemote</strong>. </p>
+
+<p>Next, select <strong>Build-&gt;Clean all targets</strong> from the menu, and compile and install Unity Remote again. You may also need to change the active SDK from Simulator to Device - 2.0 | Release. There is no problem using SDK 2.0 even if your device runs a newer version of the OS.</p>
+
+<h2>I’m getting really poor graphics quality when running my game in Unity Remote. What can I do to improve it?</h2>
+
+<p>When you use Unity Remote, the game actually runs on your Mac while its visual content is heavily compressed and streamed to the device. As a result, what you see on the device screen is just a low-res version of what the app would really look like. You should check how the game runs on the device occasionally by building and deploying the app (select <strong>File-&gt;Build &amp; Run</strong> in the Unity editor).</p>
+
+<h2>Unity Remote is laggy. Can I improve it?</h2>
+
+<p>The performance of Unity Remote depends heavily on the speed of the Wi-Fi network, the quality of the networking hardware and other factors. For the best experience, create an ad-hoc network between your Mac and iOS device. Click the Airport icon on your Mac and choose “Create Network”. Then, enter a name and password and click OK. On the device, choose <em>Settings-&gt;Wi-Fi</em> and select the new Wi-Fi network you have just created. Remember that an ad-hoc network is really a wireless connection that does not involve a wireless access point. Therefore, you will usually not have internet access while using ad-hoc networking.</p>
+
+<p>Turning Bluetooth off on both on your iPhone/iPad and on Mac should also improve connection quality.</p>
+
+<p>If you do not need to see the game view on the device, you can turn image synchronization off in the Remote machine list. This will reduce the network traffic needed for the Remote to work.</p>
+
+<h2>The connection to Unity Remote is easily lost</h2>
+
+<p>This can be due to a problem with the installation or other factors that prevent Unity Remote from functioning properly. Try the following steps in sequence, checking if the performance improves at each step before moving on to the next:-</p>
+
+<ol>
+<li>First of all, check if Bluetooth is switched on. Both your Mac and iOS device should have Bluetooth disabled for best performance.</li>
+<li>Delete the settings file located at <code>~/Library/Preferences/com.unity3d.UnityEditoriPhone.plist</code>
+</li>
+<li>Reinstall the game on your iPhone/iPad.</li>
+<li>Reinstall Unity on your Mac.</li>
+<li>As a last resort, performing a hard reset on the iOS device can sometimes improve the performance of Unity Remote.</li>
+</ol>
+
+<p>If you still experience problems then try installing Unity Remote on another device (in another location if possible) and see if it gives you better results. There could be problems with RF interference or other software influencing the performance of the wireless adapter on your Mac or iOS device.</p>
+
+<h2>Unity Remote doesn’t see my Mac. What should I do?</h2>
+
+<ul>
+<li>Check if Unity Remote and your Mac are connected to the same wireless network.</li>
+<li>Check your firewall settings, router security settings, and any other hardware/software that may filter packets on your network.</li>
+<li>Leave Unity Remote running, switch off your Mac’s Airport for a minute or two, and switch on again.</li>
+<li>Restart both Unity and Unity Remote. Sometimes you also need to cold-restart your iPhone/iPad (hold down the menu and power buttons simultaneously).</li>
+<li>Unity Remote uses the Apple Bonjour service, so check that your Mac has it switched on.</li>
+<li>Reinstall Unity Remote from the latest Unity iOS package.</li>
+</ul>
+<div class="feedbackbox" id="feedbackbox">
+<div id="rating"><p>Did you find this page useful? Please give it a rating:<br><div id="ratecontent" class="c-rating"></div>
+</p></div>
+<div id="ratingThanks" style="display:none"><p>Thanks for rating this page!</p></div>
+<div id="problem"><p><a name="problem" onclick="document.getElementById('problemType').style.display = '';document.getElementById('problem').style.display = 'none';">Report a problem on this page</a></p></div>
+<div id="problemType" style="display:none"><p>What kind of problem would you like to report?<ul type="problems">
+<li><a name="needcode" onclick="                                                             document.getElementById('problemType').style.display = 'none';                                                             document.getElementById('problemThanks').style.display = '';                                                             SendFeedback('problem-needcode',window.location.href,0);                                                             document.getElementById('problemFormDescription').value='Needs code samples.';                                                             document.getElementById('problemNeedCodeForm').style.display = ''                                                         ">This page needs code samples</a></li>
+<li><a name="code" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-brokencode',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Code samples do not work.';                                                         document.getElementById('problemCodeForm').style.display = ''                                                         ">Code samples do not work</a></li>
+<li><a name="missing" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-missing',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Missing information';                                                         document.getElementById('problemMissingForm').style.display = ''                                                         ">Information is missing</a></li>
+<li><a name="incorrect" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-incorrect',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Incorrect information';                                                         document.getElementById('problemIncorrectForm').style.display = ''                                                         ">Information is incorrect</a></li>
+<li><a name="unclear" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-unclear',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Unclear or confusing information';                                                         document.getElementById('problemUnclearForm').style.display = ''                                                         ">Information is unclear or confusing</a></li>
+<li><a name="language" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-language',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Spelling or grammar error';                                                         document.getElementById('problemLanguageForm').style.display = ''                                                         ">There is a spelling/grammar error on this page</a></li>
+<li><a name="other" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-other',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='This page has a problem';                                                         document.getElementById('problemOtherForm').style.display = ''                                                         ">Something else</a></li>
+</ul>
+<p><known_issues><p>Is something described here not working as you expect it to? It might be a <b>Known Issue</b>. Please check with the Issue Tracker at <a href="https://issuetracker.unity3d.com">issuetracker.unity3d.com</a>.</p></known_issues></p>
+</p></div>
+<div id="problemThanks" style="display:none"><p>Thanks for letting us know! This page has been marked for review based on your feedback.<br><br>If you have time, you can provide more information to help us fix the problem faster.<br><br><a onclick="document.getElementById('problemMoreInfo').style.display = '';document.getElementById('problemThanks').style.display = 'none';">Provide more information</a><br>
+</p></div>
+<div id="problemMoreInfo" style="display:none">
+<p id="problemNeedCodeForm" style="display:none">You've told us this page needs code samples. If you'd like to help us further, you could provide a code sample, or tell us about what kind of code sample you'd like to see:</p>
+<p id="problemCodeForm" style="display:none">You've told us there are code samples on this page which don't work. If you know how to fix it, or have something better we could use instead, please let us know:</p>
+<p id="problemMissingForm" style="display:none">You've told us there is information missing from this page. Please tell us more about what's missing:</p>
+<p id="problemIncorrectForm" style="display:none">You've told us there is incorrect information on this page. If you know what we should change to make it correct, please tell us:</p>
+<p id="problemUnclearForm" style="display:none">You've told us this page has unclear or confusing information. Please tell us more about what you found unclear or confusing, or let us know how we could make it clearer:</p>
+<p id="problemLanguageForm" style="display:none">You've told us there is a spelling or grammar error on this page. Please tell us what's wrong:</p>
+<p id="problemOtherForm" style="display:none">You've told us this page has a problem. Please tell us more about what's wrong:</p>
+<form>
+<textarea id="problemFormSuggestionField" cols="40" rows="5"></textarea><input type="hidden" id="problemFormDescription"><input type="submit" id="problemFormDescriptionSubmit" value="Submit" onclick="                                             document.getElementById('problemMoreInfo').style.display = 'none';                                             document.getElementById('problemMoreInfoThanks').style.display = '';                                             return false;                                             ">
+</form>
+</div>
+<div id="problemMoreInfoThanks" style="display:none"><p>Thanks for helping to make the Unity documentation better!</p></div>
+<script>
+
+                                            var ratecontent = document.querySelector('#ratecontent'); // target element
+                                            var currentRating = 0; // initial rating
+                                            var maxRating= 5; // max rating
+
+                                            // callback to run after setting the rating
+                                            var callback = function(rating) {
+                                                document.getElementById('ratingThanks').style.display = '';
+                                                document.getElementById('ratecontent').style.display = 'none';
+                                                document.getElementById('rating').style.display = 'none';
+                                                SendFeedback("rating",window.location.href,rating);
+                                            };
+
+                                            // rating instance
+                                            var myRating = rating(ratecontent, currentRating, maxRating, callback);
+                                        </script>
+</div>
+<div class="nextprev clear">
+<div class="icon tt left mr1" data-distance="-40|-30|top">
+<span class="prev"><a href="UnityRemote5.html"></a></span><div class="tip"> Unity Remote</div>
+</div>
+<div class="icon tt right" data-distance="-40|-30|top">
+<span class="next"><a href="BestPracticeGuides.html"></a></span><div class="tip"> Best practice guides</div>
+</div>
+</div>
+</div>
+</body></html>

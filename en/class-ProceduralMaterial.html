@@ -1,0 +1,197 @@
+<html><head><title>html模版</title></head><body>Unity - Manual: Procedural Material Assets</br>
+<div class="breadcrumbs clear"><ul>
+<li><a href="UnityManual.html">Unity User Manual (2018.1 beta)</a></li>
+<li><a href="Graphics.html">Graphics</a></li>
+<li><a href="GraphicsReference.html">Graphics Reference</a></li>
+<li><a href="comp-Textures.html">Texture Components</a></li>
+<li>Procedural Material Assets</li>
+</ul></div>
+<div class="mb20"><div class="nextprev clear">
+<div class="icon tt left mr1" data-distance="-40|-30|top">
+<span class="prev"><a href="class-TextureImporterOverride.html"></a></span><div class="tip">Texture compression formats for platform-specific overrides</div>
+</div>
+<div class="icon tt right" data-distance="-40|-30|top">
+<span class="next"><a href="class-RenderTexture.html"></a></span><div class="tip">Render Texture</div>
+</div>
+</div></div>
+<div class="otherversionswrapper" onmouseover="setOtherVersionsDisplay(true)" onmouseout="setOtherVersionsDisplay(false)">
+<a>Other Versions</a><div class="otherversionscontent" id="OtherVersionsContent" style="display: none;">Cannot access other versions offline!</div>
+</div>
+<div class="scrollToFeedback"><a id="scrollToFeedback">Leave feedback</a></div>
+<h1>Procedural Material Assets</h1>
+<!--BeginSwitchLink--><a href='../ScriptReference/ProceduralMaterial.html' title='Go to ProceduralMaterial page in the Scripting Reference' class='switch-link gray-btn sbtn left'>Switch to Scripting</a><!--EndSwitchLink-->
+<div class="clear"></div>
+
+<p>Procedural Material Assets are textures that are generated for you at run-time. See <a href="ProceduralMaterials.html">Procedural Materials</a> in the User Guide for more information.
+A Procedural Material asset can contain one or more procedural materials.
+These can be viewed in the Inspector just like regular materials. Note however that often procedural materials have many tweakable parameters. As with Material assets the Inspector shows a preview of the Procedural Material at the bottom of the window.</p>
+
+<figure>
+<img src="../uploads/Main/Inspector-ProceduralMaterial1.png" alt="A Procedural Material viewed in the Inspector.">
+<figcaption>A Procedural Material viewed in the Inspector.</figcaption>
+</figure>
+
+<p>The Inspector window has 4 main panes.</p>
+
+<ol>
+<li>Substance Archive Manager.</li>
+<li>Properties.</li>
+<li>Generated Textures.</li>
+<li>Preview.</li>
+</ol>
+
+<h2>Substance Archive Manager</h2>
+
+<p>The archive view shows you all the procedural materials that the Procedural Material asset contains.
+Select the procedural material you are interested in from the row of previews. Procedural Materials can be Added and Deleted to the Procedural Material Asset archive using the plus and minus buttons.
+Adding a procedural material will create a new material using the prototype encoded in the archive.
+The third, Duplicate button will create a new procedural material that is a copy of the currently selected one, including all its settings. Procedural materials can be renamed by typing in a new name in the material header name field.</p>
+
+<h2>Properties</h2>
+
+<h3>Material Properties</h3>
+
+<p>These are the regular properties of the material, which are dependent on which shader is chosen.
+They work the same as for regular materials.</p>
+
+<h3>Procedural Properties</h3>
+
+<p>The properties of any Procedural Material will change according to how the procedural material was created.</p>
+
+<table>
+<colgroup>
+<col style="text-align:left;">
+<col style="text-align:left;">
+</colgroup>
+
+<thead>
+<tr>
+	<th style="text-align:left;"><strong><em>Property:</em></strong></th>
+	<th style="text-align:left;"><strong><em>Function:</em></strong></th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+	<td style="text-align:left;"><strong>Generate at Load</strong></td>
+	<td style="text-align:left;">Generate the substance when the scene loads. If disabled, it will only be generated when prompted from scripting.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>Random Seed</strong></td>
+	<td style="text-align:left;">Procedural materials often need some randomness. The Random Seed can be used to vary the generated appearance. Often this will be zero. Just click the Randomize button to get a different seed and observe how the material changes.</td>
+</tr>
+</tbody>
+</table>
+
+<h2>Generated Textures</h2>
+
+<figure>
+<img src="../uploads/Main/Inspector-ProceduralMaterial2.png" alt="The Generated Textures pane.">
+<figcaption>The Generated Textures pane.</figcaption>
+</figure>
+
+<p>This area allows you to visualize textures that the procedural material generates.
+The dropdown below each of the generated textures allows you to choose which texture map should supply the alpha channel for that texture. You could, for example, specify that the base alpha comes from the Transparency image, or from the Specular image. The screen-shot below shows the base alpha channel coming from the Specular image.</p>
+
+<h3>Per-Platform Overrides</h3>
+
+<p>When you are building for different platforms, you have to think on the resolution of your textures for the target platform, the size and the quality. You can override these options and assign specific values depending on the platform you are deploying to. Note that if you don’t select any value to override, the Editor will pick the default values when building your project.</p>
+
+<table>
+<colgroup>
+<col style="text-align:left;">
+<col style="text-align:left;">
+</colgroup>
+
+<thead>
+<tr>
+	<th style="text-align:left;"><strong><em>Property:</em></strong></th>
+	<th style="text-align:left;"><strong><em>Function:</em></strong></th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+	<td style="text-align:left;"><strong>Target Size</strong></td>
+	<td style="text-align:left;">The targeted size of the generated textures. Most procedural textures are designed to be resolution independent and will respect the chosen target size, but in rare cases they will use a fixed size instead, or have the possible sizes limited to within a certain range. The actual size of the generated textures can be read in the preview at the bottom of the Inspector.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>Texture Format</strong></td>
+	<td style="text-align:left;">What internal representation is used for the texture in memory, once it is generated. This is a tradeoff between size and quality:</td>
+</tr>
+<tr>
+	<td style="text-align:left;">        <strong>Compressed</strong>
+</td>
+	<td style="text-align:left;">Compressed RGB texture. This will result in considerably less memory used.</td>
+</tr>
+<tr>
+	<td style="text-align:left;">        <strong>RAW</strong>
+</td>
+	<td style="text-align:left;">Uncompressed truecolor, this is the highest quality. At 256 KB for a 256x256 texture.</td>
+</tr>
+</tbody>
+</table>
+
+<h2>Preview</h2>
+
+<p>The procedural material preview operates in an identical manner to the material preview.
+However, unlike the regular material preview it shows the pixel dimensions of the generated textures.</p>
+<div class="feedbackbox" id="feedbackbox">
+<div id="rating"><p>Did you find this page useful? Please give it a rating:<br><div id="ratecontent" class="c-rating"></div>
+</p></div>
+<div id="ratingThanks" style="display:none"><p>Thanks for rating this page!</p></div>
+<div id="problem"><p><a name="problem" onclick="document.getElementById('problemType').style.display = '';document.getElementById('problem').style.display = 'none';">Report a problem on this page</a></p></div>
+<div id="problemType" style="display:none"><p>What kind of problem would you like to report?<ul type="problems">
+<li><a name="needcode" onclick="                                                             document.getElementById('problemType').style.display = 'none';                                                             document.getElementById('problemThanks').style.display = '';                                                             SendFeedback('problem-needcode',window.location.href,0);                                                             document.getElementById('problemFormDescription').value='Needs code samples.';                                                             document.getElementById('problemNeedCodeForm').style.display = ''                                                         ">This page needs code samples</a></li>
+<li><a name="code" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-brokencode',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Code samples do not work.';                                                         document.getElementById('problemCodeForm').style.display = ''                                                         ">Code samples do not work</a></li>
+<li><a name="missing" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-missing',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Missing information';                                                         document.getElementById('problemMissingForm').style.display = ''                                                         ">Information is missing</a></li>
+<li><a name="incorrect" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-incorrect',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Incorrect information';                                                         document.getElementById('problemIncorrectForm').style.display = ''                                                         ">Information is incorrect</a></li>
+<li><a name="unclear" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-unclear',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Unclear or confusing information';                                                         document.getElementById('problemUnclearForm').style.display = ''                                                         ">Information is unclear or confusing</a></li>
+<li><a name="language" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-language',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Spelling or grammar error';                                                         document.getElementById('problemLanguageForm').style.display = ''                                                         ">There is a spelling/grammar error on this page</a></li>
+<li><a name="other" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-other',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='This page has a problem';                                                         document.getElementById('problemOtherForm').style.display = ''                                                         ">Something else</a></li>
+</ul>
+<p><known_issues><p>Is something described here not working as you expect it to? It might be a <b>Known Issue</b>. Please check with the Issue Tracker at <a href="https://issuetracker.unity3d.com">issuetracker.unity3d.com</a>.</p></known_issues></p>
+</p></div>
+<div id="problemThanks" style="display:none"><p>Thanks for letting us know! This page has been marked for review based on your feedback.<br><br>If you have time, you can provide more information to help us fix the problem faster.<br><br><a onclick="document.getElementById('problemMoreInfo').style.display = '';document.getElementById('problemThanks').style.display = 'none';">Provide more information</a><br>
+</p></div>
+<div id="problemMoreInfo" style="display:none">
+<p id="problemNeedCodeForm" style="display:none">You've told us this page needs code samples. If you'd like to help us further, you could provide a code sample, or tell us about what kind of code sample you'd like to see:</p>
+<p id="problemCodeForm" style="display:none">You've told us there are code samples on this page which don't work. If you know how to fix it, or have something better we could use instead, please let us know:</p>
+<p id="problemMissingForm" style="display:none">You've told us there is information missing from this page. Please tell us more about what's missing:</p>
+<p id="problemIncorrectForm" style="display:none">You've told us there is incorrect information on this page. If you know what we should change to make it correct, please tell us:</p>
+<p id="problemUnclearForm" style="display:none">You've told us this page has unclear or confusing information. Please tell us more about what you found unclear or confusing, or let us know how we could make it clearer:</p>
+<p id="problemLanguageForm" style="display:none">You've told us there is a spelling or grammar error on this page. Please tell us what's wrong:</p>
+<p id="problemOtherForm" style="display:none">You've told us this page has a problem. Please tell us more about what's wrong:</p>
+<form>
+<textarea id="problemFormSuggestionField" cols="40" rows="5"></textarea><input type="hidden" id="problemFormDescription"><input type="submit" id="problemFormDescriptionSubmit" value="Submit" onclick="                                             document.getElementById('problemMoreInfo').style.display = 'none';                                             document.getElementById('problemMoreInfoThanks').style.display = '';                                             return false;                                             ">
+</form>
+</div>
+<div id="problemMoreInfoThanks" style="display:none"><p>Thanks for helping to make the Unity documentation better!</p></div>
+<script>
+
+                                            var ratecontent = document.querySelector('#ratecontent'); // target element
+                                            var currentRating = 0; // initial rating
+                                            var maxRating= 5; // max rating
+
+                                            // callback to run after setting the rating
+                                            var callback = function(rating) {
+                                                document.getElementById('ratingThanks').style.display = '';
+                                                document.getElementById('ratecontent').style.display = 'none';
+                                                document.getElementById('rating').style.display = 'none';
+                                                SendFeedback("rating",window.location.href,rating);
+                                            };
+
+                                            // rating instance
+                                            var myRating = rating(ratecontent, currentRating, maxRating, callback);
+                                        </script>
+</div>
+<div class="nextprev clear">
+<div class="icon tt left mr1" data-distance="-40|-30|top">
+<span class="prev"><a href="class-TextureImporterOverride.html"></a></span><div class="tip">Texture compression formats for platform-specific overrides</div>
+</div>
+<div class="icon tt right" data-distance="-40|-30|top">
+<span class="next"><a href="class-RenderTexture.html"></a></span><div class="tip">Render Texture</div>
+</div>
+</div>
+</div>
+</body></html>

@@ -1,0 +1,265 @@
+<html><head><title>html模版</title></head><body>Unity - Manual:  Strings and text</br>
+<div class="breadcrumbs clear"><ul>
+<li><a href="UnityManual.html">Unity User Manual (2018.1 beta)</a></li>
+<li><a href="BestPracticeGuides.html"> Best practice guides</a></li>
+<li><a href="BestPracticeUnderstandingPerformanceInUnity.html"> Understanding optimization in Unity</a></li>
+<li> Strings and text</li>
+</ul></div>
+<div class="mb20"><div class="nextprev clear">
+<div class="icon tt left mr1" data-distance="-40|-30|top">
+<span class="prev"><a href="BestPracticeUnderstandingPerformanceInUnity4-1.html"></a></span><div class="tip"> Understanding the managed heap</div>
+</div>
+<div class="icon tt right" data-distance="-40|-30|top">
+<span class="next"><a href="BestPracticeUnderstandingPerformanceInUnity6.html"></a></span><div class="tip"> The Resources folder</div>
+</div>
+</div></div>
+<div class="otherversionswrapper" onmouseover="setOtherVersionsDisplay(true)" onmouseout="setOtherVersionsDisplay(false)">
+<a>Other Versions</a><div class="otherversionscontent" id="OtherVersionsContent" style="display: none;">Cannot access other versions offline!</div>
+</div>
+<div class="scrollToFeedback"><a id="scrollToFeedback">Leave feedback</a></div>
+<h1>Strings and text</h1>
+<!--BeginSwitchLink--><!--EndSwitchLink-->
+<div class="clear"></div>
+
+<p>Handling strings and text is a common source of performance problems in Unity projects. In C#, all strings are immutable. Any manipulation of a string results in the allocation of a full new string. This is relatively expensive, and repeated string concatenations can develop into performance problems when performed on large strings, on large datasets, or in tight loops.</p>
+
+<p>Further, as N string concatenations require the allocation of N–1 intermediate strings, serial concatenations can also be a major cause of managed memory pressure.</p>
+
+<p>For cases where strings must be concatenated in tight loops or during each frame, use a StringBuilder to perform the actual concatenation operations. The StringBuilder instance can also be reused to further minimize unnecessary memory allocation.</p>
+
+<p>Microsoft maintains a list of best practices for working with strings in C#, which can be found here on the MSDN website: <a href="https://msdn.microsoft.com/en-us/library/dd465121(v=vs.110).aspx">msdn.microsoft.com</a>. </p>
+
+<h2>Locale coercion and ordinal comparisons</h2>
+
+<p>One of the core performance problems often found in string-related code is the unintended use of the slow, default string APIs. These APIs were built for business applications, and attempt to deal with handling strings from many different cultural and linguistic rules with regards to the characters found in text.</p>
+
+<p>For example, the following example code returns true when run under the US-English locale, but returns false for many European locales(1) </p>
+
+<p>NOTE:
+Note that, as of Unity 5.3 and 5.4, Unity’s scripting runtimes always run under the US English (en-US) locale:</p>
+
+<pre><code>    String.Equals(&quot;encyclopedia&quot;, “encyclopædia”);
+</code></pre>
+
+<p>For most Unity projects, this is entirely unnecessary. It is roughly ten times faster to use the ordinal comparison type, which compares strings in a manner familiar to C and C++ programmers: by simply comparing each sequential byte of the string, without regard for the character represented by that byte.</p>
+
+<p>Switching to ordinal string comparison is as simple as supplying <code>StringComparison.Ordinal</code> as the final argument to <code>String.Equals</code>:</p>
+
+<pre><code>myString.Equals(otherString, StringComparison.Ordinal);
+
+</code></pre>
+
+<h2>Inefficient built-in string APIs</h2>
+
+<p>Beyond switching to ordinal comparisons, certain C# <code>String</code> APIs are known to be extremely inefficient. Among these are <code>String.Format</code>, <code>String.StartsWith</code> and <code>String.EndsWith. String.Format</code> is difficult to replace, but the inefficient string comparison methods are trivially optimized away.</p>
+
+<p>While Microsoft’s recommendation is to pass <code>StringComparison.Ordinal</code> into any string comparison that does not need to be adjusted for localization, Unity benchmarks show that the impact of this is relatively minimal compared to a custom implementation.</p>
+
+<table>
+<colgroup>
+<col style="text-align:left;">
+<col style="text-align:left;">
+</colgroup>
+
+<thead>
+<tr>
+	<th style="text-align:left;">Method</th>
+	<th style="text-align:left;">Time (ms) for 100k short strings</th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+	<td style="text-align:left;">
+<code>String.StartsWith</code>, default culture</td>
+	<td style="text-align:left;">137</td>
+</tr>
+<tr>
+	<td style="text-align:left;">
+<code>String.EndsWit</code>h, default culture</td>
+	<td style="text-align:left;">542</td>
+</tr>
+<tr>
+	<td style="text-align:left;">
+<code>String.StartsWith</code>, ordinal</td>
+	<td style="text-align:left;">115</td>
+</tr>
+<tr>
+	<td style="text-align:left;">
+<code>String.EndsWith</code>, ordinal</td>
+	<td style="text-align:left;">34</td>
+</tr>
+<tr>
+	<td style="text-align:left;">Custom <code>StartsWith</code> replacement</td>
+	<td style="text-align:left;">4.5</td>
+</tr>
+<tr>
+	<td style="text-align:left;">Custom <code>EndsWith</code> replacement</td>
+	<td style="text-align:left;">4.5</td>
+</tr>
+</tbody>
+</table>
+
+<p>Both <code>String.StartsWith</code> and <code>String.EndsWith</code> can be replaced with simple hand-coded versions, similar to the example attached below.</p>
+
+<pre><code>
+    public static bool CustomEndsWith(string a, string b) {
+        int ap = a.Length - 1;
+        int bp = b.Length - 1;
+
+        while (ap &gt;= 0 &amp;&amp; bp &gt;= 0 &amp;&amp; a [ap] == b [bp]) {
+            ap--;
+            bp--;
+        }
+        return (bp &lt; 0 &amp;&amp; a.Length &gt;= b.Length) || 
+
+                (ap &lt; 0 &amp;&amp; b.Length &gt;= a.Length);
+        }
+
+    public static bool CustomStartsWith(string a, string b) {
+        int aLen = a.Length;
+        int bLen = b.Length;
+        int ap = 0; int bp = 0;
+
+        while (ap &lt; aLen &amp;&amp; bp &lt; bLen &amp;&amp; a [ap] == b [bp]) {
+        ap++;
+        bp++;
+        }
+
+        return (bp == bLen &amp;&amp; aLen &gt;= bLen) || 
+
+                (ap == aLen &amp;&amp; bLen &gt;= aLen);
+    }
+
+</code></pre>
+
+<h2>Regular Expressions</h2>
+
+<p>While Regular Expressions are a powerful way to match and manipulate strings, they can be extremely performance-intensive. Further, due to the C# library’s implementation of Regular Expressions, even simple boolean <code>IsMatch</code> queries allocate large transient datastructures “under the hood.” This transient managed memory churn should be deemed unacceptable, except during initialization.</p>
+
+<p>If regular expressions are necessary, it is strongly recommended to not use the static <code>Regex.Match</code> or <code>Regex.Replace</code> methods, which accept the regular expression as a string parameter. These methods compile the regular expression on-the-fly and do not cache the generated object.</p>
+
+<p>This example code is an innocuous one-liner.</p>
+
+<pre><code>
+Regex.Match(myString, &quot;foo&quot;);
+
+</code></pre>
+
+<p>However, each time it’s executed, it generates 5 kilobytes of garbage. A simple refactoring can eliminate much of this garbage:</p>
+
+<pre><code>
+var myRegExp = new Regex(&quot;foo&quot;);
+
+myRegExp.Match(myString);
+
+</code></pre>
+
+<p>In this example, each call to <code>myRegExp.Match</code> “only” results in 320 bytes of garbage. While this is still expensive for a simple matching operation, it is a considerable improvement over the previous example.</p>
+
+<p>Therefore, if the regular expressions are invariant string literals, it is considerably more efficient to precompile them by passing them as the first parameter of the Regex object’s constructor. These precompiled Regexes should then be reused.</p>
+
+<h2>XML, JSON and other long-form text parsing</h2>
+
+<p>Parsing text is often one of the heaviest operations that occurs at loading time. In some cases, the time spent parsing text can outweigh the time spent loading and instantiating Assets.</p>
+
+<p>The reasons behind this depend on the specific parser used. C#’s built-in XML parser is extremely flexible, but as a result, it is not optimizable for specific data layouts.</p>
+
+<p>Many third-party parsers are built on reflection. While reflection is an excellent choice during development (because it allows the parser to rapidly adapt to changing data layouts), it is notoriously slow.</p>
+
+<p>Unity has introduced a partial solution with its built-in <a href="../ScriptReference/JsonUtility.html">JSONUtility</a> API, which provides an interface to Unity’s serialization system that reads/emits JSON. In most benchmarks, it is faster than pure C# JSON parsers, but it has the same limitations as other interfaces to Unity’s serialization system – it cannot serialized many complex data types, such as Dictionaries, without additional code(2) (NOTE:
+ See the <a href="../ScriptReference/ISerializationCallbackReceiver.html">ISerializationCallbackReceiver</a> interface for one way to easily add the additional processing necessary to convert to/from complex data types during Unity’s serialization process.).</p>
+
+<p>When encountering performance problems that arise from textual data parsing, consider three alternative resolutions.</p>
+
+<h3>Option 1: Parse at build time</h3>
+
+<p>The best way to avoid the cost of text parsing is to entirely eliminate the parsing of text at runtime. In general, this means “baking” the textual data into a binary format via some sort of build step.</p>
+
+<p>Most developers who opt for this route move their data to some sort of ScriptableObject-derived class hierarchy and then distribute the data via AssetBundles. For an excellent discussion of using ScriptableObjects, see <a href="https://www.youtube.com/watch?v=VBA1QCoEAX4">Richard Fine’s Unite 2016 talk</a> on youtube.</p>
+
+<p>This strategy offers the best possible performance, but is only suitable for data that does not need to be generated dynamically. It is best suited for game design parameters and other content.</p>
+
+<h3>Option 2: Split and lazy load</h3>
+
+<p>A second possibility is to split up the data that must be parsed into smaller chunks. Once split, the cost of parsing the data can be spread across several frames. In the ideal case, identify the specific portions of the data that are required to present the desired experience to the user and load only those portions.</p>
+
+<p>In a simple example: if the project were a platform game, it would not be necessary to serialize data for all the levels together into one giant blob. If the data were split into individual Assets for each level, and perhaps segmented the levels into regions, the data could be parsed as the player approached it.</p>
+
+<p>While this sounds easy, in practice it requires a substantial investment in tool code and may require data structures to be reorganized. </p>
+
+<h3>Option 3: Threads</h3>
+
+<p>For data that is parsed entirely into plain C# objects, and does not require any interaction with Unity APIs, it is possible to move the parsing operations to worker threads.</p>
+
+<p>This option can be extremely powerful on platforms with a significant number of cores(3) (NOTE:
+Note that iOS devices have at most 2 cores. Most Android devices have 2–4. This technique of more interest when building for standalone and console build targets.) However, it requires careful programming to avoid creating deadlocks and race conditions.</p>
+
+<p>Projects that choose to implement threading generally use the built-in C# <a href="https://msdn.microsoft.com/en-us/library/system.threading.thread(v=vs.110).aspx">Thread</a> and <a href="https://msdn.microsoft.com/en-us/library/system.threading.threadpool(v=vs.110).aspx">ThreadPool</a> classes (see <a href="https://msdn.microsoft.com/en-us/library/system.threading.thread(v=vs.110).aspx">msdn.microsoft.com</a>) to manage their worker threads, along with the standard C# synchronization classes.</p>
+
+<p><strong>Footnotes</strong></p>
+
+<ul>
+<li><p>(1) Note that, as of Unity 5.3 and 5.4, Unity’s scripting runtimes always run under the US English (en-US) locale.</p></li>
+<li><p>(2) See the <a href="../ScriptReference/ISerializationCallbackReceiver.html">ISerializationCallbackReceiver</a> interface for one way to easily add the additional processing necessary to convert to/from complex data types during Unity’s serialization process.</p></li>
+<li><p>(3) Note that iOS devices have at most 2 cores. Most Android devices have 2–4. This technique is of more interest when building for standalone and console build targets.</p></li>
+</ul>
+<div class="feedbackbox" id="feedbackbox">
+<div id="rating"><p>Did you find this page useful? Please give it a rating:<br><div id="ratecontent" class="c-rating"></div>
+</p></div>
+<div id="ratingThanks" style="display:none"><p>Thanks for rating this page!</p></div>
+<div id="problem"><p><a name="problem" onclick="document.getElementById('problemType').style.display = '';document.getElementById('problem').style.display = 'none';">Report a problem on this page</a></p></div>
+<div id="problemType" style="display:none"><p>What kind of problem would you like to report?<ul type="problems">
+<li><a name="needcode" onclick="                                                             document.getElementById('problemType').style.display = 'none';                                                             document.getElementById('problemThanks').style.display = '';                                                             SendFeedback('problem-needcode',window.location.href,0);                                                             document.getElementById('problemFormDescription').value='Needs code samples.';                                                             document.getElementById('problemNeedCodeForm').style.display = ''                                                         ">This page needs code samples</a></li>
+<li><a name="code" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-brokencode',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Code samples do not work.';                                                         document.getElementById('problemCodeForm').style.display = ''                                                         ">Code samples do not work</a></li>
+<li><a name="missing" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-missing',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Missing information';                                                         document.getElementById('problemMissingForm').style.display = ''                                                         ">Information is missing</a></li>
+<li><a name="incorrect" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-incorrect',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Incorrect information';                                                         document.getElementById('problemIncorrectForm').style.display = ''                                                         ">Information is incorrect</a></li>
+<li><a name="unclear" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-unclear',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Unclear or confusing information';                                                         document.getElementById('problemUnclearForm').style.display = ''                                                         ">Information is unclear or confusing</a></li>
+<li><a name="language" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-language',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Spelling or grammar error';                                                         document.getElementById('problemLanguageForm').style.display = ''                                                         ">There is a spelling/grammar error on this page</a></li>
+<li><a name="other" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-other',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='This page has a problem';                                                         document.getElementById('problemOtherForm').style.display = ''                                                         ">Something else</a></li>
+</ul>
+<p><known_issues><p>Is something described here not working as you expect it to? It might be a <b>Known Issue</b>. Please check with the Issue Tracker at <a href="https://issuetracker.unity3d.com">issuetracker.unity3d.com</a>.</p></known_issues></p>
+</p></div>
+<div id="problemThanks" style="display:none"><p>Thanks for letting us know! This page has been marked for review based on your feedback.<br><br>If you have time, you can provide more information to help us fix the problem faster.<br><br><a onclick="document.getElementById('problemMoreInfo').style.display = '';document.getElementById('problemThanks').style.display = 'none';">Provide more information</a><br>
+</p></div>
+<div id="problemMoreInfo" style="display:none">
+<p id="problemNeedCodeForm" style="display:none">You've told us this page needs code samples. If you'd like to help us further, you could provide a code sample, or tell us about what kind of code sample you'd like to see:</p>
+<p id="problemCodeForm" style="display:none">You've told us there are code samples on this page which don't work. If you know how to fix it, or have something better we could use instead, please let us know:</p>
+<p id="problemMissingForm" style="display:none">You've told us there is information missing from this page. Please tell us more about what's missing:</p>
+<p id="problemIncorrectForm" style="display:none">You've told us there is incorrect information on this page. If you know what we should change to make it correct, please tell us:</p>
+<p id="problemUnclearForm" style="display:none">You've told us this page has unclear or confusing information. Please tell us more about what you found unclear or confusing, or let us know how we could make it clearer:</p>
+<p id="problemLanguageForm" style="display:none">You've told us there is a spelling or grammar error on this page. Please tell us what's wrong:</p>
+<p id="problemOtherForm" style="display:none">You've told us this page has a problem. Please tell us more about what's wrong:</p>
+<form>
+<textarea id="problemFormSuggestionField" cols="40" rows="5"></textarea><input type="hidden" id="problemFormDescription"><input type="submit" id="problemFormDescriptionSubmit" value="Submit" onclick="                                             document.getElementById('problemMoreInfo').style.display = 'none';                                             document.getElementById('problemMoreInfoThanks').style.display = '';                                             return false;                                             ">
+</form>
+</div>
+<div id="problemMoreInfoThanks" style="display:none"><p>Thanks for helping to make the Unity documentation better!</p></div>
+<script>
+
+                                            var ratecontent = document.querySelector('#ratecontent'); // target element
+                                            var currentRating = 0; // initial rating
+                                            var maxRating= 5; // max rating
+
+                                            // callback to run after setting the rating
+                                            var callback = function(rating) {
+                                                document.getElementById('ratingThanks').style.display = '';
+                                                document.getElementById('ratecontent').style.display = 'none';
+                                                document.getElementById('rating').style.display = 'none';
+                                                SendFeedback("rating",window.location.href,rating);
+                                            };
+
+                                            // rating instance
+                                            var myRating = rating(ratecontent, currentRating, maxRating, callback);
+                                        </script>
+</div>
+<div class="nextprev clear">
+<div class="icon tt left mr1" data-distance="-40|-30|top">
+<span class="prev"><a href="BestPracticeUnderstandingPerformanceInUnity4-1.html"></a></span><div class="tip"> Understanding the managed heap</div>
+</div>
+<div class="icon tt right" data-distance="-40|-30|top">
+<span class="next"><a href="BestPracticeUnderstandingPerformanceInUnity6.html"></a></span><div class="tip"> The Resources folder</div>
+</div>
+</div>
+</div>
+</body></html>

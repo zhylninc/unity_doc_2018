@@ -1,0 +1,234 @@
+<html><head><title>html模版</title></head><body>Unity - Manual: Particle Renderer (Legacy)</br>
+<div class="breadcrumbs clear"><ul>
+<li><a href="UnityManual.html">Unity User Manual (2018.1 beta)</a></li>
+<li><a href="Graphics.html">Graphics</a></li>
+<li><a href="GraphicsReference.html">Graphics Reference</a></li>
+<li><a href="PartSysReference.html">Particle Systems reference</a></li>
+<li><a href="comp-ParticlesLegacy.html">Particle Systems (Legacy, prior to release 3.5)</a></li>
+<li>Particle Renderer (Legacy)</li>
+</ul></div>
+<div class="mb20"><div class="nextprev clear">
+<div class="icon tt left mr1" data-distance="-40|-30|top">
+<span class="prev"><a href="class-ParticleAnimator.html"></a></span><div class="tip">Particle Animator (Legacy)</div>
+</div>
+<div class="icon tt right" data-distance="-40|-30|top">
+<span class="next"><a href="class-WorldParticleCollider.html"></a></span><div class="tip">World Particle Collider (Legacy)</div>
+</div>
+</div></div>
+<div class="otherversionswrapper" onmouseover="setOtherVersionsDisplay(true)" onmouseout="setOtherVersionsDisplay(false)">
+<a>Other Versions</a><div class="otherversionscontent" id="OtherVersionsContent" style="display: none;">Cannot access other versions offline!</div>
+</div>
+<div class="scrollToFeedback"><a id="scrollToFeedback">Leave feedback</a></div>
+<h1>Particle Renderer (Legacy)</h1>
+<!--BeginSwitchLink--><a href='../ScriptReference/ParticleRenderer.html' title='Go to ParticleRenderer page in the Scripting Reference' class='switch-link gray-btn sbtn left'>Switch to Scripting</a><!--EndSwitchLink-->
+<div class="clear"></div>
+
+<p>The <strong>Particle Renderer</strong> renders the <strong>Particle System</strong> on screen.</p>
+
+<figure>
+<img src="../uploads/Main/Inspector-ParticleRenderer.png" alt="">
+</figure>
+
+<h2>Properties</h2>
+
+<table>
+<colgroup>
+<col style="text-align:left;">
+<col style="text-align:left;">
+</colgroup>
+
+<thead>
+<tr>
+	<th style="text-align:left;"><strong><em>Property:</em></strong></th>
+	<th style="text-align:left;"><strong><em>Function:</em></strong></th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+	<td style="text-align:left;"><strong>Cast Shadows</strong></td>
+	<td style="text-align:left;">If enabled, this allows the Mesh to cast shadows.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>Receive Shadows</strong></td>
+	<td style="text-align:left;">If enabled, this allows the Mesh to receive shadows.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>Motion Vectors</strong></td>
+	<td style="text-align:left;">If enabled, the line has motion vectors rendered into the Camera motion vector Texture. See <a href="../ScriptReference/Renderer-motionVectors.html">Renderer.motionVectors</a> in the Scripting API reference documentation to learn more.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>Materials</strong></td>
+	<td style="text-align:left;">Reference to a list of <strong>Materials</strong> that are displayed in the position of each individual particle.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>Light Probes</strong></td>
+	<td style="text-align:left;">Probe-based lighting interpolation mode.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>Reflection Probes</strong></td>
+	<td style="text-align:left;">If enabled and reflection probes are present in the Scene, a reflection Texture is picked for this Particle Renderer and set as a built-in Shader uniform variable.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>Probe Anchor</strong></td>
+	<td style="text-align:left;">If defined (using a GameObject), the Renderer uses this GameObject’s position to find the interpolated Light Probe.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>Camera Velocity Scale</strong></td>
+	<td style="text-align:left;">The amount of stretching that is applied to the Particles based on <a href="class-Camera.html">Camera</a> movement.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>Stretch Particles</strong></td>
+	<td style="text-align:left;">Determines how the particles are rendered:</td>
+</tr>
+<tr>
+	<td style="text-align:left;">        <strong>Billboard</strong>
+</td>
+	<td style="text-align:left;">The particles are rendered as if facing the Camera.</td>
+</tr>
+<tr>
+	<td style="text-align:left;">        <strong>Stretched</strong>
+</td>
+	<td style="text-align:left;">The particles are facing the direction they are moving.</td>
+</tr>
+<tr>
+	<td style="text-align:left;">        <strong>SortedBillboard</strong>
+</td>
+	<td style="text-align:left;">The particles are sorted by depth. Use this when using a blending Material.</td>
+</tr>
+<tr>
+	<td style="text-align:left;">        <strong>VerticalBillboard</strong>
+</td>
+	<td style="text-align:left;">All particles are aligned flat along the X/Z axes.</td>
+</tr>
+<tr>
+	<td style="text-align:left;">        <strong>HorizontalBillboard</strong>
+</td>
+	<td style="text-align:left;">All particles are aligned flat along the X/Y axes.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>Length Scale</strong></td>
+	<td style="text-align:left;">If <strong>Stretch Particles</strong> is set to <strong>Stretched</strong>, this value determines how long the particles are in their direction of motion.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>Velocity Scale</strong></td>
+	<td style="text-align:left;">If <strong>Stretch Particles</strong> is set to <strong>Stretched</strong>, this value determines the rate at which particles are stretched, based on their movement speed.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>UV Animation</strong></td>
+	<td style="text-align:left;">If X, Y or both are defined, the UV coordinates of the particles are generated for use with a tile animated texture. See <a href="#animatedtextures">Animated Textures</a>, below.</td>
+</tr>
+<tr>
+	<td style="text-align:left;">        <strong>X Tile</strong>
+</td>
+	<td style="text-align:left;">Number of frames located across the X axis.</td>
+</tr>
+<tr>
+	<td style="text-align:left;">        <strong>Y Tile</strong>
+</td>
+	<td style="text-align:left;">Number of frames located across the Y axis.</td>
+</tr>
+<tr>
+	<td style="text-align:left;">        <strong>Cycles</strong>
+</td>
+	<td style="text-align:left;">How many times to loop the animation sequence.</td>
+</tr>
+</tbody>
+</table>
+
+<h2>Details</h2>
+
+<p>Particle Renderers are required for any Particle System to be displayed on the screen.</p>
+
+<figure>
+<img src="../uploads/Main/ParticleRendererExhaust.png" alt="A Particle Renderer makes the Gunships engine exhaust appear on the screen">
+<figcaption>A Particle Renderer makes the Gunship’s engine exhaust appear on the screen</figcaption>
+</figure>
+
+<h3>Choosing a Material</h3>
+
+<p>When setting up a Particle Renderer, it is very important to use an appropriate <a href="class-Material.html">Material</a> and Shader that renders both sides of the Material. Unity recommends using Particle Shaders with the Particle Renderer.; most of the time you can simply use a Material with one of the built-in Particle Shaders. There are some premade Materials in the <strong>Standard Assets</strong> &gt; <strong>Particles</strong> &gt; <strong>Sources</strong> folder that you can use.</p>
+
+<p>Creating a new Material is easy:</p>
+
+<ol>
+<li>In the Unity menu bar, go to <strong>Assets</strong> &gt; <strong>Create</strong> &gt; <strong>Material</strong>.</li>
+<li>In the Inspector window, navigate to <strong>New Material</strong> and click the <strong>Shader</strong> dropdown. Choose one of the Shaders in the <strong>Particles</strong> group (for example: <strong>Particles</strong> &gt; <strong>Multiply</strong>).</li>
+<li>To assign a Texture, navigate to the grey box in the Inspector window containing the text <strong>None (Texture)</strong> and click the <strong>Select</strong> button to launch a pop-up menu containing the Textures available.</li>
+</ol>
+
+<p>Note that different Shaders use the alpha channel of the Textures slightly differently, but most of the time a value of black in the alpha channel makes it invisible, and a value of white displays it on screen.</p>
+
+<h3>Distorting particles</h3>
+
+<p>By default, particles are rendered billboarded (that is, as simple square sprites). This is useful for smoke, explosions, and most other particle effects. See <a href="class-BillboardRenderer.html">Billboard Renderer</a> for more information.</p>
+
+<p>Particles can be made to stretch with the velocity. <strong>Length Scale</strong> and <strong>Velocity Scale</strong> affects how long the stretched particle is. This is useful for effects like sparks, lightning or laser beams.</p>
+
+<p>
+<strong>Sorted Billboard</strong> can be used to make all particles sort by depth. Sometimes this is necessary, mostly when using <strong>Alpha Blended</strong> particle shaders. This can be resource-demanding and affect performance; it should only be used if it makes a significant quality difference when rendering.</p>
+
+<p><a name="animatedtextures"></a></p>
+
+<h3>Animated textures</h3>
+
+<p>Particle Systems can be rendered with an animated tile Texture. To use this feature, make the Texture out of a grid of images. As the particles go through their life cycle, they cycle through the images. This is good for adding more life to your particles, or making small rotating debris pieces.</p>
+<div class="feedbackbox" id="feedbackbox">
+<div id="rating"><p>Did you find this page useful? Please give it a rating:<br><div id="ratecontent" class="c-rating"></div>
+</p></div>
+<div id="ratingThanks" style="display:none"><p>Thanks for rating this page!</p></div>
+<div id="problem"><p><a name="problem" onclick="document.getElementById('problemType').style.display = '';document.getElementById('problem').style.display = 'none';">Report a problem on this page</a></p></div>
+<div id="problemType" style="display:none"><p>What kind of problem would you like to report?<ul type="problems">
+<li><a name="needcode" onclick="                                                             document.getElementById('problemType').style.display = 'none';                                                             document.getElementById('problemThanks').style.display = '';                                                             SendFeedback('problem-needcode',window.location.href,0);                                                             document.getElementById('problemFormDescription').value='Needs code samples.';                                                             document.getElementById('problemNeedCodeForm').style.display = ''                                                         ">This page needs code samples</a></li>
+<li><a name="code" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-brokencode',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Code samples do not work.';                                                         document.getElementById('problemCodeForm').style.display = ''                                                         ">Code samples do not work</a></li>
+<li><a name="missing" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-missing',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Missing information';                                                         document.getElementById('problemMissingForm').style.display = ''                                                         ">Information is missing</a></li>
+<li><a name="incorrect" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-incorrect',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Incorrect information';                                                         document.getElementById('problemIncorrectForm').style.display = ''                                                         ">Information is incorrect</a></li>
+<li><a name="unclear" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-unclear',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Unclear or confusing information';                                                         document.getElementById('problemUnclearForm').style.display = ''                                                         ">Information is unclear or confusing</a></li>
+<li><a name="language" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-language',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Spelling or grammar error';                                                         document.getElementById('problemLanguageForm').style.display = ''                                                         ">There is a spelling/grammar error on this page</a></li>
+<li><a name="other" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-other',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='This page has a problem';                                                         document.getElementById('problemOtherForm').style.display = ''                                                         ">Something else</a></li>
+</ul>
+<p><known_issues><p>Is something described here not working as you expect it to? It might be a <b>Known Issue</b>. Please check with the Issue Tracker at <a href="https://issuetracker.unity3d.com">issuetracker.unity3d.com</a>.</p></known_issues></p>
+</p></div>
+<div id="problemThanks" style="display:none"><p>Thanks for letting us know! This page has been marked for review based on your feedback.<br><br>If you have time, you can provide more information to help us fix the problem faster.<br><br><a onclick="document.getElementById('problemMoreInfo').style.display = '';document.getElementById('problemThanks').style.display = 'none';">Provide more information</a><br>
+</p></div>
+<div id="problemMoreInfo" style="display:none">
+<p id="problemNeedCodeForm" style="display:none">You've told us this page needs code samples. If you'd like to help us further, you could provide a code sample, or tell us about what kind of code sample you'd like to see:</p>
+<p id="problemCodeForm" style="display:none">You've told us there are code samples on this page which don't work. If you know how to fix it, or have something better we could use instead, please let us know:</p>
+<p id="problemMissingForm" style="display:none">You've told us there is information missing from this page. Please tell us more about what's missing:</p>
+<p id="problemIncorrectForm" style="display:none">You've told us there is incorrect information on this page. If you know what we should change to make it correct, please tell us:</p>
+<p id="problemUnclearForm" style="display:none">You've told us this page has unclear or confusing information. Please tell us more about what you found unclear or confusing, or let us know how we could make it clearer:</p>
+<p id="problemLanguageForm" style="display:none">You've told us there is a spelling or grammar error on this page. Please tell us what's wrong:</p>
+<p id="problemOtherForm" style="display:none">You've told us this page has a problem. Please tell us more about what's wrong:</p>
+<form>
+<textarea id="problemFormSuggestionField" cols="40" rows="5"></textarea><input type="hidden" id="problemFormDescription"><input type="submit" id="problemFormDescriptionSubmit" value="Submit" onclick="                                             document.getElementById('problemMoreInfo').style.display = 'none';                                             document.getElementById('problemMoreInfoThanks').style.display = '';                                             return false;                                             ">
+</form>
+</div>
+<div id="problemMoreInfoThanks" style="display:none"><p>Thanks for helping to make the Unity documentation better!</p></div>
+<script>
+
+                                            var ratecontent = document.querySelector('#ratecontent'); // target element
+                                            var currentRating = 0; // initial rating
+                                            var maxRating= 5; // max rating
+
+                                            // callback to run after setting the rating
+                                            var callback = function(rating) {
+                                                document.getElementById('ratingThanks').style.display = '';
+                                                document.getElementById('ratecontent').style.display = 'none';
+                                                document.getElementById('rating').style.display = 'none';
+                                                SendFeedback("rating",window.location.href,rating);
+                                            };
+
+                                            // rating instance
+                                            var myRating = rating(ratecontent, currentRating, maxRating, callback);
+                                        </script>
+</div>
+<div class="nextprev clear">
+<div class="icon tt left mr1" data-distance="-40|-30|top">
+<span class="prev"><a href="class-ParticleAnimator.html"></a></span><div class="tip">Particle Animator (Legacy)</div>
+</div>
+<div class="icon tt right" data-distance="-40|-30|top">
+<span class="next"><a href="class-WorldParticleCollider.html"></a></span><div class="tip">World Particle Collider (Legacy)</div>
+</div>
+</div>
+</div>
+</body></html>

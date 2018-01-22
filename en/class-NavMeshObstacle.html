@@ -1,0 +1,210 @@
+<html><head><title>html模版</title></head><body>Unity - Manual:  Nav Mesh Obstacle</br>
+<div class="breadcrumbs clear"><ul>
+<li><a href="UnityManual.html">Unity User Manual (2018.1 beta)</a></li>
+<li><a href="Navigation.html">Navigation and Pathfinding</a></li>
+<li>Navigation Reference</li>
+<li> Nav Mesh Obstacle</li>
+</ul></div>
+<div class="mb20"><div class="nextprev clear">
+<div class="icon tt left mr1" data-distance="-40|-30|top">
+<span class="prev"><a href="class-NavMeshAgent.html"></a></span><div class="tip">NavMesh Agent</div>
+</div>
+<div class="icon tt right" data-distance="-40|-30|top">
+<span class="next"><a href="class-OffMeshLink.html"></a></span><div class="tip">Off-Mesh Link</div>
+</div>
+</div></div>
+<div class="otherversionswrapper" onmouseover="setOtherVersionsDisplay(true)" onmouseout="setOtherVersionsDisplay(false)">
+<a>Other Versions</a><div class="otherversionscontent" id="OtherVersionsContent" style="display: none;">Cannot access other versions offline!</div>
+</div>
+<div class="scrollToFeedback"><a id="scrollToFeedback">Leave feedback</a></div>
+<h1>Nav Mesh Obstacle</h1>
+<!--BeginSwitchLink--><!--EndSwitchLink-->
+<div class="clear"></div>
+
+<p>The <strong>Nav Mesh Obstacle</strong> component allows you to describe moving obstacles that <a href="class-NavMeshAgent.html">Nav Mesh Agents</a> should avoid while navigating the world (for example, barrels or crates controlled by the physics system). While the obstacle is moving, the Nav Mesh Agents do their best to avoid it. When the obstacle is stationary, it carves a hole in the NavMesh. Nav Mesh Agents then change their paths to steer around it, or find a different route if the obstacle causes the pathway to be completely blocked.</p>
+
+<figure>
+<img src="../uploads/Main/NavMeshObstacle.png" alt="">
+</figure>
+
+<table>
+<colgroup>
+<col style="text-align:left;">
+<col style="text-align:left;">
+</colgroup>
+
+<thead>
+<tr>
+	<th style="text-align:left;"><strong>Property</strong></th>
+	<th style="text-align:left;"><strong>Function</strong></th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+	<td style="text-align:left;"><strong>Shape</strong></td>
+	<td style="text-align:left;">The shape of the obstacle geometry. Choose whichever one best fits the shape of the object.</td>
+</tr>
+<tr>
+	<td style="text-align:left;">    <strong>Box</strong>
+</td>
+	<td style="text-align:left;"></td>
+</tr>
+<tr>
+	<td style="text-align:left;">        Center</td>
+	<td style="text-align:left;">Center of the box relative to the transform position.</td>
+</tr>
+<tr>
+	<td style="text-align:left;">        Size</td>
+	<td style="text-align:left;">Size of the box.</td>
+</tr>
+<tr>
+	<td style="text-align:left;">    <strong>Capsule</strong>
+</td>
+	<td style="text-align:left;"></td>
+</tr>
+<tr>
+	<td style="text-align:left;">        Center</td>
+	<td style="text-align:left;">Center of the capsule relative to the transform position.</td>
+</tr>
+<tr>
+	<td style="text-align:left;">        Radius</td>
+	<td style="text-align:left;">Radius of the capsule.</td>
+</tr>
+<tr>
+	<td style="text-align:left;">        Height</td>
+	<td style="text-align:left;">Height of the capsule.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>Carve</strong></td>
+	<td style="text-align:left;">When the Carve checkbox is ticked, the Nav Mesh Obstacle creates a hole in the NavMesh.</td>
+</tr>
+<tr>
+	<td style="text-align:left;">    Move Threshold</td>
+	<td style="text-align:left;">Unity treats the Nav Mesh Obstacle as moving when it has moved more than the distance set by the Move Threshold. Use this property to set the threshold distance for updating a moving carved hole.</td>
+</tr>
+<tr>
+	<td style="text-align:left;">    Time To Stationary</td>
+	<td style="text-align:left;">The time (in seconds) to wait until the obstacle is treated as stationary.</td>
+</tr>
+<tr>
+	<td style="text-align:left;">    Carve Only Stationary</td>
+	<td style="text-align:left;">When enabled, the obstacle is carved only when it is stationary. See <a href="#LogicMovingObstacles">Logic for moving Nav Mesh Obstacles</a>, below, to learn more.</td>
+</tr>
+</tbody>
+</table>
+
+<h2>Details</h2>
+
+<figure>
+<img src="../uploads/Main/NavMeshObstacleCarving.svg" alt="">
+</figure>
+
+<p>Nav Mesh Obstacles can affect the Nav Mesh Agent’s navigation during the game in two ways:</p>
+
+<h3>Obstructing</h3>
+
+<p>When <strong>Carve</strong> is not enabled, the default behavior of the Nav Mesh Obstacle is similar to that of a Collider. Nav Mesh Agents try to avoid collisions with the Nav Mesh Obstacle, and when close, they collide with the Nav Mesh Obstacle. Obstacle avoidance behaviour is very basic, and has a short radius. As such, the Nav Mesh Agent might not be able to find its way around in an environment cluttered with Nav Mesh Obstacles. This mode is best used in cases where the obstacle is constantly moving (for example, a vehicle or player character).</p>
+
+<h3>Carving</h3>
+
+<p>When <strong>Carve</strong> is enabled, the obstacle carves a hole in the NavMesh when stationary. When moving, the obstacle is an obstruction. When a hole is carved into the NavMesh, the pathfinder is able to navigate the Nav Mesh Agent around locations cluttered with obstacles, or find another route if the current path gets blocked by an obstacle. It’s good practice to turn on carving for Nav Mesh Obstacles that generally block navigation but can be moved by the player or other game events like explosions (for example, crates or barrels).</p>
+
+<figure>
+<img src="../uploads/Main/NavMeshObstacleTrap.svg" alt="">
+</figure>
+
+<p><a name="LogicMovingObstacles"> </a></p>
+
+<h2>Logic for moving Nav Mesh Obstacles</h2>
+
+<p>Unity treats the Nav Mesh Obstacle as moving when it has moved more than the distance set by the <strong>Carve</strong> &gt; <strong>Move Threshold</strong>. When the Nav Mesh Obstacle moves, the carved hole also moves. However, to reduce CPU overhead, the hole is only recalculated when necessary. The result of this calculation is available in the next frame update. The recalculation logic has two options:</p>
+
+<ul>
+<li><p>Only carve when the Nav Mesh Obstacle is stationary</p></li>
+<li><p>Carve when the Nav Mesh Obstacle has moved</p></li>
+</ul>
+
+<h3>Only carve when the Nav Mesh Obstacle is stationary</h3>
+
+<p>This is the default behavior. To enable it, tick the Nav Mesh Obstacle component’s <strong>Carve Only Stationary</strong> checkbox. In this mode, when the Nav Mesh Obstacle moves, the carved hole is removed. When the Nav Mesh Obstacle has stopped moving and has been stationary for more than the time set by <strong>Carving Time To Stationary</strong>, it is treated as stationary and the carved hole is updated again. While the Nav Mesh Obstacle is moving, the Nav Mesh Agents avoid it using collision avoidance, but don’t plan paths around it. </p>
+
+<p>
+<strong>Carve Only Stationery</strong> is generally the best choice in terms of performance, and is a good match when the GameObject associated with the Nav Mesh Obstacle is controlled by physics.</p>
+
+<h3>Carve when the Nav Mesh Obstacle has moved</h3>
+
+<p>To enable this mode, untick the Nav Mesh Obstacle component’s <strong>Carve Only Stationary</strong> checkbox. When this is unticked, the carved hole is updated when the obstacle has moved more than the distance set by <strong>Carving Move Threshold</strong>. This mode is useful for large, slowly moving obstacles (for example, a tank that is being avoided by infantry).</p>
+
+<p>
+<strong>Note</strong>: When using NavMesh query methods, you should take into account that there is a one-frame delay between changing a Nav Mesh Obstacle and the effect that change has on the NavMesh.</p>
+
+<h2>See also</h2>
+
+<ol>
+<li><p>
+<a href="nav-CreateNavMeshObstacle.html">Creating a Nav Mesh Obstacle</a> - Guidance on creating Nav Mesh Obstacles.</p></li>
+<li><p>
+<a href="http://nav-innerworkings">Inner Workings of the Navigation System</a> - Learn more about how Nav Mesh Obstacles are used as part of navigation.</p></li>
+<li><p>
+<a href="../ScriptReference/AI.NavMeshObstacle.html">Nav Mesh Obstacle scripting reference</a> - Full description of the Nav Mesh Obstacle scripting API.</p></li>
+</ol>
+<div class="feedbackbox" id="feedbackbox">
+<div id="rating"><p>Did you find this page useful? Please give it a rating:<br><div id="ratecontent" class="c-rating"></div>
+</p></div>
+<div id="ratingThanks" style="display:none"><p>Thanks for rating this page!</p></div>
+<div id="problem"><p><a name="problem" onclick="document.getElementById('problemType').style.display = '';document.getElementById('problem').style.display = 'none';">Report a problem on this page</a></p></div>
+<div id="problemType" style="display:none"><p>What kind of problem would you like to report?<ul type="problems">
+<li><a name="needcode" onclick="                                                             document.getElementById('problemType').style.display = 'none';                                                             document.getElementById('problemThanks').style.display = '';                                                             SendFeedback('problem-needcode',window.location.href,0);                                                             document.getElementById('problemFormDescription').value='Needs code samples.';                                                             document.getElementById('problemNeedCodeForm').style.display = ''                                                         ">This page needs code samples</a></li>
+<li><a name="code" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-brokencode',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Code samples do not work.';                                                         document.getElementById('problemCodeForm').style.display = ''                                                         ">Code samples do not work</a></li>
+<li><a name="missing" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-missing',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Missing information';                                                         document.getElementById('problemMissingForm').style.display = ''                                                         ">Information is missing</a></li>
+<li><a name="incorrect" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-incorrect',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Incorrect information';                                                         document.getElementById('problemIncorrectForm').style.display = ''                                                         ">Information is incorrect</a></li>
+<li><a name="unclear" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-unclear',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Unclear or confusing information';                                                         document.getElementById('problemUnclearForm').style.display = ''                                                         ">Information is unclear or confusing</a></li>
+<li><a name="language" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-language',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Spelling or grammar error';                                                         document.getElementById('problemLanguageForm').style.display = ''                                                         ">There is a spelling/grammar error on this page</a></li>
+<li><a name="other" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-other',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='This page has a problem';                                                         document.getElementById('problemOtherForm').style.display = ''                                                         ">Something else</a></li>
+</ul>
+<p><known_issues><p>Is something described here not working as you expect it to? It might be a <b>Known Issue</b>. Please check with the Issue Tracker at <a href="https://issuetracker.unity3d.com">issuetracker.unity3d.com</a>.</p></known_issues></p>
+</p></div>
+<div id="problemThanks" style="display:none"><p>Thanks for letting us know! This page has been marked for review based on your feedback.<br><br>If you have time, you can provide more information to help us fix the problem faster.<br><br><a onclick="document.getElementById('problemMoreInfo').style.display = '';document.getElementById('problemThanks').style.display = 'none';">Provide more information</a><br>
+</p></div>
+<div id="problemMoreInfo" style="display:none">
+<p id="problemNeedCodeForm" style="display:none">You've told us this page needs code samples. If you'd like to help us further, you could provide a code sample, or tell us about what kind of code sample you'd like to see:</p>
+<p id="problemCodeForm" style="display:none">You've told us there are code samples on this page which don't work. If you know how to fix it, or have something better we could use instead, please let us know:</p>
+<p id="problemMissingForm" style="display:none">You've told us there is information missing from this page. Please tell us more about what's missing:</p>
+<p id="problemIncorrectForm" style="display:none">You've told us there is incorrect information on this page. If you know what we should change to make it correct, please tell us:</p>
+<p id="problemUnclearForm" style="display:none">You've told us this page has unclear or confusing information. Please tell us more about what you found unclear or confusing, or let us know how we could make it clearer:</p>
+<p id="problemLanguageForm" style="display:none">You've told us there is a spelling or grammar error on this page. Please tell us what's wrong:</p>
+<p id="problemOtherForm" style="display:none">You've told us this page has a problem. Please tell us more about what's wrong:</p>
+<form>
+<textarea id="problemFormSuggestionField" cols="40" rows="5"></textarea><input type="hidden" id="problemFormDescription"><input type="submit" id="problemFormDescriptionSubmit" value="Submit" onclick="                                             document.getElementById('problemMoreInfo').style.display = 'none';                                             document.getElementById('problemMoreInfoThanks').style.display = '';                                             return false;                                             ">
+</form>
+</div>
+<div id="problemMoreInfoThanks" style="display:none"><p>Thanks for helping to make the Unity documentation better!</p></div>
+<script>
+
+                                            var ratecontent = document.querySelector('#ratecontent'); // target element
+                                            var currentRating = 0; // initial rating
+                                            var maxRating= 5; // max rating
+
+                                            // callback to run after setting the rating
+                                            var callback = function(rating) {
+                                                document.getElementById('ratingThanks').style.display = '';
+                                                document.getElementById('ratecontent').style.display = 'none';
+                                                document.getElementById('rating').style.display = 'none';
+                                                SendFeedback("rating",window.location.href,rating);
+                                            };
+
+                                            // rating instance
+                                            var myRating = rating(ratecontent, currentRating, maxRating, callback);
+                                        </script>
+</div>
+<div class="nextprev clear">
+<div class="icon tt left mr1" data-distance="-40|-30|top">
+<span class="prev"><a href="class-NavMeshAgent.html"></a></span><div class="tip">NavMesh Agent</div>
+</div>
+<div class="icon tt right" data-distance="-40|-30|top">
+<span class="next"><a href="class-OffMeshLink.html"></a></span><div class="tip">Off-Mesh Link</div>
+</div>
+</div>
+</div>
+</body></html>

@@ -1,0 +1,158 @@
+<html><head><title>html模版</title></head><body>Unity - Manual: Universal Windows Platform Player Settings</br>
+<div class="breadcrumbs clear"><ul>
+<li><a href="UnityManual.html">Unity User Manual (2018.1 beta)</a></li>
+<li><a href="PlatformSpecific.html">Platform-specific</a></li>
+<li><a href="Windows.html">Windows</a></li>
+<li><a href="WindowsStore.html">Universal Windows Platform</a></li>
+<li>Universal Windows Platform Player Settings</li>
+</ul></div>
+<div class="mb20"><div class="nextprev clear">
+<div class="icon tt left mr1" data-distance="-40|-30|top">
+<span class="prev"><a href="windowsstore-scripts.html"></a></span><div class="tip"> Universal Windows Platform: WinRT API in C# scripts</div>
+</div>
+<div class="icon tt right" data-distance="-40|-30|top">
+<span class="next"><a href="windowsstore-scriptingbackends.html"></a></span><div class="tip"> Scripting Backends</div>
+</div>
+</div></div>
+<div class="otherversionswrapper" onmouseover="setOtherVersionsDisplay(true)" onmouseout="setOtherVersionsDisplay(false)">
+<a>Other Versions</a><div class="otherversionscontent" id="OtherVersionsContent" style="display: none;">Cannot access other versions offline!</div>
+</div>
+<div class="scrollToFeedback"><a id="scrollToFeedback">Leave feedback</a></div>
+<h1>Universal Windows Platform Player Settings</h1>
+<!--BeginSwitchLink--><!--EndSwitchLink-->
+<div class="clear"></div>
+
+<p>This page details the <strong>Player Settings</strong> specific to Universal Windows Platform. For a description of the general Player Settings, see documentation on <a href="class-PlayerSettings.html">Player Settings</a>.</p>
+
+<figure>
+<img src="../uploads/Main/WSA-PlayerSettings.png" alt="">
+</figure>
+
+<p>Most of these settings are transferred to the <em>Package.appxmanifest</em> file when creating Visual Studio solution for the first time.</p>
+
+<p>Note: If you build your project on top of the existing one, Unity won’t overwrite the <em>Package.appxmanifest</em> file if it’s already present. That means if you change something in Player Settings, you should be sure to check <em>Package.appxmanifest</em>. If you want to regenerate <em>Package.appxmanifest</em>, delete it and rebuild your project from Unity.</p>
+
+<p>To learn more, see Microsoft’s documentation on <a href="http://msdn.microsoft.com/en-us/library/windows/apps/br211474.aspx">App package manifest</a>.</p>
+
+<p>Settings from Packaging, Application UI, Tile, Splash screen, and Capabilities directly transfer to settings in the <em>Package.appxmanifest</em> file.</p>
+
+<p>
+<strong>Supported orientations</strong> from Player Settings are also populated to the manifest (Package.appxmanifest file in Visual Studio solution). On Universal Windows Apps Unity will reset orientation to the one you used in Player Settings, regardless what you specify in the manifest. This is because Windows itself ignores those settings on desktop and tablet computers. Note, that you can always change supported orientations using Unity scripting API.</p>
+
+<h2>Certificate</h2>
+
+<p>Every Universal Windows App needs a certificate which identifies a developer, Unity will create a default certificate, if you won’t provide your own.</p>
+
+<h2>Compilation</h2>
+
+<p>As you know, Unity uses Mono when compiling script files, and you can use the API located in .NET 3.5. Compilation Overrides allows you to use .NET for Universal Windows Platform (also known as .NET Core) in your C# files, the API is available here.</p>
+
+<h2>When Compilation Overrides is set to:</h2>
+
+<ul>
+<li>None - C# files are compiled using Mono compiler.</li>
+<li>Use .Net Core - C# files are compiled using Microsoft compiler and .NET Core, you can use Windows Runtime API, but classes implemented in C# files aren’t accessible from the JS language. Note: when using API from Windows Runtime, it’s advisable to wrap the code with ENABLE_WINMD_SUPPORT define, because the API is only avaible when building to Universal Windows Platform, and it’s not available in Unity Editor.</li>
+<li>Use .Net Core Partially - C# files not located in Plugins, Standard Assets, Pro Standard Assets folders are compiled using Microsoft compiler and .NET Core, all other C# files are compiled using Mono compiler. The advantage is that classes implemented in C# are accessible from the JS language.
+Note: You won’t be able to test .NET Core API in Unity Editor, because it doesn’t have access to .NET Core, so you’ll be able to test the API only when running Universal Windows App.</li>
+</ul>
+
+<p>
+<strong>Note:</strong> You cannot use .NET Core API in JS scripts.</p>
+
+<p>Here’s a simple example of how to use .NET Core API in scripts.</p>
+
+<pre><code>string GetTemporaryFolder()
+{
+#if ENABLE_WINMD_SUPPORT
+    return Windows.Storage.ApplicationData.Current.TemporaryFolder.Path;
+#else
+    return &quot;LocalFolder&quot;;
+#endif
+}
+</code></pre>
+
+<h2>Misc</h2>
+
+<p>Unprocessed Plugins contains a list of plugins which are ignored by Unity’s preprocessing tools (like SerializationWeaver, AssemblyPreprocessor, rrw). Usually you don’t need to modify this list, unless you’re getting an error that Unity’s failed to preprocess your plugin.</p>
+
+<p>If you add a plugin to this list, Unity won’t inject additional IL code into your assembly used for serialization purposes, but if your plugin isn’t referencing UnityEngine.dll, that’s fine, because Unity won’t serialize any data from your plugin.</p>
+
+<h2>Independent Input Source</h2>
+
+<p>This allows you to enable an option for independent input source. Basically this makes your input more responsive, and usually you want this option to be enabled.</p>
+
+<p>Low Latency Presentation API
+Lets you enable Low Latency Presentation API, basically this create D3D11 swapchain with DXGI_SWAP_CHAIN_FLAG_FRAME_LATENCY_WAITABLE_OBJECT flag, read more here and should increase input responsiveness. This option is disabled by default because on hardware with older GPU drivers, this option makes game laggy, if you enable this option - be sure to profile your game if the performance is still acceptable.</p>
+
+<h2>Capabilities</h2>
+
+<p>These options are directly copied to Package.appxmanifest.</p>
+
+<p>
+<strong>Note:</strong> If you build your game on top of previous package, Package.appxmanifest won’t be overwritten.</p>
+
+<hr>
+
+<p>
+<span class="page-edit">• 2017–05–16 Page amended with no <a href="DocumentationEditorialReview.html">editorial review</a>
+</span><br>
+</p>
+<div class="feedbackbox" id="feedbackbox">
+<div id="rating"><p>Did you find this page useful? Please give it a rating:<br><div id="ratecontent" class="c-rating"></div>
+</p></div>
+<div id="ratingThanks" style="display:none"><p>Thanks for rating this page!</p></div>
+<div id="problem"><p><a name="problem" onclick="document.getElementById('problemType').style.display = '';document.getElementById('problem').style.display = 'none';">Report a problem on this page</a></p></div>
+<div id="problemType" style="display:none"><p>What kind of problem would you like to report?<ul type="problems">
+<li><a name="needcode" onclick="                                                             document.getElementById('problemType').style.display = 'none';                                                             document.getElementById('problemThanks').style.display = '';                                                             SendFeedback('problem-needcode',window.location.href,0);                                                             document.getElementById('problemFormDescription').value='Needs code samples.';                                                             document.getElementById('problemNeedCodeForm').style.display = ''                                                         ">This page needs code samples</a></li>
+<li><a name="code" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-brokencode',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Code samples do not work.';                                                         document.getElementById('problemCodeForm').style.display = ''                                                         ">Code samples do not work</a></li>
+<li><a name="missing" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-missing',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Missing information';                                                         document.getElementById('problemMissingForm').style.display = ''                                                         ">Information is missing</a></li>
+<li><a name="incorrect" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-incorrect',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Incorrect information';                                                         document.getElementById('problemIncorrectForm').style.display = ''                                                         ">Information is incorrect</a></li>
+<li><a name="unclear" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-unclear',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Unclear or confusing information';                                                         document.getElementById('problemUnclearForm').style.display = ''                                                         ">Information is unclear or confusing</a></li>
+<li><a name="language" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-language',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Spelling or grammar error';                                                         document.getElementById('problemLanguageForm').style.display = ''                                                         ">There is a spelling/grammar error on this page</a></li>
+<li><a name="other" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-other',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='This page has a problem';                                                         document.getElementById('problemOtherForm').style.display = ''                                                         ">Something else</a></li>
+</ul>
+<p><known_issues><p>Is something described here not working as you expect it to? It might be a <b>Known Issue</b>. Please check with the Issue Tracker at <a href="https://issuetracker.unity3d.com">issuetracker.unity3d.com</a>.</p></known_issues></p>
+</p></div>
+<div id="problemThanks" style="display:none"><p>Thanks for letting us know! This page has been marked for review based on your feedback.<br><br>If you have time, you can provide more information to help us fix the problem faster.<br><br><a onclick="document.getElementById('problemMoreInfo').style.display = '';document.getElementById('problemThanks').style.display = 'none';">Provide more information</a><br>
+</p></div>
+<div id="problemMoreInfo" style="display:none">
+<p id="problemNeedCodeForm" style="display:none">You've told us this page needs code samples. If you'd like to help us further, you could provide a code sample, or tell us about what kind of code sample you'd like to see:</p>
+<p id="problemCodeForm" style="display:none">You've told us there are code samples on this page which don't work. If you know how to fix it, or have something better we could use instead, please let us know:</p>
+<p id="problemMissingForm" style="display:none">You've told us there is information missing from this page. Please tell us more about what's missing:</p>
+<p id="problemIncorrectForm" style="display:none">You've told us there is incorrect information on this page. If you know what we should change to make it correct, please tell us:</p>
+<p id="problemUnclearForm" style="display:none">You've told us this page has unclear or confusing information. Please tell us more about what you found unclear or confusing, or let us know how we could make it clearer:</p>
+<p id="problemLanguageForm" style="display:none">You've told us there is a spelling or grammar error on this page. Please tell us what's wrong:</p>
+<p id="problemOtherForm" style="display:none">You've told us this page has a problem. Please tell us more about what's wrong:</p>
+<form>
+<textarea id="problemFormSuggestionField" cols="40" rows="5"></textarea><input type="hidden" id="problemFormDescription"><input type="submit" id="problemFormDescriptionSubmit" value="Submit" onclick="                                             document.getElementById('problemMoreInfo').style.display = 'none';                                             document.getElementById('problemMoreInfoThanks').style.display = '';                                             return false;                                             ">
+</form>
+</div>
+<div id="problemMoreInfoThanks" style="display:none"><p>Thanks for helping to make the Unity documentation better!</p></div>
+<script>
+
+                                            var ratecontent = document.querySelector('#ratecontent'); // target element
+                                            var currentRating = 0; // initial rating
+                                            var maxRating= 5; // max rating
+
+                                            // callback to run after setting the rating
+                                            var callback = function(rating) {
+                                                document.getElementById('ratingThanks').style.display = '';
+                                                document.getElementById('ratecontent').style.display = 'none';
+                                                document.getElementById('rating').style.display = 'none';
+                                                SendFeedback("rating",window.location.href,rating);
+                                            };
+
+                                            // rating instance
+                                            var myRating = rating(ratecontent, currentRating, maxRating, callback);
+                                        </script>
+</div>
+<div class="nextprev clear">
+<div class="icon tt left mr1" data-distance="-40|-30|top">
+<span class="prev"><a href="windowsstore-scripts.html"></a></span><div class="tip"> Universal Windows Platform: WinRT API in C# scripts</div>
+</div>
+<div class="icon tt right" data-distance="-40|-30|top">
+<span class="next"><a href="windowsstore-scriptingbackends.html"></a></span><div class="tip"> Scripting Backends</div>
+</div>
+</div>
+</div>
+</body></html>

@@ -1,0 +1,138 @@
+<html><head><title>html模版</title></head><body>Unity - Manual: Related topics</br>
+<div class="breadcrumbs clear"><ul>
+<li><a href="UnityManual.html">Unity User Manual (2018.1 beta)</a></li>
+<li><a href="Graphics.html">Graphics</a></li>
+<li><a href="GraphicsOverview.html">Graphics Overview</a></li>
+<li><a href="LightingOverview.html">Lighting</a></li>
+<li>Related topics</li>
+</ul></div>
+<div class="mb20"><div class="nextprev clear">
+<div class="icon tt left mr1" data-distance="-40|-30|top">
+<span class="prev"><a href="LightPerformance.html"></a></span><div class="tip"> Light troubleshooting and performance</div>
+</div>
+<div class="icon tt right" data-distance="-40|-30|top">
+<span class="next"><a href="LinearLighting.html"></a></span><div class="tip"> Linear rendering overview</div>
+</div>
+</div></div>
+<div class="otherversionswrapper" onmouseover="setOtherVersionsDisplay(true)" onmouseout="setOtherVersionsDisplay(false)">
+<a>Other Versions</a><div class="otherversionscontent" id="OtherVersionsContent" style="display: none;">Cannot access other versions offline!</div>
+</div>
+<div class="scrollToFeedback"><a id="scrollToFeedback">Leave feedback</a></div>
+<h1>Related topics</h1>
+<!--BeginSwitchLink--><!--EndSwitchLink-->
+<div class="clear"></div>
+
+<p>Unity’s lighting system is affected by and can affect many of its other effects and systems.</p>
+
+<h2>Quality settings</h2>
+
+<p>The <a href="class-QualitySettings.html">Quality settings</a> window has many settings that affects lighting and shadows.</p>
+
+<h2>Player settings</h2>
+
+<p>The <a href="class-PlayerSettings.html">Unity Player settings</a> window allows you to choose the rendering path and color space.</p>
+
+<h2>Camera inspector</h2>
+
+<p>The <a href="class-Camera.html">Camera inspector</a> allows you to override Unity Player settings for the rendering path per camera. HDR can also be activated here.</p>
+
+<h2>Rendering paths</h2>
+
+<p>Unity supports a number of rendering techniques, or ‘paths’. An important early decision which needs to be made when starting a project is which path to use. Unity’s default is ’Forward Rendering”.</p>
+
+<p>In Forward Rendering, each object is rendered in a ‘pass’ for each light that affects it. Therefore each object might be rendered multiple times depending upon how many lights are within range.</p>
+
+<p>The advantages of this approach is that it can be very fast - meaning hardware requirements are lower than alternatives. Additionally, Forward Rendering offers us a wide range of custom ‘shading models’ and can handle transparency quickly. It also allows for the use of hardware techniques like ‘multi-sample anti-aliasing’ (MSAA) which are not available in other alternatives, such as Deferred Rendering which can have a great impact on image quality.</p>
+
+<p>However, a significant disadvantage of the forward path is that we have to pay a render cost on a per-light basis. That is to say, the more lights affecting each object, the slower rendering performance will become. For some game types, with lots of lights, this may therefore be prohibitive. However if it is possible to manage light counts in your game, Forward Rendering can actually be a very fast solution.</p>
+
+<p>In ‘Deferred’ rendering, on the other hand, we defer the shading and blending of light information until after a first pass over the screen where positions, normals, and materials for each surface are rendered to a ‘geometry buffer’ (G-buffer) as a series of screen-space textures. We then composite these results together with the lighting pass. This approach has the principle advantage that the render cost of lighting is proportional to the number of pixels that the light illuminates, instead of the number of lights themselves. As a result you are no longer bound by the number of lights you wish to render on screen, and for some games this is a critical advantage.</p>
+
+<p>Deferred Rendering gives highly predictable performance characteristics, but generally requires more powerful hardware. It is also not supported by certain mobile hardware.</p>
+
+<p>For more information on the Deferred, Forward and the other available rendering paths, please see the <a href="RenderingPaths.html">main documentation page</a>.</p>
+
+<h2>High dynamic range</h2>
+
+<p>High dynamic range rendering allows you to simulate a much wider range of colours than has been traditionally available. In turn, this usually means you need to choose a range of brightnesses to display on the screen. In this way it is possible to simulate great differences in brightness between, say, outdoor lighting in our scenes and shaded areas. We can also create effects like ‘blooms’ or glows by applying effects to these bright colors in your scene. Special effects like these can add realism to particles or other visible light sources.</p>
+
+<p>For more information about HDR, please see the relevant <a href="HDR.html">manual page</a>.</p>
+
+<h2>Tonemapping</h2>
+
+<p>Tonemapping is part of the color grading <a href="PostProcessingOverview.html">post-processing effect</a> that is required to describe how to map colours from HDR to what you can see on the screen. Please see the <a href="PostProcessing-ColorGrading.html">Color Grading</a> effect for more information.</p>
+
+<h2>Reflection</h2>
+
+<p>While not explicitly a lighting effect, reflections are important for realistically displaying materials that reflect light, such as shiny metals or glass. Modern shading techniques, including Unity’s Standard Shader, integrate reflection into a material’s properties.</p>
+
+<p>For more information, please refer to our <a href="ReflectionProbes.html">section on Reflections</a>.</p>
+
+<h2>Linear color space</h2>
+
+<p>In addition to selecting a rendering path, it’s important to choose a ‘Color Space’ before lighting your project. Color Space determines the maths used by Unity when mixing colors in lighting calculations or reading values from textures. This can have a drastic effect on the realism of your game, but in many cases the decision over which Color Space to use will likely be forced by the hardware limitations of your target platform.</p>
+
+<p>The preferred Color Space for realistic rendering is Linear.</p>
+
+<p>A significant advantage of using Linear space is that the colors supplied to shaders within your scene will brighten linearly as light intensities increase. With the alternative, ‘Gamma’ Color Space, brightness will quickly begin to turn to white as values go up, which is detrimental to image quality.</p>
+
+<p>For further information please see <a href="LinearLighting.html">Linear rendering</a>.</p>
+<div class="feedbackbox" id="feedbackbox">
+<div id="rating"><p>Did you find this page useful? Please give it a rating:<br><div id="ratecontent" class="c-rating"></div>
+</p></div>
+<div id="ratingThanks" style="display:none"><p>Thanks for rating this page!</p></div>
+<div id="problem"><p><a name="problem" onclick="document.getElementById('problemType').style.display = '';document.getElementById('problem').style.display = 'none';">Report a problem on this page</a></p></div>
+<div id="problemType" style="display:none"><p>What kind of problem would you like to report?<ul type="problems">
+<li><a name="needcode" onclick="                                                             document.getElementById('problemType').style.display = 'none';                                                             document.getElementById('problemThanks').style.display = '';                                                             SendFeedback('problem-needcode',window.location.href,0);                                                             document.getElementById('problemFormDescription').value='Needs code samples.';                                                             document.getElementById('problemNeedCodeForm').style.display = ''                                                         ">This page needs code samples</a></li>
+<li><a name="code" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-brokencode',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Code samples do not work.';                                                         document.getElementById('problemCodeForm').style.display = ''                                                         ">Code samples do not work</a></li>
+<li><a name="missing" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-missing',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Missing information';                                                         document.getElementById('problemMissingForm').style.display = ''                                                         ">Information is missing</a></li>
+<li><a name="incorrect" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-incorrect',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Incorrect information';                                                         document.getElementById('problemIncorrectForm').style.display = ''                                                         ">Information is incorrect</a></li>
+<li><a name="unclear" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-unclear',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Unclear or confusing information';                                                         document.getElementById('problemUnclearForm').style.display = ''                                                         ">Information is unclear or confusing</a></li>
+<li><a name="language" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-language',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Spelling or grammar error';                                                         document.getElementById('problemLanguageForm').style.display = ''                                                         ">There is a spelling/grammar error on this page</a></li>
+<li><a name="other" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-other',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='This page has a problem';                                                         document.getElementById('problemOtherForm').style.display = ''                                                         ">Something else</a></li>
+</ul>
+<p><known_issues><p>Is something described here not working as you expect it to? It might be a <b>Known Issue</b>. Please check with the Issue Tracker at <a href="https://issuetracker.unity3d.com">issuetracker.unity3d.com</a>.</p></known_issues></p>
+</p></div>
+<div id="problemThanks" style="display:none"><p>Thanks for letting us know! This page has been marked for review based on your feedback.<br><br>If you have time, you can provide more information to help us fix the problem faster.<br><br><a onclick="document.getElementById('problemMoreInfo').style.display = '';document.getElementById('problemThanks').style.display = 'none';">Provide more information</a><br>
+</p></div>
+<div id="problemMoreInfo" style="display:none">
+<p id="problemNeedCodeForm" style="display:none">You've told us this page needs code samples. If you'd like to help us further, you could provide a code sample, or tell us about what kind of code sample you'd like to see:</p>
+<p id="problemCodeForm" style="display:none">You've told us there are code samples on this page which don't work. If you know how to fix it, or have something better we could use instead, please let us know:</p>
+<p id="problemMissingForm" style="display:none">You've told us there is information missing from this page. Please tell us more about what's missing:</p>
+<p id="problemIncorrectForm" style="display:none">You've told us there is incorrect information on this page. If you know what we should change to make it correct, please tell us:</p>
+<p id="problemUnclearForm" style="display:none">You've told us this page has unclear or confusing information. Please tell us more about what you found unclear or confusing, or let us know how we could make it clearer:</p>
+<p id="problemLanguageForm" style="display:none">You've told us there is a spelling or grammar error on this page. Please tell us what's wrong:</p>
+<p id="problemOtherForm" style="display:none">You've told us this page has a problem. Please tell us more about what's wrong:</p>
+<form>
+<textarea id="problemFormSuggestionField" cols="40" rows="5"></textarea><input type="hidden" id="problemFormDescription"><input type="submit" id="problemFormDescriptionSubmit" value="Submit" onclick="                                             document.getElementById('problemMoreInfo').style.display = 'none';                                             document.getElementById('problemMoreInfoThanks').style.display = '';                                             return false;                                             ">
+</form>
+</div>
+<div id="problemMoreInfoThanks" style="display:none"><p>Thanks for helping to make the Unity documentation better!</p></div>
+<script>
+
+                                            var ratecontent = document.querySelector('#ratecontent'); // target element
+                                            var currentRating = 0; // initial rating
+                                            var maxRating= 5; // max rating
+
+                                            // callback to run after setting the rating
+                                            var callback = function(rating) {
+                                                document.getElementById('ratingThanks').style.display = '';
+                                                document.getElementById('ratecontent').style.display = 'none';
+                                                document.getElementById('rating').style.display = 'none';
+                                                SendFeedback("rating",window.location.href,rating);
+                                            };
+
+                                            // rating instance
+                                            var myRating = rating(ratecontent, currentRating, maxRating, callback);
+                                        </script>
+</div>
+<div class="nextprev clear">
+<div class="icon tt left mr1" data-distance="-40|-30|top">
+<span class="prev"><a href="LightPerformance.html"></a></span><div class="tip"> Light troubleshooting and performance</div>
+</div>
+<div class="icon tt right" data-distance="-40|-30|top">
+<span class="next"><a href="LinearLighting.html"></a></span><div class="tip"> Linear rendering overview</div>
+</div>
+</div>
+</div>
+</body></html>

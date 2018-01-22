@@ -1,0 +1,504 @@
+<html><head><title>html模版</title></head><body>Unity - Manual:  Scriptable render pipeline</br>
+<div class="breadcrumbs clear"><ul>
+<li><a href="UnityManual.html">Unity User Manual (2018.1 beta)</a></li>
+<li><a href="Experimental.html"> Experimental</a></li>
+<li> Scriptable render pipeline</li>
+</ul></div>
+<div class="mb20"><div class="nextprev clear">
+<div class="icon tt left mr1" data-distance="-40|-30|top">
+<span class="prev"><a href="ScriptingRuntimeUpgrade.html"></a></span><div class="tip">Scripting Runtime Upgrade</div>
+</div>
+<div class="icon tt right" data-distance="-40|-30|top">
+<span class="next"><a href="LegacyTopics.html"></a></span><div class="tip">Legacy Topics</div>
+</div>
+</div></div>
+<div class="otherversionswrapper" onmouseover="setOtherVersionsDisplay(true)" onmouseout="setOtherVersionsDisplay(false)">
+<a>Other Versions</a><div class="otherversionscontent" id="OtherVersionsContent" style="display: none;">Cannot access other versions offline!</div>
+</div>
+<div class="scrollToFeedback"><a id="scrollToFeedback">Leave feedback</a></div>
+<h1>Scriptable render pipeline</h1>
+<!--BeginSwitchLink--><!--EndSwitchLink-->
+<div class="clear"></div>
+
+<p><em>Note: This is an experimental feature.</em></p>
+
+<p>The scriptable render pipeline is not supplied with the standard Unity Editor installer which you download from the <a href="https://store.unity.com/">Unity store</a>. Instead, download the scriptable render pipeline from <a href="https://github.com/Unity-Technologies/ScriptableRenderLoop">the Unity Technologies GitHub</a> and install it separately.</p>
+
+<p>This page contains:</p>
+
+<ul>
+<li><a href="#Motivation">The motivation behind the feature</a></li>
+<li><a href="#Built-in">The new built-in “HD Render Loop”</a></li>
+<li><a href="#APIOverview">API overview</a></li>
+<li><a href="#Appendix">Appendix - current rendering pipeline in Unity</a></li>
+</ul>
+
+<p><strong>Feature summary</strong></p>
+
+<p>Reimagine the rendering pipeline to support more flexibility and transparency. The main Unity rendering pipeline will be replaced by multiple “Render Loops”, built in C# on a C++ foundation. The C# code for the “Render Loops” will be open-sourced on GitHub, enabling users to investigate, enhance, or create their own custom render loops.</p>
+
+<p><a name="Motivation"></a></p>
+
+<h3>The motivation behind the feature</h3>
+
+<p>Current Unity’s rendering pipeline is described in <a href="#Appendix">Appendix - Current Rendering Pipeline</a>. There are several improvements we want to make – the major ones are spelled below.</p>
+
+<h4>Need to perform better on modern hardware</h4>
+
+<p>Both “one light per draw call” forward rendering, and “stencil mark + draw shape per light” deferred shading are not exactly modern approaches – they were fine for roughly DX9 hardware, but with advent of compute shaders generally we can do much better. Our forward shading suffers from too many draw calls (CPU + vertex transform cost) and bandwidth consumed by repeated sampling of surface textures &amp; blending; whereas deferred shading suffers from draw call count, not enough light culling, cost of doing stencil mark + draw call per light and repeated fetching of G-buffer data. Additionally, on tile-based GPUs it does tile store+load too much when realtime shadows are involved, and does not take advantage of tile storage or framebuffer fetch.</p>
+
+<p>We’d like to ship Unity with an out-of-the box rendering pipeline that is targeted at modern hardware – where we can rely on API &amp; GPU features like compute shaders, draw call instancing, constant buffers etc.</p>
+
+<h4>Easier to customize &amp; extend, less “black box”</h4>
+
+<p>Most of Unity users would probably not modify the built-in rendering pipeline, but some of the more advanced teams <em>do</em> want to modify or extend it. So it has to be extensible and much less opaque than today.</p>
+
+<p>While the current rendering pipeline is <em>somewhat</em> extensible (users can write their own shaders, manually control camera rendering, change settings, extend the rendering pipeline with <a href="GraphicsCommandBuffers.html">command buffers</a>), it is not extensible enough. Additionally, it is too much of a “black box”, and while the documentation, conference presentations, MIT-licensed built-in shader source code and community knowledge does fill in the gaps, some parts are hard to understand without a Unity source code license. We want all the high level code and shader/compute code to be a MIT-licensed open source project, similar to how <a href="PostProcessingOverview.html">Post-Processing</a>, <a href="https://bitbucket.org/Unity-Technologies/ui">UI</a> or <a href="https://bitbucket.org/Unity-Technologies/networking">Networking</a> already are.</p>
+
+<p>A “single render pipeline for everything” likely has some compromises that make it more flexible at expense of performance. We imagine that, for example, these kinds of rendering pipelines would make sense in many cases:</p>
+
+<ul>
+<li><p>Optimized for modern PC/console (DX11 baseline, “high end” graphics).</p></li>
+<li><p>Optimized for on-tile storage of mobile GPUs, using framebuffer fetch or other available techniques.</p></li>
+<li><p>Optimized for VR (e.g. forward shading + MSAA, single-pass rendering, caching/sharing eye rendering results in distance, various schemes of viewport/resolution stitching).</p></li>
+<li><p>Optimized for low-end devices (old mobile, old PC) or simple 2D games: simple one pass lighting (limited # of lights, and/or vertex lighting).</p></li>
+</ul>
+
+<p>These don’t have to be physically separate rendering pipelines, could be options in some other existing pipelines.</p>
+
+<h4>Easier dealing with backwards compatibility</h4>
+
+<p>This is a hard problem for us at Unity R&amp;D, basically doing big changes to how the rendering engine works is quite hard – mostly because people do expect to update to a more recent Unity version and have things “still working as they did”. Except when they don’t, i.e. they actively want new changes… For example, we changed Standard shader from Blinn-Phong to GGX specular in Unity 5.3 – mostly this is a good thing, except for people who were mid-production and now their specular behaves differently (so they probably have to re-tweak their lighting setups and materials).</p>
+
+<p>We’re thinking, that <em>if</em> the high level structure of the rendering code, and all the shader code, was easily “forkable” and versionable, then this problem could become easier.</p>
+
+<h4>Scriptable render loops: the new foundation</h4>
+
+<p>We think all or most of the problems listed above can be solved fairly elegantly by having a solid, orthogonal, performant foundation to build upon, which would basically be “an ability to render sets of objects with various filtering criteria efficiently”. The division of work would be:</p>
+
+<table>
+<colgroup>
+<col style="text-align:left;">
+<col style="text-align:left;">
+</colgroup>
+
+<thead>
+<tr>
+	<th style="text-align:left;">Unity C++ code</th>
+	<th style="text-align:left;">C#/shader code (MIT open source)</th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+	<td style="text-align:left;">Culling<br> Render set of objects with filter/sort/params<br> Internal graphics platform abstraction</td>
+	<td style="text-align:left;">Camera setup<br> Light setup <br> Shadows setup <br> Frame render pass structure &amp; logic <br>Shader/compute code</td>
+</tr>
+</tbody>
+</table>
+
+<p>The C++ side would be mostly not even aware that things like “Camera” or “Light” exist; e.g. culling code gets arrays of bounding primitives and matrices / culling planes as input. It does not care whether it’s culling main view, reflection rendering view or a shadow map view.</p>
+
+<p>Likewise, rendering code is expressed in terms of “from the culling results, render everything that is within opaque render queues range, has this shader pass and does not have that shader pass, sort by material then by distance, setup light probe constants per-object”. There is <em>some </em>amount of conventions and built-in things in there, mostly in what kind of data should be set as per-instance data for each object (light probes, reflection probes, lightmaps, per-object light lists etc.).</p>
+
+<p>There’s a lot of underlying platform graphics abstraction changes that we’re doing in order to be able to provide a robust, high performance and orthogonal set of “building blocks” to build scriptable render loops upon, but they are mostly outside of the scope of this document. Some of the changes worked on are:</p>
+
+<ul>
+<li><p>Expose “Buffer” as a C# class, that would be used for all kinds of buffer data (vertices, indices, uniforms, compute data etc.). Ability to create and manually update uniform/constant buffers from C# side.</p></li>
+<li><p>Compute shader related improvements, particularly how data is passed to them.</p></li>
+<li><p>Remove split between TextureFormat and RenderTextureFormat, have something like “DataFormat” instead that is used in all graphics related code (similar to DXGI formats on D3D). Expose more formats than today.</p></li>
+<li><p>Asynchronous readbacks of GPU data. Asynchronous compute.</p></li>
+</ul>
+
+<p>
+<br>
+<a name="APIOverview"></a>
+</p>
+
+<h2>API overview</h2>
+
+<p>Note: the API is in flux, and this document might not be exact wrt whatever Unity version you’re testing with right now.</p>
+
+<p>The main entry point is RenderLoop.renderLoopDelegate, which is in a form of
+ bool PrepareRenderLoop(Camera[] cameras, RenderLoop outputLoop);</p>
+
+<p>When the render loop delegate is registered, then all rendering goes into that function, and the existing built-in rendering loops are <em>not executed</em> at all.</p>
+
+<p>Inside of the render loop delegate, typically it would do culling for all the cameras (via the new CullResults class), and then do series of calls to RenderLoop.DrawRenderers intermixed with CommandBuffer calls to setup global shader properties, change render targets, dispatch compute shaders etc.</p>
+
+<p>Overall, the design is that the C# render loop code has full control over per-camera logic (it gets all cameras as input), and all per-light logic (it gets all visible lights as a culling result), but generally does not do per-object logic. Objects are rendered in “sets” – DrawRenderers call that specifies which subset of visible objects to render, how to sort them, and what kind of per-object data to setup.</p>
+
+<p>The simplest possible render loop would look something like this:</p>
+
+<pre><code>public bool __Render__(Camera[] cameras, RenderLoop renderLoop)
+{
+    foreach (var camera in cameras)
+    {
+        // cull a camera
+        CullResults cull;
+        CullingParameters cullingParams;
+        if (!CullResults.GetCullingParameters (camera, out cullingParams))
+            continue;
+        cull = __CullResults.Cull__ (ref cullingParams, renderLoop);
+        renderLoop.SetupCameraProperties (camera);
+        // setup render target and clear it
+        var cmd = new CommandBuffer();
+        cmd.SetRenderTarget(BuiltinRenderTextureType.CameraTarget);
+        cmd.ClearRenderTarget(true, true, Color.black);
+        renderLoop.__ExecuteCommandBuffer__(cmd);
+        cmd.Dispose();
+        // draw all the opaque objects using ForwardBase shader pass
+        var settings = new __DrawRendererSettings__(cull, camera, &quot;ForwardBase&quot;);
+        settings.sorting.sortOptions = SortOptions.SortByMaterialThenMesh;
+        settings.inputFilter.SetQueuesOpaque();
+        renderLoop.__DrawRenderers__(ref settings);
+        renderLoop.Submit ();
+    }
+    return true;
+}
+</code></pre>
+
+<p>Most important new scripting APIs:</p>
+
+<pre><code>// main entry point
+struct RenderLoop
+{
+    void ExecuteCommandBuffer (CommandBuffer);
+    void DrawRenderers (ref DrawRendererSettings);
+    void DrawShadows (ref DrawShadowsSettings); // similar, slightly specialized
+    void DrawSkybox (Camera);
+    static PrepareRenderLoop renderLoopDelegate;
+}
+// Setup and control how sets of objects are rendered by RenderLoop.DrawRenderers
+struct DrawRendererSettings
+{
+    DrawRendererSortSettings sorting;
+    ShaderPassName shaderPassName;
+    InputFilter inputFilter;
+    RendererConfiguration rendererConfiguration;
+    CullResults cullResults { set };
+}
+struct DrawRendererSortSettings
+{
+Matrix4x4 worldToCameraMatrix;
+Vector3 cameraPosition;
+SortOptions sortOptions;
+    bool sortOrthographic;
+}
+enum SortOptions { None, FrontToBack, BackToFront, SortByMaterialThenMesh, ... };
+struct InputFilter
+{
+    int renderQueueMin, renderQueueMax;
+    int layerMask;
+};
+// what kind of data should be set up per-object when rendering them
+[Flags] enum RendererConfiguration
+{
+    None,
+    PerObjectLightProbe,
+    PerObjectReflectionProbes,
+    PerObjectLightProbeProxyVolume,
+    PerObjectLightmaps,
+    ProvideLightIndices,
+    // ...
+};
+// Culling and cull results
+struct CullResults
+{
+    VisibleLight[] visibleLights;
+    VisibleReflectionProbe[] visibleReflectionProbes;
+    bool GetCullingParameters(Camera, out CulingParameters);
+    static CullResults Cull(ref CullingParameters, RenderLoop renderLoop);
+    // utility functions, like
+// ComputeDirectionalShadowMatricesAndCullingPrimitives etc
+}
+struct CullingParameters
+{
+    int isOrthographic;
+    LODParameters lodParameters;
+    Plane cullingPlanes[10];
+    int cullingPlaneCount;
+    int cullingMask;
+    float layerCullDistances[32];
+    Matrix4x4 cullingMatrix;
+    Vector3 position;
+    float shadowDistance;
+ReflectionProbeSortOptions reflectionProbeSortOptions;
+Camera camera;
+}
+struct VisibleLight
+{
+    LightType lightType;
+    Color finalColor;
+    Rect screenRect;
+    Matrix4x4 localToWorld;
+    Matrix4x4 worldToLocal;
+    float range;
+    float invCosHalfSpotAngle;
+    VisibleLightFlags flags;
+    Light light { get }
+}
+
+struct VisibleReflectionProbe; // similar to VisibleLight…
+</code></pre>
+
+<p>The API outlined above is <em>very much not final!</em> Things that are very likely to change:</p>
+
+<ul>
+<li><p>Considering an option to not have RenderLoop class, but instead have CommandBuffer contain functions like DrawRenderers etc., and possibly have nested command buffers too.</p></li>
+<li><p>Culling API changes to enable more performance, i.e. jobified culling overlapping with other work.</p></li>
+<li><p>Possibly more renderer filtering options.</p></li>
+<li><p>More explicit “render pass” controls, instead of current “set render target” API.</p></li>
+</ul>
+
+<h4>Usage, inner workings, performance</h4>
+
+<p>The general flow is that your own render loop code is responsible for culling, and for rendering everything. Including setting up per-frame or per-renderpass shader uniform variables, managing temporary render targets and setting them up, dispatching compute shaders etc.</p>
+
+<p>Visible lights and probes can be queried from the cull results, and for example their information put into compute shader buffers for tiled light culling. Alternatively, the render loop provides several ways of setting up per-object light lists for DX9-style forward rendering.</p>
+
+<p>On the CPU performance side, the API is built in a way where there’s generally no <em>per-object</em> operations going on – the C# side of the code is independent of the scene complexity. It typically loops over cameras, and does some iteration over visible lights to either render shadows, or to pack light data for shader usage. The rest of code that is written in C# is setting up render passes / render textures, and issuing “draw this subset of visible objects” commands.</p>
+
+<p>The C++ part of code (culling, DrawRenderers, DrawShadows) is written in a high-performance style that generally just goes over tightly packed data arrays, and is internally multithreaded. Our current experiments show that with this split (high level frame setup in C#, culling/rendering in C++) we can get same or even better performance of our previous rendering loop implementations.</p>
+
+<p>The C# side looks like it would create a lot of garbage-collected objects; we are looking into ways of exposing “native” (C++ side) data directly to C# without extra round-trips; in C# that would look very similar to an array that writes directly into native side memory. This is a somewhat separate topic, which we’ll talk about separately.</p>
+
+<p>
+<br>
+<a name="Built-in"></a>
+</p>
+
+<h2>New built-in “HD Render Loop”</h2>
+
+<p>We plan to provide a built-in “HD Render Loop” targeted at modern (compute-capable) platforms. Currently it is developed with PC and PS4/XB1 consoles in mind, but we’ll be looking at optimizing it for high-end mobile platforms too. Of particular interest for mobile is optimizing it for on-tile storage / framebuffer fetch and other bandwidth-saving techniques.</p>
+
+<p>Internally, shaders are written in a way that is less reliant on separate shader variants for every imaginable knob, and more using “static” (uniform based) branching, with shader variant specializations only used where that makes sense based on shader analysis / profiling on modern GPUs.</p>
+
+<p>The new HDRenderLoop is being developed at <a href="https://github.com/Unity-Technologies/ScriptableRenderLoop"><strong>github ScriptableRenderLoop</strong></a> (might be messy at any point, only use if you’re super-curious right now).</p>
+
+<h4>Lighting Features</h4>
+
+<ul>
+<li>
+<p>Tiled light culling with compute shaders:</p>
+
+<ul>
+<li><p>Fine pruned tiled lighting (<a href="http://mmikkelsen3d.blogspot.lt/2016/05/fine-pruned-tiled-lighting.html">FPTL</a>) for deferred shaded opaque objects.</p></li>
+<li><p>Clustered tiled lighting for forward-rendered objects and transparencies.</p></li>
+<li><p>Rendering can be switched between deferred and forward, depending on what is better for the project.</p></li>
+</ul>
+</li>
+<li>
+<p>Lights:</p>
+
+<ul>
+<li><p>Usual punctual (point/spot) and directional lights.</p></li>
+<li><p>Area lights (<a href="https://eheitzresearch.wordpress.com/415-2/">polygonal lights</a> and line lights).</p></li>
+<li><p>Correct linear lighting &amp; PBR.</p></li>
+<li><p>Physical light units, IES lights.</p></li>
+<li><p>
+<em>(Later)</em> Frustum lights (i.e. bounded directional light).</p></li>
+</ul>
+</li>
+<li>
+<p>Shadows:</p>
+
+<ul>
+<li><p>All realtime shadows are suballocated from a single atlas.</p></li>
+<li><p>Intuitive controls over shadow memory budget and per-light resolution overrides.</p></li>
+<li><p>Better PCF filtering, particularly for spot/point lights.</p></li>
+<li><p>Shadows on semitransparent objects.</p></li>
+</ul>
+</li>
+<li>
+<p>GI:</p>
+
+<ul>
+<li><p>Correct HDR.</p></li>
+<li><p>Consistency with direct illumination.</p></li>
+</ul>
+</li>
+<li>
+<p>
+<em>(Later) </em>Improved Shadows</p>
+
+<ul>
+<li><p>Exponential shadow maps (ESM/EVSM).</p></li>
+<li><p>Improved shadows for area lights.</p></li>
+</ul>
+</li>
+<li>
+<p>
+<em>(Later)</em> Volumetric Lighting</p>
+
+<ul>
+<li><p>Sky/fog atmospheric scattering model.</p></li>
+<li><p>Local fog.</p></li>
+</ul>
+</li>
+</ul>
+
+<h4>Material features</h4>
+
+<ul>
+<li><p>GGX with Metal &amp; Specular parametrizations, similar to current Standard shader.</p></li>
+<li><p>Anisotropic GGX (Metal parametrization)</p></li>
+<li><p>Sub-surface scattering &amp; transmission</p></li>
+<li><p>Clear coat</p></li>
+<li><p>Double sided support</p></li>
+<li><p>Good specular occlusion</p></li>
+<li><p>Layered materials (mix &amp; mask inputs of other materials, with up to 4 layers)</p></li>
+<li><p>Heightmaps either via parallax or displacement tessellation</p></li>
+<li><p>
+<em>(later)</em> Built-in LOD cross-fade / dithering</p></li>
+<li><p>
+<em>(later)</em> Hair, Eye, Cloth shading models</p></li>
+</ul>
+
+<h4>Camera features</h4>
+
+<ul>
+<li><p>Physically based camera parameters</p></li>
+<li><p>Support for Unity’s <a href="PostProcessing-Stack.html">PostProcessing stack</a>
+</p></li>
+<li><p>Distortion</p></li>
+<li><p>Velocity buffer (for motion blur / temporal AA)</p></li>
+<li><p>
+<em>(later) </em>Half/quarter resolution rendering (e.g. for particles) and compositing.</p></li>
+</ul>
+
+<h4>Workflow / debug features</h4>
+
+<ul>
+<li><p>Views of shader inputs (albedo, normals etc.)</p></li>
+<li><p>Views of all intermediate buffers of rendering (lighting, motion vectors etc.)</p></li>
+<li><p>Debug menu to control rendering of various passes</p></li>
+</ul>
+
+<p>
+<br>
+<a name="Appendix"></a>
+</p>
+
+<h2>Appendix - current rendering pipeline in Unity</h2>
+
+<p>Currently (Unity 5.5 and earlier) Unity supports two rendering pipelines for scene (forward rendering and deferred shading), and one way to render realtime shadows. Following is the description of the current pipeline in more detail:</p>
+
+<h4>Shadows</h4>
+
+<p>Shadowing system mostly works the same no matter whether the forward or deferred shading is used.</p>
+
+<ul>
+<li><p>Each realtime light with shadows enabled gets a separate shadow map.</p></li>
+<li><p>Shadow maps are traditional depth texture maps, in shaders sampled with PCF filtering (no VSM/EVSM etc. shadows).</p></li>
+<li><p>Directional lights can use cascaded shadow maps (2 or 4 cascades); the shadow map space is divided into cascades like in an atlas.</p></li>
+<li><p>Spot lights always use simple 2D shadowmap; point lights use a cubemap.</p></li>
+<li><p>Shadowmap size is computed based on quality settings, screen resolution and light’s projection size on screen; or can be controlled by game developer explicitly from scripts per-light.</p></li>
+<li><p>Cascaded shadow maps are applied in “screen space” – there’s a separate “gather and do PCF filtering” step that produces screenspace shadow mask texture; later on regular object rendering just does one sample into this texture.</p></li>
+<li><p>No support for receiving shadows onto semitransparent objects.</p></li>
+</ul>
+
+<h4>Forward rendering</h4>
+
+<p>The default mode of operation is largely DX9-style “one draw call per light with additive blending”. Quality settings of the game determine how many lights per-object will be rendered in realtime; the rest are folded into a spherical harmonics (SH) representation and rendered together with other ambient lighting.</p>
+
+<ul>
+<li><p>Optionally before main scene rendering: a “depth texture” rendering pass. This kicks in if scripts require it, or other features (e.g. realtime cascaded shadows) need it. Conceptually this is similar to Z-prepass; produces a texture with scene depth buffer.</p></li>
+<li><p>Optionally before main scene rendering: a “motion vectors” rendering pass. This kicks in if scripts (e.g. motion blur or temporal AA) require it. Renders a texture of velocity vectors for objects that need them.</p></li>
+<li><p>Realtime shadow maps are rendered before main scene rendering; all shadows are in memory at once.</p></li>
+<li><p>Actual scene rendering pass specialized in two shader sets: “ForwardBase” (ambient/probes + lightmaps + lighting/shadows from main directional light), followed by additive blending “ForwardAdd”, that does realtime lighting one light at a time.</p></li>
+</ul>
+
+<h4>Deferred shading</h4>
+
+<p>This is “traditional” DX9-style deferred shading: G-buffer rendering pass, followed by “render light shapes one by one” pass where each of them reads G-buffer data, computes illumination and adds it into lighting buffer.</p>
+
+<ul>
+<li><p>Similar to forward rendering, an optional motion vectors pass before the G-buffer.</p></li>
+<li><p>
+<a href="class-ReflectionProbe.html">Reflection probes</a> are rendered one by one similar to lights, by rendering box shapes and adding reflections into a texture.</p></li>
+<li><p>Lights are rendered one by one, by rendering light shapes (fullscreen quad or sphere or cone) and adding reflections into a texture.</p></li>
+<li><p>Shadow map for a light is rendered just before rendering each light, and generally discarded right after done with it.</p></li>
+<li><p>Stencil marking is used for both lights and reflection probes to limit the amount of pixels actually computed.</p></li>
+<li><p>Objects that don’t support deferred shading, and all semitransparent objects, are rendered using forward rendering.</p></li>
+</ul>
+
+<h4>Customization</h4>
+
+<p>It is possible to customize the above behavior to some extent, but not much. For example, Valve’s The Lab Renderer (on <a href="https://www.assetstore.unity3d.com/en/#!/content/63141">Asset Store</a>) replaces the built-in behavior by (purely in C# + shaders):</p>
+
+<ul>
+<li><p>Implementing a custom shadows system, where all shadows are packed into one atlas.</p></li>
+<li><p>Custom forward rendering system, where all lights are rendered in one pass; light information is setup into custom shader uniform variables.</p></li>
+</ul>
+
+<p>
+<br><br>
+</p>
+
+<hr>
+
+<ul>
+<li><p><span class="page-edit"> 2017–05–26 Page published with limited <a href="DocumentationEditorialReview.html">editorial review</a>
+</span></p></li>
+<li><p><span class="page-history">New feature in 5.6</span></p></li>
+</ul>
+<div class="feedbackbox" id="feedbackbox">
+<div id="rating"><p>Did you find this page useful? Please give it a rating:<br><div id="ratecontent" class="c-rating"></div>
+</p></div>
+<div id="ratingThanks" style="display:none"><p>Thanks for rating this page!</p></div>
+<div id="problem"><p><a name="problem" onclick="document.getElementById('problemType').style.display = '';document.getElementById('problem').style.display = 'none';">Report a problem on this page</a></p></div>
+<div id="problemType" style="display:none"><p>What kind of problem would you like to report?<ul type="problems">
+<li><a name="needcode" onclick="                                                             document.getElementById('problemType').style.display = 'none';                                                             document.getElementById('problemThanks').style.display = '';                                                             SendFeedback('problem-needcode',window.location.href,0);                                                             document.getElementById('problemFormDescription').value='Needs code samples.';                                                             document.getElementById('problemNeedCodeForm').style.display = ''                                                         ">This page needs code samples</a></li>
+<li><a name="code" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-brokencode',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Code samples do not work.';                                                         document.getElementById('problemCodeForm').style.display = ''                                                         ">Code samples do not work</a></li>
+<li><a name="missing" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-missing',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Missing information';                                                         document.getElementById('problemMissingForm').style.display = ''                                                         ">Information is missing</a></li>
+<li><a name="incorrect" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-incorrect',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Incorrect information';                                                         document.getElementById('problemIncorrectForm').style.display = ''                                                         ">Information is incorrect</a></li>
+<li><a name="unclear" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-unclear',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Unclear or confusing information';                                                         document.getElementById('problemUnclearForm').style.display = ''                                                         ">Information is unclear or confusing</a></li>
+<li><a name="language" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-language',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Spelling or grammar error';                                                         document.getElementById('problemLanguageForm').style.display = ''                                                         ">There is a spelling/grammar error on this page</a></li>
+<li><a name="other" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-other',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='This page has a problem';                                                         document.getElementById('problemOtherForm').style.display = ''                                                         ">Something else</a></li>
+</ul>
+<p><known_issues><p>Is something described here not working as you expect it to? It might be a <b>Known Issue</b>. Please check with the Issue Tracker at <a href="https://issuetracker.unity3d.com">issuetracker.unity3d.com</a>.</p></known_issues></p>
+</p></div>
+<div id="problemThanks" style="display:none"><p>Thanks for letting us know! This page has been marked for review based on your feedback.<br><br>If you have time, you can provide more information to help us fix the problem faster.<br><br><a onclick="document.getElementById('problemMoreInfo').style.display = '';document.getElementById('problemThanks').style.display = 'none';">Provide more information</a><br>
+</p></div>
+<div id="problemMoreInfo" style="display:none">
+<p id="problemNeedCodeForm" style="display:none">You've told us this page needs code samples. If you'd like to help us further, you could provide a code sample, or tell us about what kind of code sample you'd like to see:</p>
+<p id="problemCodeForm" style="display:none">You've told us there are code samples on this page which don't work. If you know how to fix it, or have something better we could use instead, please let us know:</p>
+<p id="problemMissingForm" style="display:none">You've told us there is information missing from this page. Please tell us more about what's missing:</p>
+<p id="problemIncorrectForm" style="display:none">You've told us there is incorrect information on this page. If you know what we should change to make it correct, please tell us:</p>
+<p id="problemUnclearForm" style="display:none">You've told us this page has unclear or confusing information. Please tell us more about what you found unclear or confusing, or let us know how we could make it clearer:</p>
+<p id="problemLanguageForm" style="display:none">You've told us there is a spelling or grammar error on this page. Please tell us what's wrong:</p>
+<p id="problemOtherForm" style="display:none">You've told us this page has a problem. Please tell us more about what's wrong:</p>
+<form>
+<textarea id="problemFormSuggestionField" cols="40" rows="5"></textarea><input type="hidden" id="problemFormDescription"><input type="submit" id="problemFormDescriptionSubmit" value="Submit" onclick="                                             document.getElementById('problemMoreInfo').style.display = 'none';                                             document.getElementById('problemMoreInfoThanks').style.display = '';                                             return false;                                             ">
+</form>
+</div>
+<div id="problemMoreInfoThanks" style="display:none"><p>Thanks for helping to make the Unity documentation better!</p></div>
+<script>
+
+                                            var ratecontent = document.querySelector('#ratecontent'); // target element
+                                            var currentRating = 0; // initial rating
+                                            var maxRating= 5; // max rating
+
+                                            // callback to run after setting the rating
+                                            var callback = function(rating) {
+                                                document.getElementById('ratingThanks').style.display = '';
+                                                document.getElementById('ratecontent').style.display = 'none';
+                                                document.getElementById('rating').style.display = 'none';
+                                                SendFeedback("rating",window.location.href,rating);
+                                            };
+
+                                            // rating instance
+                                            var myRating = rating(ratecontent, currentRating, maxRating, callback);
+                                        </script>
+</div>
+<div class="nextprev clear">
+<div class="icon tt left mr1" data-distance="-40|-30|top">
+<span class="prev"><a href="ScriptingRuntimeUpgrade.html"></a></span><div class="tip">Scripting Runtime Upgrade</div>
+</div>
+<div class="icon tt right" data-distance="-40|-30|top">
+<span class="next"><a href="LegacyTopics.html"></a></span><div class="tip">Legacy Topics</div>
+</div>
+</div>
+</div>
+</body></html>

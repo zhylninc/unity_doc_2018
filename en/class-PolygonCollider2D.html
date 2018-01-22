@@ -1,0 +1,145 @@
+<html><head><title>html模版</title></head><body>Unity - Manual: Polygon Collider 2D</br>
+<div class="breadcrumbs clear"><ul>
+<li><a href="UnityManual.html">Unity User Manual (2018.1 beta)</a></li>
+<li><a href="Unity2D.html">2D</a></li>
+<li><a href="Physics2DReference.html">Physics Reference 2D</a></li>
+<li><a href="Collider2D.html"> Collider 2D</a></li>
+<li>Polygon Collider 2D</li>
+</ul></div>
+<div class="mb20"><div class="nextprev clear">
+<div class="icon tt left mr1" data-distance="-40|-30|top">
+<span class="prev"><a href="class-BoxCollider2D.html"></a></span><div class="tip">Box Collider 2D</div>
+</div>
+<div class="icon tt right" data-distance="-40|-30|top">
+<span class="next"><a href="class-EdgeCollider2D.html"></a></span><div class="tip">Edge Collider 2D</div>
+</div>
+</div></div>
+<div class="otherversionswrapper" onmouseover="setOtherVersionsDisplay(true)" onmouseout="setOtherVersionsDisplay(false)">
+<a>Other Versions</a><div class="otherversionscontent" id="OtherVersionsContent" style="display: none;">Cannot access other versions offline!</div>
+</div>
+<div class="scrollToFeedback"><a id="scrollToFeedback">Leave feedback</a></div>
+<h1>Polygon Collider 2D</h1>
+<!--BeginSwitchLink--><a href='../ScriptReference/PolygonCollider2D.html' title='Go to PolygonCollider2D page in the Scripting Reference' class='switch-link gray-btn sbtn left'>Switch to Scripting</a><!--EndSwitchLink-->
+<div class="clear"></div>
+
+<p>The <strong>Polygon Collider 2D</strong> component is a Collider for use with 2D physics. The Collider’s shape is defined by a freeform edge made of line segments, so you can adjust it to fit the shape of the Sprite graphic with great precision. Note that this Collider’s edge must completely enclose an area (unlike the similar <a href="class-EdgeCollider2D.html">Edge Collider 2D</a>).</p>
+
+<figure>
+<img src="../uploads/Main/PolygonCollider2DInspector.png" alt="">
+</figure>
+
+<table>
+<colgroup>
+<col style="text-align:left;">
+<col style="text-align:left;">
+</colgroup>
+
+<thead>
+<tr>
+	<th style="text-align:left;"><strong><em>Property</em></strong></th>
+	<th style="text-align:left;"><strong><em>Function</em></strong></th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+	<td style="text-align:left;"><strong>Material</strong></td>
+	<td style="text-align:left;">A physics material that determines properties of collisions, such as friction and bounce.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>Is Trigger</strong></td>
+	<td style="text-align:left;">Tick this box if you want the Collider to behave as a trigger.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>Used by Effector</strong></td>
+	<td style="text-align:left;">Whether the Collider is used by an attached effector or not.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>Used by Composite</strong></td>
+	<td style="text-align:left;">Tick this checkbox if you want this Collider to be used by an attached <a href="class-CompositeCollider2D.html">Composite Collider 2D</a>. <br><br>When you enable <strong>Used by Composite</strong>, other properties disappear from the Polygon Collider 2D component, because they are now controlled by the attached Composite Collider 2D. The properties that disappear from the Box Collider 2D are <strong>Material</strong>, <strong>Is Trigger</strong>, <strong>Used By Effector</strong>, and <strong>Edge Radius</strong>.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>Used by Collider</strong></td>
+	<td style="text-align:left;">Check this box if you want the Box Collider 2D to be used by an attached <a href="../ScriptReference/CompositeCollider2D.html">Composite Collider 2D</a> component.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>Auto Tiling</strong></td>
+	<td style="text-align:left;">Tick this checkbox if you have set the <strong>Draw Mode</strong> of the Sprite Renderer component to <strong>Tiled</strong>. This enables automatic updates to the shape of the Collider 2D, meaning that the shape is automatically readjusted when the Sprite’s dimensions change. If you don’t enable <strong>Auto Tiling</strong>, the Collider 2D stays the same shape and size, even when the Sprite’s dimensions change.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>Offset</strong></td>
+	<td style="text-align:left;">The local offset of the Collider geometry.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>Points</strong></td>
+	<td style="text-align:left;">Non-editable information about the complexity of the generated Collider.</td>
+</tr>
+</tbody>
+</table>
+
+<h2>Details</h2>
+
+<p>The Collider can be edited manually but it is often more convenient to let Unity determine the shape automatically. You can do this by dragging a Sprite Asset from the Project view onto the Polygon Collider 2D component in the Inspector.</p>
+
+<p>You can edit the polygon’s shape by pressing the <strong>Edit Collider</strong> button in the Inspector. You can exit Collider edit mode by pressing the <strong>Edit Collider</strong> button again. While in edit mode, you can move an existing vertex by dragging when the mouse is over that vertex. If you shift-drag while the mouse is over an edge, a new vertex will be created at the mouse location. You can remove a vertex by holding down the ctrl/cmd key while clicking on it.</p>
+
+<p>Note that you can hide the outline of the 2D move Gizmo while editing the Collider - just click the fold-out arrow on the Sprite Renderer component in the Inspector to collapse it.</p>
+<div class="feedbackbox" id="feedbackbox">
+<div id="rating"><p>Did you find this page useful? Please give it a rating:<br><div id="ratecontent" class="c-rating"></div>
+</p></div>
+<div id="ratingThanks" style="display:none"><p>Thanks for rating this page!</p></div>
+<div id="problem"><p><a name="problem" onclick="document.getElementById('problemType').style.display = '';document.getElementById('problem').style.display = 'none';">Report a problem on this page</a></p></div>
+<div id="problemType" style="display:none"><p>What kind of problem would you like to report?<ul type="problems">
+<li><a name="needcode" onclick="                                                             document.getElementById('problemType').style.display = 'none';                                                             document.getElementById('problemThanks').style.display = '';                                                             SendFeedback('problem-needcode',window.location.href,0);                                                             document.getElementById('problemFormDescription').value='Needs code samples.';                                                             document.getElementById('problemNeedCodeForm').style.display = ''                                                         ">This page needs code samples</a></li>
+<li><a name="code" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-brokencode',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Code samples do not work.';                                                         document.getElementById('problemCodeForm').style.display = ''                                                         ">Code samples do not work</a></li>
+<li><a name="missing" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-missing',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Missing information';                                                         document.getElementById('problemMissingForm').style.display = ''                                                         ">Information is missing</a></li>
+<li><a name="incorrect" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-incorrect',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Incorrect information';                                                         document.getElementById('problemIncorrectForm').style.display = ''                                                         ">Information is incorrect</a></li>
+<li><a name="unclear" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-unclear',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Unclear or confusing information';                                                         document.getElementById('problemUnclearForm').style.display = ''                                                         ">Information is unclear or confusing</a></li>
+<li><a name="language" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-language',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Spelling or grammar error';                                                         document.getElementById('problemLanguageForm').style.display = ''                                                         ">There is a spelling/grammar error on this page</a></li>
+<li><a name="other" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-other',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='This page has a problem';                                                         document.getElementById('problemOtherForm').style.display = ''                                                         ">Something else</a></li>
+</ul>
+<p><known_issues><p>Is something described here not working as you expect it to? It might be a <b>Known Issue</b>. Please check with the Issue Tracker at <a href="https://issuetracker.unity3d.com">issuetracker.unity3d.com</a>.</p></known_issues></p>
+</p></div>
+<div id="problemThanks" style="display:none"><p>Thanks for letting us know! This page has been marked for review based on your feedback.<br><br>If you have time, you can provide more information to help us fix the problem faster.<br><br><a onclick="document.getElementById('problemMoreInfo').style.display = '';document.getElementById('problemThanks').style.display = 'none';">Provide more information</a><br>
+</p></div>
+<div id="problemMoreInfo" style="display:none">
+<p id="problemNeedCodeForm" style="display:none">You've told us this page needs code samples. If you'd like to help us further, you could provide a code sample, or tell us about what kind of code sample you'd like to see:</p>
+<p id="problemCodeForm" style="display:none">You've told us there are code samples on this page which don't work. If you know how to fix it, or have something better we could use instead, please let us know:</p>
+<p id="problemMissingForm" style="display:none">You've told us there is information missing from this page. Please tell us more about what's missing:</p>
+<p id="problemIncorrectForm" style="display:none">You've told us there is incorrect information on this page. If you know what we should change to make it correct, please tell us:</p>
+<p id="problemUnclearForm" style="display:none">You've told us this page has unclear or confusing information. Please tell us more about what you found unclear or confusing, or let us know how we could make it clearer:</p>
+<p id="problemLanguageForm" style="display:none">You've told us there is a spelling or grammar error on this page. Please tell us what's wrong:</p>
+<p id="problemOtherForm" style="display:none">You've told us this page has a problem. Please tell us more about what's wrong:</p>
+<form>
+<textarea id="problemFormSuggestionField" cols="40" rows="5"></textarea><input type="hidden" id="problemFormDescription"><input type="submit" id="problemFormDescriptionSubmit" value="Submit" onclick="                                             document.getElementById('problemMoreInfo').style.display = 'none';                                             document.getElementById('problemMoreInfoThanks').style.display = '';                                             return false;                                             ">
+</form>
+</div>
+<div id="problemMoreInfoThanks" style="display:none"><p>Thanks for helping to make the Unity documentation better!</p></div>
+<script>
+
+                                            var ratecontent = document.querySelector('#ratecontent'); // target element
+                                            var currentRating = 0; // initial rating
+                                            var maxRating= 5; // max rating
+
+                                            // callback to run after setting the rating
+                                            var callback = function(rating) {
+                                                document.getElementById('ratingThanks').style.display = '';
+                                                document.getElementById('ratecontent').style.display = 'none';
+                                                document.getElementById('rating').style.display = 'none';
+                                                SendFeedback("rating",window.location.href,rating);
+                                            };
+
+                                            // rating instance
+                                            var myRating = rating(ratecontent, currentRating, maxRating, callback);
+                                        </script>
+</div>
+<div class="nextprev clear">
+<div class="icon tt left mr1" data-distance="-40|-30|top">
+<span class="prev"><a href="class-BoxCollider2D.html"></a></span><div class="tip">Box Collider 2D</div>
+</div>
+<div class="icon tt right" data-distance="-40|-30|top">
+<span class="next"><a href="class-EdgeCollider2D.html"></a></span><div class="tip">Edge Collider 2D</div>
+</div>
+</div>
+</div>
+</body></html>

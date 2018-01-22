@@ -1,0 +1,131 @@
+<html><head><title>html模版</title></head><body>Unity - Manual: Euler Curve Import</br>
+<div class="breadcrumbs clear"><ul>
+<li><a href="UnityManual.html">Unity User Manual (2018.1 beta)</a></li>
+<li><a href="AnimationSection.html">Animation</a></li>
+<li><a href="AnimationClips.html">Animation Clips</a></li>
+<li><a href="AnimationsImport.html">Animation from external sources </a></li>
+<li>Euler Curve Import</li>
+</ul></div>
+<div class="mb20"><div class="nextprev clear">
+<div class="icon tt left mr1" data-distance="-40|-30|top">
+<span class="prev"><a href="AnimationRootMotionNodeOnImportedClips.html"></a></span><div class="tip">Selecting a Root Motion Node</div>
+</div>
+<div class="icon tt right" data-distance="-40|-30|top">
+<span class="next"><a href="AnimationEditorGuide.html"></a></span><div class="tip">Animation Window Guide</div>
+</div>
+</div></div>
+<div class="otherversionswrapper" onmouseover="setOtherVersionsDisplay(true)" onmouseout="setOtherVersionsDisplay(false)">
+<a>Other Versions</a><div class="otherversionscontent" id="OtherVersionsContent" style="display: none;">Cannot access other versions offline!</div>
+</div>
+<div class="scrollToFeedback"><a id="scrollToFeedback">Leave feedback</a></div>
+<h1>Euler Curve Import</h1>
+<!--BeginSwitchLink--><!--EndSwitchLink-->
+<div class="clear"></div>
+
+<p>Rotations in 3D applications are usually represented in one of two ways, Quaternions or Euler angles. For the most part, Unity uses Quaternions as its internal representation of rotations, however it’s important to have a basic understanding of <a href="QuaternionAndEulerRotationsInUnity.html">rotation and orientation in Unity</a>.</p>
+
+<p>When importing animation from external sources, these files usually contain keyframe animation in Euler format. Unity’s default behavior is to resample these animations as Quaternion values and generate a new Quaternion keyframe for every frame in the animation, in an attempt to minimise any perceivable difference between the source animation and how it appears in Unity. </p>
+
+<p>There are still some situations where - even with resampling - the quaternion representation of the imported animation may not match the original closely enough, For this reason, in Unity 5.3 and onwards there is the option to turn off animation resampling, so that you can instead use the original Euler animation keyframes at runtime.</p>
+
+<h2>Using Euler Curve Support on Imported Animations</h2>
+
+<p>To enable support for using the original Euler Curve values in an animation file, you must turn *<strong>off</strong> the “Resample Curves” option in the Animations Import Inspector:</p>
+
+<figure>
+<img src="../uploads/Main/AnimationImportResampleRotations.png" alt="The Resample Curves option in the Animations Import Inspector">
+<figcaption>The Resample Curves option in the Animations Import Inspector</figcaption>
+</figure>
+
+<p>With this option enabled, rotations will be resampled to quaternions. This is the default behavior.
+When disabled, rotation curves will not be resampled, and the rotation curve will be imported with its original keyframes, in Euler or quaternion mode as appropriate for the curve type. <strong>Note: Any rotation curve on a joint that has pre- or post-rotations will be automatically resampled by the FBX SDK, and will automatically be imported as quaternion curves.</strong>
+</p>
+
+<p>To support a maximum variety of imported files, and for maximum fidelity, Unity supports all normal (non-repeating) euler rotation orders, and curves will be imported in their original rotation orders.</p>
+
+<p><em>The primary reason for disabling rotation resampling and using the original euler curves is when the default quaternion interpolation between frames gives faulty results, and causes issues.</em></p>
+
+<h2>The Results During Animation Playback</h2>
+
+<p>When using non-resampled rotations, there should be very little visual difference in the playback of animations. Under the hood though, rotation curves that have been imported in Euler representation will always be kept so, even at runtime. </p>
+
+<p>Since the engine functions with quaternions, rotation values have to be converted to quaternion at some point. Before Unity 5.3, this conversion always happened at import. In 5.3, when the Resample Curves option is switched off in the Animation Import inspector, the rotation values are kept as euler values up until they are applied to a Gameobject. This means that the end result should be as good as - or better than - before. </p>
+
+<p>Memory wise, for rotation curves that have not been baked in the authoring software, there should be a net gain for rotation curves.</p>
+
+<h2>Non-Default Euler Orders in the Transform Inspector</h2>
+
+<p>The Euler angles used in Unity’s transform inspector are applied in the default order of Z,X,Y. </p>
+
+<p>When playing back or editing imported animations that feature Euler curves with a rotation order different from Unity’s default, an indication of the current rotation order will be shown next to the rotation fields.</p>
+
+<figure>
+<img src="../uploads/Main/AnimationEulerAlternateRotationOrderInInspector.png" alt="The inspector showing that a non-default rotation order is being used for the rotation animation on this object">
+<figcaption>The inspector showing that a non-default rotation order is being used for the rotation animation on this object</figcaption>
+</figure>
+
+<p>When editing multiple transforms with differing rotation orders, a warning will be shown to the users to warn them that the same Euler rotation applied will give different results on curves with different rotation orders.</p>
+
+<figure>
+<img src="../uploads/Main/AnimationEulerMixedRotationOrderInInspector.png" alt="The inspector showing that a mixture of rotation orders are being used for the rotation animation on the selected group of objects">
+<figcaption>The inspector showing that a mixture of rotation orders are being used for the rotation animation on the selected group of objects</figcaption>
+</figure>
+<div class="feedbackbox" id="feedbackbox">
+<div id="rating"><p>Did you find this page useful? Please give it a rating:<br><div id="ratecontent" class="c-rating"></div>
+</p></div>
+<div id="ratingThanks" style="display:none"><p>Thanks for rating this page!</p></div>
+<div id="problem"><p><a name="problem" onclick="document.getElementById('problemType').style.display = '';document.getElementById('problem').style.display = 'none';">Report a problem on this page</a></p></div>
+<div id="problemType" style="display:none"><p>What kind of problem would you like to report?<ul type="problems">
+<li><a name="needcode" onclick="                                                             document.getElementById('problemType').style.display = 'none';                                                             document.getElementById('problemThanks').style.display = '';                                                             SendFeedback('problem-needcode',window.location.href,0);                                                             document.getElementById('problemFormDescription').value='Needs code samples.';                                                             document.getElementById('problemNeedCodeForm').style.display = ''                                                         ">This page needs code samples</a></li>
+<li><a name="code" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-brokencode',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Code samples do not work.';                                                         document.getElementById('problemCodeForm').style.display = ''                                                         ">Code samples do not work</a></li>
+<li><a name="missing" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-missing',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Missing information';                                                         document.getElementById('problemMissingForm').style.display = ''                                                         ">Information is missing</a></li>
+<li><a name="incorrect" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-incorrect',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Incorrect information';                                                         document.getElementById('problemIncorrectForm').style.display = ''                                                         ">Information is incorrect</a></li>
+<li><a name="unclear" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-unclear',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Unclear or confusing information';                                                         document.getElementById('problemUnclearForm').style.display = ''                                                         ">Information is unclear or confusing</a></li>
+<li><a name="language" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-language',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Spelling or grammar error';                                                         document.getElementById('problemLanguageForm').style.display = ''                                                         ">There is a spelling/grammar error on this page</a></li>
+<li><a name="other" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-other',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='This page has a problem';                                                         document.getElementById('problemOtherForm').style.display = ''                                                         ">Something else</a></li>
+</ul>
+<p><known_issues><p>Is something described here not working as you expect it to? It might be a <b>Known Issue</b>. Please check with the Issue Tracker at <a href="https://issuetracker.unity3d.com">issuetracker.unity3d.com</a>.</p></known_issues></p>
+</p></div>
+<div id="problemThanks" style="display:none"><p>Thanks for letting us know! This page has been marked for review based on your feedback.<br><br>If you have time, you can provide more information to help us fix the problem faster.<br><br><a onclick="document.getElementById('problemMoreInfo').style.display = '';document.getElementById('problemThanks').style.display = 'none';">Provide more information</a><br>
+</p></div>
+<div id="problemMoreInfo" style="display:none">
+<p id="problemNeedCodeForm" style="display:none">You've told us this page needs code samples. If you'd like to help us further, you could provide a code sample, or tell us about what kind of code sample you'd like to see:</p>
+<p id="problemCodeForm" style="display:none">You've told us there are code samples on this page which don't work. If you know how to fix it, or have something better we could use instead, please let us know:</p>
+<p id="problemMissingForm" style="display:none">You've told us there is information missing from this page. Please tell us more about what's missing:</p>
+<p id="problemIncorrectForm" style="display:none">You've told us there is incorrect information on this page. If you know what we should change to make it correct, please tell us:</p>
+<p id="problemUnclearForm" style="display:none">You've told us this page has unclear or confusing information. Please tell us more about what you found unclear or confusing, or let us know how we could make it clearer:</p>
+<p id="problemLanguageForm" style="display:none">You've told us there is a spelling or grammar error on this page. Please tell us what's wrong:</p>
+<p id="problemOtherForm" style="display:none">You've told us this page has a problem. Please tell us more about what's wrong:</p>
+<form>
+<textarea id="problemFormSuggestionField" cols="40" rows="5"></textarea><input type="hidden" id="problemFormDescription"><input type="submit" id="problemFormDescriptionSubmit" value="Submit" onclick="                                             document.getElementById('problemMoreInfo').style.display = 'none';                                             document.getElementById('problemMoreInfoThanks').style.display = '';                                             return false;                                             ">
+</form>
+</div>
+<div id="problemMoreInfoThanks" style="display:none"><p>Thanks for helping to make the Unity documentation better!</p></div>
+<script>
+
+                                            var ratecontent = document.querySelector('#ratecontent'); // target element
+                                            var currentRating = 0; // initial rating
+                                            var maxRating= 5; // max rating
+
+                                            // callback to run after setting the rating
+                                            var callback = function(rating) {
+                                                document.getElementById('ratingThanks').style.display = '';
+                                                document.getElementById('ratecontent').style.display = 'none';
+                                                document.getElementById('rating').style.display = 'none';
+                                                SendFeedback("rating",window.location.href,rating);
+                                            };
+
+                                            // rating instance
+                                            var myRating = rating(ratecontent, currentRating, maxRating, callback);
+                                        </script>
+</div>
+<div class="nextprev clear">
+<div class="icon tt left mr1" data-distance="-40|-30|top">
+<span class="prev"><a href="AnimationRootMotionNodeOnImportedClips.html"></a></span><div class="tip">Selecting a Root Motion Node</div>
+</div>
+<div class="icon tt right" data-distance="-40|-30|top">
+<span class="next"><a href="AnimationEditorGuide.html"></a></span><div class="tip">Animation Window Guide</div>
+</div>
+</div>
+</div>
+</body></html>

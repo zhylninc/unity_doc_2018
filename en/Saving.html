@@ -1,0 +1,199 @@
+<html><head><title>html模版</title></head><body>Unity - Manual:  Saving Your Work</br>
+<div class="breadcrumbs clear"><ul>
+<li><a href="UnityManual.html">Unity User Manual (2018.1 beta)</a></li>
+<li><a href="UnityOverview.html">Working in Unity</a></li>
+<li><a href="CreatingGameplay.html">Creating Gameplay</a></li>
+<li><a href="GameObjects.html"> GameObjects</a></li>
+<li> Saving Your Work</li>
+</ul></div>
+<div class="mb20"><div class="nextprev clear">
+<div class="icon tt left mr1" data-distance="-40|-30|top">
+<span class="prev"><a href="InstantiatingPrefabs.html"></a></span><div class="tip">Instantiating Prefabs at runtime</div>
+</div>
+<div class="icon tt right" data-distance="-40|-30|top">
+<span class="next"><a href="Input.html"></a></span><div class="tip">Input</div>
+</div>
+</div></div>
+<div class="otherversionswrapper" onmouseover="setOtherVersionsDisplay(true)" onmouseout="setOtherVersionsDisplay(false)">
+<a>Other Versions</a><div class="otherversionscontent" id="OtherVersionsContent" style="display: none;">Cannot access other versions offline!</div>
+</div>
+<div class="scrollToFeedback"><a id="scrollToFeedback">Leave feedback</a></div>
+<h1>Saving Your Work</h1>
+<!--BeginSwitchLink--><!--EndSwitchLink-->
+<div class="clear"></div>
+
+<p>Unity stores lots of different types of information about your project, and some of these are saved in different ways to others. This means that <em>when</em> your work is saved depends on what kind of changes you are making.</p>
+
+<p>Of course, we recommend you save regularly, and use a <a href="VersionControl.html">Version Control System (VCS)</a> to preserve incremental changes to your work, and allow you to try out and roll back changes without risking loss to your work.</p>
+
+<h2>Saving changes to the current scene (“Save Scene”)</h2>
+
+<figure>
+<img src="../uploads/Main/SaveSceneMenu.png" alt="">
+</figure>
+
+<p>Scene changes include modifications to any objects in the Hierarchy. For example, adding, moving or deleting Game Objects, changing parameters of hierarchy Game Objects in the inspector.</p>
+
+<p>To save changes to the scene, select Save Scene from the file menu, or hit <strong>Ctrl/Cmd + S</strong>.
+This saves current changes to the scene <em>and</em> Does a “<strong>Save Project</strong>” (below).</p>
+
+<p><strong>This means that when you do a “Save Scene”, <em>everything</em> is saved.</strong></p>
+
+<hr>
+
+<h2>Saving project-wide changes (“Save Project”)</h2>
+
+<figure>
+<img src="../uploads/Main/SaveProjectMenu.png" alt="">
+</figure>
+
+<p>Some changes that you can make in Unity are not scene-specific, they are <em>project-wide</em>. These settings can be saved independently of the scene changes, by selecting “Save Project” from the file menu.</p>
+
+<p>Using “Save Project” does not save changes to your Scene, only the project-wide changes are saved. You may want to, for instance, save your project but not changes to your scene if you have used a temporary scene to make some changes to a prefab.</p>
+
+<p>The project-wide changes which are saved when you “Save Project” include:</p>
+
+<h3>All the “Project Settings”:</h3>
+
+<p>All the settings for each of the “Project Settings” menu items, such as custom input axes, user-defined tags or layers, and the physics gravity strength are saved when you “Save Project”. </p>
+
+<figure>
+<img src="../uploads/Main/ProjectSettingsMenu.png" alt="The Project Settings menu">
+<figcaption>The Project Settings menu</figcaption>
+</figure>
+
+<p>Changes to these settings are saved in the Library folder when the Project is saved:</p>
+
+<ul>
+<li>
+<strong>Input</strong>: saved as ´InputManager.asset´</li>
+<li>
+<strong>Tags</strong> And Layers: saved as ´TagManager.asset´</li>
+<li>
+<strong>Audio</strong>: saved as ´AudioManager.asset´</li>
+<li>
+<strong>Time</strong>: saved as ´TimeManager.asset´</li>
+<li>
+<strong>Player</strong>: saved as ´ProjectSettings.asset´</li>
+<li>
+<strong>Physics</strong>: saved as ´DynamicsManager.asset´</li>
+<li>
+<strong>Physics 2D</strong>: saved as ´Physics2DSettings.asset´</li>
+<li>
+<strong>Quality</strong>: saved as ´QualitySettings.asset´</li>
+<li>
+<strong>Graphics</strong>: saved as ´GraphicsSettings.asset´</li>
+<li>
+<strong>Network</strong>: saved as ´NetworkManager.asset´</li>
+<li>
+<strong>Editor</strong>: saved as ´EditorUserSettings.asset´</li>
+</ul>
+
+<h3>The “Build Settings”</h3>
+
+<p>Build Settings are also saved in the Library folder as ´EditorBuildSettings.asset´.</p>
+
+<figure>
+<img src="../uploads/Main/SavingBuildSettings.png" alt="The Build Settings are saved when you Save Project">
+<figcaption>The Build Settings are saved when you “Save Project”</figcaption>
+</figure>
+
+<h3>Changes to assets in the Project Window</h3>
+
+<p>Also saved along with project-wide settings are changes to assets <em>that do not have an “apply” button</em>, for example changes to any of the following:</p>
+
+<ul>
+<li>Material parameters</li>
+<li>Prefabs</li>
+<li>Animator Controllers (state machines)</li>
+<li>Avatar Masks</li>
+<li>Any other asset changes that do not have an “apply” button</li>
+</ul>
+
+<hr>
+
+<h2>Changes that are immediately written to disk (no save required):</h2>
+
+<p>There are some types of change which are immediately written to disk without the need to perform a “Save” action at all. These include the following:</p>
+
+<h3>Changes to any import setting requiring the user to press an “apply” button</h3>
+
+<p>The import settings for most asset types require that you press an “Apply” button for the changes to take effect. This causes the asset to be re-imported according to the new settings. These changes are saved immediately when you hit the Apply button. For example:</p>
+
+<ul>
+<li>Changing the texture type of an image asset</li>
+<li>Changing the scale factor of an 3D model asset</li>
+<li>Changing the compression settings of an audio asset</li>
+<li>Any other import setting change which has an “apply” button</li>
+</ul>
+
+<h3>Other changes which are saved immediately:</h3>
+
+<p>A few other types of data are saved to disk immediately or automatically without the need to perform a “Save” action:</p>
+
+<ul>
+<li>The creation of new assets, eg: new materials or prefabs (But not subsequent changes to those assets)</li>
+<li>Baked Lighting data (saved when the bake completes).</li>
+<li>Baked navigation data (saved when the bake completes)</li>
+<li>Baked occlusion culling data (saved when the bake completes)</li>
+<li>Script execution order changes (after “apply” is pressed, this data is saved in each script’s .meta file)</li>
+</ul>
+<div class="feedbackbox" id="feedbackbox">
+<div id="rating"><p>Did you find this page useful? Please give it a rating:<br><div id="ratecontent" class="c-rating"></div>
+</p></div>
+<div id="ratingThanks" style="display:none"><p>Thanks for rating this page!</p></div>
+<div id="problem"><p><a name="problem" onclick="document.getElementById('problemType').style.display = '';document.getElementById('problem').style.display = 'none';">Report a problem on this page</a></p></div>
+<div id="problemType" style="display:none"><p>What kind of problem would you like to report?<ul type="problems">
+<li><a name="needcode" onclick="                                                             document.getElementById('problemType').style.display = 'none';                                                             document.getElementById('problemThanks').style.display = '';                                                             SendFeedback('problem-needcode',window.location.href,0);                                                             document.getElementById('problemFormDescription').value='Needs code samples.';                                                             document.getElementById('problemNeedCodeForm').style.display = ''                                                         ">This page needs code samples</a></li>
+<li><a name="code" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-brokencode',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Code samples do not work.';                                                         document.getElementById('problemCodeForm').style.display = ''                                                         ">Code samples do not work</a></li>
+<li><a name="missing" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-missing',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Missing information';                                                         document.getElementById('problemMissingForm').style.display = ''                                                         ">Information is missing</a></li>
+<li><a name="incorrect" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-incorrect',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Incorrect information';                                                         document.getElementById('problemIncorrectForm').style.display = ''                                                         ">Information is incorrect</a></li>
+<li><a name="unclear" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-unclear',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Unclear or confusing information';                                                         document.getElementById('problemUnclearForm').style.display = ''                                                         ">Information is unclear or confusing</a></li>
+<li><a name="language" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-language',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Spelling or grammar error';                                                         document.getElementById('problemLanguageForm').style.display = ''                                                         ">There is a spelling/grammar error on this page</a></li>
+<li><a name="other" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-other',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='This page has a problem';                                                         document.getElementById('problemOtherForm').style.display = ''                                                         ">Something else</a></li>
+</ul>
+<p><known_issues><p>Is something described here not working as you expect it to? It might be a <b>Known Issue</b>. Please check with the Issue Tracker at <a href="https://issuetracker.unity3d.com">issuetracker.unity3d.com</a>.</p></known_issues></p>
+</p></div>
+<div id="problemThanks" style="display:none"><p>Thanks for letting us know! This page has been marked for review based on your feedback.<br><br>If you have time, you can provide more information to help us fix the problem faster.<br><br><a onclick="document.getElementById('problemMoreInfo').style.display = '';document.getElementById('problemThanks').style.display = 'none';">Provide more information</a><br>
+</p></div>
+<div id="problemMoreInfo" style="display:none">
+<p id="problemNeedCodeForm" style="display:none">You've told us this page needs code samples. If you'd like to help us further, you could provide a code sample, or tell us about what kind of code sample you'd like to see:</p>
+<p id="problemCodeForm" style="display:none">You've told us there are code samples on this page which don't work. If you know how to fix it, or have something better we could use instead, please let us know:</p>
+<p id="problemMissingForm" style="display:none">You've told us there is information missing from this page. Please tell us more about what's missing:</p>
+<p id="problemIncorrectForm" style="display:none">You've told us there is incorrect information on this page. If you know what we should change to make it correct, please tell us:</p>
+<p id="problemUnclearForm" style="display:none">You've told us this page has unclear or confusing information. Please tell us more about what you found unclear or confusing, or let us know how we could make it clearer:</p>
+<p id="problemLanguageForm" style="display:none">You've told us there is a spelling or grammar error on this page. Please tell us what's wrong:</p>
+<p id="problemOtherForm" style="display:none">You've told us this page has a problem. Please tell us more about what's wrong:</p>
+<form>
+<textarea id="problemFormSuggestionField" cols="40" rows="5"></textarea><input type="hidden" id="problemFormDescription"><input type="submit" id="problemFormDescriptionSubmit" value="Submit" onclick="                                             document.getElementById('problemMoreInfo').style.display = 'none';                                             document.getElementById('problemMoreInfoThanks').style.display = '';                                             return false;                                             ">
+</form>
+</div>
+<div id="problemMoreInfoThanks" style="display:none"><p>Thanks for helping to make the Unity documentation better!</p></div>
+<script>
+
+                                            var ratecontent = document.querySelector('#ratecontent'); // target element
+                                            var currentRating = 0; // initial rating
+                                            var maxRating= 5; // max rating
+
+                                            // callback to run after setting the rating
+                                            var callback = function(rating) {
+                                                document.getElementById('ratingThanks').style.display = '';
+                                                document.getElementById('ratecontent').style.display = 'none';
+                                                document.getElementById('rating').style.display = 'none';
+                                                SendFeedback("rating",window.location.href,rating);
+                                            };
+
+                                            // rating instance
+                                            var myRating = rating(ratecontent, currentRating, maxRating, callback);
+                                        </script>
+</div>
+<div class="nextprev clear">
+<div class="icon tt left mr1" data-distance="-40|-30|top">
+<span class="prev"><a href="InstantiatingPrefabs.html"></a></span><div class="tip">Instantiating Prefabs at runtime</div>
+</div>
+<div class="icon tt right" data-distance="-40|-30|top">
+<span class="next"><a href="Input.html"></a></span><div class="tip">Input</div>
+</div>
+</div>
+</div>
+</body></html>

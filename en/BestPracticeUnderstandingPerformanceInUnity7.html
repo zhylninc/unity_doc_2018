@@ -1,0 +1,203 @@
+<html><head><title>html模版</title></head><body>Unity - Manual:  General Optimizations</br>
+<div class="breadcrumbs clear"><ul>
+<li><a href="UnityManual.html">Unity User Manual (2018.1 beta)</a></li>
+<li><a href="BestPracticeGuides.html"> Best practice guides</a></li>
+<li><a href="BestPracticeUnderstandingPerformanceInUnity.html"> Understanding optimization in Unity</a></li>
+<li> General Optimizations</li>
+</ul></div>
+<div class="mb20"><div class="nextprev clear">
+<div class="icon tt left mr1" data-distance="-40|-30|top">
+<span class="prev"><a href="BestPracticeUnderstandingPerformanceInUnity6.html"></a></span><div class="tip"> The Resources folder</div>
+</div>
+<div class="icon tt right" data-distance="-40|-30|top">
+<span class="next"><a href="BestPracticeUnderstandingPerformanceInUnity8.html"></a></span><div class="tip"> Special optimizations</div>
+</div>
+</div></div>
+<div class="otherversionswrapper" onmouseover="setOtherVersionsDisplay(true)" onmouseout="setOtherVersionsDisplay(false)">
+<a>Other Versions</a><div class="otherversionscontent" id="OtherVersionsContent" style="display: none;">Cannot access other versions offline!</div>
+</div>
+<div class="scrollToFeedback"><a id="scrollToFeedback">Leave feedback</a></div>
+<h1>General Optimizations</h1>
+<!--BeginSwitchLink--><!--EndSwitchLink-->
+<div class="clear"></div>
+
+<p>There are as many different ways to optimize code as there are reasons for performance problems. In general, it is strongly recommended that developers closely profile their applications before attempting to apply CPU optimizations. However, there are several simple CPU optimizations that are universally applicable.</p>
+
+<h2>Address Properties by ID</h2>
+
+<p>Unity does not use string names to address Animator, Material and Shader properties internally. For speed, all property names are hashed into property IDs, and it is these IDs that are actually used to address the properties.</p>
+
+<p>Therefore, whenever using a <em>Set</em> or <em>Get</em> method on an Animator, Material or Shader, use the integer-valued method instead of the string-valued methods. The string methods simply perform string hashing and then forward the hashed ID to the integer-valued methods.</p>
+
+<p>The property IDs created from string hashes are deterministic over the course of a single run. The simplest way to use them is to declare a static read-only integer variable for each property name, and use the integer variable in place of the string. These are automatically initialized during startup with no further initialization code needed.</p>
+
+<p>The appropriate APIs are <a href="../ScriptReference/Animator.StringToHash.html">Animator.StringToHash</a> for Animator property names, and <a href="../ScriptReference/Shader.PropertyToID.html">Shader.PropertyToID</a> for Material &amp; Shader property names.</p>
+
+<h2>Use non-allocating physics APIs</h2>
+
+<p>In Unity 5.3 and onwards, non-allocating versions of all Physics query APIs have been introduced. Replace <a href="../ScriptReference/Physics.RaycastAll.html">RaycastAll</a> calls with <a href="../ScriptReference/Physics.RaycastNonAlloc.html">RaycastNonAlloc</a>, <a href="../ScriptReference/Physics.SphereCastAll.html">SphereCastAll</a> calls with <a href="../ScriptReference/Physics.SphereCastNonAlloc.html">SphereCastNonAlloc</a>, and so on. For 2D applications, there are also non-allocating versions of all Physics2D query APIs.</p>
+
+<h2>Transform manipulation</h2>
+
+<p>Whenever a Transform’s position or rotation is changed, an <code>OnTransformChanged</code> message is dispatched to all components on the same GameObject as the Transform, as well as all child GameObjects. For this reason, it is best practice to attempt to alter a Transform’s position and rotation as few times as possible during a given frame. Instead, batch all possible changes that need to be applied to the Transform, and apply them once. This minimizes the number of <code>OnTransformChanged</code> messages that must propagate through the Transform hierarchy, and is especially important when moving deep/large Transform hierarchies, such as animated characters.</p>
+
+<h3>Vector and quaternion math and order of operations</h3>
+
+<p>For vector and quaternion math that is located in tight loops, remember that integer math is faster than floating-point math, and floating-point math is faster than vector, matrix or quaternion math.</p>
+
+<p>Therefore, whenever commutative or associative arithmetic allows, attempt to minimize the cost of individual mathematical operations:</p>
+
+<pre><code>
+Vector3 x;
+
+int a, b;
+
+// Less efficient: results in two vector multiplications
+
+Vector3 slow = a * x * b;
+
+// More efficient: one integer mult, one vector mult
+
+Vector3 fast = a * b * x;
+
+</code></pre>
+
+<h2>Built-In ColorUtility</h2>
+
+<p>It is common for applications that must convert between HTML-formatted color strings (<code>#RRGGBBAA</code>) and Unity’s native <code>Color</code> and <code>Color32</code> structures to use a script from the Unify Community. This script was both slow and caused extensive memory allocation due to string manipulation.</p>
+
+<p>As of Unity 5, there is a built-in <a href="../ScriptReference/ColorUtility.html">ColorUtility</a> API that performs these conversions efficiently. Usage of the built-in API should be preferred.</p>
+
+<h2>Find and FindObjectOfType</h2>
+
+<p>It is a general best practice to eliminate all usage of <code>Object.Find</code> and <code>Object.FindObjectOfType</code> in production code. As these APIs require Unity to iterate over all GameObjects and Components in memory, they rapidly become non-performant as the scope of a project grows.</p>
+
+<p>An exception to the above rule can be made in accessors for singleton objects. A global manager object often exposes an “instance” property, and often has a <code>FindObjectOfType</code> call in the getter to detect pre-existing instances of the singleton:</p>
+
+<pre><code>
+class SomeSingleton {
+
+    private SomeSingleton _instance;
+
+    public SomeSingleton Instance {
+
+        get {
+
+            if(_instance == null) { 
+
+                _instance =
+
+                    FindObjectOfType&lt;SomeSingleton&gt;(); 
+
+            }
+
+            if(_instnace == null) { 
+
+                _instance = CreateSomeSingleton();
+
+            }
+
+            return _instance;
+
+        }
+
+    }
+
+}
+
+</code></pre>
+
+<p>While this pattern is generally acceptable, it is important to examine the code and ensure that the accessor is be called in Scenes where the singleton object does not exist. If the getter does not automatically create an instance of a missing singleton, it is very common to discover that code looking for the singleton results in repeated calls to <code>FindObjectOfType</code> (often multiple times per frame) and creates an undesirable drain on performance.</p>
+
+<h3>Camera locators</h3>
+
+<p>Internally, Unity’s <code>Camera.main</code> property calls <code>Object.FindObjectWithTag</code>, a specialized variant of <code>Object.FindObject</code>. Accessing this property is no more efficient than a call to <code>Object.FindObjectOfType</code>. If code must address the main camera, it is strongly recommended to do one of two things:</p>
+
+<ul>
+<li><p>Access <code>Camera.main</code> in a <code>Start</code> or<code>OnEnable</code> callback and cache the resulting reference.</p></li>
+<li><p>Construct a <code>Camera Manager</code> class that can provide or inject a reference to the active camera.</p></li>
+</ul>
+
+<h2>Debug code &amp; the [conditional] attribute</h2>
+
+<p>The <code>UnityEngine.Debug</code> logging APIs are not stripped from non-development builds, and do write to log files if called. As most developers do not intend to write debug information in non-development builds, it is recommended to wrap development-only logging calls in custom methods, like so:</p>
+
+<pre><code>
+    public static class Logger {
+
+        [Conditional(&quot;ENABLE_LOGS&quot;)]
+
+        public static void Debug(string logMsg) {
+
+            UnityEngine.Debug.Log(logMsg);
+
+        }
+
+    }
+
+</code></pre>
+
+<p>By decorating these methods with the [Conditional] attribute, the define or defines used by the Conditional attribute determine whether the decorated method is included in the compiled source.</p>
+
+<p>If none of the defines passed to the Conditional attribute are defined, then the decorated method <em>and</em> all calls to the decorated method are compiled out. The effect is identical to what would happen if the method and all calls to the method were wrapped in <code>#if … #endif</code> preprocessor blocks.</p>
+
+<p>For more information on the <code>Conditional</code> attribute, see the MSDN website: <a href="https://msdn.microsoft.com/en-us/library/4xssyw96(v=vs.90).aspx">msdn.microsoft.com</a>.</p>
+<div class="feedbackbox" id="feedbackbox">
+<div id="rating"><p>Did you find this page useful? Please give it a rating:<br><div id="ratecontent" class="c-rating"></div>
+</p></div>
+<div id="ratingThanks" style="display:none"><p>Thanks for rating this page!</p></div>
+<div id="problem"><p><a name="problem" onclick="document.getElementById('problemType').style.display = '';document.getElementById('problem').style.display = 'none';">Report a problem on this page</a></p></div>
+<div id="problemType" style="display:none"><p>What kind of problem would you like to report?<ul type="problems">
+<li><a name="needcode" onclick="                                                             document.getElementById('problemType').style.display = 'none';                                                             document.getElementById('problemThanks').style.display = '';                                                             SendFeedback('problem-needcode',window.location.href,0);                                                             document.getElementById('problemFormDescription').value='Needs code samples.';                                                             document.getElementById('problemNeedCodeForm').style.display = ''                                                         ">This page needs code samples</a></li>
+<li><a name="code" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-brokencode',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Code samples do not work.';                                                         document.getElementById('problemCodeForm').style.display = ''                                                         ">Code samples do not work</a></li>
+<li><a name="missing" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-missing',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Missing information';                                                         document.getElementById('problemMissingForm').style.display = ''                                                         ">Information is missing</a></li>
+<li><a name="incorrect" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-incorrect',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Incorrect information';                                                         document.getElementById('problemIncorrectForm').style.display = ''                                                         ">Information is incorrect</a></li>
+<li><a name="unclear" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-unclear',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Unclear or confusing information';                                                         document.getElementById('problemUnclearForm').style.display = ''                                                         ">Information is unclear or confusing</a></li>
+<li><a name="language" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-language',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Spelling or grammar error';                                                         document.getElementById('problemLanguageForm').style.display = ''                                                         ">There is a spelling/grammar error on this page</a></li>
+<li><a name="other" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-other',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='This page has a problem';                                                         document.getElementById('problemOtherForm').style.display = ''                                                         ">Something else</a></li>
+</ul>
+<p><known_issues><p>Is something described here not working as you expect it to? It might be a <b>Known Issue</b>. Please check with the Issue Tracker at <a href="https://issuetracker.unity3d.com">issuetracker.unity3d.com</a>.</p></known_issues></p>
+</p></div>
+<div id="problemThanks" style="display:none"><p>Thanks for letting us know! This page has been marked for review based on your feedback.<br><br>If you have time, you can provide more information to help us fix the problem faster.<br><br><a onclick="document.getElementById('problemMoreInfo').style.display = '';document.getElementById('problemThanks').style.display = 'none';">Provide more information</a><br>
+</p></div>
+<div id="problemMoreInfo" style="display:none">
+<p id="problemNeedCodeForm" style="display:none">You've told us this page needs code samples. If you'd like to help us further, you could provide a code sample, or tell us about what kind of code sample you'd like to see:</p>
+<p id="problemCodeForm" style="display:none">You've told us there are code samples on this page which don't work. If you know how to fix it, or have something better we could use instead, please let us know:</p>
+<p id="problemMissingForm" style="display:none">You've told us there is information missing from this page. Please tell us more about what's missing:</p>
+<p id="problemIncorrectForm" style="display:none">You've told us there is incorrect information on this page. If you know what we should change to make it correct, please tell us:</p>
+<p id="problemUnclearForm" style="display:none">You've told us this page has unclear or confusing information. Please tell us more about what you found unclear or confusing, or let us know how we could make it clearer:</p>
+<p id="problemLanguageForm" style="display:none">You've told us there is a spelling or grammar error on this page. Please tell us what's wrong:</p>
+<p id="problemOtherForm" style="display:none">You've told us this page has a problem. Please tell us more about what's wrong:</p>
+<form>
+<textarea id="problemFormSuggestionField" cols="40" rows="5"></textarea><input type="hidden" id="problemFormDescription"><input type="submit" id="problemFormDescriptionSubmit" value="Submit" onclick="                                             document.getElementById('problemMoreInfo').style.display = 'none';                                             document.getElementById('problemMoreInfoThanks').style.display = '';                                             return false;                                             ">
+</form>
+</div>
+<div id="problemMoreInfoThanks" style="display:none"><p>Thanks for helping to make the Unity documentation better!</p></div>
+<script>
+
+                                            var ratecontent = document.querySelector('#ratecontent'); // target element
+                                            var currentRating = 0; // initial rating
+                                            var maxRating= 5; // max rating
+
+                                            // callback to run after setting the rating
+                                            var callback = function(rating) {
+                                                document.getElementById('ratingThanks').style.display = '';
+                                                document.getElementById('ratecontent').style.display = 'none';
+                                                document.getElementById('rating').style.display = 'none';
+                                                SendFeedback("rating",window.location.href,rating);
+                                            };
+
+                                            // rating instance
+                                            var myRating = rating(ratecontent, currentRating, maxRating, callback);
+                                        </script>
+</div>
+<div class="nextprev clear">
+<div class="icon tt left mr1" data-distance="-40|-30|top">
+<span class="prev"><a href="BestPracticeUnderstandingPerformanceInUnity6.html"></a></span><div class="tip"> The Resources folder</div>
+</div>
+<div class="icon tt right" data-distance="-40|-30|top">
+<span class="next"><a href="BestPracticeUnderstandingPerformanceInUnity8.html"></a></span><div class="tip"> Special optimizations</div>
+</div>
+</div>
+</div>
+</body></html>

@@ -1,0 +1,291 @@
+<html><head><title>html模版</title></head><body>Unity - Manual: Mesh Particle Emitter (Legacy)</br>
+<div class="breadcrumbs clear"><ul>
+<li><a href="UnityManual.html">Unity User Manual (2018.1 beta)</a></li>
+<li><a href="Graphics.html">Graphics</a></li>
+<li><a href="GraphicsReference.html">Graphics Reference</a></li>
+<li><a href="PartSysReference.html">Particle Systems reference</a></li>
+<li><a href="comp-ParticlesLegacy.html">Particle Systems (Legacy, prior to release 3.5)</a></li>
+<li>Mesh Particle Emitter (Legacy)</li>
+</ul></div>
+<div class="mb20"><div class="nextprev clear">
+<div class="icon tt left mr1" data-distance="-40|-30|top">
+<span class="prev"><a href="class-EllipsoidParticleEmitter.html"></a></span><div class="tip">Ellipsoid Particle Emitter (Legacy)</div>
+</div>
+<div class="icon tt right" data-distance="-40|-30|top">
+<span class="next"><a href="class-ParticleAnimator.html"></a></span><div class="tip">Particle Animator (Legacy)</div>
+</div>
+</div></div>
+<div class="otherversionswrapper" onmouseover="setOtherVersionsDisplay(true)" onmouseout="setOtherVersionsDisplay(false)">
+<a>Other Versions</a><div class="otherversionscontent" id="OtherVersionsContent" style="display: none;">Cannot access other versions offline!</div>
+</div>
+<div class="scrollToFeedback"><a id="scrollToFeedback">Leave feedback</a></div>
+<h1>Mesh Particle Emitter (Legacy)</h1>
+<!--BeginSwitchLink--><a href='../ScriptReference/MeshParticleEmitter.html' title='Go to MeshParticleEmitter page in the Scripting Reference' class='switch-link gray-btn sbtn left'>Switch to Scripting</a><!--EndSwitchLink-->
+<div class="clear"></div>
+
+<p>The <strong>Mesh Particle Emitter</strong> emits particles around a mesh. Particles are spawned from the surface of the mesh, which can be necessary when you want to make your particles interact in a complex way with objects.</p>
+
+<figure>
+<img src="../uploads/Main/Inspector-MeshPE.png" alt="">
+</figure>
+
+<h2>Properties</h2>
+
+<table>
+<colgroup>
+<col style="text-align:left;">
+<col style="text-align:left;">
+</colgroup>
+
+<thead>
+<tr>
+	<th style="text-align:left;"><strong><em>Property:</em></strong></th>
+	<th style="text-align:left;"><strong><em>Function:</em></strong></th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+	<td style="text-align:left;"><strong>Emit</strong></td>
+	<td style="text-align:left;">If enabled, the emitter will emit particles.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>Min Size</strong></td>
+	<td style="text-align:left;">The minimum size each particle can be at the time when it is spawned.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>Max Size</strong></td>
+	<td style="text-align:left;">The maximum size each particle can be at the time when it is spawned.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>Min Energy</strong></td>
+	<td style="text-align:left;">The minimum lifetime of each particle, measured in seconds.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>Max Energy</strong></td>
+	<td style="text-align:left;">The maximum lifetime of each particle, measured in seconds.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>Min Emission</strong></td>
+	<td style="text-align:left;">The minimum number of particles that will be spawned every second.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>Max Emission</strong></td>
+	<td style="text-align:left;">The maximum number of particles that will be spawned every second.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>World Velocity</strong></td>
+	<td style="text-align:left;">The starting speed of particles in world space, along X, Y, and Z.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>Local Velocity</strong></td>
+	<td style="text-align:left;">The starting speed of particles along X, Y, and Z, measured in the object’s orientation.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>Rnd Velocity</strong></td>
+	<td style="text-align:left;">A random speed along X, Y, and Z that is added to the velocity.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>Emitter Velocity Scale</strong></td>
+	<td style="text-align:left;">The amount of the emitter’s speed that the particles inherit.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>Tangent Velocity</strong></td>
+	<td style="text-align:left;">The starting speed of particles along X, Y, and Z, across the Emitter’s surface.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>Angular Velocity</strong></td>
+	<td style="text-align:left;">The angular velocity of new particles in degrees per second.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>Rnd Angular Velocity</strong></td>
+	<td style="text-align:left;">A random angular velocity modifier for new particles.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>Rnd Rotation</strong></td>
+	<td style="text-align:left;">If enabled, the particles will be spawned with random rotations.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>Simulate In World Space</strong></td>
+	<td style="text-align:left;">If enabled, the particles don’t move when the emitter moves. If false, when you move the emitter, the particles follow it around.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>One Shot</strong></td>
+	<td style="text-align:left;">If enabled, the particle numbers specified by min &amp; max emission is spawned all at once. If disabled, the particles are generated in a long stream.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>Interpolate Triangles</strong></td>
+	<td style="text-align:left;">If enabled, particles are spawned all over the mesh’s surface. If disabled, particles are only spawned from the mesh’s vertrices.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>Systematic</strong></td>
+	<td style="text-align:left;">If enabled, particles are spawned in the order of the vertices defined in the mesh. Although you seldom have direct control over vertex order in meshes, most 3D modelling applications have a very systematic setup when using primitives. It is important that the mesh contains no faces in order for this to work.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>Min Normal Velocity</strong></td>
+	<td style="text-align:left;">Minimum amount that particles are thrown away from the mesh.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>Max Normal Velocity</strong></td>
+	<td style="text-align:left;">Maximum amount that particles are thrown away from the mesh.</td>
+</tr>
+</tbody>
+</table>
+
+<h2>Details</h2>
+
+<p>Mesh Particle Emitters (MPEs) are used when you want more precise control over the spawn position &amp; directions than the simpler <strong>Ellipsoid Particle Emitter</strong> gives you. They can be used for making advanced effects.</p>
+
+<p>MPEs work by emitting particles at the vertices of the attached mesh. Therefore, the areas of your mesh that are more dense with polygons will be more dense with particle emission.</p>
+
+<p>Particle Emitters work in conjunction with <a href="class-ParticleAnimator.html">Particle Animators</a> and <a href="class-ParticleRenderer.html">Particle Renderers</a> to create, manipulate, and display Particle Systems. All three Components must be present on an object before the particles will behave correctly. When particles are being emitted, all different velocities are added together to create the final velocity.</p>
+
+<h3>Spawning Properties</h3>
+
+<p>Spawning properties like <strong>Size</strong>, <strong>Energy</strong>, <strong>Emission</strong>, and <strong>Velocity</strong> will give your particle system distinct personality when trying to achieve different effects. Having a small <strong>Size</strong> could simulate fireflies or stars in the sky. A large <strong>Size</strong> could simulate dust clouds in a musky old building.</p>
+
+<p>
+<strong>Energy</strong> and <strong>Emission</strong> will control how long your particles remain onscreen and how many particles can appear at any one time. For example, a rocket might have high <strong>Emission</strong> to simulate density of smoke, and high <strong>Energy</strong> to simulate the slow dispersion of smoke into the air.</p>
+
+<p>
+<strong>Velocity</strong> will control how your particles move. You might want to change your <strong>Velocity</strong> in scripting to achieve interesting effects, or if you want to simulate a constant effect like wind, set your X and Z <strong>Velocity</strong> to make your particles blow away.</p>
+
+<h3>Simulate in World Space</h3>
+
+<p>If this is disabled, the position of each individual particle will always translate relative to the <strong>Position</strong> of the emitter. When the emitter moves, the particles will move along with it. If you have <strong>Simulate in World Space</strong> enabled, particles will not be affected by the translation of the emitter. For example, if you have a fireball that is spurting flames that rise, the flames will be spawned and float up in space as the fireball gets further away. If <strong>Simulate in World Space</strong> is disabled, those same flames will move across the screen along with the fireball.</p>
+
+<h3>Emitter Velocity Scale</h3>
+
+<p>This property will only apply if <strong>Simulate in World Space</strong> is enabled.</p>
+
+<p>If this property is set to 1, the particles will inherit the exact translation of the emitter at the time they are spawned. If it is set to 2, the particles will inherit double the emitter’s translation when they are spawned. 3 is triple the translation, etc.</p>
+
+<h3>One Shot</h3>
+
+<p>
+<strong>One Shot</strong> emitters will create all particles within the <strong>Emission</strong> property all at once, and cease to emit particles over time. Here are some examples of different particle system uses with <strong>One Shot</strong> <strong>Enabled</strong> or <strong>Disabled</strong>:</p>
+
+<p>
+<strong>Enabled</strong>:</p>
+
+<ul>
+<li>Explosion</li>
+<li>Water splash</li>
+<li>Magic spell</li>
+</ul>
+
+<p>
+<strong>Disabled</strong>:</p>
+
+<ul>
+<li>Gun barrel smoke</li>
+<li>Wind effect</li>
+<li>Waterfall</li>
+</ul>
+
+<h2>Interpolate Triangles</h2>
+
+<p>Enabling your emitter to <strong>Interpolate Triangles</strong> will allow particles to be spawned between the mesh’s vertices. This option is off by default, so particles will only be spawned at the vertices.</p>
+
+<figure>
+<img src="../uploads/Main/MeshPE-InterpolateOff.png" alt="A sphere with Interpolate Triangles off (the default)">
+<figcaption>A sphere with Interpolate Triangles off (the default)</figcaption>
+</figure>
+
+<p>Enabling this option will spawn particles on and in-between vertices, essentially all over the mesh’s surface (seen below).</p>
+
+<figure>
+<img src="../uploads/Main/MeshPE-InterpolateOn.png" alt="A sphere with Interpolate Triangles on">
+<figcaption>A sphere with Interpolate Triangles on</figcaption>
+</figure>
+
+<p>It bears repeating that even with <strong>Interpolate Triangles</strong> enabled, particles will still be denser in areas of your mesh that are more dense with polygons.</p>
+
+<h2>Systematic</h2>
+
+<p>Enabling <strong>Systematic</strong> will cause your particles to be spawned in your mesh’s vertex order. The vertex order is set by your 3D modeling application.</p>
+
+<figure>
+<img src="../uploads/Main/MeshPE-Systematic.png" alt="An MPE attached to a sphere with Systematic enabled">
+<figcaption>An MPE attached to a sphere with Systematic enabled</figcaption>
+</figure>
+
+<h2>Normal Velocity</h2>
+
+<p>
+<strong>Normal Velocity</strong> controls the speed at which particles are emitted along the normal from where they are spawned.</p>
+
+<p>For example, create a Mesh Particle System, use a cube mesh as the emitter, enable <strong>Interpolate Triangles</strong>, and set <strong>Normal Velocity Min</strong> and <strong>Max</strong> to 1. You will now see the particles emit from the faces of the cube in a straight line.</p>
+
+<h2>See Also</h2>
+
+<ul>
+<li><a href="HOWTO-MeshParticleEmitter.html">How to make a Mesh Particle Emitter</a></li>
+</ul>
+
+<h2>Hints</h2>
+
+<ul>
+<li>Be careful of using many large particles. This can seriously hinder performance on low-level machines. Always try to use the minimum number of particles to attain an effect.</li>
+<li>The <strong>Emit</strong> property works in conjunction with the <strong>AutoDestruct</strong> property of the Particle Animator. Through scripting, you can cease the emitter from emitting, and then <strong>AutoDestruct</strong> will automatically destroy the Particle System and the GameObject it is attached to.</li>
+<li>MPEs can also be used to make glow from a lot of lamps placed in a scene. Simply make a mesh with one vertex in the center of each lamp, and build an MPE from that with a halo material. Great for evil sci-fi worlds.</li>
+</ul>
+<div class="feedbackbox" id="feedbackbox">
+<div id="rating"><p>Did you find this page useful? Please give it a rating:<br><div id="ratecontent" class="c-rating"></div>
+</p></div>
+<div id="ratingThanks" style="display:none"><p>Thanks for rating this page!</p></div>
+<div id="problem"><p><a name="problem" onclick="document.getElementById('problemType').style.display = '';document.getElementById('problem').style.display = 'none';">Report a problem on this page</a></p></div>
+<div id="problemType" style="display:none"><p>What kind of problem would you like to report?<ul type="problems">
+<li><a name="needcode" onclick="                                                             document.getElementById('problemType').style.display = 'none';                                                             document.getElementById('problemThanks').style.display = '';                                                             SendFeedback('problem-needcode',window.location.href,0);                                                             document.getElementById('problemFormDescription').value='Needs code samples.';                                                             document.getElementById('problemNeedCodeForm').style.display = ''                                                         ">This page needs code samples</a></li>
+<li><a name="code" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-brokencode',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Code samples do not work.';                                                         document.getElementById('problemCodeForm').style.display = ''                                                         ">Code samples do not work</a></li>
+<li><a name="missing" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-missing',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Missing information';                                                         document.getElementById('problemMissingForm').style.display = ''                                                         ">Information is missing</a></li>
+<li><a name="incorrect" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-incorrect',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Incorrect information';                                                         document.getElementById('problemIncorrectForm').style.display = ''                                                         ">Information is incorrect</a></li>
+<li><a name="unclear" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-unclear',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Unclear or confusing information';                                                         document.getElementById('problemUnclearForm').style.display = ''                                                         ">Information is unclear or confusing</a></li>
+<li><a name="language" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-language',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Spelling or grammar error';                                                         document.getElementById('problemLanguageForm').style.display = ''                                                         ">There is a spelling/grammar error on this page</a></li>
+<li><a name="other" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-other',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='This page has a problem';                                                         document.getElementById('problemOtherForm').style.display = ''                                                         ">Something else</a></li>
+</ul>
+<p><known_issues><p>Is something described here not working as you expect it to? It might be a <b>Known Issue</b>. Please check with the Issue Tracker at <a href="https://issuetracker.unity3d.com">issuetracker.unity3d.com</a>.</p></known_issues></p>
+</p></div>
+<div id="problemThanks" style="display:none"><p>Thanks for letting us know! This page has been marked for review based on your feedback.<br><br>If you have time, you can provide more information to help us fix the problem faster.<br><br><a onclick="document.getElementById('problemMoreInfo').style.display = '';document.getElementById('problemThanks').style.display = 'none';">Provide more information</a><br>
+</p></div>
+<div id="problemMoreInfo" style="display:none">
+<p id="problemNeedCodeForm" style="display:none">You've told us this page needs code samples. If you'd like to help us further, you could provide a code sample, or tell us about what kind of code sample you'd like to see:</p>
+<p id="problemCodeForm" style="display:none">You've told us there are code samples on this page which don't work. If you know how to fix it, or have something better we could use instead, please let us know:</p>
+<p id="problemMissingForm" style="display:none">You've told us there is information missing from this page. Please tell us more about what's missing:</p>
+<p id="problemIncorrectForm" style="display:none">You've told us there is incorrect information on this page. If you know what we should change to make it correct, please tell us:</p>
+<p id="problemUnclearForm" style="display:none">You've told us this page has unclear or confusing information. Please tell us more about what you found unclear or confusing, or let us know how we could make it clearer:</p>
+<p id="problemLanguageForm" style="display:none">You've told us there is a spelling or grammar error on this page. Please tell us what's wrong:</p>
+<p id="problemOtherForm" style="display:none">You've told us this page has a problem. Please tell us more about what's wrong:</p>
+<form>
+<textarea id="problemFormSuggestionField" cols="40" rows="5"></textarea><input type="hidden" id="problemFormDescription"><input type="submit" id="problemFormDescriptionSubmit" value="Submit" onclick="                                             document.getElementById('problemMoreInfo').style.display = 'none';                                             document.getElementById('problemMoreInfoThanks').style.display = '';                                             return false;                                             ">
+</form>
+</div>
+<div id="problemMoreInfoThanks" style="display:none"><p>Thanks for helping to make the Unity documentation better!</p></div>
+<script>
+
+                                            var ratecontent = document.querySelector('#ratecontent'); // target element
+                                            var currentRating = 0; // initial rating
+                                            var maxRating= 5; // max rating
+
+                                            // callback to run after setting the rating
+                                            var callback = function(rating) {
+                                                document.getElementById('ratingThanks').style.display = '';
+                                                document.getElementById('ratecontent').style.display = 'none';
+                                                document.getElementById('rating').style.display = 'none';
+                                                SendFeedback("rating",window.location.href,rating);
+                                            };
+
+                                            // rating instance
+                                            var myRating = rating(ratecontent, currentRating, maxRating, callback);
+                                        </script>
+</div>
+<div class="nextprev clear">
+<div class="icon tt left mr1" data-distance="-40|-30|top">
+<span class="prev"><a href="class-EllipsoidParticleEmitter.html"></a></span><div class="tip">Ellipsoid Particle Emitter (Legacy)</div>
+</div>
+<div class="icon tt right" data-distance="-40|-30|top">
+<span class="next"><a href="class-ParticleAnimator.html"></a></span><div class="tip">Particle Animator (Legacy)</div>
+</div>
+</div>
+</div>
+</body></html>

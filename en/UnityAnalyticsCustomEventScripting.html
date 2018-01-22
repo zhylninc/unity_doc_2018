@@ -1,0 +1,192 @@
+<html><head><title>html模版</title></head><body>Unity - Manual: Custom Event Scripting</br>
+<div class="breadcrumbs clear"><ul>
+<li><a href="UnityManual.html">Unity User Manual (2018.1 beta)</a></li>
+<li><a href="UnityServices.html">Unity Services &amp; Dashboard</a></li>
+<li><a href="UnityAnalytics.html">Unity Analytics</a></li>
+<li><a href="UnityAnalyticsCustomEvents.html">Custom Events</a></li>
+<li>Custom Event Scripting</li>
+</ul></div>
+<div class="mb20"><div class="nextprev clear">
+<div class="icon tt left mr1" data-distance="-40|-30|top">
+<span class="prev"><a href="UnityAnalyticsAnalyticsTracker.html"></a></span><div class="tip">Analytics Tracker Component</div>
+</div>
+<div class="icon tt right" data-distance="-40|-30|top">
+<span class="next"><a href="UnityAnalyticsFunnels.html"></a></span><div class="tip"> Funnels</div>
+</div>
+</div></div>
+<div class="otherversionswrapper" onmouseover="setOtherVersionsDisplay(true)" onmouseout="setOtherVersionsDisplay(false)">
+<a>Other Versions</a><div class="otherversionscontent" id="OtherVersionsContent" style="display: none;">Cannot access other versions offline!</div>
+</div>
+<div class="scrollToFeedback"><a id="scrollToFeedback">Leave feedback</a></div>
+<h1>Custom Event Scripting</h1>
+<!--BeginSwitchLink--><!--EndSwitchLink-->
+<div class="clear"></div>
+
+<p>As an alternative to using the <a href="UnityAnalyticsAnalyticsTracker.html">AnalyticsTracker</a> component, you can send custom events directly via script by calling <a href="../ScriptReference/Analytics.Analytics.CustomEvent.html">Analytics.CustomEvent</a>. See the following example:</p>
+
+<pre><code>// Reference the Unity Analytics namespace
+using UnityEngine.Analytics;
+
+//  Use this call for wherever a player triggers a custom event
+Analytics.CustomEvent(string customEventName,
+IDictionary&lt;string, object&gt; eventData);
+</code></pre>
+
+<table>
+<colgroup>
+<col style="text-align:left;">
+<col style="text-align:left;">
+</colgroup>
+
+<thead>
+<tr>
+	<th style="text-align:left;" colspan="3"><strong><em>Analytics.CustomEvent Input Parameters</em></strong></th>
+</tr>
+<tr>
+	<th style="text-align:left;"><strong><em>Name</em></strong></th>
+	<th style="text-align:left;"><strong><em>Type</em></strong></th>
+	<th style="text-align:left;"><strong><em>Description</em></strong></th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+	<td style="text-align:left;"><strong>customEventName</strong></td>
+	<td style="text-align:left;">string</td>
+	<td style="text-align:left;">Name of custom event. Name cannot include the prefix “unity.” — This is a reserved keyword.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>eventData</strong></td>
+	<td style="text-align:left;">dictionary</td>
+	<td style="text-align:left;">Additional parameters sent to Unity Analytics at the time the custom event was triggered. eventData key cannot include the prefix “unity.” — This is a reserved keyword.</td>
+</tr>
+</tbody>
+</table>
+
+<p>A few considerations with regards to the custom events:</p>
+
+<ul>
+<li>Be consistent! Maintain consistent data types for each parameter in your event data. For example, don’t send a level parameter as a number, then change it to be a string. Doing so can lead to erroneous behavior, making your data difficult to interpret.
+
+<ul>
+<li>Boolean (true/false)</li>
+<li>String (characters)</li>
+<li>Numbers (int, float, etc.)</li>
+</ul>
+</li>
+<li>Default limit of 10 parameters per custom event.
+
+<ul>
+<li>If there are more parameters passed, the call will fail with a return value of AnalyticsResult.TooManyItems</li>
+</ul>
+</li>
+<li>Default limit of 500 characters for the dictionary content.
+
+<ul>
+<li>If more than 500 characters are passed, the call will fail with return value of AnalyticsResult.SizeLimitReached</li>
+</ul>
+</li>
+<li>Default limit of 100 custom events per hour, per user.
+
+<ul>
+<li>If more than 100 events per hour are called, the call will fail with return value of AnalyticsResult.TooManyRequests</li>
+</ul>
+</li>
+<li>Consider how parameters are parsed by the Analytics system.
+
+<ul>
+<li>All numbers, ints, floats, etc., even if sent as strings, are parsed as numbers.</li>
+<li>Only strings and Booleans are considered ‘categorizable’.</li>
+<li>Consequently, if you want something to be summed or averaged, send it as a number (e.g., 51 or ‘51’). If you want it to be categorized, as you would with a level or option, make sure it will parse as a string (e.g., ‘Level51’).</li>
+</ul>
+</li>
+</ul>
+
+<p>In the example below we are interested in knowing what our user had in their inventory at the time the game ended. </p>
+
+<pre><code>// Reference the Collections Generic namespace
+  using System.Collections.Generic;
+
+  int totalPotions = 5;
+  int totalCoins = 100;
+  string weaponID = &quot;Weapon_102&quot;;
+  Analytics.CustomEvent(&quot;gameOver&quot;, new Dictionary&lt;string, object&gt;
+  {
+    { &quot;potions&quot;, totalPotions },
+    { &quot;coins&quot;, totalCoins },
+    { &quot;activeWeapon&quot;, weaponID }
+  });
+</code></pre>
+
+<h2>Press Play</h2>
+
+<p>To send test Custom Event data to our servers and validate your integration, trigger your Custom Event during Editor Play mode.
+<img src="../uploads/Main/AnalyticsPlayGame.gif" alt="">
+</p>
+
+<p>If integration is successful, your test data will display in the table below.</p>
+
+<h2>Validate</h2>
+
+<figure>
+<img src="../uploads/Main/AnalyticsValidate.png" alt="">
+</figure>
+<div class="feedbackbox" id="feedbackbox">
+<div id="rating"><p>Did you find this page useful? Please give it a rating:<br><div id="ratecontent" class="c-rating"></div>
+</p></div>
+<div id="ratingThanks" style="display:none"><p>Thanks for rating this page!</p></div>
+<div id="problem"><p><a name="problem" onclick="document.getElementById('problemType').style.display = '';document.getElementById('problem').style.display = 'none';">Report a problem on this page</a></p></div>
+<div id="problemType" style="display:none"><p>What kind of problem would you like to report?<ul type="problems">
+<li><a name="needcode" onclick="                                                             document.getElementById('problemType').style.display = 'none';                                                             document.getElementById('problemThanks').style.display = '';                                                             SendFeedback('problem-needcode',window.location.href,0);                                                             document.getElementById('problemFormDescription').value='Needs code samples.';                                                             document.getElementById('problemNeedCodeForm').style.display = ''                                                         ">This page needs code samples</a></li>
+<li><a name="code" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-brokencode',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Code samples do not work.';                                                         document.getElementById('problemCodeForm').style.display = ''                                                         ">Code samples do not work</a></li>
+<li><a name="missing" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-missing',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Missing information';                                                         document.getElementById('problemMissingForm').style.display = ''                                                         ">Information is missing</a></li>
+<li><a name="incorrect" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-incorrect',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Incorrect information';                                                         document.getElementById('problemIncorrectForm').style.display = ''                                                         ">Information is incorrect</a></li>
+<li><a name="unclear" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-unclear',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Unclear or confusing information';                                                         document.getElementById('problemUnclearForm').style.display = ''                                                         ">Information is unclear or confusing</a></li>
+<li><a name="language" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-language',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Spelling or grammar error';                                                         document.getElementById('problemLanguageForm').style.display = ''                                                         ">There is a spelling/grammar error on this page</a></li>
+<li><a name="other" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-other',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='This page has a problem';                                                         document.getElementById('problemOtherForm').style.display = ''                                                         ">Something else</a></li>
+</ul>
+<p><known_issues><p>Is something described here not working as you expect it to? It might be a <b>Known Issue</b>. Please check with the Issue Tracker at <a href="https://issuetracker.unity3d.com">issuetracker.unity3d.com</a>.</p></known_issues></p>
+</p></div>
+<div id="problemThanks" style="display:none"><p>Thanks for letting us know! This page has been marked for review based on your feedback.<br><br>If you have time, you can provide more information to help us fix the problem faster.<br><br><a onclick="document.getElementById('problemMoreInfo').style.display = '';document.getElementById('problemThanks').style.display = 'none';">Provide more information</a><br>
+</p></div>
+<div id="problemMoreInfo" style="display:none">
+<p id="problemNeedCodeForm" style="display:none">You've told us this page needs code samples. If you'd like to help us further, you could provide a code sample, or tell us about what kind of code sample you'd like to see:</p>
+<p id="problemCodeForm" style="display:none">You've told us there are code samples on this page which don't work. If you know how to fix it, or have something better we could use instead, please let us know:</p>
+<p id="problemMissingForm" style="display:none">You've told us there is information missing from this page. Please tell us more about what's missing:</p>
+<p id="problemIncorrectForm" style="display:none">You've told us there is incorrect information on this page. If you know what we should change to make it correct, please tell us:</p>
+<p id="problemUnclearForm" style="display:none">You've told us this page has unclear or confusing information. Please tell us more about what you found unclear or confusing, or let us know how we could make it clearer:</p>
+<p id="problemLanguageForm" style="display:none">You've told us there is a spelling or grammar error on this page. Please tell us what's wrong:</p>
+<p id="problemOtherForm" style="display:none">You've told us this page has a problem. Please tell us more about what's wrong:</p>
+<form>
+<textarea id="problemFormSuggestionField" cols="40" rows="5"></textarea><input type="hidden" id="problemFormDescription"><input type="submit" id="problemFormDescriptionSubmit" value="Submit" onclick="                                             document.getElementById('problemMoreInfo').style.display = 'none';                                             document.getElementById('problemMoreInfoThanks').style.display = '';                                             return false;                                             ">
+</form>
+</div>
+<div id="problemMoreInfoThanks" style="display:none"><p>Thanks for helping to make the Unity documentation better!</p></div>
+<script>
+
+                                            var ratecontent = document.querySelector('#ratecontent'); // target element
+                                            var currentRating = 0; // initial rating
+                                            var maxRating= 5; // max rating
+
+                                            // callback to run after setting the rating
+                                            var callback = function(rating) {
+                                                document.getElementById('ratingThanks').style.display = '';
+                                                document.getElementById('ratecontent').style.display = 'none';
+                                                document.getElementById('rating').style.display = 'none';
+                                                SendFeedback("rating",window.location.href,rating);
+                                            };
+
+                                            // rating instance
+                                            var myRating = rating(ratecontent, currentRating, maxRating, callback);
+                                        </script>
+</div>
+<div class="nextprev clear">
+<div class="icon tt left mr1" data-distance="-40|-30|top">
+<span class="prev"><a href="UnityAnalyticsAnalyticsTracker.html"></a></span><div class="tip">Analytics Tracker Component</div>
+</div>
+<div class="icon tt right" data-distance="-40|-30|top">
+<span class="next"><a href="UnityAnalyticsFunnels.html"></a></span><div class="tip"> Funnels</div>
+</div>
+</div>
+</div>
+</body></html>

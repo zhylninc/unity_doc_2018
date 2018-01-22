@@ -1,0 +1,233 @@
+<html><head><title>html模版</title></head><body>Unity - Manual:  Configuring for CloudMoolah MOO Store</br>
+<div class="breadcrumbs clear"><ul>
+<li><a href="UnityManual.html">Unity User Manual (2018.1 beta)</a></li>
+<li><a href="UnityServices.html">Unity Services &amp; Dashboard</a></li>
+<li><a href="UnityIAP.html">﻿Unity IAP</a></li>
+<li><a href="UnityIAPSettingUp.html">Setting up Unity IAP</a></li>
+<li> Configuring for CloudMoolah MOO Store</li>
+</ul></div>
+<div class="mb20"><div class="nextprev clear">
+<div class="icon tt left mr1" data-distance="-40|-30|top">
+<span class="prev"><a href="UnityIAPSamsungConfiguration.html"></a></span><div class="tip"> Samsung Galaxy IAP configuration</div>
+</div>
+<div class="icon tt right" data-distance="-40|-30|top">
+<span class="next"><a href="UnityIAPCodelessIAP.html"></a></span><div class="tip"> Codeless IAP</div>
+</div>
+</div></div>
+<div class="otherversionswrapper" onmouseover="setOtherVersionsDisplay(true)" onmouseout="setOtherVersionsDisplay(false)">
+<a>Other Versions</a><div class="otherversionscontent" id="OtherVersionsContent" style="display: none;">Cannot access other versions offline!</div>
+</div>
+<div class="scrollToFeedback"><a id="scrollToFeedback">Leave feedback</a></div>
+<h1>Configuring for CloudMoolah MOO Store</h1>
+<!--BeginSwitchLink--><!--EndSwitchLink-->
+<div class="clear"></div>
+
+<h2>Introduction</h2>
+
+<p>This guide describes the process of establishing the digital records and relationships necessary for a Unity game to interact with an in-app purchase store.</p>
+
+<p>In-app purchase (IAP) is the process of transacting money for digital goods inside an application. A platform’s store allows users to purchase products, which are digital goods. These products have an identifier, which is typically a string data type. </p>
+
+<p>Products have types to represent their durability:</p>
+
+<ul>
+<li>
+<strong>Subscription:</strong> The player can buy the product again after the subscription term expires.</li>
+<li>
+<strong>Consumable:</strong> The player can buy the same product multiple times.</li>
+<li>
+<strong>Non-consumable:</strong> The player can only buy the product once.</li>
+</ul>
+
+<h2>CloudMoolah MOO Store</h2>
+
+<p>Like the Apple App Store and the Google Play Store, the <a href="http://www.cloudmoolah.com/index.php/moo-store/">CloudMoolah MOO Store</a> is a commercial online service that enables people to buy and sell mobile apps, and buy items in the application.</p>
+
+<p>The MOO Store serves Asian markets. Users maintain a digital wallet, which they can top up using a variety of payment providers, such as banks and convenience store pre-paid cards.</p>
+
+<p>The CloudMoolah Developer Portal website is at <a href="http://dev.cloudmoolah.com/">dev.cloudmoolah.com</a>. </p>
+
+<h3>Getting started</h3>
+
+<ol>
+<li><p>Make a game that implements Unity In-App Purchasing (see <a href="https://docs.unity3d.com/Manual/UnityIAPInitialization.html">Unity In-App Purchasing Initialization</a> and <a href="https://unity3d.com/learn/tutorials/topics/analytics/integrating-unity-iap-your-game-beta">Integrating Unity In-App Purchasing with your game</a> for more information). </p></li>
+<li>
+<p>Keep the game’s product identifiers on hand for use in the MOO Store later (this document discusses <code>appKey</code> and <code>hashKey</code> later).</p>
+
+<p>This example configures and starts initialization of Unity In-App Purchasing:</p>
+</li>
+</ol>
+
+<pre><code>    using UnityEngine.Purchasing;
+    public class MyStore : IStoreListener {
+ 
+        public void InitializeStore() {
+            var module = StandardPurchasingModule.Instance();
+            var builder = ConfigurationBuilder.Instance(module);
+ 
+            builder.Configure&lt;IMoolahConfiguration&gt;().appKey = &quot;d93f4564c41d463ed3d3cd207594ee1b&quot;;
+            builder.Configure&lt;IMoolahConfiguration&gt;().hashKey = &quot;cc&quot;;
+            builder.Configure&lt;IMoolahConfiguration&gt;().SetMode(CloudMoolahMode.Production);
+            builder.AddProduct(&quot;100.gold.coins&quot;, ProductType.Consumable);
+ 
+            UnityPurchasing.Initialize(this, builder);
+        }
+    }
+</code></pre>
+
+<ol>
+<li>
+<p>In the Unity Editor, configure the Android target to CloudMoolah to ensure that store is accessed when a purchase is attempted: <br>Install the <a href="UnityIAPSettingUp.html">Unity In-App Purchasing package</a>, then find the Unity In-App Purchasing menu in Unity’s Window menu: <strong>Window</strong> &gt; <strong>Unity IAP</strong> &gt; <strong>Android</strong> &gt; <strong>Target CloudMoolah</strong>. This ensures that, when the app is run on the Android operating system, it uses the CloudMoolah API to fulfill in-app purchase requests.</p>
+
+<figure>
+<img src="../uploads/Main/ConfiguringforCloudMoolahMooStore_image_1.png" alt="">
+</figure>
+
+<p>Alternatively, call the Unity Editor API: <code>UnityPurchasingEditor.TargetAndroidStore(AndroidStore.CloudMoolah);</code>
+</p>
+</li>
+<li>
+<p>When the game successfully completes initialization of Unity In-App Purchasing, bind to the user’s Cloud Moolah digital wallet with the <code>IMoolahExtension.FastRegister</code> and <code>IMoolahExtension.Login</code> API. In the game’s implementation of <a href="https://docs.unity3d.com/Manual/UnityIAPInitialization.html">IStoreListener.OnInitialized</a>, use the <code>IMoolahExtension.FastRegister</code> API to register a new digital wallet for the user, and the <code>IMoolahExtension.Login</code> API to access a user’s existing wallet. <br><br>
+</p>
+
+<p>
+<code>IMoolahExtension.FastRegister</code> requires a user identifying string <code>cmPassword</code>. This string is also required by the <code>Login</code> API to unlock that user’s digital wallet, and their collection of owned IAP products. Ensure the string identifies this user uniquely for your application. Collect FastRegister’s <code>cmUserName</code> result, and use that in subsequent calls to <code>IMoolahExtension.Login</code>. Save this <code>cmUserName</code> on your backend server, if available, or in PlayerPrefs.</p>
+
+<p>See the scripting documentation in the <a href="UnityIAPMoolahMooStore.html">CloudMoolah Store</a> for further discussion of registration and login.</p>
+</li>
+<li><p>Build a signed non-Development Build Android APK from your game. See documentation on <a href="https://docs.unity3d.com/Manual/android-GettingStarted.html">getting started with Android development</a> to learn more about this.</p></li>
+</ol>
+
+<p>
+<strong>Tip:</strong> Take special precautions to safely store your keystore file. The original keystore is always required to update a published app.</p>
+
+<h3>Register the app</h3>
+
+<p>Register the app at the CloudMoolah Developer Portal website (<a href="http://dev.cloudmoolah.com/">dev.cloudmoolah.com</a>). </p>
+
+<ol>
+<li><p>Choose <strong>Add New App</strong>.
+<img src="../uploads/Main/ConfiguringforCloudMoolahMooStore_image_2.png" alt="">
+</p></li>
+<li>
+<p>Input game server information if you are defining a game that is connected to the internet.</p>
+
+<figure>
+<img src="../uploads/Main/ConfiguringforCloudMoolahMooStore_image_3.png" alt="Input server information">
+<figcaption>Input server information</figcaption>
+</figure>
+
+<figure>
+<img src="../uploads/Main/ConfiguringforCloudMoolahMooStore_image_4.png" alt="Input server information as shown in the table below">
+<figcaption>Input server information as shown in the table below</figcaption>
+</figure>
+
+<pre><code>|**Property** |**Function** |
+|:---|:---|
+| __DataFeedURL_Stage__ |URL for redemption - test environment.|
+| __DataFeedURL_Prod__ |URL for redemption - production environment.|
+| __Testing Account__ |Account name for test environment.|
+| __Testing Password__ |Password for test environment.|
+</code></pre>
+</li>
+<li>
+<p>Copy the appKey and hashKey into your app</p>
+
+<pre><code>![](../uploads/Main/ConfiguringforCloudMoolahMooStore_image_5.png)
+</code></pre>
+</li>
+</ol>
+
+<h3>Add in-app purchases (IAP)</h3>
+
+<p>At the CloudMoolah Developer Portal (<a href="http://dev.cloudmoolah.com/">dev.cloudmoolah.com</a>), select <strong>Add New Item</strong> to add in-app purchases for this app.</p>
+
+<figure>
+<img src="../uploads/Main/ConfiguringforCloudMoolahMooStore_image_6.png" alt="">
+</figure>
+
+<h3>Test IAP</h3>
+
+<p>The CloudMoolah Game Store supports testing. Enable developer mode in the app before making purchases (do this via <code>IMoolahConfiguration.SetMode</code> API - see below). This special build of the game provides a fake offline store which performs performs fake purchases. This does not incur real-world monetary costs related to the product, and allows you to test the app’s purchasing logic.</p>
+
+<p>To modify the game’s MOO Store test mode, create the <code>ConfigurationBuilder</code> instance and add the following line, then build and run the app to test its in-app purchasing logic: </p>
+
+<pre><code>builder.Configure&lt;IMoolahConfiguration&gt;().SetMode(CloudMoolahMode.AlwaysSucceed); // TESTING: auto-approves all transactions
+</code></pre>
+
+<p>To test error handling, configure this to fail all transactions. To do this, use tthe <code>CloudMoolahMode.AlwaysFailed</code> enumeration. For example:</p>
+
+<pre><code>builder.Configure&lt;IMoolahConfiguration&gt;().SetMode(CloudMoolahMode.AlwaysFailed); // TESTING: always fails all transactions
+</code></pre>
+
+<p>
+<strong>Note:</strong> When you have finished testing, make sure you remove the <code>SetMode</code> line that disables Developer mode, and use the <code>CloudMoolahMode.Production</code> enumeration. This ensures users pay real-world money when the app is in use.</p>
+
+<p><br></p>
+
+<h2><br></h2>
+
+<ul>
+<li><span class="page-edit">2017–07–03 Page amended with limited <a href="DocumentationEditorialReview.html">editorial review</a>
+</span></li>
+<li><span class="page-history">2017–07–03 - Documentation only update</span></li>
+</ul>
+<div class="feedbackbox" id="feedbackbox">
+<div id="rating"><p>Did you find this page useful? Please give it a rating:<br><div id="ratecontent" class="c-rating"></div>
+</p></div>
+<div id="ratingThanks" style="display:none"><p>Thanks for rating this page!</p></div>
+<div id="problem"><p><a name="problem" onclick="document.getElementById('problemType').style.display = '';document.getElementById('problem').style.display = 'none';">Report a problem on this page</a></p></div>
+<div id="problemType" style="display:none"><p>What kind of problem would you like to report?<ul type="problems">
+<li><a name="needcode" onclick="                                                             document.getElementById('problemType').style.display = 'none';                                                             document.getElementById('problemThanks').style.display = '';                                                             SendFeedback('problem-needcode',window.location.href,0);                                                             document.getElementById('problemFormDescription').value='Needs code samples.';                                                             document.getElementById('problemNeedCodeForm').style.display = ''                                                         ">This page needs code samples</a></li>
+<li><a name="code" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-brokencode',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Code samples do not work.';                                                         document.getElementById('problemCodeForm').style.display = ''                                                         ">Code samples do not work</a></li>
+<li><a name="missing" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-missing',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Missing information';                                                         document.getElementById('problemMissingForm').style.display = ''                                                         ">Information is missing</a></li>
+<li><a name="incorrect" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-incorrect',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Incorrect information';                                                         document.getElementById('problemIncorrectForm').style.display = ''                                                         ">Information is incorrect</a></li>
+<li><a name="unclear" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-unclear',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Unclear or confusing information';                                                         document.getElementById('problemUnclearForm').style.display = ''                                                         ">Information is unclear or confusing</a></li>
+<li><a name="language" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-language',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Spelling or grammar error';                                                         document.getElementById('problemLanguageForm').style.display = ''                                                         ">There is a spelling/grammar error on this page</a></li>
+<li><a name="other" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-other',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='This page has a problem';                                                         document.getElementById('problemOtherForm').style.display = ''                                                         ">Something else</a></li>
+</ul>
+<p><known_issues><p>Is something described here not working as you expect it to? It might be a <b>Known Issue</b>. Please check with the Issue Tracker at <a href="https://issuetracker.unity3d.com">issuetracker.unity3d.com</a>.</p></known_issues></p>
+</p></div>
+<div id="problemThanks" style="display:none"><p>Thanks for letting us know! This page has been marked for review based on your feedback.<br><br>If you have time, you can provide more information to help us fix the problem faster.<br><br><a onclick="document.getElementById('problemMoreInfo').style.display = '';document.getElementById('problemThanks').style.display = 'none';">Provide more information</a><br>
+</p></div>
+<div id="problemMoreInfo" style="display:none">
+<p id="problemNeedCodeForm" style="display:none">You've told us this page needs code samples. If you'd like to help us further, you could provide a code sample, or tell us about what kind of code sample you'd like to see:</p>
+<p id="problemCodeForm" style="display:none">You've told us there are code samples on this page which don't work. If you know how to fix it, or have something better we could use instead, please let us know:</p>
+<p id="problemMissingForm" style="display:none">You've told us there is information missing from this page. Please tell us more about what's missing:</p>
+<p id="problemIncorrectForm" style="display:none">You've told us there is incorrect information on this page. If you know what we should change to make it correct, please tell us:</p>
+<p id="problemUnclearForm" style="display:none">You've told us this page has unclear or confusing information. Please tell us more about what you found unclear or confusing, or let us know how we could make it clearer:</p>
+<p id="problemLanguageForm" style="display:none">You've told us there is a spelling or grammar error on this page. Please tell us what's wrong:</p>
+<p id="problemOtherForm" style="display:none">You've told us this page has a problem. Please tell us more about what's wrong:</p>
+<form>
+<textarea id="problemFormSuggestionField" cols="40" rows="5"></textarea><input type="hidden" id="problemFormDescription"><input type="submit" id="problemFormDescriptionSubmit" value="Submit" onclick="                                             document.getElementById('problemMoreInfo').style.display = 'none';                                             document.getElementById('problemMoreInfoThanks').style.display = '';                                             return false;                                             ">
+</form>
+</div>
+<div id="problemMoreInfoThanks" style="display:none"><p>Thanks for helping to make the Unity documentation better!</p></div>
+<script>
+
+                                            var ratecontent = document.querySelector('#ratecontent'); // target element
+                                            var currentRating = 0; // initial rating
+                                            var maxRating= 5; // max rating
+
+                                            // callback to run after setting the rating
+                                            var callback = function(rating) {
+                                                document.getElementById('ratingThanks').style.display = '';
+                                                document.getElementById('ratecontent').style.display = 'none';
+                                                document.getElementById('rating').style.display = 'none';
+                                                SendFeedback("rating",window.location.href,rating);
+                                            };
+
+                                            // rating instance
+                                            var myRating = rating(ratecontent, currentRating, maxRating, callback);
+                                        </script>
+</div>
+<div class="nextprev clear">
+<div class="icon tt left mr1" data-distance="-40|-30|top">
+<span class="prev"><a href="UnityIAPSamsungConfiguration.html"></a></span><div class="tip"> Samsung Galaxy IAP configuration</div>
+</div>
+<div class="icon tt right" data-distance="-40|-30|top">
+<span class="next"><a href="UnityIAPCodelessIAP.html"></a></span><div class="tip"> Codeless IAP</div>
+</div>
+</div>
+</div>
+</body></html>

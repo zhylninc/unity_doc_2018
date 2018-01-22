@@ -1,0 +1,256 @@
+<html><head><title>html模版</title></head><body>Unity - Manual: Using the Transport Layer API</br>
+<div class="breadcrumbs clear"><ul>
+<li><a href="UnityManual.html">Unity User Manual (2018.1 beta)</a></li>
+<li><a href="UNet.html">Multiplayer and Networking</a></li>
+<li><a href="UNetOverview.html">Networking Overview</a></li>
+<li>Using the Transport Layer API</li>
+</ul></div>
+<div class="mb20"><div class="nextprev clear">
+<div class="icon tt left mr1" data-distance="-40|-30|top">
+<span class="prev"><a href="UNetHostMigration.html"></a></span><div class="tip"> Host Migration</div>
+</div>
+<div class="icon tt right" data-distance="-40|-30|top">
+<span class="next"><a href="UnityMultiplayerSettingUp.html"></a></span><div class="tip">Setting up Unity Multiplayer</div>
+</div>
+</div></div>
+<div class="otherversionswrapper" onmouseover="setOtherVersionsDisplay(true)" onmouseout="setOtherVersionsDisplay(false)">
+<a>Other Versions</a><div class="otherversionscontent" id="OtherVersionsContent" style="display: none;">Cannot access other versions offline!</div>
+</div>
+<div class="scrollToFeedback"><a id="scrollToFeedback">Leave feedback</a></div>
+<h1>Using the Transport Layer API</h1>
+<!--BeginSwitchLink--><!--EndSwitchLink-->
+<div class="clear"></div>
+
+<p>In addition to the High Level networking API that we provide - which provides easy-to-use systems for managing your players, networked GameObjects, and other common requirements - we also give access to a lower level API called the “Transport Layer”. This provides you with the ability to build your own networking systems at a lower level, which can be useful if you have more specific or advanced requirements for your game’s networking.</p>
+
+<p>The Transport Layer is a thin layer working on top of the operating system’s sockets-based networking. It’s capable of sending and receiving messages represented as arrays of bytes, and offers a number of different “quality of service” options to suit different scenarios. It is focused on flexibility and performance, and exposes an API within the UnityEngine.Networking.NetworkTransport class.</p>
+
+<p>The Transport Layer supports base services for network communication. These base services include:</p>
+
+<ul>
+<li>Establishing Connections</li>
+<li>Communicating using a variety of “quality of services”</li>
+<li>Flow control</li>
+<li>Base statistics</li>
+<li>Additional services like communication via relay server or local discovery</li>
+</ul>
+
+<p>The Transport Layer can use two protocols: UDP for generic communications, and WebSockets for WebGL.
+To use the Transport Layer directly, the typical workflow would be as follows:</p>
+
+<ol>
+<li>Initialize the Network Transport Layer</li>
+<li>Configure network topology</li>
+<li>Create Host</li>
+<li>Start communication (handling connections and sending/receiving messages)</li>
+<li>Shut down library after use.</li>
+</ol>
+
+<h3>Initializing the Network Transport Layer</h3>
+
+<p>When initializing the Network Transport Layer, you can choose between the default initialization, with no arguments, or you can provide parameters which control the overall behaviour of the network layer, such as the maximum packet size and the thread timout limit.</p>
+
+<pre><code class="C#">    // Initializing the Transport Layer with no arguments (default settings)
+    NetworkTransport.Init();
+</code></pre>
+
+<pre><code class="C#">    // An example of initializing the Transport Layer with custom settings
+    GlobalConfig gConfig = new GlobalConfig();
+    gConfig.MaxPacketSize = 500;
+    NetworkTransport.Init(gConfig);
+</code></pre>
+
+<p>In the 2nd example above, the Transport Layer is initialized with a custom “MaxPacketSize” value specified of 500. Custom Init values should only be used if you have an unusual networking environment and are familiar with the specific settings you need. As a rule of thumb, if you are developing a typical multiplayer game designed to be played across the internet, the default Init() settings with no arguments should be appropriate.</p>
+
+<h3>Configuration</h3>
+
+<p>The next step is configuration of connection between peers. You may want to define several communication channels, each with a different quality of service level specified to suit the specific types of messages that you want to send, and their relative importance within your game.</p>
+
+<pre><code class="C#">    ConnectionConfig config = new ConnectionConfig();
+    int myReiliableChannelId  = config.AddChannel(QosType.Reliable);
+    int myUnreliableChannelId = config.AddChannel(QosType.Unreliable);
+</code></pre>
+
+<p>In the example above, we define two communication channels with different quality of service values. “QosType.Reliable” will deliver message and assure that the message is delivered, while “QosType.Unreliable” will send message without any assurance, but will do this faster. </p>
+
+<p>It’s also possible to specify configuration settings specifically for each connection, by adjusting properties on the ConnectionConfig object. However, when making a connection from one client to another, the settings should be the same for both connected peers or the connection will fail with a <code>CRCMismatch</code> error.</p>
+
+<h3>Topology</h3>
+
+<p>The final step of network configuration is topology definition. Network topology defines how many connections allowed and what connection configuration will used:</p>
+
+<pre><code class="C#">HostTopology topology = new HostTopology(config, 10);
+</code></pre>
+
+<p>Here we created a topology that allows up to 10 connections, each of them are configured by the parameters defined in previous step.</p>
+
+<h3>Host creating</h3>
+
+<p>As all preliminary steps are done, we can create the host (open socket):</p>
+
+<pre><code class="C#">int hostId = NetworkTransport.AddHost(topology, 8888);
+</code></pre>
+
+<p>Here we add a new host on port 8888 and any ip addresses. This host will support up to 10 connections, and each connection will have parameters as we defined in <code>config</code> object.</p>
+
+<h3>Communication</h3>
+
+<p>When the host is created, we can start our communication. To do this we send different commands to the host and check its status.
+There are 3 main commands that we can send:</p>
+
+<pre><code class="C#">connectionId = NetworkTransport.Connect(hostId, &quot;192.16.7.21&quot;, 8888, 0, out error);
+NetworkTransport.Disconnect(hostId, connectionId, out error);
+NetworkTransport.Send(hostId, connectionId, myReiliableChannelId, buffer, bufferLength,  out error);
+</code></pre>
+
+<ol>
+<li>The first command will send a connect request to the peer with ip “192.16.7.21” and port 8888. It will return the id assigned to this connection.</li>
+<li>The second will send a disconnect request,</li>
+<li>The third will send a message to the connection with the id that equals the <code>connectionId</code>, using the reliable channel with the id that equals <code>myReiliableChannelId</code>. The message should be stored in <code>buffer[]</code> and the length of the message should be defined by <code>bufferLength</code>.</li>
+</ol>
+
+<p>For checking the host status you can use two functions:</p>
+
+<pre><code class="C#">NetworkTransport.Receive(out recHostId, out connectionId, out channelId, recBuffer, bufferSize, out dataSize, out error);
+NetworkTransport.ReceiveFromHost(recHostId, out connectionId, out channelId, recBuffer, bufferSize, out dataSize, out error);
+</code></pre>
+
+<p>Both of them returns an event. The first function returns events from any host (and return host id via <code>recHostId</code>). The second form checks the host with id <code>recHostId</code>. You can use any of these functions inside the <code>Update()</code> method:</p>
+
+<pre><code class="C#">void Update()
+{
+    int recHostId; 
+    int connectionId; 
+    int channelId; 
+    byte[] recBuffer = new byte[1024]; 
+    int bufferSize = 1024;
+    int dataSize;
+    byte error;
+    NetworkEventType recData = NetworkTransport.Receive(out recHostId, out connectionId, out channelId, recBuffer, bufferSize, out dataSize, out error);
+    switch (recData)
+    {
+        case NetworkEventType.Nothing:         //1
+            break;
+        case NetworkEventType.ConnectEvent:    //2
+            break;
+        case NetworkEventType.DataEvent:       //3
+            break;
+        case NetworkEventType.DisconnectEvent: //4
+            break;
+    }
+}
+</code></pre>
+
+<ul>
+<li>Point 1: No interesting events have been returned.</li>
+<li>Point 2: Connection event come in. It can be new connection, or it can be response on previous connect command:</li>
+</ul>
+
+<pre><code class="C#">myConnectionId = NetworkTransport.Connect(hostId, &quot;192.16.7.21&quot;, 8888, 0, out error);
+NetworkEventType recData = NetworkTransport.Receive(out recHostId, out connectionId, out channelId, recBuffer, bufferSize, out dataSize, out error);
+switch (recData)
+{
+    case NetworkEventType.ConnectEvent: 
+        if(myConnectionId == connectionId)
+            //my active connect request approved
+        else
+            //somebody else connect to me
+        break;
+    //...   
+}
+</code></pre>
+
+<ul>
+<li>Point 3: Data received. In this case <code>recHostId</code> will define a host, connectionId will define a connection, <code>channelId</code> will define a channel, and <code>dataSize</code> will define the size of the received data. If <code>recBuffer</code> is big enough to contain data, data will be copied in the buffer. If not, <code>error</code> will contain <code>MessageToLong</code> error and you will need to reallocate the buffer and call this function again.</li>
+<li>Point 4: Disconnection signal come in. It can be a signal that established connection has been disconnected or that your connect request failed.</li>
+</ul>
+
+<pre><code class="C#">myConnectionId = NetworkTransport.Connect(hostId, &quot;192.16.7.21&quot;, 8888, 0, out error);
+NetworkEventType recData = NetworkTransport.Receive(out recHostId, out connectionId, out channelId, recBuffer, bufferSize, out dataSize, out error);
+switch (recData)
+{
+    case NetworkEventType. DisconnectEvent: 
+        if(myConnectionId == connectionId)
+            //cannot connect by some reason see error
+        else
+            //one of the established connection has been disconnected
+        break;
+    \\...   
+}
+</code></pre>
+
+<h3>WebGL support</h3>
+
+<p>WebSocket on client is supported.
+For the client side, all the steps described above (including topology and configuration) should be the same. Web clients can connect to the server only, where the server is a standalone player (Win, Mac or Linux only).
+On the server you should call </p>
+
+<pre><code class="C#">NetworkTransport.AddWebsocketHost(topology, port, ip);
+</code></pre>
+
+<p>Where <code>ip</code> address is listening address, you can pass null as ip address in this case host will listen all network interfaces. Server can support only one Websocket Host and in the same time, it can handle generic hosts too:</p>
+
+<pre><code class="C#">NetworkTransport.AddWebsocketHost(topology, 8887, null);
+NetworkTransport.AddHost(topology, 8888);
+</code></pre>
+
+<p>Will open tcp socket handling web socket protocol on port 8887 and udp socket handling genetic protocol on port 8888.</p>
+<div class="feedbackbox" id="feedbackbox">
+<div id="rating"><p>Did you find this page useful? Please give it a rating:<br><div id="ratecontent" class="c-rating"></div>
+</p></div>
+<div id="ratingThanks" style="display:none"><p>Thanks for rating this page!</p></div>
+<div id="problem"><p><a name="problem" onclick="document.getElementById('problemType').style.display = '';document.getElementById('problem').style.display = 'none';">Report a problem on this page</a></p></div>
+<div id="problemType" style="display:none"><p>What kind of problem would you like to report?<ul type="problems">
+<li><a name="needcode" onclick="                                                             document.getElementById('problemType').style.display = 'none';                                                             document.getElementById('problemThanks').style.display = '';                                                             SendFeedback('problem-needcode',window.location.href,0);                                                             document.getElementById('problemFormDescription').value='Needs code samples.';                                                             document.getElementById('problemNeedCodeForm').style.display = ''                                                         ">This page needs code samples</a></li>
+<li><a name="code" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-brokencode',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Code samples do not work.';                                                         document.getElementById('problemCodeForm').style.display = ''                                                         ">Code samples do not work</a></li>
+<li><a name="missing" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-missing',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Missing information';                                                         document.getElementById('problemMissingForm').style.display = ''                                                         ">Information is missing</a></li>
+<li><a name="incorrect" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-incorrect',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Incorrect information';                                                         document.getElementById('problemIncorrectForm').style.display = ''                                                         ">Information is incorrect</a></li>
+<li><a name="unclear" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-unclear',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Unclear or confusing information';                                                         document.getElementById('problemUnclearForm').style.display = ''                                                         ">Information is unclear or confusing</a></li>
+<li><a name="language" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-language',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Spelling or grammar error';                                                         document.getElementById('problemLanguageForm').style.display = ''                                                         ">There is a spelling/grammar error on this page</a></li>
+<li><a name="other" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-other',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='This page has a problem';                                                         document.getElementById('problemOtherForm').style.display = ''                                                         ">Something else</a></li>
+</ul>
+<p><known_issues><p>Is something described here not working as you expect it to? It might be a <b>Known Issue</b>. Please check with the Issue Tracker at <a href="https://issuetracker.unity3d.com">issuetracker.unity3d.com</a>.</p></known_issues></p>
+</p></div>
+<div id="problemThanks" style="display:none"><p>Thanks for letting us know! This page has been marked for review based on your feedback.<br><br>If you have time, you can provide more information to help us fix the problem faster.<br><br><a onclick="document.getElementById('problemMoreInfo').style.display = '';document.getElementById('problemThanks').style.display = 'none';">Provide more information</a><br>
+</p></div>
+<div id="problemMoreInfo" style="display:none">
+<p id="problemNeedCodeForm" style="display:none">You've told us this page needs code samples. If you'd like to help us further, you could provide a code sample, or tell us about what kind of code sample you'd like to see:</p>
+<p id="problemCodeForm" style="display:none">You've told us there are code samples on this page which don't work. If you know how to fix it, or have something better we could use instead, please let us know:</p>
+<p id="problemMissingForm" style="display:none">You've told us there is information missing from this page. Please tell us more about what's missing:</p>
+<p id="problemIncorrectForm" style="display:none">You've told us there is incorrect information on this page. If you know what we should change to make it correct, please tell us:</p>
+<p id="problemUnclearForm" style="display:none">You've told us this page has unclear or confusing information. Please tell us more about what you found unclear or confusing, or let us know how we could make it clearer:</p>
+<p id="problemLanguageForm" style="display:none">You've told us there is a spelling or grammar error on this page. Please tell us what's wrong:</p>
+<p id="problemOtherForm" style="display:none">You've told us this page has a problem. Please tell us more about what's wrong:</p>
+<form>
+<textarea id="problemFormSuggestionField" cols="40" rows="5"></textarea><input type="hidden" id="problemFormDescription"><input type="submit" id="problemFormDescriptionSubmit" value="Submit" onclick="                                             document.getElementById('problemMoreInfo').style.display = 'none';                                             document.getElementById('problemMoreInfoThanks').style.display = '';                                             return false;                                             ">
+</form>
+</div>
+<div id="problemMoreInfoThanks" style="display:none"><p>Thanks for helping to make the Unity documentation better!</p></div>
+<script>
+
+                                            var ratecontent = document.querySelector('#ratecontent'); // target element
+                                            var currentRating = 0; // initial rating
+                                            var maxRating= 5; // max rating
+
+                                            // callback to run after setting the rating
+                                            var callback = function(rating) {
+                                                document.getElementById('ratingThanks').style.display = '';
+                                                document.getElementById('ratecontent').style.display = 'none';
+                                                document.getElementById('rating').style.display = 'none';
+                                                SendFeedback("rating",window.location.href,rating);
+                                            };
+
+                                            // rating instance
+                                            var myRating = rating(ratecontent, currentRating, maxRating, callback);
+                                        </script>
+</div>
+<div class="nextprev clear">
+<div class="icon tt left mr1" data-distance="-40|-30|top">
+<span class="prev"><a href="UNetHostMigration.html"></a></span><div class="tip"> Host Migration</div>
+</div>
+<div class="icon tt right" data-distance="-40|-30|top">
+<span class="next"><a href="UnityMultiplayerSettingUp.html"></a></span><div class="tip">Setting up Unity Multiplayer</div>
+</div>
+</div>
+</div>
+</body></html>

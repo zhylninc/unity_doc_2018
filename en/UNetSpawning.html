@@ -1,0 +1,214 @@
+<html><head><title>html模版</title></head><body>Unity - Manual: Object Spawning</br>
+<div class="breadcrumbs clear"><ul>
+<li><a href="UnityManual.html">Unity User Manual (2018.1 beta)</a></li>
+<li><a href="UNet.html">Multiplayer and Networking</a></li>
+<li><a href="UNetOverview.html">Networking Overview</a></li>
+<li><a href="UNetUsingHLAPI.html">The High Level API</a></li>
+<li>Object Spawning</li>
+</ul></div>
+<div class="mb20"><div class="nextprev clear">
+<div class="icon tt left mr1" data-distance="-40|-30|top">
+<span class="prev"><a href="UNetManager.html"></a></span><div class="tip">Using the Network Manager</div>
+</div>
+<div class="icon tt right" data-distance="-40|-30|top">
+<span class="next"><a href="UNetCustomSpawning.html"></a></span><div class="tip">Custom Spawn Functions</div>
+</div>
+</div></div>
+<div class="otherversionswrapper" onmouseover="setOtherVersionsDisplay(true)" onmouseout="setOtherVersionsDisplay(false)">
+<a>Other Versions</a><div class="otherversionscontent" id="OtherVersionsContent" style="display: none;">Cannot access other versions offline!</div>
+</div>
+<div class="scrollToFeedback"><a id="scrollToFeedback">Leave feedback</a></div>
+<h1>Object Spawning</h1>
+<!--BeginSwitchLink--><!--EndSwitchLink-->
+<div class="clear"></div>
+
+<p>In Unity, creating new game objects with Instantiate() is sometimes called “spawning”. In the network HLAPI the word “spawn” is used to mean something more specific. In the server authoritative model of the network HLAPI, to “spawn” an object on the server means that the object should be created on clients connected to the server, and the object will be managed by the spawning system. Once in the spawning system, state updates are sent to clients when the object changes on the server, and the object will be destroyed on clients when it is destroyed on the server. Spawned objects are also added to the set of networked objects that the server is managing, so that if another client joins the game later, the objects will also be spawned on that client. These objects have a unique network instance Id called “netId” that is the same on the server and clients for each object. This is used to route messages to objects and to identify objects.</p>
+
+<p>When NetworkIdentity objects are spawned on clients, they are created with the current state of the object on the server. This applies to the object’s transform, movement state and synchronized variables. So client objects will always be up-to-date when they are created. This avoids issues such as objects being spawned at a wrong initial location, then popping to their correct position when a state update packet arrives.</p>
+
+<p>This sounds great, but there are some immediate questions that this brings up. How is the object created on the clients? And, what if the objects changes in between the time when it is spawned and another client connects? Which version of the object is spawned for the new client then?</p>
+
+<p>Spawning of objects on clients instantiates the client object from the prefab of the object that was passed to <a href="../ScriptReference/Networking.NetworkServer.Spawn.html">NetworkServer.Spawn</a> on the server. The NetworkIdentity inspector preview panel shows the Asset ID of the NetworkIdentity, it is this value that identifies the prefab so that the client can create the objects. For this to work efficiently, there is a registration step that clients have to perform; they must call <a href="../ScriptReference/Networking.ClientScene.RegisterPrefab.html">ClientScene.RegisterPrefab</a> to tell the system about the asset that the client object will be created from. </p>
+
+<p>Registration of spawn prefabs is most conveniently done by the NetworkManager in the editor. The “Spawn Info” section of the NetworkManager allows you to register prefabs without writing any code. This can also be done through code when a <a href="../ScriptReference/Networking.NetworkClient.html">NetworkClient</a> is created. To do it in code:</p>
+
+<pre><code>using UnityEngine;
+using UnityEngine.Networking;
+
+public class MyNetworkManager : MonoBehaviour 
+{
+    public GameObject alienPrefab;
+    
+    NetworkClient myClient;
+
+    // Create a client and connect to the server port
+    public void SetupClient()
+    {
+        ClientScene.RegisterPrefab(alienPrefab);
+
+        myClient = new NetworkClient();
+
+        myClient.RegisterHandler(MsgType.Connect, OnConnected);
+        myClient.Connect(&quot;127.0.0.1&quot;, 4444);
+    }
+}
+</code></pre>
+
+<p>In this example, the user would drag a prefab asset onto the alienPrefab slot on the MyNetworkManager script. So that when a alien object is spawned on the server, the same kind of object will be created on the clients. This registration of assets ensures that the asset is loaded with the scene, so that there is no stall to load the asset when it is created. For more advanced use cases such as object pools or dynamically created assets, there is <a href="../ScriptReference/Networking.ClientScene.RegisterSpawnHandler.html">ClientScene.RegisterSpawnHandler</a> which allows callback functions to be registered for client side spawning. </p>
+
+<p>Below is a simple example of a spawner that creates a tree with a random number of leaves.</p>
+
+<pre><code>class Tree : NetworkBehaviour
+{
+    [SyncVar]
+    public int numLeaves;
+}
+
+class MySpawner : NetworkBehaviour
+{
+    public GameObject treePrefab;
+
+    public void Spawn()
+    {
+        GameObject tree = (GameObject)Instantiate(treePrefab, transform.position, transform.rotation);
+        tree.GetComponent&lt;Tree&gt;().numLeaves = Random.Range(10,200);
+        NetworkServer.Spawn(tree);
+    }
+}
+
+</code></pre>
+
+<p>To complete this example, the project would have a prefab asset for the tree that has the Tree script and a NetworkIdentity component. Then on the MySpawner instance in the scene, the treePrefab slot would be populated by the tree prefab asset. Also, the tree prefab must be registered as a spawnable object - either using the NetworkManager UI, or using ClientScene.RegisterPrefab() in code.</p>
+
+<p>When this code runs, the tree objects created on clients will have the correct value for numLeaves from the server.</p>
+
+<h3>Constraints</h3>
+
+<ul>
+<li>A NetworkIdentity must be on the root game object of a spawnable prefab</li>
+<li>NetworkBehaviour scripts must be on the same game object as the NetworkIdentity, not on child game objects</li>
+<li>Prefabs can’t be registered with the NetworkManager unless they have a NetworkIdentity on their root object</li>
+</ul>
+
+<h2>Object Creation Flow</h2>
+
+<p>The actual flow of operations that takes place for spawning is:</p>
+
+<ul>
+<li>Prefab with NetworkIdentity component is registered as spawnable</li>
+<li>GameObject is instantiated from the prefab on the server</li>
+<li>Game code sets initial values on the instance (note that 3D physics forces applied here do not take effect immediately)</li>
+<li>NetworkServer.Spawn() is called with the instance</li>
+<li>The state of the SyncVars on the instance on the server are collected by calling OnSerialize() on NetworkBehaviour components</li>
+<li>A network message of type MsgType.ObjectSpawn is sent to connected clients that includes the SyncVar data</li>
+<li>OnStartServer() is called on the instance on the server, and isServer is set to true</li>
+<li>Clients recieve the ObjectSpawn message and create a new instance from the registered prefab</li>
+<li>The SyncVar data is applied to the new instance on the client by calling <a href="../ScriptReference/Networking.NetworkBehaviour.OnDeserialize.html">OnDeserialize()</a> on NetworkBehaviour components</li>
+<li>OnStartClient() is called on the instance on each client, and isClient is set to true</li>
+<li>As gameplay progresses, changes to SyncVar values are automatically synchronized to clients. This continues until game ends.</li>
+<li>NetworkServer.Destroy() is called on the instance on the server</li>
+<li>A network message of type MsgType ObjectDestroy is sent to clients</li>
+<li>OnNetworkDestroy() is called on the instance on clients, then the instance is destroyed.</li>
+</ul>
+
+<h2>Player Objects</h2>
+
+<p>Player objects in the network HLAPI are special in some ways. The flow for spawning player objects with the NetworkManager is:</p>
+
+<ul>
+<li>Prefab with NetworkIdentity is registered as the PlayerPrefab</li>
+<li>Client connects to the server</li>
+<li>Client calls AddPlayer(), network message of type MsgType.AddPlayer is sent to the server</li>
+<li>Server receives message and calls NetworkManager.OnServerAddPlayer()</li>
+<li>GameObject is instantiated from the PlayerPrefab on the server</li>
+<li>NetworkManager.AddPlayerForConnection() is called with the new player instance on the server</li>
+<li>The player instance is spawned - you do not have to call NetworkServer.Spawn() for the player instance</li>
+<li>A network message of type MsgType.Owner is sent to the client that added the player (only that client!)</li>
+<li>The original client receives the network message</li>
+<li>OnStartLocalPlayer() is called on the player instance on the original client, and isLocalPlayer is set to true</li>
+</ul>
+
+<p>Note that OnStartLocalPlayer() is called after OnStartClient(), as it only happens when the ownership messages arrives from the server after the player object is spawned. So isLocalPlayer will not be set in OnStartClient().</p>
+
+<p>Since OnStartLocalPlayer is only called for YOUR player, it is a good place to perform initialization that should only be done for the local player. This could include enabling input processing, and enabling camera tracking for the player object. Typically only the local player has an active camera.</p>
+
+<h2>Spawning Object with Client Authority</h2>
+
+<p>It is possible to spawn objects and assign authority of the objects to a particular client. This is done with <a href="../ScriptReference/Networking.NetworkServer.SpawnWithClientAuthority.html">NetworkServer.SpawnWithClientAuthority</a>, which takes the NetworkConnection of the client that will be made the authority as an argument.</p>
+
+<p>For these objects, the property hasAuthority will be true on the client with authority and OnStartAuthority() will be called on the client with authority. That client will be able to issue commands for that object. On other clients (and on the host), hasAuthority will be false.</p>
+
+<p>Objects spawned with client authority must have LocalPlayerAuthority set in their NetworkIdentity.</p>
+
+<p>For example, to allow a player to spawn and control an object:</p>
+
+<pre><code>[Command]
+void CmdSpawn()
+{
+    var go = (GameObject)Instantiate(
+       otherPrefab, 
+       transform.position + new Vector3(0,1,0), 
+       Quaternion.identity);
+       
+    NetworkServer.SpawnWithClientAuthority(go, connectionToClient);
+}
+</code></pre>
+<div class="feedbackbox" id="feedbackbox">
+<div id="rating"><p>Did you find this page useful? Please give it a rating:<br><div id="ratecontent" class="c-rating"></div>
+</p></div>
+<div id="ratingThanks" style="display:none"><p>Thanks for rating this page!</p></div>
+<div id="problem"><p><a name="problem" onclick="document.getElementById('problemType').style.display = '';document.getElementById('problem').style.display = 'none';">Report a problem on this page</a></p></div>
+<div id="problemType" style="display:none"><p>What kind of problem would you like to report?<ul type="problems">
+<li><a name="needcode" onclick="                                                             document.getElementById('problemType').style.display = 'none';                                                             document.getElementById('problemThanks').style.display = '';                                                             SendFeedback('problem-needcode',window.location.href,0);                                                             document.getElementById('problemFormDescription').value='Needs code samples.';                                                             document.getElementById('problemNeedCodeForm').style.display = ''                                                         ">This page needs code samples</a></li>
+<li><a name="code" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-brokencode',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Code samples do not work.';                                                         document.getElementById('problemCodeForm').style.display = ''                                                         ">Code samples do not work</a></li>
+<li><a name="missing" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-missing',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Missing information';                                                         document.getElementById('problemMissingForm').style.display = ''                                                         ">Information is missing</a></li>
+<li><a name="incorrect" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-incorrect',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Incorrect information';                                                         document.getElementById('problemIncorrectForm').style.display = ''                                                         ">Information is incorrect</a></li>
+<li><a name="unclear" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-unclear',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Unclear or confusing information';                                                         document.getElementById('problemUnclearForm').style.display = ''                                                         ">Information is unclear or confusing</a></li>
+<li><a name="language" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-language',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Spelling or grammar error';                                                         document.getElementById('problemLanguageForm').style.display = ''                                                         ">There is a spelling/grammar error on this page</a></li>
+<li><a name="other" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-other',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='This page has a problem';                                                         document.getElementById('problemOtherForm').style.display = ''                                                         ">Something else</a></li>
+</ul>
+<p><known_issues><p>Is something described here not working as you expect it to? It might be a <b>Known Issue</b>. Please check with the Issue Tracker at <a href="https://issuetracker.unity3d.com">issuetracker.unity3d.com</a>.</p></known_issues></p>
+</p></div>
+<div id="problemThanks" style="display:none"><p>Thanks for letting us know! This page has been marked for review based on your feedback.<br><br>If you have time, you can provide more information to help us fix the problem faster.<br><br><a onclick="document.getElementById('problemMoreInfo').style.display = '';document.getElementById('problemThanks').style.display = 'none';">Provide more information</a><br>
+</p></div>
+<div id="problemMoreInfo" style="display:none">
+<p id="problemNeedCodeForm" style="display:none">You've told us this page needs code samples. If you'd like to help us further, you could provide a code sample, or tell us about what kind of code sample you'd like to see:</p>
+<p id="problemCodeForm" style="display:none">You've told us there are code samples on this page which don't work. If you know how to fix it, or have something better we could use instead, please let us know:</p>
+<p id="problemMissingForm" style="display:none">You've told us there is information missing from this page. Please tell us more about what's missing:</p>
+<p id="problemIncorrectForm" style="display:none">You've told us there is incorrect information on this page. If you know what we should change to make it correct, please tell us:</p>
+<p id="problemUnclearForm" style="display:none">You've told us this page has unclear or confusing information. Please tell us more about what you found unclear or confusing, or let us know how we could make it clearer:</p>
+<p id="problemLanguageForm" style="display:none">You've told us there is a spelling or grammar error on this page. Please tell us what's wrong:</p>
+<p id="problemOtherForm" style="display:none">You've told us this page has a problem. Please tell us more about what's wrong:</p>
+<form>
+<textarea id="problemFormSuggestionField" cols="40" rows="5"></textarea><input type="hidden" id="problemFormDescription"><input type="submit" id="problemFormDescriptionSubmit" value="Submit" onclick="                                             document.getElementById('problemMoreInfo').style.display = 'none';                                             document.getElementById('problemMoreInfoThanks').style.display = '';                                             return false;                                             ">
+</form>
+</div>
+<div id="problemMoreInfoThanks" style="display:none"><p>Thanks for helping to make the Unity documentation better!</p></div>
+<script>
+
+                                            var ratecontent = document.querySelector('#ratecontent'); // target element
+                                            var currentRating = 0; // initial rating
+                                            var maxRating= 5; // max rating
+
+                                            // callback to run after setting the rating
+                                            var callback = function(rating) {
+                                                document.getElementById('ratingThanks').style.display = '';
+                                                document.getElementById('ratecontent').style.display = 'none';
+                                                document.getElementById('rating').style.display = 'none';
+                                                SendFeedback("rating",window.location.href,rating);
+                                            };
+
+                                            // rating instance
+                                            var myRating = rating(ratecontent, currentRating, maxRating, callback);
+                                        </script>
+</div>
+<div class="nextprev clear">
+<div class="icon tt left mr1" data-distance="-40|-30|top">
+<span class="prev"><a href="UNetManager.html"></a></span><div class="tip">Using the Network Manager</div>
+</div>
+<div class="icon tt right" data-distance="-40|-30|top">
+<span class="next"><a href="UNetCustomSpawning.html"></a></span><div class="tip">Custom Spawn Functions</div>
+</div>
+</div>
+</div>
+</body></html>

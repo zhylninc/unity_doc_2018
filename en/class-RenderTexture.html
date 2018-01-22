@@ -1,0 +1,188 @@
+<html><head><title>html模版</title></head><body>Unity - Manual: Render Texture</br>
+<div class="breadcrumbs clear"><ul>
+<li><a href="UnityManual.html">Unity User Manual (2018.1 beta)</a></li>
+<li><a href="Graphics.html">Graphics</a></li>
+<li><a href="GraphicsReference.html">Graphics Reference</a></li>
+<li><a href="comp-Textures.html">Texture Components</a></li>
+<li>Render Texture</li>
+</ul></div>
+<div class="mb20"><div class="nextprev clear">
+<div class="icon tt left mr1" data-distance="-40|-30|top">
+<span class="prev"><a href="class-ProceduralMaterial.html"></a></span><div class="tip">Procedural Material Assets</div>
+</div>
+<div class="icon tt right" data-distance="-40|-30|top">
+<span class="next"><a href="CustomRenderTextures.html"></a></span><div class="tip"> Custom Render Textures</div>
+</div>
+</div></div>
+<div class="otherversionswrapper" onmouseover="setOtherVersionsDisplay(true)" onmouseout="setOtherVersionsDisplay(false)">
+<a>Other Versions</a><div class="otherversionscontent" id="OtherVersionsContent" style="display: none;">Cannot access other versions offline!</div>
+</div>
+<div class="scrollToFeedback"><a id="scrollToFeedback">Leave feedback</a></div>
+<h1>Render Texture</h1>
+<!--BeginSwitchLink--><a href='../ScriptReference/RenderTexture.html' title='Go to RenderTexture page in the Scripting Reference' class='switch-link gray-btn sbtn left'>Switch to Scripting</a><!--EndSwitchLink-->
+<div class="clear"></div>
+
+<p>
+<strong>Render Textures</strong> are special types of <strong>Textures</strong> that are created and updated at runtime. To use them, you first create a new Render Texture and designate one of your <a href="class-Camera.html">Cameras</a> to render into it. Then you can use the Render Texture in a <strong>Material</strong> just like a regular Texture. The <a href="HOWTO-Water.html">Water</a> prefabs in Unity Standard Assets are an example of real-world use of Render Textures for making real-time reflections and refractions.</p>
+
+<h2>Properties</h2>
+
+<p>The Render Texture <strong>Inspector</strong> is different from most Inspectors, but very similar to the <a href="class-TextureImporter.html">Texture Inspector</a>.</p>
+
+<figure>
+<img src="../uploads/Main/Inspector-RenderTexture.png" alt="The Render Texture Inspector is almost identical to the Texture Inspector">
+<figcaption>The Render Texture Inspector is almost identical to the Texture Inspector</figcaption>
+</figure>
+
+<p>The Render Texture inspector displays the current contents of Render Texture in realtime and can be an invaluable debugging tool for effects that use render textures.</p>
+
+<table>
+<colgroup>
+<col style="text-align:left;">
+<col style="text-align:left;">
+</colgroup>
+
+<thead>
+<tr>
+	<th style="text-align:left;"><strong><em>Property:</em></strong></th>
+	<th style="text-align:left;"><strong><em>Function:</em></strong></th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+	<td style="text-align:left;"><strong>Size</strong></td>
+	<td style="text-align:left;">The size of the Render Texture in pixels. Observe that only power-of-two values sizes can be chosen.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>Anti-Aliasing</strong></td>
+	<td style="text-align:left;">The amount of anti-aliasing to be applied. None, two, four or eight samples.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>Depth Buffer</strong></td>
+	<td style="text-align:left;">The type of the depth buffer. None, 16 bit or 24 bit.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>Wrap Mode</strong></td>
+	<td style="text-align:left;">Selects how the Texture behaves when tiled:</td>
+</tr>
+<tr>
+	<td style="text-align:left;">        <strong>Repeat</strong>
+</td>
+	<td style="text-align:left;">The Texture repeats (tiles) itself</td>
+</tr>
+<tr>
+	<td style="text-align:left;">        <strong>Clamp</strong>
+</td>
+	<td style="text-align:left;">The Texture’s edges get stretched</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>Filter Mode</strong></td>
+	<td style="text-align:left;">Selects how the Texture is filtered when it gets stretched by 3D transformations:</td>
+</tr>
+<tr>
+	<td style="text-align:left;">        <strong>No Filtering</strong>
+</td>
+	<td style="text-align:left;">The Texture becomes blocky up close</td>
+</tr>
+<tr>
+	<td style="text-align:left;">        <strong>Bilinear</strong>
+</td>
+	<td style="text-align:left;">The Texture becomes blurry up close</td>
+</tr>
+<tr>
+	<td style="text-align:left;">        <strong>Trilinear</strong>
+</td>
+	<td style="text-align:left;">Like Bilinear, but the Texture also blurs between the different mip levels</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>Aniso Level</strong></td>
+	<td style="text-align:left;">Increases Texture quality when viewing the texture at a steep angle. Good for floor and ground textures</td>
+</tr>
+</tbody>
+</table>
+
+<h2>Example</h2>
+
+<p>A very quick way to make a live arena-camera in your game:</p>
+
+<ol>
+<li>Create a new Render Texture asset using <strong>Assets &gt;Create &gt;Render Texture</strong>.</li>
+<li>Create a new Camera using <strong>GameObject &gt; Camera</strong>.</li>
+<li>Assign the Render Texture to the <strong>Target Texture</strong> of the new Camera.</li>
+<li>Create a wide, tall and thin box</li>
+<li>Drag the Render Texture onto it to create a Material that uses the render texture.</li>
+<li>Enter Play Mode, and observe that the box’s texture is updated in real-time based on the new Camera’s output.</li>
+</ol>
+
+<figure>
+<img src="../uploads/Main/RenderTextureLiveCam.png" alt="Render Textures are set up as demonstrated above">
+<figcaption>Render Textures are set up as demonstrated above</figcaption>
+</figure>
+
+<hr>
+
+<ul>
+<li><p><span class="page-edit">2017–09–19 Page amended with limited <a href="DocumentationEditorialReview.html">editorial review</a>
+</span></p></li>
+<li><p><span class="page-history">GameObject menu changed in Unity 4.6</span></p></li>
+</ul>
+<div class="feedbackbox" id="feedbackbox">
+<div id="rating"><p>Did you find this page useful? Please give it a rating:<br><div id="ratecontent" class="c-rating"></div>
+</p></div>
+<div id="ratingThanks" style="display:none"><p>Thanks for rating this page!</p></div>
+<div id="problem"><p><a name="problem" onclick="document.getElementById('problemType').style.display = '';document.getElementById('problem').style.display = 'none';">Report a problem on this page</a></p></div>
+<div id="problemType" style="display:none"><p>What kind of problem would you like to report?<ul type="problems">
+<li><a name="needcode" onclick="                                                             document.getElementById('problemType').style.display = 'none';                                                             document.getElementById('problemThanks').style.display = '';                                                             SendFeedback('problem-needcode',window.location.href,0);                                                             document.getElementById('problemFormDescription').value='Needs code samples.';                                                             document.getElementById('problemNeedCodeForm').style.display = ''                                                         ">This page needs code samples</a></li>
+<li><a name="code" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-brokencode',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Code samples do not work.';                                                         document.getElementById('problemCodeForm').style.display = ''                                                         ">Code samples do not work</a></li>
+<li><a name="missing" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-missing',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Missing information';                                                         document.getElementById('problemMissingForm').style.display = ''                                                         ">Information is missing</a></li>
+<li><a name="incorrect" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-incorrect',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Incorrect information';                                                         document.getElementById('problemIncorrectForm').style.display = ''                                                         ">Information is incorrect</a></li>
+<li><a name="unclear" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-unclear',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Unclear or confusing information';                                                         document.getElementById('problemUnclearForm').style.display = ''                                                         ">Information is unclear or confusing</a></li>
+<li><a name="language" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-language',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Spelling or grammar error';                                                         document.getElementById('problemLanguageForm').style.display = ''                                                         ">There is a spelling/grammar error on this page</a></li>
+<li><a name="other" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-other',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='This page has a problem';                                                         document.getElementById('problemOtherForm').style.display = ''                                                         ">Something else</a></li>
+</ul>
+<p><known_issues><p>Is something described here not working as you expect it to? It might be a <b>Known Issue</b>. Please check with the Issue Tracker at <a href="https://issuetracker.unity3d.com">issuetracker.unity3d.com</a>.</p></known_issues></p>
+</p></div>
+<div id="problemThanks" style="display:none"><p>Thanks for letting us know! This page has been marked for review based on your feedback.<br><br>If you have time, you can provide more information to help us fix the problem faster.<br><br><a onclick="document.getElementById('problemMoreInfo').style.display = '';document.getElementById('problemThanks').style.display = 'none';">Provide more information</a><br>
+</p></div>
+<div id="problemMoreInfo" style="display:none">
+<p id="problemNeedCodeForm" style="display:none">You've told us this page needs code samples. If you'd like to help us further, you could provide a code sample, or tell us about what kind of code sample you'd like to see:</p>
+<p id="problemCodeForm" style="display:none">You've told us there are code samples on this page which don't work. If you know how to fix it, or have something better we could use instead, please let us know:</p>
+<p id="problemMissingForm" style="display:none">You've told us there is information missing from this page. Please tell us more about what's missing:</p>
+<p id="problemIncorrectForm" style="display:none">You've told us there is incorrect information on this page. If you know what we should change to make it correct, please tell us:</p>
+<p id="problemUnclearForm" style="display:none">You've told us this page has unclear or confusing information. Please tell us more about what you found unclear or confusing, or let us know how we could make it clearer:</p>
+<p id="problemLanguageForm" style="display:none">You've told us there is a spelling or grammar error on this page. Please tell us what's wrong:</p>
+<p id="problemOtherForm" style="display:none">You've told us this page has a problem. Please tell us more about what's wrong:</p>
+<form>
+<textarea id="problemFormSuggestionField" cols="40" rows="5"></textarea><input type="hidden" id="problemFormDescription"><input type="submit" id="problemFormDescriptionSubmit" value="Submit" onclick="                                             document.getElementById('problemMoreInfo').style.display = 'none';                                             document.getElementById('problemMoreInfoThanks').style.display = '';                                             return false;                                             ">
+</form>
+</div>
+<div id="problemMoreInfoThanks" style="display:none"><p>Thanks for helping to make the Unity documentation better!</p></div>
+<script>
+
+                                            var ratecontent = document.querySelector('#ratecontent'); // target element
+                                            var currentRating = 0; // initial rating
+                                            var maxRating= 5; // max rating
+
+                                            // callback to run after setting the rating
+                                            var callback = function(rating) {
+                                                document.getElementById('ratingThanks').style.display = '';
+                                                document.getElementById('ratecontent').style.display = 'none';
+                                                document.getElementById('rating').style.display = 'none';
+                                                SendFeedback("rating",window.location.href,rating);
+                                            };
+
+                                            // rating instance
+                                            var myRating = rating(ratecontent, currentRating, maxRating, callback);
+                                        </script>
+</div>
+<div class="nextprev clear">
+<div class="icon tt left mr1" data-distance="-40|-30|top">
+<span class="prev"><a href="class-ProceduralMaterial.html"></a></span><div class="tip">Procedural Material Assets</div>
+</div>
+<div class="icon tt right" data-distance="-40|-30|top">
+<span class="next"><a href="CustomRenderTextures.html"></a></span><div class="tip"> Custom Render Textures</div>
+</div>
+</div>
+</div>
+</body></html>

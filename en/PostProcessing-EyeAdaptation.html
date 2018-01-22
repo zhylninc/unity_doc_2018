@@ -1,0 +1,203 @@
+<html><head><title>html模版</title></head><body>Unity - Manual:  Eye Adaptation</br>
+<div class="breadcrumbs clear"><ul>
+<li><a href="UnityManual.html">Unity User Manual (2018.1 beta)</a></li>
+<li><a href="Graphics.html">Graphics</a></li>
+<li><a href="GraphicsOverview.html">Graphics Overview</a></li>
+<li><a href="PostProcessingOverview.html"> Post-processing overview</a></li>
+<li> Eye Adaptation</li>
+</ul></div>
+<div class="mb20"><div class="nextprev clear">
+<div class="icon tt left mr1" data-distance="-40|-30|top">
+<span class="prev"><a href="PostProcessing-MotionBlur.html"></a></span><div class="tip"> Motion Blur</div>
+</div>
+<div class="icon tt right" data-distance="-40|-30|top">
+<span class="next"><a href="PostProcessing-Bloom.html"></a></span><div class="tip"> Bloom</div>
+</div>
+</div></div>
+<div class="otherversionswrapper" onmouseover="setOtherVersionsDisplay(true)" onmouseout="setOtherVersionsDisplay(false)">
+<a>Other Versions</a><div class="otherversionscontent" id="OtherVersionsContent" style="display: none;">Cannot access other versions offline!</div>
+</div>
+<div class="scrollToFeedback"><a id="scrollToFeedback">Leave feedback</a></div>
+<h2>Eye Adaptation</h2>
+
+<p>The effect descriptions on this page refer to the default effects found within the post-processing stack.</p>
+
+<p>In ocular physiology, adaptation is the ability of the eye to adjust to various levels of darkness and light. The human eye can function from very dark to very bright levels of light. However, in any given moment of time, the eye can only sense a contrast ratio of roughly one millionth of the total range. What enables the wider reach is that the eye adapts its definition of what is black.</p>
+
+<p>This effect dynamically adjusts the exposure of the image according to the range of brightness levels it contains. The adjustment takes place gradually over a period of time, so the player can be briefly dazzled by bright outdoor light when, say, emerging from a dark tunnel. Equally, when moving from a bright scene to a dark one, the “eye” takes some time to adjust.</p>
+
+<p>Internally, this effect generates a histogram on every frame and filters it to find the average luminance value. This histogram, and as such the effect, requires <a href="ComputeShaders.html">Compute shader</a> support.</p>
+
+<figure>
+<img src="../uploads/Main/PostProcessing-EyeAdaptation-0.png" alt="Scene with Eye Adaptation.">
+<figcaption>Scene with Eye Adaptation.</figcaption>
+</figure>
+
+<figure>
+<img src="../uploads/Main/PostProcessing-EyeAdaptation-1.png" alt="Scene without Eye Adaptation.">
+<figcaption>Scene without Eye Adaptation.</figcaption>
+</figure>
+
+<figure>
+<img src="../uploads/Main/PostProcessing-EyeAdaptation-2.png" alt="UI for Eye Adaptation">
+<figcaption>UI for Eye Adaptation</figcaption>
+</figure>
+
+<h3>Properties</h3>
+
+<table>
+<colgroup>
+<col style="text-align:left;">
+<col style="text-align:left;">
+</colgroup>
+
+<thead>
+<tr>
+	<th style="text-align:left;"><strong>Property:</strong></th>
+	<th style="text-align:left;"><strong>Function:</strong></th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+	<td style="text-align:left;" colspan="2">Luminosity Range</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>Minimum (EV)</strong></td>
+	<td style="text-align:left;">Lower bound for the brightness range of the generated histogram (in EV). The bigger the spread between min &amp; max, the lower the precision will be.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>Maximum (EV)</strong></td>
+	<td style="text-align:left;">Upper bound for the brightness range of the generated histogram (in EV). The bigger the spread between min &amp; max, the lower the precision will be.</td>
+</tr>
+<tr>
+	<td style="text-align:left;" colspan="2">Auto exposure</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>Histogram Filtering</strong></td>
+	<td style="text-align:left;">These values are the lower and upper percentages of the histogram that will be used to find a stable average luminance. Values outside of this range will be discarded and wont contribute to the average luminance.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>Minimum (EV)</strong></td>
+	<td style="text-align:left;">Minimum average luminance to consider for auto exposure (in EV).</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>Maximum (EV)</strong></td>
+	<td style="text-align:left;">Maximum average luminance to consider for auto exposure (in EV).</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>Dynamic Key Value</strong></td>
+	<td style="text-align:left;">Set this to true to let Unity handle the key value automatically based on average luminance.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>Key Value</strong></td>
+	<td style="text-align:left;">Exposure bias. Use this to offset the global exposure of the scene.</td>
+</tr>
+<tr>
+	<td style="text-align:left;" colspan="2">Adaptation</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>Adaptation Type</strong></td>
+	<td style="text-align:left;">Use Progressive if you want the auto exposure to be animated. Use Fixed otherwise.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>Speed Up</strong></td>
+	<td style="text-align:left;">Adaptation speed from a dark to a light environment.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>Speed Down</strong></td>
+	<td style="text-align:left;">Adaptation speed from a light to a dark environment.</td>
+</tr>
+</tbody>
+</table>
+
+<h3>Details</h3>
+
+<p>The <strong>Luminosity Range</strong> <strong>Minimum/Maximum</strong> values are used to set the available histogram range in EV units. The larger the range is, the less precise it will be. The default values should work fine for most cases, but if you’re working with a very dark scene you’ll probably want to drop both values to focus on darker areas.</p>
+
+<p>Use the <strong>Histogram Filtering</strong> range to exclude the darkest and brightest part of the image. To compute an average luminance you generally don’t want very dark and very bright pixels to contribute too much to the result. Values are in percent.</p>
+
+<p>
+<strong>Auto Exposure Minimum/Maximum</strong> values clamp the computed average luminance into a given range.</p>
+
+<p>Tweak Exposure Compensation (also known as <strong>Key Value</strong>) to adjust the luminance offset.</p>
+
+<p>You can also set the <strong>Adaptation Type</strong> to <strong>Fixed </strong>if you don’t need the eye adaptation effect and it will behave like an auto-exposure setting.</p>
+
+<p>It is recommended to use the Eye Adaptation <a href="PostProcessing-DebugViews.html">Debug view</a> when setting up this effect.</p>
+
+<h3>Requirements</h3>
+
+<ul>
+<li><p><a href="ComputeShaders.html">Compute shader</a></p></li>
+<li><p>Shader model 5</p></li>
+</ul>
+
+<p>See the <a href="GraphicsEmulation.html">Graphics Hardware Capabilities and Emulation</a> page for further details and a list of compliant hardware.</p>
+
+<hr>
+
+<ul>
+<li><p><span class="page-edit"> 2017–05–24 Page published with limited <a href="DocumentationEditorialReview.html">editorial review</a>
+</span></p></li>
+<li><p><span class="page-history">New feature in 5.6</span></p></li>
+</ul>
+<div class="feedbackbox" id="feedbackbox">
+<div id="rating"><p>Did you find this page useful? Please give it a rating:<br><div id="ratecontent" class="c-rating"></div>
+</p></div>
+<div id="ratingThanks" style="display:none"><p>Thanks for rating this page!</p></div>
+<div id="problem"><p><a name="problem" onclick="document.getElementById('problemType').style.display = '';document.getElementById('problem').style.display = 'none';">Report a problem on this page</a></p></div>
+<div id="problemType" style="display:none"><p>What kind of problem would you like to report?<ul type="problems">
+<li><a name="needcode" onclick="                                                             document.getElementById('problemType').style.display = 'none';                                                             document.getElementById('problemThanks').style.display = '';                                                             SendFeedback('problem-needcode',window.location.href,0);                                                             document.getElementById('problemFormDescription').value='Needs code samples.';                                                             document.getElementById('problemNeedCodeForm').style.display = ''                                                         ">This page needs code samples</a></li>
+<li><a name="code" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-brokencode',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Code samples do not work.';                                                         document.getElementById('problemCodeForm').style.display = ''                                                         ">Code samples do not work</a></li>
+<li><a name="missing" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-missing',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Missing information';                                                         document.getElementById('problemMissingForm').style.display = ''                                                         ">Information is missing</a></li>
+<li><a name="incorrect" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-incorrect',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Incorrect information';                                                         document.getElementById('problemIncorrectForm').style.display = ''                                                         ">Information is incorrect</a></li>
+<li><a name="unclear" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-unclear',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Unclear or confusing information';                                                         document.getElementById('problemUnclearForm').style.display = ''                                                         ">Information is unclear or confusing</a></li>
+<li><a name="language" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-language',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Spelling or grammar error';                                                         document.getElementById('problemLanguageForm').style.display = ''                                                         ">There is a spelling/grammar error on this page</a></li>
+<li><a name="other" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-other',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='This page has a problem';                                                         document.getElementById('problemOtherForm').style.display = ''                                                         ">Something else</a></li>
+</ul>
+<p><known_issues><p>Is something described here not working as you expect it to? It might be a <b>Known Issue</b>. Please check with the Issue Tracker at <a href="https://issuetracker.unity3d.com">issuetracker.unity3d.com</a>.</p></known_issues></p>
+</p></div>
+<div id="problemThanks" style="display:none"><p>Thanks for letting us know! This page has been marked for review based on your feedback.<br><br>If you have time, you can provide more information to help us fix the problem faster.<br><br><a onclick="document.getElementById('problemMoreInfo').style.display = '';document.getElementById('problemThanks').style.display = 'none';">Provide more information</a><br>
+</p></div>
+<div id="problemMoreInfo" style="display:none">
+<p id="problemNeedCodeForm" style="display:none">You've told us this page needs code samples. If you'd like to help us further, you could provide a code sample, or tell us about what kind of code sample you'd like to see:</p>
+<p id="problemCodeForm" style="display:none">You've told us there are code samples on this page which don't work. If you know how to fix it, or have something better we could use instead, please let us know:</p>
+<p id="problemMissingForm" style="display:none">You've told us there is information missing from this page. Please tell us more about what's missing:</p>
+<p id="problemIncorrectForm" style="display:none">You've told us there is incorrect information on this page. If you know what we should change to make it correct, please tell us:</p>
+<p id="problemUnclearForm" style="display:none">You've told us this page has unclear or confusing information. Please tell us more about what you found unclear or confusing, or let us know how we could make it clearer:</p>
+<p id="problemLanguageForm" style="display:none">You've told us there is a spelling or grammar error on this page. Please tell us what's wrong:</p>
+<p id="problemOtherForm" style="display:none">You've told us this page has a problem. Please tell us more about what's wrong:</p>
+<form>
+<textarea id="problemFormSuggestionField" cols="40" rows="5"></textarea><input type="hidden" id="problemFormDescription"><input type="submit" id="problemFormDescriptionSubmit" value="Submit" onclick="                                             document.getElementById('problemMoreInfo').style.display = 'none';                                             document.getElementById('problemMoreInfoThanks').style.display = '';                                             return false;                                             ">
+</form>
+</div>
+<div id="problemMoreInfoThanks" style="display:none"><p>Thanks for helping to make the Unity documentation better!</p></div>
+<script>
+
+                                            var ratecontent = document.querySelector('#ratecontent'); // target element
+                                            var currentRating = 0; // initial rating
+                                            var maxRating= 5; // max rating
+
+                                            // callback to run after setting the rating
+                                            var callback = function(rating) {
+                                                document.getElementById('ratingThanks').style.display = '';
+                                                document.getElementById('ratecontent').style.display = 'none';
+                                                document.getElementById('rating').style.display = 'none';
+                                                SendFeedback("rating",window.location.href,rating);
+                                            };
+
+                                            // rating instance
+                                            var myRating = rating(ratecontent, currentRating, maxRating, callback);
+                                        </script>
+</div>
+<div class="nextprev clear">
+<div class="icon tt left mr1" data-distance="-40|-30|top">
+<span class="prev"><a href="PostProcessing-MotionBlur.html"></a></span><div class="tip"> Motion Blur</div>
+</div>
+<div class="icon tt right" data-distance="-40|-30|top">
+<span class="next"><a href="PostProcessing-Bloom.html"></a></span><div class="tip"> Bloom</div>
+</div>
+</div>
+</div>
+</body></html>

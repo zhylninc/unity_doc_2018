@@ -1,0 +1,212 @@
+<html><head><title>html模版</title></head><body>Unity - Manual:  Sprite Masks</br>
+<div class="breadcrumbs clear"><ul>
+<li><a href="UnityManual.html">Unity User Manual (2018.1 beta)</a></li>
+<li><a href="Unity2D.html">2D</a></li>
+<li><a href="Sprites.html">Sprites</a></li>
+<li> Sprite Masks</li>
+</ul></div>
+<div class="mb20"><div class="nextprev clear">
+<div class="icon tt left mr1" data-distance="-40|-30|top">
+<span class="prev"><a href="9SliceSprites.html"></a></span><div class="tip"> 9-slicing Sprites </div>
+</div>
+<div class="icon tt right" data-distance="-40|-30|top">
+<span class="next"><a href="SpriteAtlas.html"></a></span><div class="tip"> Sprite Atlas</div>
+</div>
+</div></div>
+<div class="otherversionswrapper" onmouseover="setOtherVersionsDisplay(true)" onmouseout="setOtherVersionsDisplay(false)">
+<a>Other Versions</a><div class="otherversionscontent" id="OtherVersionsContent" style="display: none;">Cannot access other versions offline!</div>
+</div>
+<div class="scrollToFeedback"><a id="scrollToFeedback">Leave feedback</a></div>
+<h1>Sprite Masks</h1>
+<!--BeginSwitchLink--><a href='../ScriptReference/SpriteMask.html' title='Go to SpriteMask page in the Scripting Reference' class='switch-link gray-btn sbtn left'>Switch to Scripting</a><!--EndSwitchLink-->
+<div class="clear"></div>
+
+<p>Sprite Masks are used to either hide or reveal parts of a Sprite or group of Sprites. The Sprite Mask only affects objects using the Sprite Renderer Component.</p>
+
+<h3>Creating a Sprite Mask</h3>
+
+<p>To create a Sprite Mask select from the main menu GameObject &gt; 2D Object &gt; Sprite Mask.</p>
+
+<figure>
+<img src="../uploads/Main/SpriteMask1.png" alt="Creating a Sprite Mask from the menu">
+<figcaption>Creating a Sprite Mask from the menu</figcaption>
+</figure>
+
+<figure>
+<img src="../uploads/Main/SpriteMask2.png" alt="A new Sprite Mask GameObject is created in the Scene">
+<figcaption>A new Sprite Mask GameObject is created in the Scene</figcaption>
+</figure>
+
+<h3>Properties</h3>
+
+<figure>
+<img src="../uploads/Main/SpriteMask3.png" alt="">
+</figure>
+
+<table>
+<colgroup>
+<col style="text-align:left;">
+<col style="text-align:left;">
+</colgroup>
+
+<thead>
+<tr>
+	<th style="text-align:left;">Property</th>
+	<th style="text-align:left;">Function</th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+	<td style="text-align:left;">Sprite</td>
+	<td style="text-align:left;">The sprite to be used as a mask.</td>
+</tr>
+<tr>
+	<td style="text-align:left;">Alpha Cutoff</td>
+	<td style="text-align:left;">If the alpha contains a blend between transparent and opaque areas, you can manually determine the cutoff point for which areas will be shown. You change this cutoff by adjusting the Alpha Cutoff slider.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>Range Start</strong></td>
+	<td style="text-align:left;">The Range Start is the Sorting Layer which the mask starts masking from.</td>
+</tr>
+<tr>
+	<td style="text-align:left;">Sorting Layer</td>
+	<td style="text-align:left;">The Sorting Layer for the mask.</td>
+</tr>
+<tr>
+	<td style="text-align:left;">Order in Layer</td>
+	<td style="text-align:left;">The order within the Sorting Layer.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>Range End</strong></td>
+	<td style="text-align:left;"></td>
+</tr>
+<tr>
+	<td style="text-align:left;">Mask All</td>
+	<td style="text-align:left;">By default the mask will affect all sorting layers behind it (lower sorting order).</td>
+</tr>
+<tr>
+	<td style="text-align:left;">Custom</td>
+	<td style="text-align:left;">The range end can be set to a custom Sorting Layer and Order in Layer.</td>
+</tr>
+</tbody>
+</table>
+
+<h3>Using Sprite Masks</h3>
+
+<figure>
+<img src="../uploads/Main/SpriteMask4.png" alt="The Sprite to be used as a mask needs to be assigned to the Sprite Mask Component">
+<figcaption>The Sprite to be used as a mask needs to be assigned to the Sprite Mask Component</figcaption>
+</figure>
+
+<p>The Sprite Mask GameObject itself will not be visible in scene, only the resulting interactions with Sprites. To view Sprite Masks in the scene, select the Sprite Mask option in the Scene Menu.</p>
+
+<figure>
+<img src="../uploads/Main/SpriteMask5.png" alt="Scene view with Sprite Mask view turned on in the scene">
+<figcaption>Scene view with Sprite Mask view turned on in the scene</figcaption>
+</figure>
+
+<p>Sprite Masks are always in effect. Sprites to be affected by a Sprite Mask need to have their Mask Interaction set in the Sprite Renderer.</p>
+
+<figure>
+<img src="../uploads/Main/SpriteMask6.png" alt="The character sprites Mask Interaction is set to Visible Under Mask thus only parts of the sprite that are in the mask area are visible">
+<figcaption>The character sprites Mask Interaction is set to Visible Under Mask thus only parts of the sprite that are in the mask area are visible</figcaption>
+</figure>
+
+<p>By default a Sprite Mask will affect any sprite in the scene that has their Mask Interaction set to Visible or Not Visible Under Mask. Quite often we want the mask to only affect a particular sprite or a group of sprites.</p>
+
+<figure>
+<img src="../uploads/Main/SpriteMask7.png" alt="The character sprites are interacting with masks on both the cards">
+<figcaption>The character sprites are interacting with masks on both the cards</figcaption>
+</figure>
+
+<p>One method of ensuring the mask is interacting with particular sprites is to use a Sorting Group Component.</p>
+
+<figure>
+<img src="../uploads/Main/SpriteMask8.png" alt="Sorting Group Component added to the Parent GameObject ensures the mask will affect only children of that Sorting Group">
+<figcaption>Sorting Group Component added to the Parent GameObject ensures the mask will affect only children of that Sorting Group</figcaption>
+</figure>
+
+<p>An alternative method of controlling the effect of the mask is to use the Custom Range Settings of a Sprite Mask.</p>
+
+<figure>
+<img src="../uploads/Main/SpriteMask9.png" alt="A Sprite Mask with a Custom Range setting ensures the mask will affect only Sprites in the specified Sorting Layer or Order in Layer range">
+<figcaption>A Sprite Mask with a Custom Range setting ensures the mask will affect only Sprites in the specified Sorting Layer or Order in Layer range</figcaption>
+</figure>
+
+<p>The Range Start and Range End provides the ability to selectively mask sprites based on their Sorting Layer or Order in Layer.</p>
+
+<figure>
+<img src="../uploads/Main/SpriteMask10.png" alt="">
+</figure>
+
+<p>
+<br><br>
+</p>
+
+<hr>
+
+<ul>
+<li><p><span class="page-edit">2017–05–26 Page published with no <a href="DocumentationEditorialReview.html">editorial review</a>
+</span></p></li>
+<li><p><span class="page-history">New feature in Unity <a href="../Manual/30_search.html?q=newin20171">2017.1</a> <span class="search-words">NewIn20171</span></span></p></li>
+</ul>
+<div class="feedbackbox" id="feedbackbox">
+<div id="rating"><p>Did you find this page useful? Please give it a rating:<br><div id="ratecontent" class="c-rating"></div>
+</p></div>
+<div id="ratingThanks" style="display:none"><p>Thanks for rating this page!</p></div>
+<div id="problem"><p><a name="problem" onclick="document.getElementById('problemType').style.display = '';document.getElementById('problem').style.display = 'none';">Report a problem on this page</a></p></div>
+<div id="problemType" style="display:none"><p>What kind of problem would you like to report?<ul type="problems">
+<li><a name="needcode" onclick="                                                             document.getElementById('problemType').style.display = 'none';                                                             document.getElementById('problemThanks').style.display = '';                                                             SendFeedback('problem-needcode',window.location.href,0);                                                             document.getElementById('problemFormDescription').value='Needs code samples.';                                                             document.getElementById('problemNeedCodeForm').style.display = ''                                                         ">This page needs code samples</a></li>
+<li><a name="code" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-brokencode',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Code samples do not work.';                                                         document.getElementById('problemCodeForm').style.display = ''                                                         ">Code samples do not work</a></li>
+<li><a name="missing" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-missing',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Missing information';                                                         document.getElementById('problemMissingForm').style.display = ''                                                         ">Information is missing</a></li>
+<li><a name="incorrect" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-incorrect',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Incorrect information';                                                         document.getElementById('problemIncorrectForm').style.display = ''                                                         ">Information is incorrect</a></li>
+<li><a name="unclear" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-unclear',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Unclear or confusing information';                                                         document.getElementById('problemUnclearForm').style.display = ''                                                         ">Information is unclear or confusing</a></li>
+<li><a name="language" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-language',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Spelling or grammar error';                                                         document.getElementById('problemLanguageForm').style.display = ''                                                         ">There is a spelling/grammar error on this page</a></li>
+<li><a name="other" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-other',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='This page has a problem';                                                         document.getElementById('problemOtherForm').style.display = ''                                                         ">Something else</a></li>
+</ul>
+<p><known_issues><p>Is something described here not working as you expect it to? It might be a <b>Known Issue</b>. Please check with the Issue Tracker at <a href="https://issuetracker.unity3d.com">issuetracker.unity3d.com</a>.</p></known_issues></p>
+</p></div>
+<div id="problemThanks" style="display:none"><p>Thanks for letting us know! This page has been marked for review based on your feedback.<br><br>If you have time, you can provide more information to help us fix the problem faster.<br><br><a onclick="document.getElementById('problemMoreInfo').style.display = '';document.getElementById('problemThanks').style.display = 'none';">Provide more information</a><br>
+</p></div>
+<div id="problemMoreInfo" style="display:none">
+<p id="problemNeedCodeForm" style="display:none">You've told us this page needs code samples. If you'd like to help us further, you could provide a code sample, or tell us about what kind of code sample you'd like to see:</p>
+<p id="problemCodeForm" style="display:none">You've told us there are code samples on this page which don't work. If you know how to fix it, or have something better we could use instead, please let us know:</p>
+<p id="problemMissingForm" style="display:none">You've told us there is information missing from this page. Please tell us more about what's missing:</p>
+<p id="problemIncorrectForm" style="display:none">You've told us there is incorrect information on this page. If you know what we should change to make it correct, please tell us:</p>
+<p id="problemUnclearForm" style="display:none">You've told us this page has unclear or confusing information. Please tell us more about what you found unclear or confusing, or let us know how we could make it clearer:</p>
+<p id="problemLanguageForm" style="display:none">You've told us there is a spelling or grammar error on this page. Please tell us what's wrong:</p>
+<p id="problemOtherForm" style="display:none">You've told us this page has a problem. Please tell us more about what's wrong:</p>
+<form>
+<textarea id="problemFormSuggestionField" cols="40" rows="5"></textarea><input type="hidden" id="problemFormDescription"><input type="submit" id="problemFormDescriptionSubmit" value="Submit" onclick="                                             document.getElementById('problemMoreInfo').style.display = 'none';                                             document.getElementById('problemMoreInfoThanks').style.display = '';                                             return false;                                             ">
+</form>
+</div>
+<div id="problemMoreInfoThanks" style="display:none"><p>Thanks for helping to make the Unity documentation better!</p></div>
+<script>
+
+                                            var ratecontent = document.querySelector('#ratecontent'); // target element
+                                            var currentRating = 0; // initial rating
+                                            var maxRating= 5; // max rating
+
+                                            // callback to run after setting the rating
+                                            var callback = function(rating) {
+                                                document.getElementById('ratingThanks').style.display = '';
+                                                document.getElementById('ratecontent').style.display = 'none';
+                                                document.getElementById('rating').style.display = 'none';
+                                                SendFeedback("rating",window.location.href,rating);
+                                            };
+
+                                            // rating instance
+                                            var myRating = rating(ratecontent, currentRating, maxRating, callback);
+                                        </script>
+</div>
+<div class="nextprev clear">
+<div class="icon tt left mr1" data-distance="-40|-30|top">
+<span class="prev"><a href="9SliceSprites.html"></a></span><div class="tip"> 9-slicing Sprites </div>
+</div>
+<div class="icon tt right" data-distance="-40|-30|top">
+<span class="next"><a href="SpriteAtlas.html"></a></span><div class="tip"> Sprite Atlas</div>
+</div>
+</div>
+</div>
+</body></html>

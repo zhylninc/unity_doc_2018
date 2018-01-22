@@ -1,0 +1,311 @@
+<html><head><title>html模版</title></head><body>Unity - Manual: Spatial Mapping basic low level API usage</br>
+<div class="breadcrumbs clear"><ul>
+<li><a href="UnityManual.html">Unity User Manual (2018.1 beta)</a></li>
+<li><a href="PlatformSpecific.html">Platform-specific</a></li>
+<li><a href="Windows.html">Windows</a></li>
+<li><a href="windowsholographic.html">Windows Holographic</a></li>
+<li><a href="windowsholographic-spatialmapping.html">Spatial Mapping</a></li>
+<li>Spatial Mapping basic low level API usage</li>
+</ul></div>
+<div class="mb20"><div class="nextprev clear">
+<div class="icon tt left mr1" data-distance="-40|-30|top">
+<span class="prev"><a href="windowsholographic-sm-concept.html"></a></span><div class="tip">Spatial mapping concepts</div>
+</div>
+<div class="icon tt right" data-distance="-40|-30|top">
+<span class="next"><a href="windowsholographic-sm-bestpractices.html"></a></span><div class="tip">Spatial Mapping best practices</div>
+</div>
+</div></div>
+<div class="otherversionswrapper" onmouseover="setOtherVersionsDisplay(true)" onmouseout="setOtherVersionsDisplay(false)">
+<a>Other Versions</a><div class="otherversionscontent" id="OtherVersionsContent" style="display: none;">Cannot access other versions offline!</div>
+</div>
+<div class="scrollToFeedback"><a id="scrollToFeedback">Leave feedback</a></div>
+<h1>Spatial Mapping basic low level API usage</h1>
+<!--BeginSwitchLink--><!--EndSwitchLink-->
+<div class="clear"></div>
+
+<p>The low level API provided for <strong>Spatial Mapping</strong> offers very fine-grained control over a complicated system. </p>
+
+<p>The common usage patterns listed below may be useful:</p>
+
+<h2>SurfaceObserver</h2>
+
+<p>The most important member of <strong>Spatial Mapping</strong> low level API is the <a href="../ScriptReference/XR.WSA.SurfaceObserver.html">SurfaceObserver</a>. This offers an insight into the device’s understanding of the real world.</p>
+
+<p>A <strong>SurfaceObserver</strong> describes a volume in the world and reports which <strong>Surfaces</strong> have been added, updated, or removed. Applications can then asynchronously request Mesh data with or without physics collision data. When the request has been filled, another callback informs the application that the data is ready.</p>
+
+<p>
+<strong>SurfaceObserver</strong> provides the following basic functionality:</p>
+
+<ol>
+<li>It issues callbacks on-demand for <strong>Surface</strong> changes like additions, removals, and updates.</li>
+<li>It provides an interface for requesting Mesh data corresponding to a known <strong>Surface</strong>.</li>
+<li>It issues callbacks when the requested Mesh data is available for use.</li>
+<li>It provides ways of defining the location and volume of the <strong>SurfaceObserver</strong>.</li>
+</ol>
+
+<h2>SurfaceData</h2>
+
+<p>The other significant moving part is the <a href="../ScriptReference/XR.WSA.SurfaceData.html">SurfaceData</a> object. This contains all the information required to build and report on a <strong>Surface’s</strong> Mesh data. </p>
+
+<p>A filled-out <strong>SurfaceData</strong> is passed to the system in a <a href="../ScriptReference/XR.WSA.SurfaceObserver.RequestMeshAsync.html">RequestMeshAsync</a> call. When the Mesh data is ready, a matching <strong>SurfaceData</strong> is returned in the “data ready” callback supplied at request time. This allows the application to determine precisely which <strong>Surface</strong> the data corresponds to, with no ambiguity.</p>
+
+<p>You should fill out the <strong>SurfaceData</strong> based on the information your application needs. This includes passing in:</p>
+
+<ul>
+<li><a href="../ScriptReference/XR.WSA.WorldAnchor.html">WorldAnchor</a></li>
+<li><a href="../ScriptReference/MeshFilter.html">MeshFilter</a></li>
+<li>
+<a href="../ScriptReference/MeshCollider.html">MeshCollider</a> (if physics data is required)</li>
+<li>the triangles per cubic meter of the generated Mesh that you want</li>
+<li>the Surface ID</li>
+</ul>
+
+<p>The system throws argument exceptions when calling <code>RequestMeshAsync</code> with an incorrectly configured <strong>SurfaceData</strong>. Note that even if a <code>RequestMeshAsync</code> does not throw argument exceptions, there is no guarantee that Mesh data is created and returned.</p>
+
+<h2>A simple use case</h2>
+
+<p>This sample outlines a basic use of this API.</p>
+
+<pre><code>using UnityEngine;
+using UnityEngine.VR;
+using UnityEngine.VR.WSA;
+using UnityEngine.Rendering;
+using UnityEngine.Assertions;
+using System;
+using System.Collections;
+using System.Collections.Generic;
+
+public enum BakedState {
+    NeverBaked = 0,
+    Baked = 1,
+    UpdatePostBake = 2
+}
+
+// Data that is kept to prioritize surface baking.
+class SurfaceEntry {
+    public GameObject  m_Surface; // the GameObject corresponding to this surface
+    public int         m_Id; // ID for this surface
+    public DateTime    m_UpdateTime; // update time as reported by the system
+    public BakedState  m_BakedState;
+    public const float c_Extents = 5.0f;
+}
+
+public class SMSample : MonoBehaviour {
+    // This observer is the window into the spatial mapping world.  
+    SurfaceObserver m_Observer;
+
+    // This dictionary contains the set of known spatial mapping surfaces.
+    // Surfaces are updated, added, and removed on a regular basis.
+    Dictionary&lt;int, SurfaceEntry&gt; m_Surfaces;
+
+    // This is the material with which the baked surfaces are drawn.  
+    public Material m_drawMat;
+
+    // This flag is used to postpone requests if a bake is in progress.  Baking mesh
+    // data can take multiple frames.  This sample prioritizes baking request
+    // order based on surface data surfaces and will only issue a new request
+    // if there are no requests being processed.
+    bool m_WaitingForBake;
+
+    // This is the last time the SurfaceObserver was updated.  It is updated no 
+    // more than every two seconds because doing so is potentially time-consuming.
+    float m_lastUpdateTime;
+
+    void Start () {
+        m_Observer = new SurfaceObserver ();
+        m_Observer.SetVolumeAsAxisAlignedBox (new Vector3(0.0f, 0.0f, 0.0f), 
+            new Vector3 (SurfaceEntry.c_Extents, SurfaceEntry.c_Extents, SurfaceEntry.c_Extents));
+        m_Surfaces = new Dictionary&lt;int, SurfaceEntry&gt; ();
+        m_WaitingForBake = false;
+        m_lastUpdateTime = 0.0f;
+    }
+    
+    void Update () {
+        // Avoid calling Update on a SurfaceObserver too frequently.
+        if (m_lastUpdateTime + 2.0f &lt; Time.realtimeSinceStartup) {
+            // This block makes the observation volume follow the camera.
+            Vector3 extents;
+            extents.x = SurfaceEntry.c_Extents;
+            extents.y = SurfaceEntry.c_Extents;
+            extents.z = SurfaceEntry.c_Extents;
+            m_Observer.SetVolumeAsAxisAlignedBox (Camera.main.transform.position, extents);
+
+            try {
+                m_Observer.Update (SurfaceChangedHandler);
+            } catch {
+                // Update can throw an exception if the specified callback was bad.
+                Debug.Log (&quot;Observer update failed unexpectedly!&quot;);
+            }
+
+            m_lastUpdateTime = Time.realtimeSinceStartup;
+        }
+
+
+        if (!m_WaitingForBake) {
+            // Prioritize older adds over other adds over updates.
+            SurfaceEntry bestSurface = null;
+            foreach (KeyValuePair&lt;int, SurfaceEntry&gt; surface in m_Surfaces) {
+                if (surface.Value.m_BakedState != BakedState.Baked) {
+                    if (bestSurface == null) {
+                        bestSurface = surface.Value;
+                    } else {
+                        if (surface.Value.m_BakedState &lt; bestSurface.m_BakedState) {
+                            bestSurface = surface.Value;
+                        } else if (surface.Value.m_UpdateTime &lt; bestSurface.m_UpdateTime) {
+                            bestSurface = surface.Value;
+                        }
+                    }
+                }
+            }
+            if (bestSurface != null) {
+                // Fill out and dispatch the request.
+                SurfaceData sd;
+                sd.id.handle = bestSurface.m_Id;
+                sd.outputMesh = bestSurface.m_Surface.GetComponent&lt;MeshFilter&gt; ();
+                sd.outputAnchor = bestSurface.m_Surface.GetComponent&lt;WorldAnchor&gt; ();
+                sd.outputCollider = bestSurface.m_Surface.GetComponent&lt;MeshCollider&gt; ();
+                sd.trianglesPerCubicMeter = 300.0f;
+                sd.bakeCollider = true;
+                try {
+                    if (m_Observer.RequestMeshAsync(sd, SurfaceDataReadyHandler)) {
+                        m_WaitingForBake = true;
+                    } else {
+                        // A return value of false when requesting meshes 
+                        // typically indicates that the specified surface
+                        // ID specified was invalid.
+                        Debug.Log(System.String.Format (&quot;Bake request for {0} failed.  Is {0} a valid Surface ID?&quot;, bestSurface.m_Id));
+                    }
+                }
+                catch {
+                    // Requests can fail if the data struct is not filled out
+                    // properly.  
+                    Debug.Log (System.String.Format(&quot;Bake for id {0} failed unexpectedly!&quot;, bestSurface.m_Id));
+                }
+            }
+        }
+    }
+
+    // This handler receives surface changed events and is propagated by the 
+    // Update method on SurfaceObserver.  
+    void SurfaceChangedHandler (SurfaceId id, SurfaceChange changeType, Bounds bounds, DateTime updateTime) {
+        SurfaceEntry entry;
+        switch (changeType) {
+            case SurfaceChange.Added:
+            case SurfaceChange.Updated:
+            if (m_Surfaces.TryGetValue(id.handle, out entry)) {
+                // If this surface has already been baked, mark it as needing bake
+                // in addition to the update time so the &quot;next surface to bake&quot; 
+                // logic will order it correctly.  
+                if (entry.m_BakedState == BakedState.Baked) {
+                    entry.m_BakedState = BakedState.UpdatePostBake;
+                    entry.m_UpdateTime = updateTime;
+                }
+            } else {
+                // This is a brand new surface so create an entry for it.
+                entry = new SurfaceEntry ();
+                entry.m_BakedState = BakedState.NeverBaked;
+                entry.m_UpdateTime = updateTime;
+                entry.m_Id = id.handle;
+                entry.m_Surface = new GameObject (System.String.Format(&quot;Surface-{0}&quot;, id.handle));
+                entry.m_Surface.AddComponent&lt;MeshFilter&gt; ();
+                entry.m_Surface.AddComponent&lt;MeshCollider&gt; ();
+                MeshRenderer mr = entry.m_Surface.AddComponent&lt;MeshRenderer&gt; ();
+                mr.shadowCastingMode = ShadowCastingMode.Off;
+                mr.receiveShadows = false;
+                entry.m_Surface.AddComponent&lt;WorldAnchor&gt; ();
+                entry.m_Surface.GetComponent&lt;MeshRenderer&gt; ().sharedMaterial = m_drawMat;
+                m_Surfaces[id.handle] = entry;
+            }
+            break;
+
+            case SurfaceChange.Removed:
+            if (m_Surfaces.TryGetValue(id.handle, out entry)) {
+                m_Surfaces.Remove (id.handle);
+                Mesh mesh = entry.m_Surface.GetComponent&lt;MeshFilter&gt; ().mesh;
+                if (mesh) {
+                    Destroy (mesh);
+                }
+                Destroy (entry.m_Surface);
+            }
+            break;
+        }
+    }
+
+    void SurfaceDataReadyHandler(SurfaceData sd, bool outputWritten, float elapsedBakeTimeSeconds) {
+        m_WaitingForBake = false;
+        SurfaceEntry entry;
+        if (m_Surfaces.TryGetValue(sd.id.handle, out entry)) {
+            // These two asserts are checking that the returned filter and WorldAnchor
+            // are the same ones that the data was requested with.  That should always
+            // be true here unless code has been changed to replace or destroy them.
+            Assert.IsTrue (sd.outputMesh == entry.m_Surface.GetComponent&lt;MeshFilter&gt;());
+            Assert.IsTrue (sd.outputAnchor == entry.m_Surface.GetComponent&lt;WorldAnchor&gt;());
+            entry.m_BakedState = BakedState.Baked;
+        } else {
+            Debug.Log (System.String.Format(&quot;Paranoia:  Couldn't find surface {0} after a bake!&quot;, sd.id.handle));
+            Assert.IsTrue (false);
+        }
+    }
+}
+</code></pre>
+
+<p>Note that call <a href="../ScriptReference/XR.WSA.SurfaceObserver.Update.html">Update</a> can be resource-intensive and should not be called more often than an application requires. Calling <strong>Update</strong> once every three seconds should be sufficient for most use cases.</p>
+<div class="feedbackbox" id="feedbackbox">
+<div id="rating"><p>Did you find this page useful? Please give it a rating:<br><div id="ratecontent" class="c-rating"></div>
+</p></div>
+<div id="ratingThanks" style="display:none"><p>Thanks for rating this page!</p></div>
+<div id="problem"><p><a name="problem" onclick="document.getElementById('problemType').style.display = '';document.getElementById('problem').style.display = 'none';">Report a problem on this page</a></p></div>
+<div id="problemType" style="display:none"><p>What kind of problem would you like to report?<ul type="problems">
+<li><a name="needcode" onclick="                                                             document.getElementById('problemType').style.display = 'none';                                                             document.getElementById('problemThanks').style.display = '';                                                             SendFeedback('problem-needcode',window.location.href,0);                                                             document.getElementById('problemFormDescription').value='Needs code samples.';                                                             document.getElementById('problemNeedCodeForm').style.display = ''                                                         ">This page needs code samples</a></li>
+<li><a name="code" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-brokencode',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Code samples do not work.';                                                         document.getElementById('problemCodeForm').style.display = ''                                                         ">Code samples do not work</a></li>
+<li><a name="missing" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-missing',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Missing information';                                                         document.getElementById('problemMissingForm').style.display = ''                                                         ">Information is missing</a></li>
+<li><a name="incorrect" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-incorrect',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Incorrect information';                                                         document.getElementById('problemIncorrectForm').style.display = ''                                                         ">Information is incorrect</a></li>
+<li><a name="unclear" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-unclear',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Unclear or confusing information';                                                         document.getElementById('problemUnclearForm').style.display = ''                                                         ">Information is unclear or confusing</a></li>
+<li><a name="language" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-language',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Spelling or grammar error';                                                         document.getElementById('problemLanguageForm').style.display = ''                                                         ">There is a spelling/grammar error on this page</a></li>
+<li><a name="other" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-other',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='This page has a problem';                                                         document.getElementById('problemOtherForm').style.display = ''                                                         ">Something else</a></li>
+</ul>
+<p><known_issues><p>Is something described here not working as you expect it to? It might be a <b>Known Issue</b>. Please check with the Issue Tracker at <a href="https://issuetracker.unity3d.com">issuetracker.unity3d.com</a>.</p></known_issues></p>
+</p></div>
+<div id="problemThanks" style="display:none"><p>Thanks for letting us know! This page has been marked for review based on your feedback.<br><br>If you have time, you can provide more information to help us fix the problem faster.<br><br><a onclick="document.getElementById('problemMoreInfo').style.display = '';document.getElementById('problemThanks').style.display = 'none';">Provide more information</a><br>
+</p></div>
+<div id="problemMoreInfo" style="display:none">
+<p id="problemNeedCodeForm" style="display:none">You've told us this page needs code samples. If you'd like to help us further, you could provide a code sample, or tell us about what kind of code sample you'd like to see:</p>
+<p id="problemCodeForm" style="display:none">You've told us there are code samples on this page which don't work. If you know how to fix it, or have something better we could use instead, please let us know:</p>
+<p id="problemMissingForm" style="display:none">You've told us there is information missing from this page. Please tell us more about what's missing:</p>
+<p id="problemIncorrectForm" style="display:none">You've told us there is incorrect information on this page. If you know what we should change to make it correct, please tell us:</p>
+<p id="problemUnclearForm" style="display:none">You've told us this page has unclear or confusing information. Please tell us more about what you found unclear or confusing, or let us know how we could make it clearer:</p>
+<p id="problemLanguageForm" style="display:none">You've told us there is a spelling or grammar error on this page. Please tell us what's wrong:</p>
+<p id="problemOtherForm" style="display:none">You've told us this page has a problem. Please tell us more about what's wrong:</p>
+<form>
+<textarea id="problemFormSuggestionField" cols="40" rows="5"></textarea><input type="hidden" id="problemFormDescription"><input type="submit" id="problemFormDescriptionSubmit" value="Submit" onclick="                                             document.getElementById('problemMoreInfo').style.display = 'none';                                             document.getElementById('problemMoreInfoThanks').style.display = '';                                             return false;                                             ">
+</form>
+</div>
+<div id="problemMoreInfoThanks" style="display:none"><p>Thanks for helping to make the Unity documentation better!</p></div>
+<script>
+
+                                            var ratecontent = document.querySelector('#ratecontent'); // target element
+                                            var currentRating = 0; // initial rating
+                                            var maxRating= 5; // max rating
+
+                                            // callback to run after setting the rating
+                                            var callback = function(rating) {
+                                                document.getElementById('ratingThanks').style.display = '';
+                                                document.getElementById('ratecontent').style.display = 'none';
+                                                document.getElementById('rating').style.display = 'none';
+                                                SendFeedback("rating",window.location.href,rating);
+                                            };
+
+                                            // rating instance
+                                            var myRating = rating(ratecontent, currentRating, maxRating, callback);
+                                        </script>
+</div>
+<div class="nextprev clear">
+<div class="icon tt left mr1" data-distance="-40|-30|top">
+<span class="prev"><a href="windowsholographic-sm-concept.html"></a></span><div class="tip">Spatial mapping concepts</div>
+</div>
+<div class="icon tt right" data-distance="-40|-30|top">
+<span class="next"><a href="windowsholographic-sm-bestpractices.html"></a></span><div class="tip">Spatial Mapping best practices</div>
+</div>
+</div>
+</div>
+</body></html>

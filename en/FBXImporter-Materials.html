@@ -1,0 +1,282 @@
+<html><head><title>html模版</title></head><body>Unity - Manual:  Model Importer: Materials</br>
+<div class="breadcrumbs clear"><ul>
+<li><a href="UnityManual.html">Unity User Manual (2018.1 beta)</a></li>
+<li><a href="AnimationSection.html">Animation</a></li>
+<li><a href="comp-AnimationGroup.html">Animation Reference</a></li>
+<li><a href="class-FBXImporter.html"> Importing models</a></li>
+<li> Model Importer: Materials</li>
+</ul></div>
+<div class="mb20"><div class="nextprev clear">
+<div class="icon tt left mr1" data-distance="-40|-30|top">
+<span class="prev"><a href="FBXImporter-Animations.html"></a></span><div class="tip"> Model Importer: Animations</div>
+</div>
+<div class="icon tt right" data-distance="-40|-30|top">
+<span class="next"><a href="3D-formats.html"></a></span><div class="tip">3D formats</div>
+</div>
+</div></div>
+<div class="otherversionswrapper" onmouseover="setOtherVersionsDisplay(true)" onmouseout="setOtherVersionsDisplay(false)">
+<a>Other Versions</a><div class="otherversionscontent" id="OtherVersionsContent" style="display: none;">Cannot access other versions offline!</div>
+</div>
+<div class="scrollToFeedback"><a id="scrollToFeedback">Leave feedback</a></div>
+<h1>Model Importer: Materials</h1>
+<!--BeginSwitchLink--><!--EndSwitchLink-->
+<div class="clear"></div>
+
+<p>By default, Unity uses a diffuse Material on imported Assets. Use the FBX Importer’s <strong>Materials</strong> tab to import Materials from your imported Assets. </p>
+
+<p>When you first open the <strong>Materials</strong> tab, it looks like this:</p>
+
+<figure>
+<img src="../uploads/Main/FBXImporter-Materials-0.png" alt="">
+</figure>
+
+<p>Tick <strong>Import Materials</strong> to open the settings for importing Materials from your imported Assets. </p>
+
+<figure>
+<img src="../uploads/Main/FBXImporter-Materials-1.png" alt="">
+</figure>
+
+<p>The settings in the <strong>Materials</strong> tab differ depending on the <strong>Location</strong> you choose. There are two <strong>Location</strong> options:</p>
+
+<table>
+<colgroup>
+<col style="text-align:left;">
+<col style="text-align:left;">
+</colgroup>
+
+<thead>
+<tr>
+	<th style="text-align:left;"><strong>Location</strong></th>
+	<th style="text-align:left;"><strong>Properties</strong></th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+	<td style="text-align:left;"><strong>Use Embedded Materials</strong></td>
+	<td style="text-align:left;">Choose this option to extract imported Materials as external Assets. This is the default option from Unity 2017.2 onwards.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>Use External Materials (Legacy)</strong></td>
+	<td style="text-align:left;">Choose this option to keep the imported Materials inside the imported Asset. This is a Legacy way of handling Materials, and is intended for projects created with 2017.1 or previous versions of Unity. This is the default option for Unity 2017.1 and previous versions of Unity.</td>
+</tr>
+</tbody>
+</table>
+
+<p>The following sections describe the settings for each Location option. </p>
+
+<h2>Location: Use Embedded Materials</h2>
+
+<figure>
+<img src="../uploads/Main/FBXImporter-Materials-2.png" alt="">
+</figure>
+
+<table>
+<colgroup>
+<col style="text-align:left;">
+<col style="text-align:left;">
+<col style="text-align:left;">
+</colgroup>
+
+<thead>
+<tr>
+	<th style="text-align:left;" colspan="2"><strong>Property</strong></th>
+	<th style="text-align:left;"><strong>Function</strong></th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+	<td style="text-align:left;" colspan="2"><strong>Textures</strong></td>
+	<td style="text-align:left;">Click the <strong>Extract Textures</strong> button to extract Textures that are embedded in your imported Asset. This is greyed out if there are no Textures to extract.</td>
+</tr>
+<tr>
+	<td style="text-align:left;" colspan="2"><strong>Materials</strong></td>
+	<td style="text-align:left;">Click the <strong>Extract Materials</strong> button to extract Materials that are embedded in your imported Asset. This is greyed out if there are no materials to extract.</td>
+</tr>
+<tr>
+	<td style="text-align:left;" colspan="3"><strong>Remapped Materials</strong></td>
+</tr>
+<tr>
+	<td style="text-align:left;" colspan="2"><strong>On Demand Remap</strong></td>
+	<td style="text-align:left;">These settings match the settings that appear in the inspector if you set the <strong>Location</strong> to <strong>Use External Materials (Legacy)</strong>. See the table above for descriptions of these properties.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;"><strong>Naming</strong></td>
+	<td style="text-align:left;">Use this to define how Unity Materials are named.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;">By Base Texture Name</td>
+	<td style="text-align:left;">The name of the diffuse Texture of the imported Material that is used to name the Material in Unity. When a diffuse Texture is not assigned to the Material, Unity uses the name of the imported Material.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;">From Model’s Material</td>
+	<td style="text-align:left;">The name of the imported Material is used for naming the Unity Material.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;">Model Name + Model’s Material</td>
+	<td style="text-align:left;">The name of the model file in combination with the name of the imported Material is used for naming the Unity Material.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;"><strong>Search</strong></td>
+	<td style="text-align:left;">Use this to define where Unity tries to locate existing Materials using the name defined by the <strong>Naming</strong> option.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;">Local</td>
+	<td style="text-align:left;">Unity tries to find existing Materials in the “local” Materials folder only (that is, the <em>Materials</em> subfolder, which is the same folder as the model file).</td>
+</tr>
+<tr>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;">Recursive-Up</td>
+	<td style="text-align:left;">Unity tries to find existing Materials in all Materials subfolders in all parent folders up to the Assets folder.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;">Everywhere</td>
+	<td style="text-align:left;">Unity tries to find existing Materials in all Unity project folders.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;"><strong>Search and Remap</strong></td>
+	<td style="text-align:left;">Use this button to remap your imported Materials to existing Material Assets, using the same settings as the Legacy import option. Clicking this button does not extract the Materials from the Asset, and does not change anything if Unity cannot find any materials with the correct name.</td>
+</tr>
+<tr>
+	<td style="text-align:left;" colspan="2"><strong>List of imported materials</strong></td>
+	<td style="text-align:left;">This list displays all imported Materials found in the Asset. You can remap each material to an existing Material Asset in your Project.</td>
+</tr>
+</tbody>
+</table>
+
+<p>If you want to modify the properties of the Materials in Unity, you can extract them all at once using the <strong>Extract Materials</strong> button. If you want to extract them one by one, go to <strong>Assets</strong> &gt; <strong>Extract From Prefab</strong>. When you extract Materials this way, they appear as references in the <strong>Remapped Materials</strong> list.</p>
+
+<p>New imports or changes to the original Asset do not affect extracted Materials. If you want to re-import the Materials from the source Asset, you need to remove the references to the extracted Materials in the <strong>Remapped Materials</strong> list. To remove an item from the list, select it and press the Backspace key on your keyboard.</p>
+
+<h2>Location: Use External Materials (Legacy)</h2>
+
+<p>Choose this option to extract imported Materials as external Assets. Before Unity version 2017.2, this was the default way of handling Materials. When opening projects created with 2017.1 or previous versions of Unity, only the Legacy settings and the <strong>Material Location</strong> option are visible.</p>
+
+<figure>
+<img src="../uploads/Main/FBXImporter-Materials-3.png" alt="">
+</figure>
+
+<table>
+<colgroup>
+<col style="text-align:left;">
+<col style="text-align:left;">
+<col style="text-align:left;">
+</colgroup>
+
+<thead>
+<tr>
+	<th style="text-align:left;" colspan="2"><strong>Property</strong></th>
+	<th style="text-align:left;"><strong>Function</strong></th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+	<td style="text-align:left;" colspan="2"><strong>Naming</strong></td>
+	<td style="text-align:left;">Use this to define how Unity Materials are named.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;">By Base Texture Name</td>
+	<td style="text-align:left;">The name of the diffuse Texture of the imported Material that is used to name the Material in Unity. When a diffuse Texture is not assigned to the Material, Unity uses the name of the imported Material.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;">From Model’s Material</td>
+	<td style="text-align:left;">The name of the imported Material is used for naming the Unity Material.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;">Model Name + Model’s Material</td>
+	<td style="text-align:left;">The name of the model file in combination with the name of the imported Material is used for naming the Unity Material.</td>
+</tr>
+<tr>
+	<td style="text-align:left;" colspan="2"><strong>Search</strong></td>
+	<td style="text-align:left;">Use this to define where Unity tries to locate existing Materials using the name defined by the <strong>Naming</strong> option.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;">Local</td>
+	<td style="text-align:left;">Unity tries to find existing Materials in the “local” Materials folder only (that is, the <em>Materials</em> subfolder, which is the same folder as the model file).</td>
+</tr>
+<tr>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;">Recursive-Up</td>
+	<td style="text-align:left;">Unity tries to find existing Materials in all Materials subfolders in all parent folders up to the Assets folder.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;">Everywhere</td>
+	<td style="text-align:left;">Unity tries to find existing Materials in all Unity project folders.</td>
+</tr>
+</tbody>
+</table>
+
+<div class="feedbackbox" id="feedbackbox">
+<div id="rating"><p>Did you find this page useful? Please give it a rating:<br><div id="ratecontent" class="c-rating"></div>
+</p></div>
+<div id="ratingThanks" style="display:none"><p>Thanks for rating this page!</p></div>
+<div id="problem"><p><a name="problem" onclick="document.getElementById('problemType').style.display = '';document.getElementById('problem').style.display = 'none';">Report a problem on this page</a></p></div>
+<div id="problemType" style="display:none"><p>What kind of problem would you like to report?<ul type="problems">
+<li><a name="needcode" onclick="                                                             document.getElementById('problemType').style.display = 'none';                                                             document.getElementById('problemThanks').style.display = '';                                                             SendFeedback('problem-needcode',window.location.href,0);                                                             document.getElementById('problemFormDescription').value='Needs code samples.';                                                             document.getElementById('problemNeedCodeForm').style.display = ''                                                         ">This page needs code samples</a></li>
+<li><a name="code" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-brokencode',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Code samples do not work.';                                                         document.getElementById('problemCodeForm').style.display = ''                                                         ">Code samples do not work</a></li>
+<li><a name="missing" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-missing',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Missing information';                                                         document.getElementById('problemMissingForm').style.display = ''                                                         ">Information is missing</a></li>
+<li><a name="incorrect" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-incorrect',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Incorrect information';                                                         document.getElementById('problemIncorrectForm').style.display = ''                                                         ">Information is incorrect</a></li>
+<li><a name="unclear" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-unclear',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Unclear or confusing information';                                                         document.getElementById('problemUnclearForm').style.display = ''                                                         ">Information is unclear or confusing</a></li>
+<li><a name="language" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-language',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Spelling or grammar error';                                                         document.getElementById('problemLanguageForm').style.display = ''                                                         ">There is a spelling/grammar error on this page</a></li>
+<li><a name="other" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-other',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='This page has a problem';                                                         document.getElementById('problemOtherForm').style.display = ''                                                         ">Something else</a></li>
+</ul>
+<p><known_issues><p>Is something described here not working as you expect it to? It might be a <b>Known Issue</b>. Please check with the Issue Tracker at <a href="https://issuetracker.unity3d.com">issuetracker.unity3d.com</a>.</p></known_issues></p>
+</p></div>
+<div id="problemThanks" style="display:none"><p>Thanks for letting us know! This page has been marked for review based on your feedback.<br><br>If you have time, you can provide more information to help us fix the problem faster.<br><br><a onclick="document.getElementById('problemMoreInfo').style.display = '';document.getElementById('problemThanks').style.display = 'none';">Provide more information</a><br>
+</p></div>
+<div id="problemMoreInfo" style="display:none">
+<p id="problemNeedCodeForm" style="display:none">You've told us this page needs code samples. If you'd like to help us further, you could provide a code sample, or tell us about what kind of code sample you'd like to see:</p>
+<p id="problemCodeForm" style="display:none">You've told us there are code samples on this page which don't work. If you know how to fix it, or have something better we could use instead, please let us know:</p>
+<p id="problemMissingForm" style="display:none">You've told us there is information missing from this page. Please tell us more about what's missing:</p>
+<p id="problemIncorrectForm" style="display:none">You've told us there is incorrect information on this page. If you know what we should change to make it correct, please tell us:</p>
+<p id="problemUnclearForm" style="display:none">You've told us this page has unclear or confusing information. Please tell us more about what you found unclear or confusing, or let us know how we could make it clearer:</p>
+<p id="problemLanguageForm" style="display:none">You've told us there is a spelling or grammar error on this page. Please tell us what's wrong:</p>
+<p id="problemOtherForm" style="display:none">You've told us this page has a problem. Please tell us more about what's wrong:</p>
+<form>
+<textarea id="problemFormSuggestionField" cols="40" rows="5"></textarea><input type="hidden" id="problemFormDescription"><input type="submit" id="problemFormDescriptionSubmit" value="Submit" onclick="                                             document.getElementById('problemMoreInfo').style.display = 'none';                                             document.getElementById('problemMoreInfoThanks').style.display = '';                                             return false;                                             ">
+</form>
+</div>
+<div id="problemMoreInfoThanks" style="display:none"><p>Thanks for helping to make the Unity documentation better!</p></div>
+<script>
+
+                                            var ratecontent = document.querySelector('#ratecontent'); // target element
+                                            var currentRating = 0; // initial rating
+                                            var maxRating= 5; // max rating
+
+                                            // callback to run after setting the rating
+                                            var callback = function(rating) {
+                                                document.getElementById('ratingThanks').style.display = '';
+                                                document.getElementById('ratecontent').style.display = 'none';
+                                                document.getElementById('rating').style.display = 'none';
+                                                SendFeedback("rating",window.location.href,rating);
+                                            };
+
+                                            // rating instance
+                                            var myRating = rating(ratecontent, currentRating, maxRating, callback);
+                                        </script>
+</div>
+<div class="nextprev clear">
+<div class="icon tt left mr1" data-distance="-40|-30|top">
+<span class="prev"><a href="FBXImporter-Animations.html"></a></span><div class="tip"> Model Importer: Animations</div>
+</div>
+<div class="icon tt right" data-distance="-40|-30|top">
+<span class="next"><a href="3D-formats.html"></a></span><div class="tip">3D formats</div>
+</div>
+</div>
+</div>
+</body></html>

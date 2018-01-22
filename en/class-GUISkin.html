@@ -1,0 +1,302 @@
+<html><head><title>html模版</title></head><body>Unity - Manual: GUI Skin (IMGUI System)</br>
+<div class="breadcrumbs clear"><ul>
+<li><a href="UnityManual.html">Unity User Manual (2018.1 beta)</a></li>
+<li><a href="UISystem.html">UI</a></li>
+<li><a href="GUIScriptingGuide.html">Immediate Mode GUI (IMGUI)</a></li>
+<li>GUI Skin (IMGUI System)</li>
+</ul></div>
+<div class="mb20"><div class="nextprev clear">
+<div class="icon tt left mr1" data-distance="-40|-30|top">
+<span class="prev"><a href="gui-Extending.html"></a></span><div class="tip">Extending IMGUI</div>
+</div>
+<div class="icon tt right" data-distance="-40|-30|top">
+<span class="next"><a href="class-GUIStyle.html"></a></span><div class="tip">GUI Style (IMGUI System)</div>
+</div>
+</div></div>
+<div class="otherversionswrapper" onmouseover="setOtherVersionsDisplay(true)" onmouseout="setOtherVersionsDisplay(false)">
+<a>Other Versions</a><div class="otherversionscontent" id="OtherVersionsContent" style="display: none;">Cannot access other versions offline!</div>
+</div>
+<div class="scrollToFeedback"><a id="scrollToFeedback">Leave feedback</a></div>
+<h1>GUI Skin (IMGUI System)</h1>
+<!--BeginSwitchLink--><a href='../ScriptReference/GUISkin.html' title='Go to GUISkin page in the Scripting Reference' class='switch-link gray-btn sbtn left'>Switch to Scripting</a><!--EndSwitchLink-->
+<div class="clear"></div>
+
+<p>
+<strong>GUISkins</strong> are a collection of <strong>GUIStyles</strong> that can be applied to your GUI. Each <strong>Control</strong> type has its own Style definition. Skins are intended to allow you to apply style to an entire UI, instead of a single Control by itself.</p>
+
+<figure>
+<img src="../uploads/Main/Inspector-GUISkin.png" alt="A GUI Skin as seen in the Inspector">
+<figcaption>A GUI Skin as seen in the Inspector</figcaption>
+</figure>
+
+<p>To create a GUISkin, select <strong>Assets-&gt;Create-&gt;GUI Skin</strong> from the menubar.</p>
+
+<p>
+<strong>Please Note</strong>: This page refers to part of the <a href="GUIScriptingGuide.html">IMGUI</a> system, which is a <em>scripting-only</em> UI system. Unity has a full GameObject-based UI system which you may prefer to use. It allows you to design and edit user interface elements as visible objects in the scene view. See the <a href="UISystem.html">UI System Manual</a> for more information.</p>
+
+<h2>Properties</h2>
+
+<p>All of the properties within a GUI Skin are an individual <a href="class-GUIStyle.html">GUIStyle</a>. Please read the <a href="class-GUIStyle.html">GUIStyle</a> page for more information about how to use Styles.</p>
+
+<table>
+<colgroup>
+<col style="text-align:left;">
+<col style="text-align:left;">
+</colgroup>
+
+<thead>
+<tr>
+	<th style="text-align:left;"><strong><em>Property:</em></strong></th>
+	<th style="text-align:left;"><strong><em>Function:</em></strong></th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+	<td style="text-align:left;"><strong>Font</strong></td>
+	<td style="text-align:left;">The global Font to use for every Control in the GUI</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>Box</strong></td>
+	<td style="text-align:left;">The <a href="class-GUIStyle.html">Style</a> to use for all Boxes</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>Button</strong></td>
+	<td style="text-align:left;">The <a href="class-GUIStyle.html">Style</a> to use for all Buttons</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>Toggle</strong></td>
+	<td style="text-align:left;">The <a href="class-GUIStyle.html">Style</a> to use for all Toggles</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>Label</strong></td>
+	<td style="text-align:left;">The <a href="class-GUIStyle.html">Style</a> to use for all Labels</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>Text Field</strong></td>
+	<td style="text-align:left;">The <a href="class-GUIStyle.html">Style</a> to use for all Text Fields</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>Text Area</strong></td>
+	<td style="text-align:left;">The <a href="class-GUIStyle.html">Style</a> to use for all Text Areas</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>Window</strong></td>
+	<td style="text-align:left;">The <a href="class-GUIStyle.html">Style</a> to use for all Windows</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>Horizontal Slider</strong></td>
+	<td style="text-align:left;">The <a href="class-GUIStyle.html">Style</a> to use for all Horizontal Slider bars</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>Horizontal Slider Thumb</strong></td>
+	<td style="text-align:left;">The <a href="class-GUIStyle.html">Style</a> to use for all Horizontal Slider Thumb Buttons</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>Vertical Slider</strong></td>
+	<td style="text-align:left;">The <a href="class-GUIStyle.html">Style</a> to use for all Vertical Slider bars</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>Vertical Slider Thumb</strong></td>
+	<td style="text-align:left;">The <a href="class-GUIStyle.html">Style</a> to use for all Vertical Slider Thumb Buttons</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>Horizontal Scrollbar</strong></td>
+	<td style="text-align:left;">The <a href="class-GUIStyle.html">Style</a> to use for all Horizontal Scrollbars</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>Horizontal Scrollbar Thumb</strong></td>
+	<td style="text-align:left;">The <a href="class-GUIStyle.html">Style</a> to use for all Horizontal Scrollbar Thumb Buttons</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>Horizontal Scrollbar Left Button</strong></td>
+	<td style="text-align:left;">The <a href="class-GUIStyle.html">Style</a> to use for all Horizontal Scrollbar scroll Left Buttons</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>Horizontal Scrollbar Right Button</strong></td>
+	<td style="text-align:left;">The <a href="class-GUIStyle.html">Style</a> to use for all Horizontal Scrollbar scroll Right Buttons</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>Vertical Scrollbar</strong></td>
+	<td style="text-align:left;">The <a href="class-GUIStyle.html">Style</a> to use for all Vertical Scrollbars</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>Vertical Scrollbar Thumb</strong></td>
+	<td style="text-align:left;">The <a href="class-GUIStyle.html">Style</a> to use for all Vertical Scrollbar Thumb Buttons</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>Vertical Scrollbar Up Button</strong></td>
+	<td style="text-align:left;">The <a href="class-GUIStyle.html">Style</a> to use for all Vertical Scrollbar scroll Up Buttons</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>Vertical Scrollbar Down Button</strong></td>
+	<td style="text-align:left;">The <a href="class-GUIStyle.html">Style</a> to use for all Vertical Scrollbar scroll Down Buttons</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>Custom 1–20</strong></td>
+	<td style="text-align:left;">Additional custom Styles that can be applied to any Control</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>Custom Styles</strong></td>
+	<td style="text-align:left;">An array of additional custom Styles that can be applied to any Control</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>Settings</strong></td>
+	<td style="text-align:left;">Additional Settings for the entire GUI</td>
+</tr>
+<tr>
+	<td style="text-align:left;">        <strong>Double Click Selects Word</strong>
+</td>
+	<td style="text-align:left;">If enabled, double-clicking a word will select it</td>
+</tr>
+<tr>
+	<td style="text-align:left;">        <strong>Triple Click Selects Line</strong>
+</td>
+	<td style="text-align:left;">If enabled, triple-clicking a word will select the entire line</td>
+</tr>
+<tr>
+	<td style="text-align:left;">        <strong>Cursor Color</strong>
+</td>
+	<td style="text-align:left;">Color of the keyboard cursor</td>
+</tr>
+<tr>
+	<td style="text-align:left;">        <strong>Cursor Flash Speed</strong>
+</td>
+	<td style="text-align:left;">The speed at which the text cursor will flash when editing any Text Control</td>
+</tr>
+<tr>
+	<td style="text-align:left;">        <strong>Selection Color</strong>
+</td>
+	<td style="text-align:left;">Color of the selected area of Text</td>
+</tr>
+</tbody>
+</table>
+
+<h2>Details</h2>
+
+<p>When you are creating an entire GUI for your game, you will likely need to do a lot of customization for every different Control type. In many different game genres, like real-time strategy or role-playing, there is a need for practically every single Control type.</p>
+
+<p>Because each individual Control uses a particular Style, it does not make sense to create a dozen-plus individual Styles and assign them all manually. GUI Skins take care of this problem for you. By creating a GUI Skin, you have a pre-defined collection of Styles for every individual Control. You then apply the Skin with a single line of code, which eliminates the need to manually specify the Style of each individual Control.</p>
+
+<h3>Creating GUISkins</h3>
+
+<p>GUISkins are asset files. To create a GUI Skin, select <strong>Assets-&gt;Create-&gt;GUI Skin</strong> from the menubar. This will put a new GUISkin in your <strong>Project View</strong>.</p>
+
+<figure>
+<img src="../uploads/Main/GUISkin-ProjectView.png" alt="A new GUISkin file in the Project View">
+<figcaption>A new GUISkin file in the Project View</figcaption>
+</figure>
+
+<h3>Editing GUISkins</h3>
+
+<p>After you have created a GUISkin, you can edit all of the <a href="class-GUIStyle.html">Styles</a> it contains in the Inspector. For example, the <strong>Text Field</strong> <a href="class-GUIStyle.html">Style</a> will be applied to all Text Field Controls.</p>
+
+<figure>
+<img src="../uploads/Main/GUISkin-EditingTextField.png" alt="Editing the Text Field Style in a GUISkin">
+<figcaption>Editing the Text Field Style in a GUISkin</figcaption>
+</figure>
+
+<p>No matter how many Text Fields you create in your script, they will all use this <a href="class-GUIStyle.html">Style</a>. Of course, you have control over changing the styles of one Text Field over the other if you wish. We’ll discuss how that is done next.</p>
+
+<h3>Applying GUISkins</h3>
+
+<p>To apply a GUISkin to your GUI, you must use a simple script to read and apply the Skin to your Controls.</p>
+
+<pre><code>
+    // Create a public variable where we can assign the GUISkin
+    var customSkin : GUISkin;
+
+    // Apply the Skin in our OnGUI() function
+    function OnGUI () {
+        GUI.skin = customSkin;
+
+        // Now create any Controls you like, and they will be displayed with the custom Skin
+        GUILayout.Button (&quot;I am a re-Skinned Button&quot;);
+
+        // You can change or remove the skin for some Controls but not others
+        GUI.skin = null;
+
+        // Any Controls created here will use the default Skin and not the custom Skin
+        GUILayout.Button (&quot;This Button uses the default UnityGUI Skin&quot;);
+    }
+
+
+</code></pre>
+
+<p>In some cases you want to have two of the same Control with different Styles. For this, it does not make sense to create a new Skin and re-assign it. Instead, you use one of the <strong>Custom</strong> Styles in the skin. Provide a <strong>Name</strong> for the custom Style, and you can use that name as the last argument of the individual Control.</p>
+
+<pre><code>    // One of the custom Styles in this Skin has the name &quot;MyCustomControl&quot;
+    var customSkin : GUISkin;
+
+    function OnGUI () {
+        GUI.skin = customSkin;
+
+        // We provide the name of the Style we want to use as the last argument of the Control function
+        GUILayout.Button (&quot;I am a custom styled Button&quot;, &quot;MyCustomControl&quot;);
+
+        // We can also ignore the Custom Style, and use the Skin's default Button Style
+        GUILayout.Button (&quot;I am the Skin's Button Style&quot;);
+    }
+
+</code></pre>
+
+<p>For more information about working with GUIStyles, please read the <a href="class-GUIStyle.html">GUIStyle</a> page. For more information about using UnityGUI, please read the <a href="GUIScriptingGuide.html">GUI Scripting Guide</a>.</p>
+<div class="feedbackbox" id="feedbackbox">
+<div id="rating"><p>Did you find this page useful? Please give it a rating:<br><div id="ratecontent" class="c-rating"></div>
+</p></div>
+<div id="ratingThanks" style="display:none"><p>Thanks for rating this page!</p></div>
+<div id="problem"><p><a name="problem" onclick="document.getElementById('problemType').style.display = '';document.getElementById('problem').style.display = 'none';">Report a problem on this page</a></p></div>
+<div id="problemType" style="display:none"><p>What kind of problem would you like to report?<ul type="problems">
+<li><a name="needcode" onclick="                                                             document.getElementById('problemType').style.display = 'none';                                                             document.getElementById('problemThanks').style.display = '';                                                             SendFeedback('problem-needcode',window.location.href,0);                                                             document.getElementById('problemFormDescription').value='Needs code samples.';                                                             document.getElementById('problemNeedCodeForm').style.display = ''                                                         ">This page needs code samples</a></li>
+<li><a name="code" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-brokencode',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Code samples do not work.';                                                         document.getElementById('problemCodeForm').style.display = ''                                                         ">Code samples do not work</a></li>
+<li><a name="missing" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-missing',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Missing information';                                                         document.getElementById('problemMissingForm').style.display = ''                                                         ">Information is missing</a></li>
+<li><a name="incorrect" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-incorrect',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Incorrect information';                                                         document.getElementById('problemIncorrectForm').style.display = ''                                                         ">Information is incorrect</a></li>
+<li><a name="unclear" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-unclear',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Unclear or confusing information';                                                         document.getElementById('problemUnclearForm').style.display = ''                                                         ">Information is unclear or confusing</a></li>
+<li><a name="language" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-language',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Spelling or grammar error';                                                         document.getElementById('problemLanguageForm').style.display = ''                                                         ">There is a spelling/grammar error on this page</a></li>
+<li><a name="other" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-other',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='This page has a problem';                                                         document.getElementById('problemOtherForm').style.display = ''                                                         ">Something else</a></li>
+</ul>
+<p><known_issues><p>Is something described here not working as you expect it to? It might be a <b>Known Issue</b>. Please check with the Issue Tracker at <a href="https://issuetracker.unity3d.com">issuetracker.unity3d.com</a>.</p></known_issues></p>
+</p></div>
+<div id="problemThanks" style="display:none"><p>Thanks for letting us know! This page has been marked for review based on your feedback.<br><br>If you have time, you can provide more information to help us fix the problem faster.<br><br><a onclick="document.getElementById('problemMoreInfo').style.display = '';document.getElementById('problemThanks').style.display = 'none';">Provide more information</a><br>
+</p></div>
+<div id="problemMoreInfo" style="display:none">
+<p id="problemNeedCodeForm" style="display:none">You've told us this page needs code samples. If you'd like to help us further, you could provide a code sample, or tell us about what kind of code sample you'd like to see:</p>
+<p id="problemCodeForm" style="display:none">You've told us there are code samples on this page which don't work. If you know how to fix it, or have something better we could use instead, please let us know:</p>
+<p id="problemMissingForm" style="display:none">You've told us there is information missing from this page. Please tell us more about what's missing:</p>
+<p id="problemIncorrectForm" style="display:none">You've told us there is incorrect information on this page. If you know what we should change to make it correct, please tell us:</p>
+<p id="problemUnclearForm" style="display:none">You've told us this page has unclear or confusing information. Please tell us more about what you found unclear or confusing, or let us know how we could make it clearer:</p>
+<p id="problemLanguageForm" style="display:none">You've told us there is a spelling or grammar error on this page. Please tell us what's wrong:</p>
+<p id="problemOtherForm" style="display:none">You've told us this page has a problem. Please tell us more about what's wrong:</p>
+<form>
+<textarea id="problemFormSuggestionField" cols="40" rows="5"></textarea><input type="hidden" id="problemFormDescription"><input type="submit" id="problemFormDescriptionSubmit" value="Submit" onclick="                                             document.getElementById('problemMoreInfo').style.display = 'none';                                             document.getElementById('problemMoreInfoThanks').style.display = '';                                             return false;                                             ">
+</form>
+</div>
+<div id="problemMoreInfoThanks" style="display:none"><p>Thanks for helping to make the Unity documentation better!</p></div>
+<script>
+
+                                            var ratecontent = document.querySelector('#ratecontent'); // target element
+                                            var currentRating = 0; // initial rating
+                                            var maxRating= 5; // max rating
+
+                                            // callback to run after setting the rating
+                                            var callback = function(rating) {
+                                                document.getElementById('ratingThanks').style.display = '';
+                                                document.getElementById('ratecontent').style.display = 'none';
+                                                document.getElementById('rating').style.display = 'none';
+                                                SendFeedback("rating",window.location.href,rating);
+                                            };
+
+                                            // rating instance
+                                            var myRating = rating(ratecontent, currentRating, maxRating, callback);
+                                        </script>
+</div>
+<div class="nextprev clear">
+<div class="icon tt left mr1" data-distance="-40|-30|top">
+<span class="prev"><a href="gui-Extending.html"></a></span><div class="tip">Extending IMGUI</div>
+</div>
+<div class="icon tt right" data-distance="-40|-30|top">
+<span class="next"><a href="class-GUIStyle.html"></a></span><div class="tip">GUI Style (IMGUI System)</div>
+</div>
+</div>
+</div>
+</body></html>

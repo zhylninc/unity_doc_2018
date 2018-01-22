@@ -1,0 +1,173 @@
+<html><head><title>html模版</title></head><body>Unity - Manual:  NetworkBehaviour callbacks</br>
+<div class="breadcrumbs clear"><ul>
+<li><a href="UnityManual.html">Unity User Manual (2018.1 beta)</a></li>
+<li><a href="UNet.html">Multiplayer and Networking</a></li>
+<li><a href="UNetOverview.html">Networking Overview</a></li>
+<li><a href="UNetUsingHLAPI.html">The High Level API</a></li>
+<li> NetworkBehaviour callbacks</li>
+</ul></div>
+<div class="mb20"><div class="nextprev clear">
+<div class="icon tt left mr1" data-distance="-40|-30|top">
+<span class="prev"><a href="NetworkManagerCallbacks.html"></a></span><div class="tip"> Network Manager callbacks</div>
+</div>
+<div class="icon tt right" data-distance="-40|-30|top">
+<span class="next"><a href="UNetMessages.html"></a></span><div class="tip">Network Messages</div>
+</div>
+</div></div>
+<div class="otherversionswrapper" onmouseover="setOtherVersionsDisplay(true)" onmouseout="setOtherVersionsDisplay(false)">
+<a>Other Versions</a><div class="otherversionscontent" id="OtherVersionsContent" style="display: none;">Cannot access other versions offline!</div>
+</div>
+<div class="scrollToFeedback"><a id="scrollToFeedback">Leave feedback</a></div>
+<h1>NetworkBehaviour callbacks</h1>
+<!--BeginSwitchLink--><!--EndSwitchLink-->
+<div class="clear"></div>
+
+<p>When using the Network Manager, a player is added by default when a client connects to the server. Players are represented by designated GameObjects (See Unity documentation on <a href="UNetPlayers.html">Player GameObjects</a> to learn more). The player GameObject exists on both the <strong>Server</strong> and the <strong>Client</strong> instances. </p>
+
+<p>Different callbacks are received depending on your game’s connection state. These can be set in the Network Manager HUD.</p>
+
+<figure>
+<img src="../uploads/Main/NetworkManagerHud.png" alt="">
+</figure>
+
+<p>Three connection states are available:</p>
+
+<ul>
+<li><p>
+<strong>Host</strong>: To set your game up in <strong>Host</strong> mode, select <strong>LAN Host(H)</strong>.</p></li>
+<li><p>
+<strong>Client</strong>: To set your game up in <strong>Client</strong> mode, select <strong>LAN Client(C)</strong> and enter the server IP into the text field or use the API function <code>StartClient()</code>. Note that your server IP must be in the same local network - or you can type “localhost” if you are connecting to the same machine.</p></li>
+<li><p>
+<strong>Server</strong>: To set your game up in <strong>Server</strong> mode, select <strong>LAN Server Only(S)</strong>.</p></li>
+</ul>
+
+<p>During run time, the Network Manager HUD’s controls are also available in the Network Manager HUD component’s Inspector window. Click <strong>Runtime Controls</strong> to access these.</p>
+
+<figure>
+<img src="../uploads/Main/NetworkManagerHUD2.png" alt="">
+</figure>
+
+<p>The callbacks in this section are defined in the <a href="class-NetworkBehaviour.html">NetworkBehaviour</a> class and are called only on the player GameObject. To learn more about setting up game states, see <a href="http://docs.unity3d.com/Manual/UNetManager.html">Using the Network Manager: Game state management</a>.</p>
+
+<p>Some callbacks require you to have multiple instances of the game running (for example, two Standalone instances, or one Standalone and one in the Editor). These instances can be on the same machine or on different machines, as long as those machines are connected through a local network. This also works in the same way for MatchMaker, but with MatchMaker your machines can also be connected via the Internet.</p>
+
+<h4>See also:</h4>
+
+<ul>
+<li><p>
+<a href="class-NetworkBehaviour.html">NetworkBehaviour</a> </p></li>
+<li><p><a href="NetworkManagerCallbacks.html">Network Manager callbacks</a></p></li>
+</ul>
+
+<h3>Player callbacks on Server</h3>
+
+<p>To get these callbacks you need to have two instances of the game, one running in <strong>Server</strong> mode and the other running in <strong>Client</strong> mode. These callbacks are only called on the player GameObject on the <strong>Server</strong> instance.</p>
+
+<p>Launch the <strong>Server</strong> mode instance first, then start the <strong>Client</strong> instance to get the callbacks:</p>
+
+<ul>
+<li><p><code>OnStartServer</code></p></li>
+<li><p><code>OnRebuildObservers</code></p></li>
+<li><p>(<code>Start()</code> function is called)</p></li>
+</ul>
+
+<h3>Player callbacks on Client</h3>
+
+<p>To get these callbacks you need to have two instances of the game, one running in <strong>Server</strong> mode and the other running in <strong>Client</strong> mode. These callbacks are only called on the player GameObject on the <strong>Client</strong> instance.</p>
+
+<p>Launch the <strong>Server</strong> mode instance first, then start the <strong>Client</strong> instance to get the callbacks:</p>
+
+<ul>
+<li><p><code>OnStartClient</code></p></li>
+<li><p><code>OnStartLocalPlayer</code></p></li>
+<li><p><code>OnStartAuthority</code></p></li>
+<li><p>(<code>Start()</code> function is called)</p></li>
+</ul>
+
+<h3>Player callbacks on Host</h3>
+
+<p>To get these callbacks you need to have one instance of the game running in <strong>Host</strong> mode, either in the Editor or as a Standalone build. These callbacks are only called on the Player GameObject:</p>
+
+<ul>
+<li><p><code>OnStartServer</code></p></li>
+<li><p><code>OnStartClient</code></p></li>
+<li><p><code>OnRebuildObservers</code></p></li>
+<li><p><code>OnStartAuthority</code></p></li>
+<li><p><code>OnStartLocalPlayer</code></p></li>
+<li><p>(<code>Start()</code> function is called)</p></li>
+<li><p><code>OnSetLocalVisibility</code></p></li>
+</ul>
+
+<h3>NetworkBehaviour: OnNetworkDestroy</h3>
+
+<p>To get the <code>OnNetworkDestroy</code> callback you need to have three Standalone instances of the game, one running in <strong>Server</strong> mode and two running in <strong>Client</strong> mode. </p>
+
+<p>Follow the instructions below to get the <code>OnNetworkDestroy</code> callback:</p>
+
+<ol>
+<li><p>Start <strong>Server</strong> instance</p></li>
+<li><p>Start <strong>Client</strong> instance</p></li>
+<li><p>Start a second <strong>Client</strong> instance</p></li>
+<li><p>When both <strong>Client</strong> instances have automatically connected to the <strong>Server</strong> instance, stop one <strong>Client</strong> instance</p></li>
+<li><p>
+<code>OnNetworkDestroy</code> is then called on the remaining <strong>Client</strong> instance, but not on the <strong>Server</strong> instance</p></li>
+</ol>
+<div class="feedbackbox" id="feedbackbox">
+<div id="rating"><p>Did you find this page useful? Please give it a rating:<br><div id="ratecontent" class="c-rating"></div>
+</p></div>
+<div id="ratingThanks" style="display:none"><p>Thanks for rating this page!</p></div>
+<div id="problem"><p><a name="problem" onclick="document.getElementById('problemType').style.display = '';document.getElementById('problem').style.display = 'none';">Report a problem on this page</a></p></div>
+<div id="problemType" style="display:none"><p>What kind of problem would you like to report?<ul type="problems">
+<li><a name="needcode" onclick="                                                             document.getElementById('problemType').style.display = 'none';                                                             document.getElementById('problemThanks').style.display = '';                                                             SendFeedback('problem-needcode',window.location.href,0);                                                             document.getElementById('problemFormDescription').value='Needs code samples.';                                                             document.getElementById('problemNeedCodeForm').style.display = ''                                                         ">This page needs code samples</a></li>
+<li><a name="code" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-brokencode',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Code samples do not work.';                                                         document.getElementById('problemCodeForm').style.display = ''                                                         ">Code samples do not work</a></li>
+<li><a name="missing" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-missing',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Missing information';                                                         document.getElementById('problemMissingForm').style.display = ''                                                         ">Information is missing</a></li>
+<li><a name="incorrect" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-incorrect',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Incorrect information';                                                         document.getElementById('problemIncorrectForm').style.display = ''                                                         ">Information is incorrect</a></li>
+<li><a name="unclear" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-unclear',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Unclear or confusing information';                                                         document.getElementById('problemUnclearForm').style.display = ''                                                         ">Information is unclear or confusing</a></li>
+<li><a name="language" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-language',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Spelling or grammar error';                                                         document.getElementById('problemLanguageForm').style.display = ''                                                         ">There is a spelling/grammar error on this page</a></li>
+<li><a name="other" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-other',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='This page has a problem';                                                         document.getElementById('problemOtherForm').style.display = ''                                                         ">Something else</a></li>
+</ul>
+<p><known_issues><p>Is something described here not working as you expect it to? It might be a <b>Known Issue</b>. Please check with the Issue Tracker at <a href="https://issuetracker.unity3d.com">issuetracker.unity3d.com</a>.</p></known_issues></p>
+</p></div>
+<div id="problemThanks" style="display:none"><p>Thanks for letting us know! This page has been marked for review based on your feedback.<br><br>If you have time, you can provide more information to help us fix the problem faster.<br><br><a onclick="document.getElementById('problemMoreInfo').style.display = '';document.getElementById('problemThanks').style.display = 'none';">Provide more information</a><br>
+</p></div>
+<div id="problemMoreInfo" style="display:none">
+<p id="problemNeedCodeForm" style="display:none">You've told us this page needs code samples. If you'd like to help us further, you could provide a code sample, or tell us about what kind of code sample you'd like to see:</p>
+<p id="problemCodeForm" style="display:none">You've told us there are code samples on this page which don't work. If you know how to fix it, or have something better we could use instead, please let us know:</p>
+<p id="problemMissingForm" style="display:none">You've told us there is information missing from this page. Please tell us more about what's missing:</p>
+<p id="problemIncorrectForm" style="display:none">You've told us there is incorrect information on this page. If you know what we should change to make it correct, please tell us:</p>
+<p id="problemUnclearForm" style="display:none">You've told us this page has unclear or confusing information. Please tell us more about what you found unclear or confusing, or let us know how we could make it clearer:</p>
+<p id="problemLanguageForm" style="display:none">You've told us there is a spelling or grammar error on this page. Please tell us what's wrong:</p>
+<p id="problemOtherForm" style="display:none">You've told us this page has a problem. Please tell us more about what's wrong:</p>
+<form>
+<textarea id="problemFormSuggestionField" cols="40" rows="5"></textarea><input type="hidden" id="problemFormDescription"><input type="submit" id="problemFormDescriptionSubmit" value="Submit" onclick="                                             document.getElementById('problemMoreInfo').style.display = 'none';                                             document.getElementById('problemMoreInfoThanks').style.display = '';                                             return false;                                             ">
+</form>
+</div>
+<div id="problemMoreInfoThanks" style="display:none"><p>Thanks for helping to make the Unity documentation better!</p></div>
+<script>
+
+                                            var ratecontent = document.querySelector('#ratecontent'); // target element
+                                            var currentRating = 0; // initial rating
+                                            var maxRating= 5; // max rating
+
+                                            // callback to run after setting the rating
+                                            var callback = function(rating) {
+                                                document.getElementById('ratingThanks').style.display = '';
+                                                document.getElementById('ratecontent').style.display = 'none';
+                                                document.getElementById('rating').style.display = 'none';
+                                                SendFeedback("rating",window.location.href,rating);
+                                            };
+
+                                            // rating instance
+                                            var myRating = rating(ratecontent, currentRating, maxRating, callback);
+                                        </script>
+</div>
+<div class="nextprev clear">
+<div class="icon tt left mr1" data-distance="-40|-30|top">
+<span class="prev"><a href="NetworkManagerCallbacks.html"></a></span><div class="tip"> Network Manager callbacks</div>
+</div>
+<div class="icon tt right" data-distance="-40|-30|top">
+<span class="next"><a href="UNetMessages.html"></a></span><div class="tip">Network Messages</div>
+</div>
+</div>
+</div>
+</body></html>

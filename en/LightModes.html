@@ -1,0 +1,172 @@
+<html><head><title>html模版</title></head><body>Unity - Manual:  Lighting Modes</br>
+<div class="breadcrumbs clear"><ul>
+<li><a href="UnityManual.html">Unity User Manual (2018.1 beta)</a></li>
+<li><a href="Graphics.html">Graphics</a></li>
+<li><a href="GraphicsOverview.html">Graphics Overview</a></li>
+<li><a href="LightingOverview.html">Lighting</a></li>
+<li> Lighting Modes</li>
+</ul></div>
+<div class="mb20"><div class="nextprev clear">
+<div class="icon tt left mr1" data-distance="-40|-30|top">
+<span class="prev"><a href="DirLightShadows.html"></a></span><div class="tip">Directional light shadows</div>
+</div>
+<div class="icon tt right" data-distance="-40|-30|top">
+<span class="next"><a href="LightModes-TechnicalInformation.html"></a></span><div class="tip"> Lighting: Technical information and terminology</div>
+</div>
+</div></div>
+<div class="otherversionswrapper" onmouseover="setOtherVersionsDisplay(true)" onmouseout="setOtherVersionsDisplay(false)">
+<a>Other Versions</a><div class="otherversionscontent" id="OtherVersionsContent" style="display: none;">Cannot access other versions offline!</div>
+</div>
+<div class="scrollToFeedback"><a id="scrollToFeedback">Leave feedback</a></div>
+<h1>Lighting Modes</h1>
+<!--BeginSwitchLink--><!--EndSwitchLink-->
+<div class="clear"></div>
+
+<p>This page assumes you have already read documentation on <a href="LightingInUnity.html">lighting in Unity</a>.</p>
+
+<p>To control lighting precomputation and composition in Unity, you need to assign a <strong>Light Mode</strong> to a Light. This <strong>Light Mode</strong> defines the Light’s intended use. To assign a Light Mode, select the Light in your Scene and, in the <a href="GlobalIllumination.html">Light Inspector window</a>, select <strong>Mode</strong>. </p>
+
+<figure>
+<img src="../uploads/Main/LightModes-0.png" alt="">
+</figure>
+
+<p>The Modes and their possible mappings are:</p>
+
+<ul>
+<li><a href="LightMode-Realtime.html">Realtime</a></li>
+<li>
+<a href="LightMode-Mixed.html">Mixed</a> - Mixed Lights have their own sub-modes. Set these in the Lighting window:
+
+<ul>
+<li><a href="LightMode-Mixed-BakedIndirect.html">Baked Indirect</a></li>
+<li><a href="LightMode-Mixed-DistanceShadowmask.html">Shadowmask</a></li>
+<li><a href="LightMode-Mixed-Shadowmask.html">Distance Shadowmask</a></li>
+<li><a href="LightMode-Mixed-Subtractive.html">Subtractive</a></li>
+</ul>
+</li>
+<li>Baked(LightMode-Baked)</li>
+</ul>
+
+<p>For more information, see the <a href="https://drive.google.com/open?id=1v-LnDOJcsSsa0ViF7kBs6xgY9Q_z-1k6h95LE0lf46U">Reference card for Light Modes</a>.</p>
+
+<p>The Modes are listed above in the order of least to most light path precomputations required (See <em>How Modes work</em>, below). Note that this order does not necessarily correlate with the amount of time the actual precomputation requires.</p>
+
+<h2>How Modes work</h2>
+
+<p>Each <strong>Mode</strong> in the Light Inspector window corresponds to a group of settings in the Lighting window (menu: <strong>Window</strong> &gt; <strong>Lighting</strong> &gt; <strong>Settings</strong> &gt; <strong>Scene</strong>). </p>
+
+<figure>
+<img src="../uploads/Main/LightModes-1.png" alt="The available Light Modes in the Light component (left), and the corresponding settings available for those modes in the Lighting Scene window (right).">
+<figcaption>The available <strong>Light Modes</strong> in the Light component (left), and the corresponding settings available for those modes in the Lighting Scene window (right).</figcaption>
+</figure>
+
+<table>
+<colgroup>
+<col style="text-align:left;">
+<col style="text-align:left;">
+<col style="text-align:left;">
+</colgroup>
+
+<thead>
+<tr>
+	<th style="text-align:left;"><strong>Light Inspector</strong></th>
+	<th style="text-align:left;"><strong>Lighting window</strong></th>
+	<th style="text-align:left;"><strong>Function</strong></th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+	<td style="text-align:left;"><strong>Realtime</strong></td>
+	<td style="text-align:left;"><strong>Realtime Lighting</strong></td>
+	<td style="text-align:left;">Unity calculates and updates the lighting of <strong>Realtime</strong> Lights every frame during run time. No Realtime Lights are precomputed.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>Mixed</strong></td>
+	<td style="text-align:left;"><strong>Mixed Lighting</strong></td>
+	<td style="text-align:left;">Unity can calculate some properties of <strong>Mixed</strong> Lights during run time, but only within strong limitations. Some Mixed Lights are precomputed.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>Baked</strong></td>
+	<td style="text-align:left;"><strong>Lightmapping Settings</strong></td>
+	<td style="text-align:left;">Unity pre-calculates the illumination from <strong>Baked</strong> Lights before run time, and does not include them in any run-time lighting calculations. All Baked Lights are precomputed.</td>
+</tr>
+</tbody>
+</table>
+
+<p>Use these settings to adjust each mode. The adjustments you make apply to all Lights with that Mode assigned to them. For example, if you open the Lighting window, navigate to the <strong>Realtime Lighting Settings</strong> and tick <strong>Realtime Global Illumination</strong>, all Lights that have their <strong>Mode</strong> set to <strong>Realtime</strong> mode use <strong>Realtime Global Illumination</strong>.</p>
+
+<p>Precomputation yields two sets of results:</p>
+
+<ul>
+<li><p>Unity stores results for static GameObjects as Texture atlases in UV Texture coordinate space. Unity provides several settings to <a href="GlobalIllumination.html">control this layouting</a>. </p></li>
+<li><p>
+<a href="LightProbes.html">Light Probes</a> store a representation of light in empty space as seen from their particular position. Dynamic GameObjects moving through this portion of empty space use this information to receive illumination from the precomputed lighting.</p></li>
+</ul>
+
+<hr>
+
+<ul>
+<li><p><span class="page-edit"> 2017–06–08 Page published with limited <a href="DocumentationEditorialReview.html">editorial review</a>
+</span></p></li>
+<li><p><span class="page-history">Updated in 5.6</span></p></li>
+</ul>
+<div class="feedbackbox" id="feedbackbox">
+<div id="rating"><p>Did you find this page useful? Please give it a rating:<br><div id="ratecontent" class="c-rating"></div>
+</p></div>
+<div id="ratingThanks" style="display:none"><p>Thanks for rating this page!</p></div>
+<div id="problem"><p><a name="problem" onclick="document.getElementById('problemType').style.display = '';document.getElementById('problem').style.display = 'none';">Report a problem on this page</a></p></div>
+<div id="problemType" style="display:none"><p>What kind of problem would you like to report?<ul type="problems">
+<li><a name="needcode" onclick="                                                             document.getElementById('problemType').style.display = 'none';                                                             document.getElementById('problemThanks').style.display = '';                                                             SendFeedback('problem-needcode',window.location.href,0);                                                             document.getElementById('problemFormDescription').value='Needs code samples.';                                                             document.getElementById('problemNeedCodeForm').style.display = ''                                                         ">This page needs code samples</a></li>
+<li><a name="code" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-brokencode',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Code samples do not work.';                                                         document.getElementById('problemCodeForm').style.display = ''                                                         ">Code samples do not work</a></li>
+<li><a name="missing" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-missing',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Missing information';                                                         document.getElementById('problemMissingForm').style.display = ''                                                         ">Information is missing</a></li>
+<li><a name="incorrect" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-incorrect',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Incorrect information';                                                         document.getElementById('problemIncorrectForm').style.display = ''                                                         ">Information is incorrect</a></li>
+<li><a name="unclear" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-unclear',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Unclear or confusing information';                                                         document.getElementById('problemUnclearForm').style.display = ''                                                         ">Information is unclear or confusing</a></li>
+<li><a name="language" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-language',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Spelling or grammar error';                                                         document.getElementById('problemLanguageForm').style.display = ''                                                         ">There is a spelling/grammar error on this page</a></li>
+<li><a name="other" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-other',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='This page has a problem';                                                         document.getElementById('problemOtherForm').style.display = ''                                                         ">Something else</a></li>
+</ul>
+<p><known_issues><p>Is something described here not working as you expect it to? It might be a <b>Known Issue</b>. Please check with the Issue Tracker at <a href="https://issuetracker.unity3d.com">issuetracker.unity3d.com</a>.</p></known_issues></p>
+</p></div>
+<div id="problemThanks" style="display:none"><p>Thanks for letting us know! This page has been marked for review based on your feedback.<br><br>If you have time, you can provide more information to help us fix the problem faster.<br><br><a onclick="document.getElementById('problemMoreInfo').style.display = '';document.getElementById('problemThanks').style.display = 'none';">Provide more information</a><br>
+</p></div>
+<div id="problemMoreInfo" style="display:none">
+<p id="problemNeedCodeForm" style="display:none">You've told us this page needs code samples. If you'd like to help us further, you could provide a code sample, or tell us about what kind of code sample you'd like to see:</p>
+<p id="problemCodeForm" style="display:none">You've told us there are code samples on this page which don't work. If you know how to fix it, or have something better we could use instead, please let us know:</p>
+<p id="problemMissingForm" style="display:none">You've told us there is information missing from this page. Please tell us more about what's missing:</p>
+<p id="problemIncorrectForm" style="display:none">You've told us there is incorrect information on this page. If you know what we should change to make it correct, please tell us:</p>
+<p id="problemUnclearForm" style="display:none">You've told us this page has unclear or confusing information. Please tell us more about what you found unclear or confusing, or let us know how we could make it clearer:</p>
+<p id="problemLanguageForm" style="display:none">You've told us there is a spelling or grammar error on this page. Please tell us what's wrong:</p>
+<p id="problemOtherForm" style="display:none">You've told us this page has a problem. Please tell us more about what's wrong:</p>
+<form>
+<textarea id="problemFormSuggestionField" cols="40" rows="5"></textarea><input type="hidden" id="problemFormDescription"><input type="submit" id="problemFormDescriptionSubmit" value="Submit" onclick="                                             document.getElementById('problemMoreInfo').style.display = 'none';                                             document.getElementById('problemMoreInfoThanks').style.display = '';                                             return false;                                             ">
+</form>
+</div>
+<div id="problemMoreInfoThanks" style="display:none"><p>Thanks for helping to make the Unity documentation better!</p></div>
+<script>
+
+                                            var ratecontent = document.querySelector('#ratecontent'); // target element
+                                            var currentRating = 0; // initial rating
+                                            var maxRating= 5; // max rating
+
+                                            // callback to run after setting the rating
+                                            var callback = function(rating) {
+                                                document.getElementById('ratingThanks').style.display = '';
+                                                document.getElementById('ratecontent').style.display = 'none';
+                                                document.getElementById('rating').style.display = 'none';
+                                                SendFeedback("rating",window.location.href,rating);
+                                            };
+
+                                            // rating instance
+                                            var myRating = rating(ratecontent, currentRating, maxRating, callback);
+                                        </script>
+</div>
+<div class="nextprev clear">
+<div class="icon tt left mr1" data-distance="-40|-30|top">
+<span class="prev"><a href="DirLightShadows.html"></a></span><div class="tip">Directional light shadows</div>
+</div>
+<div class="icon tt right" data-distance="-40|-30|top">
+<span class="next"><a href="LightModes-TechnicalInformation.html"></a></span><div class="tip"> Lighting: Technical information and terminology</div>
+</div>
+</div>
+</div>
+</body></html>

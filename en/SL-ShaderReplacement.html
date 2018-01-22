@@ -1,0 +1,169 @@
+<html><head><title>html模版</title></head><body>Unity - Manual: Rendering with Replaced Shaders</br>
+<div class="breadcrumbs clear"><ul>
+<li><a href="UnityManual.html">Unity User Manual (2018.1 beta)</a></li>
+<li><a href="Graphics.html">Graphics</a></li>
+<li><a href="GraphicsReference.html">Graphics Reference</a></li>
+<li><a href="SL-Reference.html"> Shader Reference</a></li>
+<li><a href="SL-AdvancedTopics.html">Advanced ShaderLab topics</a></li>
+<li>Rendering with Replaced Shaders</li>
+</ul></div>
+<div class="mb20"><div class="nextprev clear">
+<div class="icon tt left mr1" data-distance="-40|-30|top">
+<span class="prev"><a href="SL-ShaderPerformance.html"></a></span><div class="tip"> Performance tips when writing shaders</div>
+</div>
+<div class="icon tt right" data-distance="-40|-30|top">
+<span class="next"><a href="SL-CustomShaderGUI.html"></a></span><div class="tip">Custom Shader GUI</div>
+</div>
+</div></div>
+<div class="otherversionswrapper" onmouseover="setOtherVersionsDisplay(true)" onmouseout="setOtherVersionsDisplay(false)">
+<a>Other Versions</a><div class="otherversionscontent" id="OtherVersionsContent" style="display: none;">Cannot access other versions offline!</div>
+</div>
+<div class="scrollToFeedback"><a id="scrollToFeedback">Leave feedback</a></div>
+<h1>Rendering with Replaced Shaders</h1>
+<!--BeginSwitchLink--><!--EndSwitchLink-->
+<div class="clear"></div>
+
+<p>Some rendering effects require rendering a scene with a different set of shaders. For example, good edge detection would need a texture with scene normals, so it could detect edges where surface orientations differ. Other effects might need a texture with scene depth, and so on. To achieve this, it is possible to render the scene with replaced shaders of all objects.</p>
+
+<p>Shader replacement is done from scripting using <a href="../ScriptReference/Camera.RenderWithShader.html">Camera.RenderWithShader</a> or <a href="../ScriptReference/Camera.SetReplacementShader.html">Camera.SetReplacementShader</a> functions. Both functions take a <strong>shader</strong> and a <strong>replacementTag</strong>.</p>
+
+<p>It works like this: the camera renders the scene as it normally would. the objects still use their materials, but the actual shader that ends up being used is changed:</p>
+
+<ul>
+<li>If <strong>replacementTag</strong> is empty, then all objects in the scene are rendered with the given replacement shader.</li>
+<li>If <strong>replacementTag</strong> is not empty, then for each object that would be rendered:
+
+<ul>
+<li>The real object’s shader is queried for the <a href="SL-SubShaderTags.html">tag value</a>.</li>
+<li>If it does not have that tag, object is <strong>not rendered</strong>.</li>
+<li>A <a href="SL-SubShader.html">subshader</a> is found in the replacement shader that has a given tag with the found value. If no such subshader is found, object is <strong>not rendered</strong>.</li>
+<li>Now that subshader is used to render the object.</li>
+</ul>
+</li>
+</ul>
+
+<p>So if all shaders would have, for example, a “RenderType” tag with values like “Opaque”, “Transparent”, “Background”, “Overlay”, you could write a replacement shader that only renders solid objects by using one subshader with RenderType=Solid <a href="SL-SubShaderTags.html">tag</a>. The other tag types would not be found in the replacement shader, so the objects would be not rendered. Or you could write several subshaders for different “RenderType” tag values. Incidentally, all built-in Unity shaders have a “RenderType” tag set.</p>
+
+<h2>Lit shader replacement</h2>
+
+<p>When using shader replacement the scene is rendered using the render path that is configured on the camera. This means that the shader used for replacement can contain shadow and lighting passes (you can use surface shaders for shader replacement). This can be useful for doing rendering of special effects and scene debugging.</p>
+
+<h2>Shader replacement tags in built-in Unity shaders</h2>
+
+<p>All built-in Unity shaders have a “<strong>RenderType</strong>” tag set that can be used when rendering with replaced shaders. Tag values are the following:</p>
+
+<ul>
+<li>
+<strong>Opaque</strong>: most of the shaders (<a href="shader-NormalFamily.html">Normal</a>, <a href="shader-SelfIllumFamily.html">Self Illuminated</a>, <a href="shader-ReflectiveFamily.html">Reflective</a>, terrain shaders).</li>
+<li>
+<strong>Transparent</strong>: most semitransparent shaders (<a href="shader-TransparentFamily.html">Transparent</a>, Particle, Font, terrain additive pass shaders).</li>
+<li>
+<strong>TransparentCutout</strong>: masked transparency shaders (<a href="shader-TransparentCutoutFamily.html">Transparent Cutout</a>, two pass vegetation shaders).</li>
+<li>
+<strong>Background</strong>: Skybox shaders.</li>
+<li>
+<strong>Overlay</strong>: GUITexture, Halo, Flare shaders.</li>
+<li>
+<strong>TreeOpaque</strong>: terrain engine tree bark.</li>
+<li>
+<strong>TreeTransparentCutout</strong>: terrain engine tree leaves.</li>
+<li>
+<strong>TreeBillboard</strong>: terrain engine billboarded trees.</li>
+<li>
+<strong>Grass</strong>: terrain engine grass.</li>
+<li>
+<strong>GrassBillboard</strong>: terrain engine billboarded grass.</li>
+</ul>
+
+<h2>Built-in scene depth/normals texture</h2>
+
+<p>A Camera has a built-in capability to render depth or depth+normals texture, if you need that in some of your effects. See <a href="SL-CameraDepthTexture.html">Camera Depth Texture</a> page. Note that in some cases (depending on the hardware), the depth and depth+normals textures can internally be rendered using shader replacement. So it is important to have the correct “<strong>RenderType</strong>” tag in your shaders.</p>
+
+<h2>Code Example</h2>
+
+<p>Your Start() function specifies the replacement shaders:</p>
+
+<pre><code>void Start() {
+    camera.SetReplacementShader (EffectShader, &quot;RenderType&quot;);
+}
+</code></pre>
+
+<p>This requests that the EffectShader will use the RenderType key. The EffectShader will have key-value tags for each RenderType that you want. The Shader will look something like:</p>
+
+<pre><code>Shader &quot;EffectShader&quot; {
+     SubShader {
+         Tags { &quot;RenderType&quot;=&quot;Opaque&quot; }
+         Pass {
+             ...
+         }
+     }
+     SubShader {
+         Tags { &quot;RenderType&quot;=&quot;SomethingElse&quot; }
+         Pass {
+             ...
+         }
+     }
+ ...
+ }
+</code></pre>
+
+<p>SetReplacementShader will look through all the objects in the scene and, instead of using their normal shader, use the first subshader which has a matching value for the specified key. In this example, any objects whose shader has Rendertype=“Opaque” tag will be replaced by first subshader in EffectShader, any objects with RenderType=“SomethingElse” shader will use second replacement subshader and so one. Any objects whose shader does not have a matching tag value for the specified key in the replacement shader will not be rendered.</p>
+<div class="feedbackbox" id="feedbackbox">
+<div id="rating"><p>Did you find this page useful? Please give it a rating:<br><div id="ratecontent" class="c-rating"></div>
+</p></div>
+<div id="ratingThanks" style="display:none"><p>Thanks for rating this page!</p></div>
+<div id="problem"><p><a name="problem" onclick="document.getElementById('problemType').style.display = '';document.getElementById('problem').style.display = 'none';">Report a problem on this page</a></p></div>
+<div id="problemType" style="display:none"><p>What kind of problem would you like to report?<ul type="problems">
+<li><a name="needcode" onclick="                                                             document.getElementById('problemType').style.display = 'none';                                                             document.getElementById('problemThanks').style.display = '';                                                             SendFeedback('problem-needcode',window.location.href,0);                                                             document.getElementById('problemFormDescription').value='Needs code samples.';                                                             document.getElementById('problemNeedCodeForm').style.display = ''                                                         ">This page needs code samples</a></li>
+<li><a name="code" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-brokencode',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Code samples do not work.';                                                         document.getElementById('problemCodeForm').style.display = ''                                                         ">Code samples do not work</a></li>
+<li><a name="missing" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-missing',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Missing information';                                                         document.getElementById('problemMissingForm').style.display = ''                                                         ">Information is missing</a></li>
+<li><a name="incorrect" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-incorrect',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Incorrect information';                                                         document.getElementById('problemIncorrectForm').style.display = ''                                                         ">Information is incorrect</a></li>
+<li><a name="unclear" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-unclear',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Unclear or confusing information';                                                         document.getElementById('problemUnclearForm').style.display = ''                                                         ">Information is unclear or confusing</a></li>
+<li><a name="language" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-language',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Spelling or grammar error';                                                         document.getElementById('problemLanguageForm').style.display = ''                                                         ">There is a spelling/grammar error on this page</a></li>
+<li><a name="other" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-other',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='This page has a problem';                                                         document.getElementById('problemOtherForm').style.display = ''                                                         ">Something else</a></li>
+</ul>
+<p><known_issues><p>Is something described here not working as you expect it to? It might be a <b>Known Issue</b>. Please check with the Issue Tracker at <a href="https://issuetracker.unity3d.com">issuetracker.unity3d.com</a>.</p></known_issues></p>
+</p></div>
+<div id="problemThanks" style="display:none"><p>Thanks for letting us know! This page has been marked for review based on your feedback.<br><br>If you have time, you can provide more information to help us fix the problem faster.<br><br><a onclick="document.getElementById('problemMoreInfo').style.display = '';document.getElementById('problemThanks').style.display = 'none';">Provide more information</a><br>
+</p></div>
+<div id="problemMoreInfo" style="display:none">
+<p id="problemNeedCodeForm" style="display:none">You've told us this page needs code samples. If you'd like to help us further, you could provide a code sample, or tell us about what kind of code sample you'd like to see:</p>
+<p id="problemCodeForm" style="display:none">You've told us there are code samples on this page which don't work. If you know how to fix it, or have something better we could use instead, please let us know:</p>
+<p id="problemMissingForm" style="display:none">You've told us there is information missing from this page. Please tell us more about what's missing:</p>
+<p id="problemIncorrectForm" style="display:none">You've told us there is incorrect information on this page. If you know what we should change to make it correct, please tell us:</p>
+<p id="problemUnclearForm" style="display:none">You've told us this page has unclear or confusing information. Please tell us more about what you found unclear or confusing, or let us know how we could make it clearer:</p>
+<p id="problemLanguageForm" style="display:none">You've told us there is a spelling or grammar error on this page. Please tell us what's wrong:</p>
+<p id="problemOtherForm" style="display:none">You've told us this page has a problem. Please tell us more about what's wrong:</p>
+<form>
+<textarea id="problemFormSuggestionField" cols="40" rows="5"></textarea><input type="hidden" id="problemFormDescription"><input type="submit" id="problemFormDescriptionSubmit" value="Submit" onclick="                                             document.getElementById('problemMoreInfo').style.display = 'none';                                             document.getElementById('problemMoreInfoThanks').style.display = '';                                             return false;                                             ">
+</form>
+</div>
+<div id="problemMoreInfoThanks" style="display:none"><p>Thanks for helping to make the Unity documentation better!</p></div>
+<script>
+
+                                            var ratecontent = document.querySelector('#ratecontent'); // target element
+                                            var currentRating = 0; // initial rating
+                                            var maxRating= 5; // max rating
+
+                                            // callback to run after setting the rating
+                                            var callback = function(rating) {
+                                                document.getElementById('ratingThanks').style.display = '';
+                                                document.getElementById('ratecontent').style.display = 'none';
+                                                document.getElementById('rating').style.display = 'none';
+                                                SendFeedback("rating",window.location.href,rating);
+                                            };
+
+                                            // rating instance
+                                            var myRating = rating(ratecontent, currentRating, maxRating, callback);
+                                        </script>
+</div>
+<div class="nextprev clear">
+<div class="icon tt left mr1" data-distance="-40|-30|top">
+<span class="prev"><a href="SL-ShaderPerformance.html"></a></span><div class="tip"> Performance tips when writing shaders</div>
+</div>
+<div class="icon tt right" data-distance="-40|-30|top">
+<span class="next"><a href="SL-CustomShaderGUI.html"></a></span><div class="tip">Custom Shader GUI</div>
+</div>
+</div>
+</div>
+</body></html>

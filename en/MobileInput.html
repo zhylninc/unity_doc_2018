@@ -1,0 +1,282 @@
+<html><head><title>html模版</title></head><body>Unity - Manual: Mobile Device Input</br>
+<div class="breadcrumbs clear"><ul>
+<li><a href="UnityManual.html">Unity User Manual (2018.1 beta)</a></li>
+<li><a href="UnityOverview.html">Working in Unity</a></li>
+<li><a href="CreatingGameplay.html">Creating Gameplay</a></li>
+<li><a href="Input.html">Input</a></li>
+<li>Mobile Device Input</li>
+</ul></div>
+<div class="mb20"><div class="nextprev clear">
+<div class="icon tt left mr1" data-distance="-40|-30|top">
+<span class="prev"><a href="ConventionalGameInput.html"></a></span><div class="tip">Conventional Game Input</div>
+</div>
+<div class="icon tt right" data-distance="-40|-30|top">
+<span class="next"><a href="MobileKeyboard.html"></a></span><div class="tip">Mobile Keyboard</div>
+</div>
+</div></div>
+<div class="otherversionswrapper" onmouseover="setOtherVersionsDisplay(true)" onmouseout="setOtherVersionsDisplay(false)">
+<a>Other Versions</a><div class="otherversionscontent" id="OtherVersionsContent" style="display: none;">Cannot access other versions offline!</div>
+</div>
+<div class="scrollToFeedback"><a id="scrollToFeedback">Leave feedback</a></div>
+<h1>Mobile Device Input</h1>
+<!--BeginSwitchLink--><!--EndSwitchLink-->
+<div class="clear"></div>
+
+<p>On mobile devices, the <a href="../ScriptReference/Input.html">Input</a> class offers access to touchscreen, accelerometer and geographical/location input. </p>
+
+<p>Access to keyboard on mobile devices is provided via the <a href="MobileKeyboard.html">iOS keyboard</a>.</p>
+
+<h3>Multi-Touch Screen</h3>
+
+<p>The iPhone and iPod Touch devices are capable of tracking up to five fingers touching the screen simultaneously. You can retrieve the status of each finger touching the screen during the last frame by accessing the <a href="../ScriptReference/Input-touches.html">Input.touches</a> property array.</p>
+
+<p>Android devices don’t have a unified limit on how many fingers they track. Instead, it varies from device to device and can be anything from two-touch on older devices to five fingers on some newer devices.</p>
+
+<p>Each finger touch is represented by an <a href="../ScriptReference/Touch.html">Input.Touch</a> data structure:</p>
+
+<table>
+<colgroup>
+<col style="text-align:left;">
+<col style="text-align:left;">
+</colgroup>
+
+<thead>
+<tr>
+	<th style="text-align:left;"><strong><em>Property:</em></strong></th>
+	<th style="text-align:left;"><strong><em>Function:</em></strong></th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+	<td style="text-align:left;"><strong>fingerId</strong></td>
+	<td style="text-align:left;">The unique index for a touch.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>position</strong></td>
+	<td style="text-align:left;">The screen position of the touch.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>deltaPosition</strong></td>
+	<td style="text-align:left;">The screen position change since the last frame.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>deltaTime</strong></td>
+	<td style="text-align:left;">Amount of time that has passed since the last state change.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>tapCount</strong></td>
+	<td style="text-align:left;">The iPhone/iPad screen is able to distinguish quick finger taps by the user. This counter will let you know how many times the user has tapped the screen without moving a finger to the sides. Android devices do not count number of taps, this field is always 1.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>phase</strong></td>
+	<td style="text-align:left;">Describes so called “phase” or the state of the touch. It can help you determine if the touch just began, if user moved the finger or if they just lifted the finger.</td>
+</tr>
+</tbody>
+</table>
+
+<p>Phase can be one of the following:</p>
+
+<table>
+<colgroup>
+<col style="text-align:left;">
+<col style="text-align:left;">
+</colgroup>
+
+<thead>
+<tr>
+	<th style="text-align:left;"></th>
+	<th style="text-align:left;"></th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+	<td style="text-align:left;"><strong>Began</strong></td>
+	<td style="text-align:left;">A finger just touched the screen.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>Moved</strong></td>
+	<td style="text-align:left;">A finger moved on the screen.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>Stationary</strong></td>
+	<td style="text-align:left;">A finger is touching the screen but hasn’t moved since the last frame.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>Ended</strong></td>
+	<td style="text-align:left;">A finger was lifted from the screen. This is the final phase of a touch.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>Canceled</strong></td>
+	<td style="text-align:left;">The system cancelled tracking for the touch, as when (for example) the user puts the device to their face or more than five touches happened simultaneously. This is the final phase of a touch.</td>
+</tr>
+</tbody>
+</table>
+
+<p>Following is an example script which will shoot a ray whenever the user taps on the screen:</p>
+
+<pre><code>var particle : GameObject;
+function Update () {
+    for (var touch : Touch in Input.touches) {
+        if (touch.phase == TouchPhase.Began) {
+            // Construct a ray from the current touch coordinates
+            var ray = Camera.main.ScreenPointToRay (touch.position);
+            if (Physics.Raycast (ray)) {
+                // Create a particle if hit
+                Instantiate (particle, transform.position, transform.rotation);
+            }
+        }
+    }
+}
+
+
+</code></pre>
+
+<h3>Mouse Simulation</h3>
+
+<p>On top of native touch support Unity iOS/Android provides a mouse simulation. You can use mouse functionality from the standard <a href="../ScriptReference/Input.html">Input</a> class. Note that iOS/Android devices are designed to support multiple finger touch. Using the mouse functionality will support just a single finger touch. Also, finger touch on mobile devices can move from one area to another with no movement between them. Mouse simulation on mobile devices will provide movement, so is very different compared to touch input. The recommendation is to use the mouse simulation during early development but to use touch input as soon as possible.</p>
+
+<h3>Accelerometer</h3>
+
+<p>As the mobile device moves, a built-in accelerometer reports linear acceleration
+changes along the three primary axes in three-dimensional space. Acceleration
+along each axis is reported directly by the hardware as G-force values. A value
+of 1.0 represents a load of about +1g along a given axis while a value of –1.0
+represents –1g. If you hold the device upright (with the home button at the
+bottom) in front of you, the X axis is positive along the right, the Y axis is
+positive directly up, and the Z axis is positive pointing toward you.</p>
+
+<p>You can retrieve the accelerometer value by accessing the <a href="../ScriptReference/Input-acceleration.html">Input.acceleration</a> property.</p>
+
+<p>The following is an example script which will move an object using the accelerometer:</p>
+
+<pre><code>var speed = 10.0;
+function Update () {
+    var dir : Vector3 = Vector3.zero;
+
+    // we assume that the device is held parallel to the ground
+    // and the Home button is in the right hand
+
+    // remap the device acceleration axis to game coordinates:
+    // 1) XY plane of the device is mapped onto XZ plane
+    // 2) rotated 90 degrees around Y axis
+    dir.x = -Input.acceleration.y;
+    dir.z = Input.acceleration.x;
+
+    // clamp acceleration vector to the unit sphere
+    if (dir.sqrMagnitude &gt; 1)
+        dir.Normalize();
+
+    // Make it move 10 meters per second instead of 10 meters per frame...
+    dir *= Time.deltaTime;
+
+    // Move object
+    transform.Translate (dir * speed);
+}
+
+
+</code></pre>
+
+<h3>Low-Pass Filter</h3>
+
+<p>Accelerometer readings can be jerky and noisy. Applying low-pass filtering on the signal allows you to smooth it and get rid of high frequency noise.</p>
+
+<p>The following script shows you how to apply low-pass filtering to accelerometer readings:</p>
+
+<pre><code>var AccelerometerUpdateInterval : float = 1.0 / 60.0;
+var LowPassKernelWidthInSeconds : float = 1.0;
+
+private var LowPassFilterFactor : float = AccelerometerUpdateInterval / LowPassKernelWidthInSeconds; // tweakable
+private var lowPassValue : Vector3 = Vector3.zero;
+function Start () {
+    lowPassValue = Input.acceleration;
+}
+
+function LowPassFilterAccelerometer() : Vector3 {
+    lowPassValue = Vector3.Lerp(lowPassValue, Input.acceleration, LowPassFilterFactor);
+    return lowPassValue;
+}
+
+
+</code></pre>
+
+<p>The greater the value of <code>LowPassKernelWidthInSeconds</code>, the slower the filtered value will converge towards the current input sample (and vice versa).</p>
+
+<h3>I’d like as much precision as possible when reading the accelerometer. What should I do?</h3>
+
+<p>Reading the <a href="../ScriptReference/Input-acceleration.html">Input.acceleration</a> variable does not equal sampling the hardware. Put simply, Unity samples the hardware at a frequency of 60Hz and stores the result into the variable. In reality, things are a little bit more complicated – accelerometer sampling doesn’t occur at consistent time intervals, if under significant CPU loads. As a result, the system might report 2 samples during one frame, then 1 sample during the next frame.</p>
+
+<p>You can access all measurements executed by accelerometer during the frame. The following code will illustrate a simple average of all the accelerometer events that were collected within the last frame:</p>
+
+<pre><code>var period : float = 0.0;
+var acc : Vector3 = Vector3.zero;
+for (var evnt : iPhoneAccelerationEvent in iPhoneInput.accelerationEvents) {
+    acc += evnt.acceleration * evnt.deltaTime;
+    period += evnt.deltaTime;
+}
+if (period &gt; 0)
+    acc *= 1.0/period;
+return acc;
+
+
+</code></pre>
+<div class="feedbackbox" id="feedbackbox">
+<div id="rating"><p>Did you find this page useful? Please give it a rating:<br><div id="ratecontent" class="c-rating"></div>
+</p></div>
+<div id="ratingThanks" style="display:none"><p>Thanks for rating this page!</p></div>
+<div id="problem"><p><a name="problem" onclick="document.getElementById('problemType').style.display = '';document.getElementById('problem').style.display = 'none';">Report a problem on this page</a></p></div>
+<div id="problemType" style="display:none"><p>What kind of problem would you like to report?<ul type="problems">
+<li><a name="needcode" onclick="                                                             document.getElementById('problemType').style.display = 'none';                                                             document.getElementById('problemThanks').style.display = '';                                                             SendFeedback('problem-needcode',window.location.href,0);                                                             document.getElementById('problemFormDescription').value='Needs code samples.';                                                             document.getElementById('problemNeedCodeForm').style.display = ''                                                         ">This page needs code samples</a></li>
+<li><a name="code" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-brokencode',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Code samples do not work.';                                                         document.getElementById('problemCodeForm').style.display = ''                                                         ">Code samples do not work</a></li>
+<li><a name="missing" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-missing',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Missing information';                                                         document.getElementById('problemMissingForm').style.display = ''                                                         ">Information is missing</a></li>
+<li><a name="incorrect" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-incorrect',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Incorrect information';                                                         document.getElementById('problemIncorrectForm').style.display = ''                                                         ">Information is incorrect</a></li>
+<li><a name="unclear" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-unclear',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Unclear or confusing information';                                                         document.getElementById('problemUnclearForm').style.display = ''                                                         ">Information is unclear or confusing</a></li>
+<li><a name="language" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-language',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Spelling or grammar error';                                                         document.getElementById('problemLanguageForm').style.display = ''                                                         ">There is a spelling/grammar error on this page</a></li>
+<li><a name="other" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-other',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='This page has a problem';                                                         document.getElementById('problemOtherForm').style.display = ''                                                         ">Something else</a></li>
+</ul>
+<p><known_issues><p>Is something described here not working as you expect it to? It might be a <b>Known Issue</b>. Please check with the Issue Tracker at <a href="https://issuetracker.unity3d.com">issuetracker.unity3d.com</a>.</p></known_issues></p>
+</p></div>
+<div id="problemThanks" style="display:none"><p>Thanks for letting us know! This page has been marked for review based on your feedback.<br><br>If you have time, you can provide more information to help us fix the problem faster.<br><br><a onclick="document.getElementById('problemMoreInfo').style.display = '';document.getElementById('problemThanks').style.display = 'none';">Provide more information</a><br>
+</p></div>
+<div id="problemMoreInfo" style="display:none">
+<p id="problemNeedCodeForm" style="display:none">You've told us this page needs code samples. If you'd like to help us further, you could provide a code sample, or tell us about what kind of code sample you'd like to see:</p>
+<p id="problemCodeForm" style="display:none">You've told us there are code samples on this page which don't work. If you know how to fix it, or have something better we could use instead, please let us know:</p>
+<p id="problemMissingForm" style="display:none">You've told us there is information missing from this page. Please tell us more about what's missing:</p>
+<p id="problemIncorrectForm" style="display:none">You've told us there is incorrect information on this page. If you know what we should change to make it correct, please tell us:</p>
+<p id="problemUnclearForm" style="display:none">You've told us this page has unclear or confusing information. Please tell us more about what you found unclear or confusing, or let us know how we could make it clearer:</p>
+<p id="problemLanguageForm" style="display:none">You've told us there is a spelling or grammar error on this page. Please tell us what's wrong:</p>
+<p id="problemOtherForm" style="display:none">You've told us this page has a problem. Please tell us more about what's wrong:</p>
+<form>
+<textarea id="problemFormSuggestionField" cols="40" rows="5"></textarea><input type="hidden" id="problemFormDescription"><input type="submit" id="problemFormDescriptionSubmit" value="Submit" onclick="                                             document.getElementById('problemMoreInfo').style.display = 'none';                                             document.getElementById('problemMoreInfoThanks').style.display = '';                                             return false;                                             ">
+</form>
+</div>
+<div id="problemMoreInfoThanks" style="display:none"><p>Thanks for helping to make the Unity documentation better!</p></div>
+<script>
+
+                                            var ratecontent = document.querySelector('#ratecontent'); // target element
+                                            var currentRating = 0; // initial rating
+                                            var maxRating= 5; // max rating
+
+                                            // callback to run after setting the rating
+                                            var callback = function(rating) {
+                                                document.getElementById('ratingThanks').style.display = '';
+                                                document.getElementById('ratecontent').style.display = 'none';
+                                                document.getElementById('rating').style.display = 'none';
+                                                SendFeedback("rating",window.location.href,rating);
+                                            };
+
+                                            // rating instance
+                                            var myRating = rating(ratecontent, currentRating, maxRating, callback);
+                                        </script>
+</div>
+<div class="nextprev clear">
+<div class="icon tt left mr1" data-distance="-40|-30|top">
+<span class="prev"><a href="ConventionalGameInput.html"></a></span><div class="tip">Conventional Game Input</div>
+</div>
+<div class="icon tt right" data-distance="-40|-30|top">
+<span class="next"><a href="MobileKeyboard.html"></a></span><div class="tip">Mobile Keyboard</div>
+</div>
+</div>
+</div>
+</body></html>

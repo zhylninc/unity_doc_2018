@@ -1,0 +1,212 @@
+<html><head><title>html模版</title></head><body>Unity - Manual:  Progressive Lightmapper</br>
+<div class="breadcrumbs clear"><ul>
+<li><a href="UnityManual.html">Unity User Manual (2018.1 beta)</a></li>
+<li><a href="Experimental.html"> Experimental</a></li>
+<li> Progressive Lightmapper</li>
+</ul></div>
+<div class="mb20"><div class="nextprev clear">
+<div class="icon tt left mr1" data-distance="-40|-30|top">
+<span class="prev"><a href="UIElements.html"></a></span><div class="tip"> Getting started with UIElements</div>
+</div>
+<div class="icon tt right" data-distance="-40|-30|top">
+<span class="next"><a href="Lightmapping-SeamStitching.html"></a></span><div class="tip"> Lightmap seam stitching</div>
+</div>
+</div></div>
+<div class="otherversionswrapper" onmouseover="setOtherVersionsDisplay(true)" onmouseout="setOtherVersionsDisplay(false)">
+<a>Other Versions</a><div class="otherversionscontent" id="OtherVersionsContent" style="display: none;">Cannot access other versions offline!</div>
+</div>
+<div class="scrollToFeedback"><a id="scrollToFeedback">Leave feedback</a></div>
+<h1>Progressive Lightmapper</h1>
+<!--BeginSwitchLink--><!--EndSwitchLink-->
+<div class="clear"></div>
+
+<h2>What</h2>
+
+<figure>
+<img src="../uploads/Main/ProgressiveLightmapper-0.png" alt="">
+</figure>
+
+<p>The progressive lightmapper is a path tracing based lightmapper backend that provides baked lightmaps and light probes with progressive updates in the Editor.</p>
+
+<p>The progressive lightmapper goes through a short prepare step (geometry and instance updates, G-buffer and chart mask generation) and starts producing the output very quickly. New lightmaps and light probes are shown as soon as a new intermediate result is ready. This allows for a very fast iteration workflow.</p>
+
+<h2>Why</h2>
+
+<p>The old Enlighten-based lightmapper for baked lightmaps relied on precomputed realtime GI to generate indirect lighting. That was both an advantage, as just changing the lighting could produce new lightmaps fairly quickly, and a disadvantage, as it imposed all the UV layout limitations even for users only interested in baking. The UV requirements in the progressive lightmapper are the usual for baked lightmapping: non-overlapping UVs with small area and angle errors, and sensible padding between the charts.</p>
+
+<p>The new lightmapper starts producing the output immediately and progressively refines it over time for a much improved lighting workflow - this means an interactive lighting workflow. Additionally, baking times are much more predictable.</p>
+
+<p>See an in-depth video showing the interactive workflow <a href="https://youtu.be/foMZJrwRGr0">here</a>.</p>
+
+<p>Moreover the new technique bakes global illumination at the lightmap resolution - for each texel individually - without upsampling schemes or relying on any irradiance caches or other global data structures. This makes it robust and allows you to bake selected portions of lightmaps, which means that iteration speed can be improved greatly.</p>
+
+<h2>Setup</h2>
+
+<p>Newly created scenes have the progressive lightmapper enabled by default. Existing scenes will stick to Enlighten until you choose the “Progressive (experimental)” Bake Backend.</p>
+
+<h3>Settings</h3>
+
+<figure>
+<img src="../uploads/Main/ProgressiveLightmapper-2.png" alt="">
+</figure>
+
+<ul>
+<li>
+<strong>Bake Backend</strong> - “Enlighten” is the old baking backend and “Progressive (experimental)” is the new one.</li>
+<li>
+<strong>Stationary Lighting Mode: </strong>Specifies which scene lighting mode will be used for all stationary lights in the scene. Options are Baked Indirect, Distance Shadowmask, Shadowmask and Subtractive. Currently light modes are not supported, please be sure to set ‘Baked Indirect’ and do not use ‘Stationary’ lights. The support will come soon.</li>
+<li>
+<strong>Lightmap Resolution</strong> - The amount of texels per world unit. Keep in mind that increasing this value by two, increases the amount of texels to be calculated by four. Please check the “Occupied texels” count in the stats below.</li>
+<li>
+<strong>Lightmap Padding</strong> - The padding (in texels) between different instances in the atlas. In order to change padding between UV charts inside an instance please adjust ‘Pack Margin’ on the mesh importer in the Advanced settings under ‘Generate Lightmap UVs’.</li>
+<li>
+<strong>Compress Lightmaps</strong> - Intermediate lightmaps are not compressed, but the final ones do respect the compression setting.</li>
+<li>
+<strong>Samples</strong> - The amount of samples (paths) shot from each texel. For some scenes, especially outdoor scenes, 100 samples may be enough. For indoor scenes with emissive geometry more will be needed.</li>
+<li>
+<strong>Bounces</strong> - Number of indirect bounces to do when tracing paths. For most scenes two bounces is enough. For some indoor scenarios more may be necessary.</li>
+<li>
+<strong>Filtering</strong> - Configure the post-processing of lightmaps to limit noise. It can be set to None, Auto or Advanced. The Advanced option offers three additional parameters for manual configuration. In Auto mode the default values from the Advanced mode are used.
+
+<ul>
+<li>
+<strong>Direct Radius: </strong>The radius of the Gauss filter in texels for direct light in the lightmap. A higher radius will increase the blur strength.</li>
+<li>
+<strong>Indirect Radius: </strong>The radius of the Gauss filter in texels for indirect light in the lightmap. A higher radius will increase the blur strength.</li>
+<li>
+<strong>AO Radius: </strong>The radius of the Gauss filter in texels for ambient occlusion in the lightmap. A higher radius will increase the blur strength.</li>
+</ul>
+</li>
+<li>
+<strong>Prioritize View </strong>- When enabled texels currently visible in scene view camera frustum will be prioritized. When those are done, the lightmapper will continue on all the out-of-view texels.</li>
+</ul>
+
+<h3>Stats</h3>
+
+<p>The panel below the ‘Auto Generate’ and ‘Generate Lighting’ options shows the amount of lightmaps that were created, how many are in view (converged / not converged) and out of view (converged / not converged) and the bake performance.</p>
+
+<figure>
+<img src="../uploads/Main/ProgressiveLightmapper-3.png" alt="">
+</figure>
+
+<h3>Lightmap parameters</h3>
+
+<p>In addition to the Baked GI settings in the Lighting window, there are new parameters in the Lightmap Parameters asset that can be configured. These are Anti-aliasing Samples, Pushoff and Backface Tolerance. Default lightmap parameters can be set for the scene in <em>General GI &gt; Default Parameters</em> or set per renderer.
+<img src="../uploads/Main/ProgressiveLightmapper-4.png" alt="">
+</p>
+
+<ul>
+<li>
+<strong>Anti-aliasing Samples </strong>- The number of times to supersample a texel to reduce aliasing. Samples [1;3] disables supersampling, samples [4;8] give 2x supersampling, and samples [9;256] give 4x supersampling. (This is a bit weird UX-wise, we’ll improve on that front.) This mostly affects the amount of memory used for the positions and normals buffers (2x uses four times the amount of memory, 4x uses 16 times the amount of memory).</li>
+<li>
+<strong>Pushoff </strong>- The amount to push off ray origins away from geometry along the normal for ray tracing, in modelling units. It is applied to all baked lightmaps, so it affects direct light, indirect light and ambient occlusion. It is useful for getting rid of unwanted occlusion/shadowing.</li>
+<li>
+<strong>Backface Tolerance </strong>- The percentage of rays shot from an output texel that must hit front faces to be considered usable. Allows a texel to be invalidated if too many of the rays cast from it hit backfaces (the texel is inside some geometry). In that case artefacts are avoided by cloning valid values from surrounding texels. For example, if backface tolerance is 0.0, the texel is rejected only if it sees nothing but backfaces. If it is 1.0, the ray origin is rejected if it has even one ray that hits a backface. In the Baked Texel Validity scene view mode one case see valid (green) and invalid (red) texels. If you have a single sided mesh in your scene, you may want to disable this feature by setting it to zero. A two-sided flag will later be added in the editor to address this.</li>
+</ul>
+
+<p>The rest is the default Unity 5 workflow. Mark your objects as static and set some light inputs (lights, environment lighting or emissive materials on static objects) as baked.</p>
+
+<p>In “Auto” mode the lightmaps and light probes will be calculated automatically. If you have “Auto” disabled you will need to press the “Build” button for the bake to start.</p>
+
+<h3>Other Features</h3>
+
+<p>
+<strong>Force stop:</strong> Allows for stopping the bake at an arbitrary point in time, before the requested amount of samples has actually been done. It works when the lighting is built manually. With the 100,000 max sample count and the ability to disable view prioritization, one can leave the machine baking and just stop whenever the results look pleasing.<img src="../uploads/Main/ProgressiveLightmapper-5.jpg" alt="">
+</p>
+
+<p>
+<strong>Invalid texels:</strong> Texels are marked as invalid based on the Backface Tolerance parameter (LightmapParameters &gt; General GI) and invalid texels are filled from the valid neighbours. The dilation process that takes care of that does more iterations once the lightmap has converged than when it’s still improving.</p>
+
+<figure>
+<img src="../uploads/Main/ProgressiveLightmapper-6.png" alt="">
+</figure>
+
+<p>
+<strong>Supersampling:</strong> The lighting quality is influenced by the supersampling amount. Control it using the ‘Anti-aliasing Samples’ property (Lightmap Parameters &gt; Baked GI, see the Lightmap Parameters section above).</p>
+
+<h2>Example project</h2>
+
+<p>This <a href="https://drive.google.com/open?id=0BwkcjTqCXtRNaEIxeG5Bdk9FV2M">project</a> is set up with the settings needed for the progressive lightmapper. It is a version of the <a href="https://www.assetstore.unity3d.com/en/#!/content/46209">Tanks!</a> project also available on the Asset Store. It bakes in less than 5 minutes and has 11 1024x1024 lightmaps. Watch a <a href="https://youtu.be/IsdH-uOLk2c">video</a> showing the interactive workflow in this project.</p>
+
+<figure>
+<img src="../uploads/Main/ProgressiveLightmapper-8.png" alt="">
+</figure>
+
+<figure>
+<img src="../uploads/Main/ProgressiveLightmapper-9.png" alt="">
+</figure>
+
+<figure>
+<img src="../uploads/Main/ProgressiveLightmapper-10.png" alt="">
+</figure>
+
+<figure>
+<img src="../uploads/Main/ProgressiveLightmapper-11.png" alt="">
+</figure>
+
+<hr>
+
+<ul>
+<li><p><span class="page-edit">2017–07–04 Page published with no <a href="DocumentationEditorialReview.html">editorial review</a>
+</span></p></li>
+<li><p><span class="page-history">2017–07–04 New feature in Unity 5.6 (Experimental)</span></p></li>
+</ul>
+<div class="feedbackbox" id="feedbackbox">
+<div id="rating"><p>Did you find this page useful? Please give it a rating:<br><div id="ratecontent" class="c-rating"></div>
+</p></div>
+<div id="ratingThanks" style="display:none"><p>Thanks for rating this page!</p></div>
+<div id="problem"><p><a name="problem" onclick="document.getElementById('problemType').style.display = '';document.getElementById('problem').style.display = 'none';">Report a problem on this page</a></p></div>
+<div id="problemType" style="display:none"><p>What kind of problem would you like to report?<ul type="problems">
+<li><a name="needcode" onclick="                                                             document.getElementById('problemType').style.display = 'none';                                                             document.getElementById('problemThanks').style.display = '';                                                             SendFeedback('problem-needcode',window.location.href,0);                                                             document.getElementById('problemFormDescription').value='Needs code samples.';                                                             document.getElementById('problemNeedCodeForm').style.display = ''                                                         ">This page needs code samples</a></li>
+<li><a name="code" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-brokencode',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Code samples do not work.';                                                         document.getElementById('problemCodeForm').style.display = ''                                                         ">Code samples do not work</a></li>
+<li><a name="missing" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-missing',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Missing information';                                                         document.getElementById('problemMissingForm').style.display = ''                                                         ">Information is missing</a></li>
+<li><a name="incorrect" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-incorrect',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Incorrect information';                                                         document.getElementById('problemIncorrectForm').style.display = ''                                                         ">Information is incorrect</a></li>
+<li><a name="unclear" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-unclear',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Unclear or confusing information';                                                         document.getElementById('problemUnclearForm').style.display = ''                                                         ">Information is unclear or confusing</a></li>
+<li><a name="language" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-language',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Spelling or grammar error';                                                         document.getElementById('problemLanguageForm').style.display = ''                                                         ">There is a spelling/grammar error on this page</a></li>
+<li><a name="other" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-other',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='This page has a problem';                                                         document.getElementById('problemOtherForm').style.display = ''                                                         ">Something else</a></li>
+</ul>
+<p><known_issues><p>Is something described here not working as you expect it to? It might be a <b>Known Issue</b>. Please check with the Issue Tracker at <a href="https://issuetracker.unity3d.com">issuetracker.unity3d.com</a>.</p></known_issues></p>
+</p></div>
+<div id="problemThanks" style="display:none"><p>Thanks for letting us know! This page has been marked for review based on your feedback.<br><br>If you have time, you can provide more information to help us fix the problem faster.<br><br><a onclick="document.getElementById('problemMoreInfo').style.display = '';document.getElementById('problemThanks').style.display = 'none';">Provide more information</a><br>
+</p></div>
+<div id="problemMoreInfo" style="display:none">
+<p id="problemNeedCodeForm" style="display:none">You've told us this page needs code samples. If you'd like to help us further, you could provide a code sample, or tell us about what kind of code sample you'd like to see:</p>
+<p id="problemCodeForm" style="display:none">You've told us there are code samples on this page which don't work. If you know how to fix it, or have something better we could use instead, please let us know:</p>
+<p id="problemMissingForm" style="display:none">You've told us there is information missing from this page. Please tell us more about what's missing:</p>
+<p id="problemIncorrectForm" style="display:none">You've told us there is incorrect information on this page. If you know what we should change to make it correct, please tell us:</p>
+<p id="problemUnclearForm" style="display:none">You've told us this page has unclear or confusing information. Please tell us more about what you found unclear or confusing, or let us know how we could make it clearer:</p>
+<p id="problemLanguageForm" style="display:none">You've told us there is a spelling or grammar error on this page. Please tell us what's wrong:</p>
+<p id="problemOtherForm" style="display:none">You've told us this page has a problem. Please tell us more about what's wrong:</p>
+<form>
+<textarea id="problemFormSuggestionField" cols="40" rows="5"></textarea><input type="hidden" id="problemFormDescription"><input type="submit" id="problemFormDescriptionSubmit" value="Submit" onclick="                                             document.getElementById('problemMoreInfo').style.display = 'none';                                             document.getElementById('problemMoreInfoThanks').style.display = '';                                             return false;                                             ">
+</form>
+</div>
+<div id="problemMoreInfoThanks" style="display:none"><p>Thanks for helping to make the Unity documentation better!</p></div>
+<script>
+
+                                            var ratecontent = document.querySelector('#ratecontent'); // target element
+                                            var currentRating = 0; // initial rating
+                                            var maxRating= 5; // max rating
+
+                                            // callback to run after setting the rating
+                                            var callback = function(rating) {
+                                                document.getElementById('ratingThanks').style.display = '';
+                                                document.getElementById('ratecontent').style.display = 'none';
+                                                document.getElementById('rating').style.display = 'none';
+                                                SendFeedback("rating",window.location.href,rating);
+                                            };
+
+                                            // rating instance
+                                            var myRating = rating(ratecontent, currentRating, maxRating, callback);
+                                        </script>
+</div>
+<div class="nextprev clear">
+<div class="icon tt left mr1" data-distance="-40|-30|top">
+<span class="prev"><a href="UIElements.html"></a></span><div class="tip"> Getting started with UIElements</div>
+</div>
+<div class="icon tt right" data-distance="-40|-30|top">
+<span class="next"><a href="Lightmapping-SeamStitching.html"></a></span><div class="tip"> Lightmap seam stitching</div>
+</div>
+</div>
+</div>
+</body></html>

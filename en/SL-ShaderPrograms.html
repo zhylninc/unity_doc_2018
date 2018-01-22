@@ -1,0 +1,198 @@
+<html><head><title>html模版</title></head><body>Unity - Manual: Writing vertex and fragment shaders</br>
+<div class="breadcrumbs clear"><ul>
+<li><a href="UnityManual.html">Unity User Manual (2018.1 beta)</a></li>
+<li><a href="Graphics.html">Graphics</a></li>
+<li><a href="GraphicsReference.html">Graphics Reference</a></li>
+<li><a href="SL-Reference.html"> Shader Reference</a></li>
+<li>Writing vertex and fragment shaders</li>
+</ul></div>
+<div class="mb20"><div class="nextprev clear">
+<div class="icon tt left mr1" data-distance="-40|-30|top">
+<span class="prev"><a href="SL-SurfaceShaderTessellation.html"></a></span><div class="tip">Surface Shaders with DX11 / OpenGL Core Tessellation</div>
+</div>
+<div class="icon tt right" data-distance="-40|-30|top">
+<span class="next"><a href="SL-VertexFragmentShaderExamples.html"></a></span><div class="tip"> Vertex and fragment shader examples</div>
+</div>
+</div></div>
+<div class="otherversionswrapper" onmouseover="setOtherVersionsDisplay(true)" onmouseout="setOtherVersionsDisplay(false)">
+<a>Other Versions</a><div class="otherversionscontent" id="OtherVersionsContent" style="display: none;">Cannot access other versions offline!</div>
+</div>
+<div class="scrollToFeedback"><a id="scrollToFeedback">Leave feedback</a></div>
+<h1>Writing vertex and fragment shaders</h1>
+<!--BeginSwitchLink--><!--EndSwitchLink-->
+<div class="clear"></div>
+
+<p>
+<strong>ShaderLab</strong> shaders encompass more than just “hardware shaders”. They do many things. They describe properties that are displayed in the Material Inspector, contain multiple shader implementations for different graphics hardware, configure fixed function hardware state and so on. The actual programmable shaders - like vertex and fragment programs - are just a part of the whole ShaderLab’s “shader” concept. Take a look at <a href="ShaderTut2.html">shader tutorial</a> for a basic introduction. Here we’ll call the low-level hardware shaders <strong>shader programs</strong>.</p>
+
+<p>
+<strong>If you want to write shaders that interact with lighting, take a look at <a href="SL-SurfaceShaders.html">Surface Shaders</a> documentation</strong>. For some examples, take a look at <a href="SL-VertexFragmentShaderExamples.html"><strong>Vertex and Fragment Shader Examples</strong></a>. The rest of this page assumes shaders do not interact with Unity lights (for example special effects, <a href="PostProcessingOverview.html">post-processed effects</a> etc.)</p>
+
+<p>Shader programs are written in <a href="SL-ShadingLanguage.html">HLSL language</a>, by embedding “snippets” in the shader text, somewhere inside the <a href="SL-Pass.html">Pass</a> command. They usually look like this:</p>
+
+<pre><code>  Pass {
+      // ... the usual pass state setup ...
+      
+      CGPROGRAM
+      // compilation directives for this snippet, e.g.:
+      #pragma vertex vert
+      #pragma fragment frag
+      
+      // the Cg/HLSL code itself
+      
+      ENDCG
+      // ... the rest of pass setup ...
+  }
+</code></pre>
+
+<h2>HLSL snippets</h2>
+
+<p>HLSL program snippets are written between <strong>CGPROGRAM</strong> and <strong>ENDCG</strong> keywords, or alternatively between <strong>HLSLPROGRAM</strong> and <strong>ENDHLSL</strong>. The latter form does <em>not</em> automatically include HLSLSupport and UnityShaderVariables <a href="SL-BuiltinIncludes.html">built-in header files</a>.</p>
+
+<p>At the start of the snippet compilation directives can be given as <strong>#pragma</strong> statements. Directives indicating which shader functions to compile:</p>
+
+<ul>
+<li>
+<strong>#pragma vertex</strong> <em>name</em> - compile function <em>name</em> as the vertex shader.</li>
+<li>
+<strong>#pragma fragment</strong> <em>name</em> - compile function <em>name</em> as the fragment shader.</li>
+<li>
+<strong>#pragma geometry</strong> <em>name</em> - compile function <em>name</em> as DX10 geometry shader. Having this option automatically turns on <strong>#pragma target 4.0</strong>, described below.</li>
+<li>
+<strong>#pragma hull</strong> <em>name</em> - compile function <em>name</em> as DX11 hull shader. Having this option automatically turns on <strong>#pragma target 5.0</strong>, described below.</li>
+<li>
+<strong>#pragma domain</strong> <em>name</em> - compile function <em>name</em> as DX11 domain shader. Having this option automatically turns on <strong>#pragma target 5.0</strong>, described below.</li>
+</ul>
+
+<p>Other compilation directives:</p>
+
+<ul>
+<li>
+<strong>#pragma target</strong> <em>name</em> - which shader target to compile to. See <a href="SL-ShaderCompileTargets.html">Shader Compilation Targets</a> page for details.</li>
+<li>
+<strong>#pragma only_renderers</strong> <em>space separated names</em> - compile shader only for given renderers. By default shaders are compiled for all renderers. See <em>Renderers</em> below for details.</li>
+<li>
+<strong>#pragma exclude_renderers</strong> <em>space separated names</em> - do not compile shader for given renderers. By default shaders are compiled for all renderers. See <em>Renderers</em> below for details.</li>
+<li>
+<strong>#pragma multi_compile …</strong> - for working with <a href="SL-MultipleProgramVariants.html">multiple shader variants</a>.</li>
+<li>
+<strong>#pragma enable_d3d11_debug_symbols</strong> - generate debug information for shaders compiled for DirectX 11, this will allow you to debug shaders via Visual Studio 2012 (or higher) Graphics debugger.</li>
+<li>
+<strong>#pragma hardware_tier_variants</strong> <em>renderer name</em> - generate <a href="SL-MultipleProgramVariants.html">multiple shader hardware variants</a> of each compiled shader, for each hardware tier that could run the selected renderer. See <em>Renderers</em> below for details.</li>
+</ul>
+
+<p>Each snippet must contain at least a vertex program and a fragment program. Thus <strong>#pragma vertex</strong> and <strong>#pragma fragment</strong> directives are required.</p>
+
+<p>Compilation directives that don’t do anything starting with Unity 5.0 and can be safely removed: <code>#pragma glsl</code>, <code>#pragma glsl_no_auto_normalization</code>, <code>#pragma profileoption</code>, <code>#pragma fragmentoption</code>.</p>
+
+<h2>Rendering platforms</h2>
+
+<p>Unity supports several rendering APIs (e.g. Direct3D 11 and OpenGL), and by default all shader programs are compiled into all supported renderers. You can indicate which renderers to compile to using <strong>#pragma only_renderers</strong> or <strong>#pragma exclude_renderers</strong> directives. This is mostly useful in cases where you are explicitly using some shader language features that you know aren’t possible on some platforms. Supported renderer names are:</p>
+
+<ul>
+<li>
+<strong>d3d11</strong> - Direct3D 11/12</li>
+<li>
+<strong>glcore</strong> - OpenGL 3.x/4.x</li>
+<li>
+<strong>gles</strong> - OpenGL ES 2.0</li>
+<li>
+<strong>gles3</strong> - OpenGL ES 3.x</li>
+<li>
+<strong>metal</strong> - iOS/Mac Metal</li>
+<li>
+<strong>vulkan</strong> - Vulkan</li>
+<li>
+<strong>d3d11_9x</strong> - Direct3D 11 9.x feature level, as commonly used on WSA platforms</li>
+<li>
+<strong>xboxone</strong> - Xbox One</li>
+<li>
+<strong>ps4</strong> - PlayStation 4</li>
+<li>
+<strong>psp2</strong> - PlayStation Vita</li>
+<li>
+<strong>n3ds</strong> - Nintendo 3DS</li>
+<li>
+<strong>wiiu</strong> - Nintendo Wii U</li>
+</ul>
+
+<p>For example, this line would only compile shader into D3D11 mode:</p>
+
+<pre><code>#pragma only_renderers d3d11
+</code></pre>
+
+<h2>See Also</h2>
+
+<ul>
+<li>
+<a href="SL-PropertiesInPrograms.html">Accessing Material Properties</a>.</li>
+<li>
+<a href="SL-MultipleProgramVariants.html">Writing Multiple Shader Program Variants</a>.</li>
+<li>
+<a href="SL-ShaderCompileTargets.html">Shader Compilation Targets</a>.</li>
+<li>
+<a href="SL-ShadingLanguage.html">Shading Language Details</a>.</li>
+<li>
+<a href="SL-BuiltinMacros.html">Shader Preprocessor Macros</a>.</li>
+<li>
+<a href="SL-PlatformDifferences.html">Platform Specific Rendering Differences</a>.</li>
+</ul>
+<div class="feedbackbox" id="feedbackbox">
+<div id="rating"><p>Did you find this page useful? Please give it a rating:<br><div id="ratecontent" class="c-rating"></div>
+</p></div>
+<div id="ratingThanks" style="display:none"><p>Thanks for rating this page!</p></div>
+<div id="problem"><p><a name="problem" onclick="document.getElementById('problemType').style.display = '';document.getElementById('problem').style.display = 'none';">Report a problem on this page</a></p></div>
+<div id="problemType" style="display:none"><p>What kind of problem would you like to report?<ul type="problems">
+<li><a name="needcode" onclick="                                                             document.getElementById('problemType').style.display = 'none';                                                             document.getElementById('problemThanks').style.display = '';                                                             SendFeedback('problem-needcode',window.location.href,0);                                                             document.getElementById('problemFormDescription').value='Needs code samples.';                                                             document.getElementById('problemNeedCodeForm').style.display = ''                                                         ">This page needs code samples</a></li>
+<li><a name="code" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-brokencode',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Code samples do not work.';                                                         document.getElementById('problemCodeForm').style.display = ''                                                         ">Code samples do not work</a></li>
+<li><a name="missing" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-missing',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Missing information';                                                         document.getElementById('problemMissingForm').style.display = ''                                                         ">Information is missing</a></li>
+<li><a name="incorrect" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-incorrect',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Incorrect information';                                                         document.getElementById('problemIncorrectForm').style.display = ''                                                         ">Information is incorrect</a></li>
+<li><a name="unclear" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-unclear',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Unclear or confusing information';                                                         document.getElementById('problemUnclearForm').style.display = ''                                                         ">Information is unclear or confusing</a></li>
+<li><a name="language" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-language',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Spelling or grammar error';                                                         document.getElementById('problemLanguageForm').style.display = ''                                                         ">There is a spelling/grammar error on this page</a></li>
+<li><a name="other" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-other',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='This page has a problem';                                                         document.getElementById('problemOtherForm').style.display = ''                                                         ">Something else</a></li>
+</ul>
+<p><known_issues><p>Is something described here not working as you expect it to? It might be a <b>Known Issue</b>. Please check with the Issue Tracker at <a href="https://issuetracker.unity3d.com">issuetracker.unity3d.com</a>.</p></known_issues></p>
+</p></div>
+<div id="problemThanks" style="display:none"><p>Thanks for letting us know! This page has been marked for review based on your feedback.<br><br>If you have time, you can provide more information to help us fix the problem faster.<br><br><a onclick="document.getElementById('problemMoreInfo').style.display = '';document.getElementById('problemThanks').style.display = 'none';">Provide more information</a><br>
+</p></div>
+<div id="problemMoreInfo" style="display:none">
+<p id="problemNeedCodeForm" style="display:none">You've told us this page needs code samples. If you'd like to help us further, you could provide a code sample, or tell us about what kind of code sample you'd like to see:</p>
+<p id="problemCodeForm" style="display:none">You've told us there are code samples on this page which don't work. If you know how to fix it, or have something better we could use instead, please let us know:</p>
+<p id="problemMissingForm" style="display:none">You've told us there is information missing from this page. Please tell us more about what's missing:</p>
+<p id="problemIncorrectForm" style="display:none">You've told us there is incorrect information on this page. If you know what we should change to make it correct, please tell us:</p>
+<p id="problemUnclearForm" style="display:none">You've told us this page has unclear or confusing information. Please tell us more about what you found unclear or confusing, or let us know how we could make it clearer:</p>
+<p id="problemLanguageForm" style="display:none">You've told us there is a spelling or grammar error on this page. Please tell us what's wrong:</p>
+<p id="problemOtherForm" style="display:none">You've told us this page has a problem. Please tell us more about what's wrong:</p>
+<form>
+<textarea id="problemFormSuggestionField" cols="40" rows="5"></textarea><input type="hidden" id="problemFormDescription"><input type="submit" id="problemFormDescriptionSubmit" value="Submit" onclick="                                             document.getElementById('problemMoreInfo').style.display = 'none';                                             document.getElementById('problemMoreInfoThanks').style.display = '';                                             return false;                                             ">
+</form>
+</div>
+<div id="problemMoreInfoThanks" style="display:none"><p>Thanks for helping to make the Unity documentation better!</p></div>
+<script>
+
+                                            var ratecontent = document.querySelector('#ratecontent'); // target element
+                                            var currentRating = 0; // initial rating
+                                            var maxRating= 5; // max rating
+
+                                            // callback to run after setting the rating
+                                            var callback = function(rating) {
+                                                document.getElementById('ratingThanks').style.display = '';
+                                                document.getElementById('ratecontent').style.display = 'none';
+                                                document.getElementById('rating').style.display = 'none';
+                                                SendFeedback("rating",window.location.href,rating);
+                                            };
+
+                                            // rating instance
+                                            var myRating = rating(ratecontent, currentRating, maxRating, callback);
+                                        </script>
+</div>
+<div class="nextprev clear">
+<div class="icon tt left mr1" data-distance="-40|-30|top">
+<span class="prev"><a href="SL-SurfaceShaderTessellation.html"></a></span><div class="tip">Surface Shaders with DX11 / OpenGL Core Tessellation</div>
+</div>
+<div class="icon tt right" data-distance="-40|-30|top">
+<span class="next"><a href="SL-VertexFragmentShaderExamples.html"></a></span><div class="tip"> Vertex and fragment shader examples</div>
+</div>
+</div>
+</div>
+</body></html>

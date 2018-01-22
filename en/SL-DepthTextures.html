@@ -1,0 +1,155 @@
+<html><head><title>html模版</title></head><body>Unity - Manual:  Using Depth Textures</br>
+<div class="breadcrumbs clear"><ul>
+<li><a href="UnityManual.html">Unity User Manual (2018.1 beta)</a></li>
+<li><a href="Graphics.html">Graphics</a></li>
+<li><a href="GraphicsReference.html">Graphics Reference</a></li>
+<li><a href="SL-Reference.html"> Shader Reference</a></li>
+<li><a href="SL-AdvancedTopics.html">Advanced ShaderLab topics</a></li>
+<li> Using Depth Textures</li>
+</ul></div>
+<div class="mb20"><div class="nextprev clear">
+<div class="icon tt left mr1" data-distance="-40|-30|top">
+<span class="prev"><a href="SL-CustomShaderGUI.html"></a></span><div class="tip">Custom Shader GUI</div>
+</div>
+<div class="icon tt right" data-distance="-40|-30|top">
+<span class="next"><a href="SL-CameraDepthTexture.html"></a></span><div class="tip"> Camera's Depth Texture</div>
+</div>
+</div></div>
+<div class="otherversionswrapper" onmouseover="setOtherVersionsDisplay(true)" onmouseout="setOtherVersionsDisplay(false)">
+<a>Other Versions</a><div class="otherversionscontent" id="OtherVersionsContent" style="display: none;">Cannot access other versions offline!</div>
+</div>
+<div class="scrollToFeedback"><a id="scrollToFeedback">Leave feedback</a></div>
+<h1>Using Depth Textures</h1>
+<!--BeginSwitchLink--><!--EndSwitchLink-->
+<div class="clear"></div>
+
+<p>It is possible to create <a href="class-RenderTexture.html">Render Textures</a> where each pixel contains a high-precision <a href="../ScriptReference/RenderTextureFormat.Depth.html">Depth</a> value. This is mostly used when some effects need the Scene’s Depth to be available (for example, soft particles, screen space ambient occlusion and translucency would all need the Scene’s Depth). <a href="PostProcessingWritingEffects.html">Image Effects</a> often use Depth Textures too. </p>
+
+<p>Pixel values in the Depth Texture range between 0 and 1, with a non-linear distribution. Precision is usually 32 or 16 bits, depending on configuration and platform used. When reading from the Depth Texture, a high precision value in a range between 0 and 1 is returned. If you need to get distance from the Camera, or an otherwise linear 0–1 value, compute that manually using helper macros (see below).</p>
+
+<p>Depth Textures are supported on most modern hardware and graphics APIs. Special requirements are listed below:</p>
+
+<ul>
+<li>Direct3D 11+ (Windows), OpenGL 3+ (Mac/Linux), OpenGL ES 3.0+ (Android/iOS), Metal (iOS) and consoles like PS4/Xbox One all support depth textures.</li>
+<li>OpenGL ES 2.0 (iOS/Android) requires <a href="http://www.khronos.org/registry/gles/extensions/OES/OES_depth_texture.txt">GL_OES_depth_texture</a> extension to be present.</li>
+<li>WebGL requires <a href="https://www.khronos.org/registry/webgl/extensions/WEBGL_depth_texture">WEBGL_depth_texture</a> extension.</li>
+</ul>
+
+<h2>Depth Texture Shader helper macros</h2>
+
+<p>Most of the time, Depth Texture are used to render Depth from the Camera. The <a href="SL-BuiltinIncludes.html">UnityCG.cginc include file</a> contains some macros to deal with the above complexity in this case:</p>
+
+<ul>
+<li>
+<strong>UNITY_TRANSFER_DEPTH(o)</strong>: computes eye space depth of the vertex and outputs it in <strong>o</strong> (which must be a float2). Use it in a vertex program when rendering into a depth texture. On platforms with native depth textures this macro does nothing at all, because Z buffer value is rendered implicitly.</li>
+<li>
+<strong>UNITY_OUTPUT_DEPTH(i)</strong>: returns eye space depth from <strong>i</strong> (which must be a float2). Use it in a fragment program when rendering into a depth texture. On platforms with native depth textures this macro always returns zero, because Z buffer value is rendered implicitly.</li>
+<li>
+<strong>COMPUTE_EYEDEPTH(i)</strong>: computes eye space depth of the vertex and outputs it in <strong>o</strong>. Use it in a vertex program when <strong>not</strong> rendering into a depth texture.</li>
+<li>
+<strong>DECODE_EYEDEPTH(i)/LinearEyeDepth(i)</strong>: given high precision value from depth texture <strong>i</strong>, returns corresponding eye space depth.</li>
+<li>
+<strong>Linear01Depth(i)</strong>: given high precision value from depth texture <strong>i</strong>, returns corresponding linear depth in range between 0 and 1.</li>
+</ul>
+
+<p>
+<strong>Note:</strong> On DX11/12, PS4, XboxOne and Metal, the Z buffer range is 1–0 and UNITY_REVERSED_Z is defined. On other platforms, the range is 0–1.</p>
+
+<p>For example, this shader would render depth of its GameObjects:</p>
+
+<pre><code>Shader &quot;Render Depth&quot; {
+    SubShader {
+        Tags { &quot;RenderType&quot;=&quot;Opaque&quot; }
+        Pass {
+            CGPROGRAM
+
+            #pragma vertex vert
+            #pragma fragment frag
+            #include &quot;UnityCG.cginc&quot;
+
+            struct v2f {
+                float4 pos : SV_POSITION;
+                float2 depth : TEXCOORD0;
+            };
+
+            v2f vert (appdata_base v) {
+                v2f o;
+                o.pos = UnityObjectToClipPos(v.vertex);
+                UNITY_TRANSFER_DEPTH(o.depth);
+                return o;
+            }
+
+            half4 frag(v2f i) : SV_Target {
+                UNITY_OUTPUT_DEPTH(i.depth);
+            }
+            ENDCG
+        }
+    }
+}
+</code></pre>
+
+<h2>See also</h2>
+
+<ul>
+<li><a href="SL-CameraDepthTexture.html">Camera Depth Textures</a></li>
+<li><a href="PostProcessingWritingEffects.html">Writing Image Effects</a></li>
+</ul>
+<div class="feedbackbox" id="feedbackbox">
+<div id="rating"><p>Did you find this page useful? Please give it a rating:<br><div id="ratecontent" class="c-rating"></div>
+</p></div>
+<div id="ratingThanks" style="display:none"><p>Thanks for rating this page!</p></div>
+<div id="problem"><p><a name="problem" onclick="document.getElementById('problemType').style.display = '';document.getElementById('problem').style.display = 'none';">Report a problem on this page</a></p></div>
+<div id="problemType" style="display:none"><p>What kind of problem would you like to report?<ul type="problems">
+<li><a name="needcode" onclick="                                                             document.getElementById('problemType').style.display = 'none';                                                             document.getElementById('problemThanks').style.display = '';                                                             SendFeedback('problem-needcode',window.location.href,0);                                                             document.getElementById('problemFormDescription').value='Needs code samples.';                                                             document.getElementById('problemNeedCodeForm').style.display = ''                                                         ">This page needs code samples</a></li>
+<li><a name="code" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-brokencode',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Code samples do not work.';                                                         document.getElementById('problemCodeForm').style.display = ''                                                         ">Code samples do not work</a></li>
+<li><a name="missing" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-missing',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Missing information';                                                         document.getElementById('problemMissingForm').style.display = ''                                                         ">Information is missing</a></li>
+<li><a name="incorrect" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-incorrect',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Incorrect information';                                                         document.getElementById('problemIncorrectForm').style.display = ''                                                         ">Information is incorrect</a></li>
+<li><a name="unclear" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-unclear',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Unclear or confusing information';                                                         document.getElementById('problemUnclearForm').style.display = ''                                                         ">Information is unclear or confusing</a></li>
+<li><a name="language" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-language',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Spelling or grammar error';                                                         document.getElementById('problemLanguageForm').style.display = ''                                                         ">There is a spelling/grammar error on this page</a></li>
+<li><a name="other" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-other',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='This page has a problem';                                                         document.getElementById('problemOtherForm').style.display = ''                                                         ">Something else</a></li>
+</ul>
+<p><known_issues><p>Is something described here not working as you expect it to? It might be a <b>Known Issue</b>. Please check with the Issue Tracker at <a href="https://issuetracker.unity3d.com">issuetracker.unity3d.com</a>.</p></known_issues></p>
+</p></div>
+<div id="problemThanks" style="display:none"><p>Thanks for letting us know! This page has been marked for review based on your feedback.<br><br>If you have time, you can provide more information to help us fix the problem faster.<br><br><a onclick="document.getElementById('problemMoreInfo').style.display = '';document.getElementById('problemThanks').style.display = 'none';">Provide more information</a><br>
+</p></div>
+<div id="problemMoreInfo" style="display:none">
+<p id="problemNeedCodeForm" style="display:none">You've told us this page needs code samples. If you'd like to help us further, you could provide a code sample, or tell us about what kind of code sample you'd like to see:</p>
+<p id="problemCodeForm" style="display:none">You've told us there are code samples on this page which don't work. If you know how to fix it, or have something better we could use instead, please let us know:</p>
+<p id="problemMissingForm" style="display:none">You've told us there is information missing from this page. Please tell us more about what's missing:</p>
+<p id="problemIncorrectForm" style="display:none">You've told us there is incorrect information on this page. If you know what we should change to make it correct, please tell us:</p>
+<p id="problemUnclearForm" style="display:none">You've told us this page has unclear or confusing information. Please tell us more about what you found unclear or confusing, or let us know how we could make it clearer:</p>
+<p id="problemLanguageForm" style="display:none">You've told us there is a spelling or grammar error on this page. Please tell us what's wrong:</p>
+<p id="problemOtherForm" style="display:none">You've told us this page has a problem. Please tell us more about what's wrong:</p>
+<form>
+<textarea id="problemFormSuggestionField" cols="40" rows="5"></textarea><input type="hidden" id="problemFormDescription"><input type="submit" id="problemFormDescriptionSubmit" value="Submit" onclick="                                             document.getElementById('problemMoreInfo').style.display = 'none';                                             document.getElementById('problemMoreInfoThanks').style.display = '';                                             return false;                                             ">
+</form>
+</div>
+<div id="problemMoreInfoThanks" style="display:none"><p>Thanks for helping to make the Unity documentation better!</p></div>
+<script>
+
+                                            var ratecontent = document.querySelector('#ratecontent'); // target element
+                                            var currentRating = 0; // initial rating
+                                            var maxRating= 5; // max rating
+
+                                            // callback to run after setting the rating
+                                            var callback = function(rating) {
+                                                document.getElementById('ratingThanks').style.display = '';
+                                                document.getElementById('ratecontent').style.display = 'none';
+                                                document.getElementById('rating').style.display = 'none';
+                                                SendFeedback("rating",window.location.href,rating);
+                                            };
+
+                                            // rating instance
+                                            var myRating = rating(ratecontent, currentRating, maxRating, callback);
+                                        </script>
+</div>
+<div class="nextprev clear">
+<div class="icon tt left mr1" data-distance="-40|-30|top">
+<span class="prev"><a href="SL-CustomShaderGUI.html"></a></span><div class="tip">Custom Shader GUI</div>
+</div>
+<div class="icon tt right" data-distance="-40|-30|top">
+<span class="next"><a href="SL-CameraDepthTexture.html"></a></span><div class="tip"> Camera's Depth Texture</div>
+</div>
+</div>
+</div>
+</body></html>

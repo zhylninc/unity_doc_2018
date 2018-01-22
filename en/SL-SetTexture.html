@@ -1,0 +1,305 @@
+<html><head><title>html模版</title></head><body>Unity - Manual: ShaderLab: Legacy Texture Combiners</br>
+<div class="breadcrumbs clear"><ul>
+<li><a href="UnityManual.html">Unity User Manual (2018.1 beta)</a></li>
+<li><a href="Graphics.html">Graphics</a></li>
+<li><a href="GraphicsReference.html">Graphics Reference</a></li>
+<li><a href="SL-Reference.html"> Shader Reference</a></li>
+<li><a href="SL-Shader.html">ShaderLab Syntax</a></li>
+<li><a href="SL-SubShader.html">ShaderLab: SubShader</a></li>
+<li><a href="SL-Pass.html">ShaderLab: Pass</a></li>
+<li>ShaderLab: Legacy Texture Combiners</li>
+</ul></div>
+<div class="mb20"><div class="nextprev clear">
+<div class="icon tt left mr1" data-distance="-40|-30|top">
+<span class="prev"><a href="SL-Material.html"></a></span><div class="tip">ShaderLab: Legacy Lighting</div>
+</div>
+<div class="icon tt right" data-distance="-40|-30|top">
+<span class="next"><a href="SL-AlphaTest.html"></a></span><div class="tip">ShaderLab: Legacy Alpha Testing</div>
+</div>
+</div></div>
+<div class="otherversionswrapper" onmouseover="setOtherVersionsDisplay(true)" onmouseout="setOtherVersionsDisplay(false)">
+<a>Other Versions</a><div class="otherversionscontent" id="OtherVersionsContent" style="display: none;">Cannot access other versions offline!</div>
+</div>
+<div class="scrollToFeedback"><a id="scrollToFeedback">Leave feedback</a></div>
+<h1>ShaderLab: Legacy Texture Combiners</h1>
+<!--BeginSwitchLink--><!--EndSwitchLink-->
+<div class="clear"></div>
+
+<p>After the basic vertex lighting has been calculated, textures are applied. In ShaderLab this is done using <strong>SetTexture</strong> command.</p>
+
+<p><em><strong>Note:</strong> SetTexture commands have no effect when <a href="SL-ShaderPrograms.html">fragment programs</a> are used; as in that case pixel operations are completely described in the shader. It is advisable to use programmable shaders these days instead of SetTexture commands.</em></p>
+
+<p>Fixed function texturing is the place to do old-style combiner effects. You can have multiple SetTexture commands inside a pass - all textures are applied in sequence, like layers in a painting program. SetTexture commands must be placed at the end of a <a href="SL-Pass.html">Pass</a>.</p>
+
+<h2>Syntax</h2>
+
+<pre><code>SetTexture [TextureName] {Texture Block}
+</code></pre>
+
+<p>Assigns a texture. <em>TextureName</em> must be defined as a texture property. How to apply the texture is defined inside the <em>TextureBlock</em>.</p>
+
+<p>The texture block controls how the texture is applied. Inside the texture block can be up to two commands: <code>combine</code> and <code>constantColor</code>.</p>
+
+<h2>Texture block <code>combine</code> command</h2>
+
+<p>
+<code>combine</code> <em>src1</em> * <em>src2</em>: Multiplies src1 and src2 together. The result will be darker than either input.</p>
+
+<p>
+<code>combine</code> <em>src1</em> + <em>src2</em>: Adds src1 and src2 together. The result will be lighter than either input.</p>
+
+<p>
+<code>combine</code> <em>src1</em> - <em>src2</em>: Subtracts src2 from src1.</p>
+
+<p>
+<code>combine</code> <em>src1</em> <code>lerp</code> (<em>src2</em>) <em>src3</em>: Interpolates between src3 and src1, using the alpha of src2. Note that the interpolation is opposite direction: src1 is used when alpha is one, and src3 is used when alpha is zero.</p>
+
+<p>
+<code>combine</code> <em>src1</em> * <em>src2</em> + <em>src3</em>: Multiplies src1 with the alpha component of src2, then adds src3.</p>
+
+<p>All the <strong>src</strong> properties can be either one of <em>previous</em>, <em>constant</em>, <em>primary</em> or <em>texture</em>. </p>
+
+<ul>
+<li>
+<strong>Previous</strong> is the the result of the previous SetTexture.</li>
+<li>
+<strong>Primary</strong> is the color from the <a href="SL-Material.html">lighting calculation</a> or the vertex color if it is <a href="SL-BindChannels.html">bound</a>.</li>
+<li>
+<strong>Texture</strong> is the color of the texture specified by <em>TextureName</em> in the SetTexture (see above).</li>
+<li>
+<strong>Constant</strong> is the color specified in <strong>ConstantColor</strong>.</li>
+</ul>
+
+<p>Modifiers:</p>
+
+<ul>
+<li>The formulas specified above can optionally be followed by the keywords <strong>Double</strong> or <strong>Quad</strong> to make the resulting color 2x or 4x as bright.</li>
+<li>All the <strong>src</strong> properties, except <code>lerp</code> argument, can optionally be preceded by <strong>one -</strong> to make the resulting color negated.</li>
+<li>All the <strong>src</strong> properties can be followed by <strong>alpha</strong> to take only the alpha channel.</li>
+</ul>
+
+<h2>Texture block <code>constantColor</code> command</h2>
+
+<p>
+<strong>ConstantColor color:</strong> Defines a constant color that can be used in the combine command.</p>
+
+<h2>Functionality removed in Unity 5.0</h2>
+
+<p>Unity versions before 5.0 did support texture coordinate transformations with a <code>matrix</code> command inside a texture block. If you need this functionality now, consider rewriting your shader as a <a href="SL-ShaderPrograms.html">programmable shader</a> instead, and do the UV transformation in the vertex shader.</p>
+
+<p>Similarly, 5.0 removed signed add (<code>a+-b</code>), multiply signed add (<code>a*b+-c</code>), multiply subtract (<code>a*b-c</code>) and dot product (<code>dot3</code>, <code>dot3rgba</code>) texture combine modes. If you need them, do the math in the pixel shader instead.</p>
+
+<h2>Details</h2>
+
+<p>Before <a href="SL-ShaderPrograms.html">fragment programs</a> existed, older graphics cards used a layered approach to textures. The textures are applied one after each other, modifying the color that will be written to the screen. For each texture, the texture is typically combined with the result of the previous operation. These days it is advisable to use actual fragment programs.</p>
+
+<figure>
+<img src="../uploads/SL/SetTextureGraph.png" alt="">
+</figure>
+
+<p>Note that each texture stage may or might not be clamped to 0..1 range, depending on the platform. This might affect SetTexture stages that can produce values higher than 1.0.</p>
+
+<h2>Separate Alpha &amp; Color computation</h2>
+
+<p>By default, the combiner formula is used for calculating both the RGB and alpha component of the color. Optionally, you can specify a separate formula for the alpha calculation. This looks like this:</p>
+
+<pre><code>SetTexture [_MainTex] { combine previous * texture, previous + texture }
+</code></pre>
+
+<p>Here, we multiply the RGB colors and add the alpha.</p>
+
+<h2>Specular highlights</h2>
+
+<p>By default the <strong>primary</strong> color is the sum of the diffuse, ambient and specular colors (as defined in the <a href="SL-Material.html">Lighting calculation</a>). If you specify <strong>SeparateSpecular On</strong> in the pass options, the specular color will be added in <em>after</em> the combiner calculation, rather than before. This is the default behavior of the built-in VertexLit shader.</p>
+
+<h2>Graphics hardware support</h2>
+
+<p>Modern graphics cards with <a href="SL-ShaderPrograms.html">fragment shader</a> support (“shader model 2.0” on desktop, OpenGL ES 2.0 on mobile) support all <strong>SetTexture</strong> modes and at least 4 texture stages (many of them support 8). If you’re running on really old hardware (made before 2003 on PC, or before iPhone3GS on mobile), you might have as low as two texture stages. The shader author should write separate <a href="SL-SubShader.html">SubShaders</a> for the cards they want to support.</p>
+
+<h2>Examples</h2>
+
+<h3>Alpha Blending Two Textures</h3>
+
+<p>This small examples takes two textures. First it sets the first combiner to just take the <strong>_MainTex</strong>, then is uses the alpha channel of <strong>_BlendTex</strong> to fade in the RGB colors of <strong>_BlendTex</strong>
+</p>
+
+<pre><code>Shader &quot;Examples/2 Alpha Blended Textures&quot; {
+    Properties {
+        _MainTex (&quot;Base (RGB)&quot;, 2D) = &quot;white&quot; {}
+        _BlendTex (&quot;Alpha Blended (RGBA) &quot;, 2D) = &quot;white&quot; {}
+    }
+    SubShader {
+        Pass {
+            // Apply base texture
+            SetTexture [_MainTex] {
+                combine texture
+            }
+            // Blend in the alpha texture using the lerp operator
+            SetTexture [_BlendTex] {
+                combine texture lerp (texture) previous
+            }
+        }
+    }
+}
+</code></pre>
+
+<h3>Alpha Controlled Self-illumination</h3>
+
+<p>This shader uses the alpha component of the <strong>_MainTex</strong> to decide where to apply lighting. It does this by applying the texture to two stages; In the first stage, the alpha value of the texture is used to blend between the vertex color and solid white. In the second stage, the RGB values of the texture are multiplied in.</p>
+
+<pre><code>Shader &quot;Examples/Self-Illumination&quot; {
+    Properties {
+        _MainTex (&quot;Base (RGB) Self-Illumination (A)&quot;, 2D) = &quot;white&quot; {}
+    }
+    SubShader {
+        Pass {
+            // Set up basic white vertex lighting
+            Material {
+                Diffuse (1,1,1,1)
+                Ambient (1,1,1,1)
+            }
+            Lighting On
+
+            // Use texture alpha to blend up to white (= full illumination)
+            SetTexture [_MainTex] {
+                constantColor (1,1,1,1)
+                combine constant lerp(texture) previous
+            }
+            // Multiply in texture
+            SetTexture [_MainTex] {
+                combine previous * texture
+            }
+        }
+    }
+}
+</code></pre>
+
+<p>We can do something else for free here, though; instead of blending to solid white, we can add a self-illumination color and blend to that. Note the use of <strong>ConstantColor</strong> to get a _SolidColor from the properties into the texture blending.</p>
+
+<pre><code>Shader &quot;Examples/Self-Illumination 2&quot; {
+    Properties {
+        _IlluminCol (&quot;Self-Illumination color (RGB)&quot;, Color) = (1,1,1,1)
+        _MainTex (&quot;Base (RGB) Self-Illumination (A)&quot;, 2D) = &quot;white&quot; {}
+    }
+    SubShader {
+        Pass {
+            // Set up basic white vertex lighting
+            Material {
+                Diffuse (1,1,1,1)
+                Ambient (1,1,1,1)
+            }
+            Lighting On
+
+            // Use texture alpha to blend up to white (= full illumination)
+            SetTexture [_MainTex] {
+                // Pull the color property into this blender
+                constantColor [_IlluminCol]
+                // And use the texture's alpha to blend between it and
+                // vertex color
+                combine constant lerp(texture) previous
+            }
+            // Multiply in texture
+            SetTexture [_MainTex] {
+                combine previous * texture
+            }
+        }
+    }
+}
+</code></pre>
+
+<p>And finally, we take all the lighting properties of the vertexlit shader and pull that in:</p>
+
+<pre><code>Shader &quot;Examples/Self-Illumination 3&quot; {
+    Properties {
+        _IlluminCol (&quot;Self-Illumination color (RGB)&quot;, Color) = (1,1,1,1)
+        _Color (&quot;Main Color&quot;, Color) = (1,1,1,0)
+        _SpecColor (&quot;Spec Color&quot;, Color) = (1,1,1,1)
+        _Emission (&quot;Emmisive Color&quot;, Color) = (0,0,0,0)
+        _Shininess (&quot;Shininess&quot;, Range (0.01, 1)) = 0.7
+        _MainTex (&quot;Base (RGB)&quot;, 2D) = &quot;white&quot; {}
+    }
+
+    SubShader {
+        Pass {
+            // Set up basic vertex lighting
+            Material {
+                Diffuse [_Color]
+                Ambient [_Color]
+                Shininess [_Shininess]
+                Specular [_SpecColor]
+                Emission [_Emission]
+            }
+            Lighting On
+
+            // Use texture alpha to blend up to white (= full illumination)
+            SetTexture [_MainTex] {
+                constantColor [_IlluminCol]
+                combine constant lerp(texture) previous
+            }
+            // Multiply in texture
+            SetTexture [_MainTex] {
+                combine previous * texture
+            }
+        }
+    }
+}
+</code></pre>
+<div class="feedbackbox" id="feedbackbox">
+<div id="rating"><p>Did you find this page useful? Please give it a rating:<br><div id="ratecontent" class="c-rating"></div>
+</p></div>
+<div id="ratingThanks" style="display:none"><p>Thanks for rating this page!</p></div>
+<div id="problem"><p><a name="problem" onclick="document.getElementById('problemType').style.display = '';document.getElementById('problem').style.display = 'none';">Report a problem on this page</a></p></div>
+<div id="problemType" style="display:none"><p>What kind of problem would you like to report?<ul type="problems">
+<li><a name="needcode" onclick="                                                             document.getElementById('problemType').style.display = 'none';                                                             document.getElementById('problemThanks').style.display = '';                                                             SendFeedback('problem-needcode',window.location.href,0);                                                             document.getElementById('problemFormDescription').value='Needs code samples.';                                                             document.getElementById('problemNeedCodeForm').style.display = ''                                                         ">This page needs code samples</a></li>
+<li><a name="code" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-brokencode',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Code samples do not work.';                                                         document.getElementById('problemCodeForm').style.display = ''                                                         ">Code samples do not work</a></li>
+<li><a name="missing" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-missing',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Missing information';                                                         document.getElementById('problemMissingForm').style.display = ''                                                         ">Information is missing</a></li>
+<li><a name="incorrect" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-incorrect',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Incorrect information';                                                         document.getElementById('problemIncorrectForm').style.display = ''                                                         ">Information is incorrect</a></li>
+<li><a name="unclear" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-unclear',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Unclear or confusing information';                                                         document.getElementById('problemUnclearForm').style.display = ''                                                         ">Information is unclear or confusing</a></li>
+<li><a name="language" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-language',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Spelling or grammar error';                                                         document.getElementById('problemLanguageForm').style.display = ''                                                         ">There is a spelling/grammar error on this page</a></li>
+<li><a name="other" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-other',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='This page has a problem';                                                         document.getElementById('problemOtherForm').style.display = ''                                                         ">Something else</a></li>
+</ul>
+<p><known_issues><p>Is something described here not working as you expect it to? It might be a <b>Known Issue</b>. Please check with the Issue Tracker at <a href="https://issuetracker.unity3d.com">issuetracker.unity3d.com</a>.</p></known_issues></p>
+</p></div>
+<div id="problemThanks" style="display:none"><p>Thanks for letting us know! This page has been marked for review based on your feedback.<br><br>If you have time, you can provide more information to help us fix the problem faster.<br><br><a onclick="document.getElementById('problemMoreInfo').style.display = '';document.getElementById('problemThanks').style.display = 'none';">Provide more information</a><br>
+</p></div>
+<div id="problemMoreInfo" style="display:none">
+<p id="problemNeedCodeForm" style="display:none">You've told us this page needs code samples. If you'd like to help us further, you could provide a code sample, or tell us about what kind of code sample you'd like to see:</p>
+<p id="problemCodeForm" style="display:none">You've told us there are code samples on this page which don't work. If you know how to fix it, or have something better we could use instead, please let us know:</p>
+<p id="problemMissingForm" style="display:none">You've told us there is information missing from this page. Please tell us more about what's missing:</p>
+<p id="problemIncorrectForm" style="display:none">You've told us there is incorrect information on this page. If you know what we should change to make it correct, please tell us:</p>
+<p id="problemUnclearForm" style="display:none">You've told us this page has unclear or confusing information. Please tell us more about what you found unclear or confusing, or let us know how we could make it clearer:</p>
+<p id="problemLanguageForm" style="display:none">You've told us there is a spelling or grammar error on this page. Please tell us what's wrong:</p>
+<p id="problemOtherForm" style="display:none">You've told us this page has a problem. Please tell us more about what's wrong:</p>
+<form>
+<textarea id="problemFormSuggestionField" cols="40" rows="5"></textarea><input type="hidden" id="problemFormDescription"><input type="submit" id="problemFormDescriptionSubmit" value="Submit" onclick="                                             document.getElementById('problemMoreInfo').style.display = 'none';                                             document.getElementById('problemMoreInfoThanks').style.display = '';                                             return false;                                             ">
+</form>
+</div>
+<div id="problemMoreInfoThanks" style="display:none"><p>Thanks for helping to make the Unity documentation better!</p></div>
+<script>
+
+                                            var ratecontent = document.querySelector('#ratecontent'); // target element
+                                            var currentRating = 0; // initial rating
+                                            var maxRating= 5; // max rating
+
+                                            // callback to run after setting the rating
+                                            var callback = function(rating) {
+                                                document.getElementById('ratingThanks').style.display = '';
+                                                document.getElementById('ratecontent').style.display = 'none';
+                                                document.getElementById('rating').style.display = 'none';
+                                                SendFeedback("rating",window.location.href,rating);
+                                            };
+
+                                            // rating instance
+                                            var myRating = rating(ratecontent, currentRating, maxRating, callback);
+                                        </script>
+</div>
+<div class="nextprev clear">
+<div class="icon tt left mr1" data-distance="-40|-30|top">
+<span class="prev"><a href="SL-Material.html"></a></span><div class="tip">ShaderLab: Legacy Lighting</div>
+</div>
+<div class="icon tt right" data-distance="-40|-30|top">
+<span class="next"><a href="SL-AlphaTest.html"></a></span><div class="tip">ShaderLab: Legacy Alpha Testing</div>
+</div>
+</div>
+</div>
+</body></html>

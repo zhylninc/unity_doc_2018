@@ -1,0 +1,182 @@
+<html><head><title>html模版</title></head><body>Unity - Manual: Text Mesh</br>
+<div class="breadcrumbs clear"><ul>
+<li><a href="UnityManual.html">Unity User Manual (2018.1 beta)</a></li>
+<li><a href="Graphics.html">Graphics</a></li>
+<li><a href="GraphicsReference.html">Graphics Reference</a></li>
+<li><a href="comp-MeshGroup.html">Mesh Components</a></li>
+<li>Text Mesh</li>
+</ul></div>
+<div class="mb20"><div class="nextprev clear">
+<div class="icon tt left mr1" data-distance="-40|-30|top">
+<span class="prev"><a href="class-SkinnedMeshRenderer.html"></a></span><div class="tip">Skinned Mesh Renderer [DRAFT] </div>
+</div>
+<div class="icon tt right" data-distance="-40|-30|top">
+<span class="next"><a href="class-TextAsset.html"></a></span><div class="tip">Text Asset</div>
+</div>
+</div></div>
+<div class="otherversionswrapper" onmouseover="setOtherVersionsDisplay(true)" onmouseout="setOtherVersionsDisplay(false)">
+<a>Other Versions</a><div class="otherversionscontent" id="OtherVersionsContent" style="display: none;">Cannot access other versions offline!</div>
+</div>
+<div class="scrollToFeedback"><a id="scrollToFeedback">Leave feedback</a></div>
+<h1>Text Mesh</h1>
+<!--BeginSwitchLink--><a href='../ScriptReference/TextMesh.html' title='Go to TextMesh page in the Scripting Reference' class='switch-link gray-btn sbtn left'>Switch to Scripting</a><!--EndSwitchLink-->
+<div class="clear"></div>
+
+<p>The <strong>Text Mesh</strong> generates 3D geometry that displays text strings.</p>
+
+<figure>
+<img src="../uploads/Main/Inspector-TextMesh.png" alt="">
+</figure>
+
+<p>You can create a new Text Mesh from <strong>Component &gt; Mesh &gt; Text Mesh</strong>.</p>
+
+<h2>Properties</h2>
+
+<table>
+<colgroup>
+<col style="text-align:left;">
+<col style="text-align:left;">
+</colgroup>
+
+<thead>
+<tr>
+	<th style="text-align:left;"><strong><em>Property:</em></strong></th>
+	<th style="text-align:left;"><strong><em>Function:</em></strong></th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+	<td style="text-align:left;"><strong>Text</strong></td>
+	<td style="text-align:left;">The text that will be rendered</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>Offset Z</strong></td>
+	<td style="text-align:left;">How far should the text be offset from the transform.position.z when drawing</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>Character Size</strong></td>
+	<td style="text-align:left;">The size of each character (This scales the whole text.)</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>Line Spacing</strong></td>
+	<td style="text-align:left;">How much space will be in-between lines of text.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>Anchor</strong></td>
+	<td style="text-align:left;">Which point of the text shares the position of the Transform.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>Alignment</strong></td>
+	<td style="text-align:left;">How lines of text are aligned (Left, Right, Center).</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>Tab Size</strong></td>
+	<td style="text-align:left;">How much space will be inserted for a tab ‘\t’ character. This is a multiplum of the ‘spacebar’ character offset.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>Font Size</strong></td>
+	<td style="text-align:left;">The size of the font. This can override the size of a dynamic font.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>Font Style</strong></td>
+	<td style="text-align:left;">The rendering style of the font. The font needs to be marked as dynamic.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>Rich Text</strong></td>
+	<td style="text-align:left;">When selected this will enable tag processing when the text is rendered.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>Font</strong></td>
+	<td style="text-align:left;">The <a href="class-Font.html">TrueType Font</a> to use when rendering the text.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>Color</strong></td>
+	<td style="text-align:left;">The global color to use when rendering the text.</td>
+</tr>
+</tbody>
+</table>
+
+<h2>Details</h2>
+
+<p>Text Meshes can be used for rendering road signs, graffiti etc. The Text Mesh places text in the 3D scene. To make generic 2D text for GUIs, use a <a href="class-GUIText.html">GUI Text</a> component instead.</p>
+
+<p>Follow these steps to create a Text Mesh with a custom Font:</p>
+
+<ol>
+<li>Import a font by dragging a TrueType Font - a <strong>.ttf</strong> file - from the Explorer (Windows) or Finder (OS X) into the <strong>Project View</strong>.</li>
+<li>Select the imported font in the Project View.</li>
+<li>Choose <strong>GameObject &gt; Create Other &gt; 3D Text</strong>.
+You have now created a text mesh with your custom TrueType Font. You can scale the text and move it around using the <strong>Scene View’s</strong> <strong>Transform</strong> controls.</li>
+</ol>
+
+<p>
+<strong>Note:</strong> If you want to change the font for a Text Mesh, need to set the component’s font property and also set the texture of the font material to the correct font texture. This texture can be located using the font asset’s foldout. If you forget to set the texture then the text in the mesh will appear blocky and misaligned. </p>
+
+<h2>Hints</h2>
+
+<ul>
+<li>You can download free TrueType Fonts from <a href="http://www.1001freefonts.com/fonts/afonts.htm">1001freefonts.com</a> (download the Windows fonts since they contain TrueType Fonts).</li>
+<li>If you are scripting the <strong>Text</strong> property, you can add line breaks by inserting the escape character “\n” in your strings.</li>
+<li>Text meshes can be styled using simple mark-up. See the <a href="StyledText.html">Styled Text</a> page for more details.</li>
+<li>Fonts in Unity are rendered by first rendering the font glyphs to a texture map. If the font size is set too small, these font textures will appear blocky. Since TextMesh assets are rendered using quads, it’s possible that if the size of the TextMesh and font texture differ the TextMesh will look wrong.</li>
+</ul>
+<div class="feedbackbox" id="feedbackbox">
+<div id="rating"><p>Did you find this page useful? Please give it a rating:<br><div id="ratecontent" class="c-rating"></div>
+</p></div>
+<div id="ratingThanks" style="display:none"><p>Thanks for rating this page!</p></div>
+<div id="problem"><p><a name="problem" onclick="document.getElementById('problemType').style.display = '';document.getElementById('problem').style.display = 'none';">Report a problem on this page</a></p></div>
+<div id="problemType" style="display:none"><p>What kind of problem would you like to report?<ul type="problems">
+<li><a name="needcode" onclick="                                                             document.getElementById('problemType').style.display = 'none';                                                             document.getElementById('problemThanks').style.display = '';                                                             SendFeedback('problem-needcode',window.location.href,0);                                                             document.getElementById('problemFormDescription').value='Needs code samples.';                                                             document.getElementById('problemNeedCodeForm').style.display = ''                                                         ">This page needs code samples</a></li>
+<li><a name="code" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-brokencode',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Code samples do not work.';                                                         document.getElementById('problemCodeForm').style.display = ''                                                         ">Code samples do not work</a></li>
+<li><a name="missing" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-missing',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Missing information';                                                         document.getElementById('problemMissingForm').style.display = ''                                                         ">Information is missing</a></li>
+<li><a name="incorrect" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-incorrect',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Incorrect information';                                                         document.getElementById('problemIncorrectForm').style.display = ''                                                         ">Information is incorrect</a></li>
+<li><a name="unclear" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-unclear',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Unclear or confusing information';                                                         document.getElementById('problemUnclearForm').style.display = ''                                                         ">Information is unclear or confusing</a></li>
+<li><a name="language" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-language',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Spelling or grammar error';                                                         document.getElementById('problemLanguageForm').style.display = ''                                                         ">There is a spelling/grammar error on this page</a></li>
+<li><a name="other" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-other',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='This page has a problem';                                                         document.getElementById('problemOtherForm').style.display = ''                                                         ">Something else</a></li>
+</ul>
+<p><known_issues><p>Is something described here not working as you expect it to? It might be a <b>Known Issue</b>. Please check with the Issue Tracker at <a href="https://issuetracker.unity3d.com">issuetracker.unity3d.com</a>.</p></known_issues></p>
+</p></div>
+<div id="problemThanks" style="display:none"><p>Thanks for letting us know! This page has been marked for review based on your feedback.<br><br>If you have time, you can provide more information to help us fix the problem faster.<br><br><a onclick="document.getElementById('problemMoreInfo').style.display = '';document.getElementById('problemThanks').style.display = 'none';">Provide more information</a><br>
+</p></div>
+<div id="problemMoreInfo" style="display:none">
+<p id="problemNeedCodeForm" style="display:none">You've told us this page needs code samples. If you'd like to help us further, you could provide a code sample, or tell us about what kind of code sample you'd like to see:</p>
+<p id="problemCodeForm" style="display:none">You've told us there are code samples on this page which don't work. If you know how to fix it, or have something better we could use instead, please let us know:</p>
+<p id="problemMissingForm" style="display:none">You've told us there is information missing from this page. Please tell us more about what's missing:</p>
+<p id="problemIncorrectForm" style="display:none">You've told us there is incorrect information on this page. If you know what we should change to make it correct, please tell us:</p>
+<p id="problemUnclearForm" style="display:none">You've told us this page has unclear or confusing information. Please tell us more about what you found unclear or confusing, or let us know how we could make it clearer:</p>
+<p id="problemLanguageForm" style="display:none">You've told us there is a spelling or grammar error on this page. Please tell us what's wrong:</p>
+<p id="problemOtherForm" style="display:none">You've told us this page has a problem. Please tell us more about what's wrong:</p>
+<form>
+<textarea id="problemFormSuggestionField" cols="40" rows="5"></textarea><input type="hidden" id="problemFormDescription"><input type="submit" id="problemFormDescriptionSubmit" value="Submit" onclick="                                             document.getElementById('problemMoreInfo').style.display = 'none';                                             document.getElementById('problemMoreInfoThanks').style.display = '';                                             return false;                                             ">
+</form>
+</div>
+<div id="problemMoreInfoThanks" style="display:none"><p>Thanks for helping to make the Unity documentation better!</p></div>
+<script>
+
+                                            var ratecontent = document.querySelector('#ratecontent'); // target element
+                                            var currentRating = 0; // initial rating
+                                            var maxRating= 5; // max rating
+
+                                            // callback to run after setting the rating
+                                            var callback = function(rating) {
+                                                document.getElementById('ratingThanks').style.display = '';
+                                                document.getElementById('ratecontent').style.display = 'none';
+                                                document.getElementById('rating').style.display = 'none';
+                                                SendFeedback("rating",window.location.href,rating);
+                                            };
+
+                                            // rating instance
+                                            var myRating = rating(ratecontent, currentRating, maxRating, callback);
+                                        </script>
+</div>
+<div class="nextprev clear">
+<div class="icon tt left mr1" data-distance="-40|-30|top">
+<span class="prev"><a href="class-SkinnedMeshRenderer.html"></a></span><div class="tip">Skinned Mesh Renderer [DRAFT] </div>
+</div>
+<div class="icon tt right" data-distance="-40|-30|top">
+<span class="next"><a href="class-TextAsset.html"></a></span><div class="tip">Text Asset</div>
+</div>
+</div>
+</div>
+</body></html>

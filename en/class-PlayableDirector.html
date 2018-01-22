@@ -1,0 +1,155 @@
+<html><head><title>html模版</title></head><body>Unity - Manual:  Playable Director component</br>
+<div class="breadcrumbs clear"><ul>
+<li><a href="UnityManual.html">Unity User Manual (2018.1 beta)</a></li>
+<li><a href="TimelineSection.html"> Timeline</a></li>
+<li> Playable Director component</li>
+</ul></div>
+<div class="mb20"><div class="nextprev clear">
+<div class="icon tt left mr1" data-distance="-40|-30|top">
+<span class="prev"><a href="TimelineAudioClipProperties.html"></a></span><div class="tip"> Audio Clip properties</div>
+</div>
+<div class="icon tt right" data-distance="-40|-30|top">
+<span class="next"><a href="TimelineGlossary.html"></a></span><div class="tip"> Timeline glossary</div>
+</div>
+</div></div>
+<div class="otherversionswrapper" onmouseover="setOtherVersionsDisplay(true)" onmouseout="setOtherVersionsDisplay(false)">
+<a>Other Versions</a><div class="otherversionscontent" id="OtherVersionsContent" style="display: none;">Cannot access other versions offline!</div>
+</div>
+<div class="scrollToFeedback"><a id="scrollToFeedback">Leave feedback</a></div>
+<h1>Playable Director component</h1>
+<!--BeginSwitchLink--><!--EndSwitchLink-->
+<div class="clear"></div>
+
+<p>The Playable Director component stores the link between a Timeline instance and a Timeline Asset. The Playable Director component controls when the Timeline instance plays, how the Timeline instance updates its clock, and what happens when the Timeline instance finishes playing. </p>
+
+<figure>
+<img src="../uploads/Main/timeline_inspector_playable_director.png" alt="Playable Director component added to the GameObject named PickupObject. The GameObject is associated with the PickupTimeline Timeline Asset.">
+<figcaption>Playable Director component added to the GameObject named PickupObject. The GameObject is associated with the PickupTimeline Timeline Asset.</figcaption>
+</figure>
+
+<p>The Playable Director component also shows the list of tracks, from the associated Timeline Asset (<strong>Playable</strong> property), that animate GameObjects in the scene. The link between Timeline Asset tracks and GameObjects in the scene is referred to as <strong>binding</strong> or <strong>Track binding</strong>. See <a href="TimelineOverview.html">Timeline Overview section</a> for details on binding and the relationship between Timeline Assets and Timeline instances.</p>
+
+<h3>Playable</h3>
+
+<p>Use the <strong>Playable</strong> property to manually associate a Timeline Asset with a GameObject in the scene. When you make this association, you create a Timeline instance for the selected Timeline Asset. After you create a Timeline instance, you can use the other properties in the Playable Director component to control the instance and to choose which GameObjects in the scene are animated by the Timeline Asset.</p>
+
+<h3>Update Method</h3>
+
+<p>Use the Update Method to set the clock source that the Timeline instance uses to update its timing. The Update Method supports the following clock sources:</p>
+
+<ul>
+<li><p>
+<strong>DSP</strong>: Select for sample accurate audio scheduling. When selected, the Timeline instance uses the same clock source that processes audio. DSP stands for digital signal processing.</p></li>
+<li><p>
+<strong>Game Time</strong>: Select to use the same clock source as the game clock. This clock source is affected by <a href="TimeFrameManagement.html">time scaling</a>.</p></li>
+<li><p>
+<strong>Unscaled Game Time</strong>: Select to use the same clock source as the game clock, but without being affected by time scaling.</p></li>
+<li><p>
+<strong>Manual</strong>: Select to not use a clock source and to manually set the clock time through scripting.</p></li>
+</ul>
+
+<h3>Play on Awake</h3>
+
+<p>Whether the Timeline instance is played when game play is initiated. By default, a Timeline instance is set to begin as soon as the scene begins playback. To disable the default behaviour, disable the Play on Awake option in the Playable Director component. </p>
+
+<h3>Wrap Mode</h3>
+
+<p>The behaviour when the Timeline instance ends playback. The Wrap mode also defines the behaviour when the Timeline Editor window is in Play Range mode. The following Wrap modes are supported:</p>
+
+<ul>
+<li><p>
+<strong>Hold</strong>: Plays the Timeline instance once and holds on the last frame until playback is interrupted.</p></li>
+<li><p>
+<strong>Loop</strong>: Plays the sequence repeatedly until playback is interrupted.</p></li>
+<li><p>
+<strong>None</strong>: Plays the sequence once and then resets all animated properties to the values they held before playback.</p></li>
+</ul>
+
+<h3>Initial Time</h3>
+
+<p>The time (in seconds) at which the Timeline instance begins playing. The Initial Time adds a delay in seconds from when the Timeline instance is triggered to when playback actually begins. For example, if Play On Awake is enabled and Initial Time is set to five seconds, clicking the Play button in the Unity Toolbar starts Play mode and the Timeline instance begins at five seconds.</p>
+
+<p>This is useful when you are working on a long cinematic and you want to preview the last few seconds of your Timeline instance. </p>
+
+<h3>Current Time</h3>
+
+<p>Use the Current Time field to view the progression of time according to the Timeline instance in the Timeline Editor window. The Current Time field matches the Playhead Location field. The Current Time field is useful when the Timeline Editor window is hidden. The Current Time field appears in the Playable Director Component when in Timeline Playback mode or when Unity is in Game Mode.</p>
+
+<h3>Bindings</h3>
+
+<p>Use the <strong>Bindings</strong> area to link GameObjects in the scene with tracks from the associated Timeline Asset (<strong>Playable</strong> property). When you link a GameObject to a track, the track animates the GameObject in the scene. The link between a GameObject and a track is referred to as <strong>binding</strong> or <strong>Track binding</strong>. </p>
+
+<p>The <strong>Bindings</strong> area is split into two columns:</p>
+
+<ul>
+<li><p>The first column lists the tracks from the Timeline Asset. Each track is identified by an icon and its track type. </p></li>
+<li><p>The second column lists the GameObject linked (or <strong>bound</strong>) to each track.</p></li>
+</ul>
+
+<p>The <strong>Bindings</strong> area does not list Track groups, Track sub-groups, or tracks that do not animate GameObjects. The Timeline Editor window shows the same bindings in the <a href="TimelineTrackList.html">Track list</a>.</p>
+
+<hr>
+
+<ul>
+<li><span class="page-edit">2017–08–10 Page published with limited <a href="DocumentationEditorialReview.html">editorial review</a>
+</span></li>
+</ul>
+<div class="feedbackbox" id="feedbackbox">
+<div id="rating"><p>Did you find this page useful? Please give it a rating:<br><div id="ratecontent" class="c-rating"></div>
+</p></div>
+<div id="ratingThanks" style="display:none"><p>Thanks for rating this page!</p></div>
+<div id="problem"><p><a name="problem" onclick="document.getElementById('problemType').style.display = '';document.getElementById('problem').style.display = 'none';">Report a problem on this page</a></p></div>
+<div id="problemType" style="display:none"><p>What kind of problem would you like to report?<ul type="problems">
+<li><a name="needcode" onclick="                                                             document.getElementById('problemType').style.display = 'none';                                                             document.getElementById('problemThanks').style.display = '';                                                             SendFeedback('problem-needcode',window.location.href,0);                                                             document.getElementById('problemFormDescription').value='Needs code samples.';                                                             document.getElementById('problemNeedCodeForm').style.display = ''                                                         ">This page needs code samples</a></li>
+<li><a name="code" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-brokencode',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Code samples do not work.';                                                         document.getElementById('problemCodeForm').style.display = ''                                                         ">Code samples do not work</a></li>
+<li><a name="missing" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-missing',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Missing information';                                                         document.getElementById('problemMissingForm').style.display = ''                                                         ">Information is missing</a></li>
+<li><a name="incorrect" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-incorrect',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Incorrect information';                                                         document.getElementById('problemIncorrectForm').style.display = ''                                                         ">Information is incorrect</a></li>
+<li><a name="unclear" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-unclear',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Unclear or confusing information';                                                         document.getElementById('problemUnclearForm').style.display = ''                                                         ">Information is unclear or confusing</a></li>
+<li><a name="language" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-language',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Spelling or grammar error';                                                         document.getElementById('problemLanguageForm').style.display = ''                                                         ">There is a spelling/grammar error on this page</a></li>
+<li><a name="other" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-other',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='This page has a problem';                                                         document.getElementById('problemOtherForm').style.display = ''                                                         ">Something else</a></li>
+</ul>
+<p><known_issues><p>Is something described here not working as you expect it to? It might be a <b>Known Issue</b>. Please check with the Issue Tracker at <a href="https://issuetracker.unity3d.com">issuetracker.unity3d.com</a>.</p></known_issues></p>
+</p></div>
+<div id="problemThanks" style="display:none"><p>Thanks for letting us know! This page has been marked for review based on your feedback.<br><br>If you have time, you can provide more information to help us fix the problem faster.<br><br><a onclick="document.getElementById('problemMoreInfo').style.display = '';document.getElementById('problemThanks').style.display = 'none';">Provide more information</a><br>
+</p></div>
+<div id="problemMoreInfo" style="display:none">
+<p id="problemNeedCodeForm" style="display:none">You've told us this page needs code samples. If you'd like to help us further, you could provide a code sample, or tell us about what kind of code sample you'd like to see:</p>
+<p id="problemCodeForm" style="display:none">You've told us there are code samples on this page which don't work. If you know how to fix it, or have something better we could use instead, please let us know:</p>
+<p id="problemMissingForm" style="display:none">You've told us there is information missing from this page. Please tell us more about what's missing:</p>
+<p id="problemIncorrectForm" style="display:none">You've told us there is incorrect information on this page. If you know what we should change to make it correct, please tell us:</p>
+<p id="problemUnclearForm" style="display:none">You've told us this page has unclear or confusing information. Please tell us more about what you found unclear or confusing, or let us know how we could make it clearer:</p>
+<p id="problemLanguageForm" style="display:none">You've told us there is a spelling or grammar error on this page. Please tell us what's wrong:</p>
+<p id="problemOtherForm" style="display:none">You've told us this page has a problem. Please tell us more about what's wrong:</p>
+<form>
+<textarea id="problemFormSuggestionField" cols="40" rows="5"></textarea><input type="hidden" id="problemFormDescription"><input type="submit" id="problemFormDescriptionSubmit" value="Submit" onclick="                                             document.getElementById('problemMoreInfo').style.display = 'none';                                             document.getElementById('problemMoreInfoThanks').style.display = '';                                             return false;                                             ">
+</form>
+</div>
+<div id="problemMoreInfoThanks" style="display:none"><p>Thanks for helping to make the Unity documentation better!</p></div>
+<script>
+
+                                            var ratecontent = document.querySelector('#ratecontent'); // target element
+                                            var currentRating = 0; // initial rating
+                                            var maxRating= 5; // max rating
+
+                                            // callback to run after setting the rating
+                                            var callback = function(rating) {
+                                                document.getElementById('ratingThanks').style.display = '';
+                                                document.getElementById('ratecontent').style.display = 'none';
+                                                document.getElementById('rating').style.display = 'none';
+                                                SendFeedback("rating",window.location.href,rating);
+                                            };
+
+                                            // rating instance
+                                            var myRating = rating(ratecontent, currentRating, maxRating, callback);
+                                        </script>
+</div>
+<div class="nextprev clear">
+<div class="icon tt left mr1" data-distance="-40|-30|top">
+<span class="prev"><a href="TimelineAudioClipProperties.html"></a></span><div class="tip"> Audio Clip properties</div>
+</div>
+<div class="icon tt right" data-distance="-40|-30|top">
+<span class="next"><a href="TimelineGlossary.html"></a></span><div class="tip"> Timeline glossary</div>
+</div>
+</div>
+</div>
+</body></html>

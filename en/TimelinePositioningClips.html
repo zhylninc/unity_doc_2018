@@ -1,0 +1,122 @@
+<html><head><title>html模版</title></head><body>Unity - Manual:  Positioning clips</br>
+<div class="breadcrumbs clear"><ul>
+<li><a href="UnityManual.html">Unity User Manual (2018.1 beta)</a></li>
+<li><a href="TimelineSection.html"> Timeline</a></li>
+<li><a href="TimelineEditorWindow.html"> Timeline Editor window</a></li>
+<li><a href="TimelineClipsView.html"> Clips view</a></li>
+<li> Positioning clips</li>
+</ul></div>
+<div class="mb20"><div class="nextprev clear">
+<div class="icon tt left mr1" data-distance="-40|-30|top">
+<span class="prev"><a href="TimelineSelectingClips.html"></a></span><div class="tip"> Selecting clips</div>
+</div>
+<div class="icon tt right" data-distance="-40|-30|top">
+<span class="next"><a href="TimelineTilingClips.html"></a></span><div class="tip"> Tiling clips</div>
+</div>
+</div></div>
+<div class="otherversionswrapper" onmouseover="setOtherVersionsDisplay(true)" onmouseout="setOtherVersionsDisplay(false)">
+<a>Other Versions</a><div class="otherversionscontent" id="OtherVersionsContent" style="display: none;">Cannot access other versions offline!</div>
+</div>
+<div class="scrollToFeedback"><a id="scrollToFeedback">Leave feedback</a></div>
+<h3>Positioning clips</h3>
+
+<p>To position clips on a track, select one or more clips and drag. While dragging, black guides indicate the range of clips being positioned. The timeline shows the start time and end time of the clips being positioned.</p>
+
+<figure>
+<img src="../uploads/Main/timeline_clips_positioning.png" alt="Drag to position one or more selected clips">
+<figcaption>Drag to position one or more selected clips</figcaption>
+</figure>
+
+<p>You can also position a clip by selecting the clip and changing its start time in the <a href="script-EditorClip.html">Inspector window</a>. This method only works when selecting a single clip. The Inspector window does not show properties for multiple clips.</p>
+
+<p>You can move a clip to another track of the same type. Drag the selection vertically and a ghost of the selected clips helps visualize the result of moving the clip.</p>
+
+<p>While positioning clips, if a clip overlaps another clip on the same track, either a blend or an override occurs, depending on the type of track:</p>
+
+<ul>
+<li><p>Activation track, Control track, or Playable track. When two clips overlap each other on these tracks, the second clip overrides the first clip. It is possible to position a clip in such a way that it hides another clip.</p></li>
+<li><p>Animation tracks, Animation Override tracks, and Audio tracks: When two clips overlap each other on these tracks, the first clip blends into the second clip. This is useful, for example, to create a seamless transition between two Animation clips.</p></li>
+</ul>
+
+<p>You can also position clips by inserting frames at the position of the Timeline Playhead. Right-click the Timeline Playhead, on the timeline above the Clips view, and choose <strong>Insert</strong> &gt; <strong>Frame</strong> and a number of frames. This inserts frames in the Timeline asset at the position of the Timeline Playhead. Inserting frames only repositions the clips that start <strong>after</strong> the position of the Timeline Playhead.</p>
+
+<figure>
+<img src="../uploads/Main/timeline_playhead_insert_before.png" alt="Move the Timeline Playhead to where you want to insert frames">
+<figcaption>Move the Timeline Playhead to where you want to insert frames</figcaption>
+</figure>
+
+<figure>
+<img src="../uploads/Main/timeline_playhead_insert_menu.png" alt="Right-click the Timeline Playhead and select Insert &gt; Frame to move clips an exact number of frames">
+<figcaption>Right-click the Timeline Playhead and select <strong><em><em>Insert</em></em></strong> &gt; <strong><em><em>Frame</em></em></strong> to move clips an exact number of frames</figcaption>
+</figure>
+
+<figure>
+<img src="../uploads/Main/timeline_playhead_insert_100_after.png" alt="Only the clips that start after the Timeline Playhead are moved. In this example, inserting 100 frames at frame 45 affects the End Move, sweep2, and run_away clips.">
+<figcaption>Only the clips that start after the Timeline Playhead are moved. In this example, inserting 100 frames at frame 45 affects the End Move, sweep2, and run_away clips.</figcaption>
+</figure>
+
+<hr>
+
+<ul>
+<li><span class="page-edit">2017–08–10 Page published with limited <a href="DocumentationEditorialReview.html">editorial review</a>
+</span></li>
+</ul>
+<div class="feedbackbox" id="feedbackbox">
+<div id="rating"><p>Did you find this page useful? Please give it a rating:<br><div id="ratecontent" class="c-rating"></div>
+</p></div>
+<div id="ratingThanks" style="display:none"><p>Thanks for rating this page!</p></div>
+<div id="problem"><p><a name="problem" onclick="document.getElementById('problemType').style.display = '';document.getElementById('problem').style.display = 'none';">Report a problem on this page</a></p></div>
+<div id="problemType" style="display:none"><p>What kind of problem would you like to report?<ul type="problems">
+<li><a name="needcode" onclick="                                                             document.getElementById('problemType').style.display = 'none';                                                             document.getElementById('problemThanks').style.display = '';                                                             SendFeedback('problem-needcode',window.location.href,0);                                                             document.getElementById('problemFormDescription').value='Needs code samples.';                                                             document.getElementById('problemNeedCodeForm').style.display = ''                                                         ">This page needs code samples</a></li>
+<li><a name="code" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-brokencode',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Code samples do not work.';                                                         document.getElementById('problemCodeForm').style.display = ''                                                         ">Code samples do not work</a></li>
+<li><a name="missing" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-missing',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Missing information';                                                         document.getElementById('problemMissingForm').style.display = ''                                                         ">Information is missing</a></li>
+<li><a name="incorrect" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-incorrect',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Incorrect information';                                                         document.getElementById('problemIncorrectForm').style.display = ''                                                         ">Information is incorrect</a></li>
+<li><a name="unclear" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-unclear',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Unclear or confusing information';                                                         document.getElementById('problemUnclearForm').style.display = ''                                                         ">Information is unclear or confusing</a></li>
+<li><a name="language" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-language',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Spelling or grammar error';                                                         document.getElementById('problemLanguageForm').style.display = ''                                                         ">There is a spelling/grammar error on this page</a></li>
+<li><a name="other" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-other',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='This page has a problem';                                                         document.getElementById('problemOtherForm').style.display = ''                                                         ">Something else</a></li>
+</ul>
+<p><known_issues><p>Is something described here not working as you expect it to? It might be a <b>Known Issue</b>. Please check with the Issue Tracker at <a href="https://issuetracker.unity3d.com">issuetracker.unity3d.com</a>.</p></known_issues></p>
+</p></div>
+<div id="problemThanks" style="display:none"><p>Thanks for letting us know! This page has been marked for review based on your feedback.<br><br>If you have time, you can provide more information to help us fix the problem faster.<br><br><a onclick="document.getElementById('problemMoreInfo').style.display = '';document.getElementById('problemThanks').style.display = 'none';">Provide more information</a><br>
+</p></div>
+<div id="problemMoreInfo" style="display:none">
+<p id="problemNeedCodeForm" style="display:none">You've told us this page needs code samples. If you'd like to help us further, you could provide a code sample, or tell us about what kind of code sample you'd like to see:</p>
+<p id="problemCodeForm" style="display:none">You've told us there are code samples on this page which don't work. If you know how to fix it, or have something better we could use instead, please let us know:</p>
+<p id="problemMissingForm" style="display:none">You've told us there is information missing from this page. Please tell us more about what's missing:</p>
+<p id="problemIncorrectForm" style="display:none">You've told us there is incorrect information on this page. If you know what we should change to make it correct, please tell us:</p>
+<p id="problemUnclearForm" style="display:none">You've told us this page has unclear or confusing information. Please tell us more about what you found unclear or confusing, or let us know how we could make it clearer:</p>
+<p id="problemLanguageForm" style="display:none">You've told us there is a spelling or grammar error on this page. Please tell us what's wrong:</p>
+<p id="problemOtherForm" style="display:none">You've told us this page has a problem. Please tell us more about what's wrong:</p>
+<form>
+<textarea id="problemFormSuggestionField" cols="40" rows="5"></textarea><input type="hidden" id="problemFormDescription"><input type="submit" id="problemFormDescriptionSubmit" value="Submit" onclick="                                             document.getElementById('problemMoreInfo').style.display = 'none';                                             document.getElementById('problemMoreInfoThanks').style.display = '';                                             return false;                                             ">
+</form>
+</div>
+<div id="problemMoreInfoThanks" style="display:none"><p>Thanks for helping to make the Unity documentation better!</p></div>
+<script>
+
+                                            var ratecontent = document.querySelector('#ratecontent'); // target element
+                                            var currentRating = 0; // initial rating
+                                            var maxRating= 5; // max rating
+
+                                            // callback to run after setting the rating
+                                            var callback = function(rating) {
+                                                document.getElementById('ratingThanks').style.display = '';
+                                                document.getElementById('ratecontent').style.display = 'none';
+                                                document.getElementById('rating').style.display = 'none';
+                                                SendFeedback("rating",window.location.href,rating);
+                                            };
+
+                                            // rating instance
+                                            var myRating = rating(ratecontent, currentRating, maxRating, callback);
+                                        </script>
+</div>
+<div class="nextprev clear">
+<div class="icon tt left mr1" data-distance="-40|-30|top">
+<span class="prev"><a href="TimelineSelectingClips.html"></a></span><div class="tip"> Selecting clips</div>
+</div>
+<div class="icon tt right" data-distance="-40|-30|top">
+<span class="next"><a href="TimelineTilingClips.html"></a></span><div class="tip"> Tiling clips</div>
+</div>
+</div>
+</div>
+</body></html>

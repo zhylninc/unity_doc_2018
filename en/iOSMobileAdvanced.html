@@ -1,0 +1,155 @@
+<html><head><title>html模版</title></head><body>Unity - Manual: Advanced Unity Mobile Scripting</br>
+<div class="breadcrumbs clear"><ul>
+<li><a href="UnityManual.html">Unity User Manual (2018.1 beta)</a></li>
+<li><a href="PlatformSpecific.html">Platform-specific</a></li>
+<li><a href="iphone.html">iOS</a></li>
+<li>iOS Advanced Topics</li>
+<li><a href="iphone-API.html">iOS Scripting</a></li>
+<li>Advanced Unity Mobile Scripting</li>
+</ul></div>
+<div class="mb20"><div class="nextprev clear">
+<div class="icon tt left mr1" data-distance="-40|-30|top">
+<span class="prev"><a href="iphone-joystick.html"></a></span><div class="tip">iOS Game Controller support</div>
+</div>
+<div class="icon tt right" data-distance="-40|-30|top">
+<span class="next"><a href="iphone-performance.html"></a></span><div class="tip">Optimizing Performance in iOS.</div>
+</div>
+</div></div>
+<div class="otherversionswrapper" onmouseover="setOtherVersionsDisplay(true)" onmouseout="setOtherVersionsDisplay(false)">
+<a>Other Versions</a><div class="otherversionscontent" id="OtherVersionsContent" style="display: none;">Cannot access other versions offline!</div>
+</div>
+<div class="scrollToFeedback"><a id="scrollToFeedback">Leave feedback</a></div>
+<h1>Advanced Unity Mobile Scripting</h1>
+<!--BeginSwitchLink--><!--EndSwitchLink-->
+<div class="clear"></div>
+
+<h2>Device Properties</h2>
+
+<p>There are a number of device-specific properties that you can access. See the script reference pages for <a href="../ScriptReference/SystemInfo-deviceUniqueIdentifier.html">SystemInfo.deviceUniqueIdentifier</a>, <a href="../ScriptReference/SystemInfo-deviceName.html">SystemInfo.deviceName</a>, <a href="../ScriptReference/SystemInfo-deviceModel.html">SystemInfo.deviceModel</a> and <a href="../ScriptReference/SystemInfo-operatingSystem.html">SystemInfo.operatingSystem</a>.</p>
+
+<h2>Anti-Piracy Check</h2>
+
+<p>Pirates will often hack an application (by removing AppStore DRM protection) and then redistribute it for free. Unity comes with an anti-piracy check which allows you to determine if your application was altered <strong>after</strong> it was submitted to the AppStore.</p>
+
+<p>You can check if your application is genuine (not-hacked) with the <a href="../ScriptReference/Application-genuine.html">Application.genuine</a> property. If this property returns <strong>false</strong> then you might notify user that they are using a hacked application or maybe disable access to some functions of your application.</p>
+
+<p>
+<strong>Note:</strong> <a href="../ScriptReference/Application-genuineCheckAvailable.html">Application.genuineCheckAvailable</a> should be used along with <strong>Application.genuine</strong> to verify that application integrity can actually be confirmed. Accessing the <a href="../ScriptReference/Application-genuine.html">Application.genuine</a> property is a fairly expensive operation and so you shouldn’t do it during frame updates or other time-critical code.</p>
+
+<h2>Vibration Support</h2>
+
+<p>You can trigger a vibration by calling <a href="../ScriptReference/Handheld.Vibrate.html">Handheld.Vibrate</a>. However, devices lacking vibration hardware will just ignore this call.</p>
+
+<h2>Activity Indicator</h2>
+
+<p>Mobile OSs have built-in activity indicators, that you can use during slow operations. Please check <a href="../ScriptReference/Handheld.StartActivityIndicator.html">Handheld.StartActivityIndicator docs</a> for usage sample.</p>
+
+<h2>Screen Orientation</h2>
+
+<p>Unity iOS/Android/Tizen allows you to control current screen orientation. Detecting a change in orientation or forcing some specific orientation can be useful if you want to create game behaviors depending on how the user is holding the device.</p>
+
+<p>You can retrieve device orientation by accessing the <a href="../ScriptReference/Screen-orientation.html">Screen.orientation</a> property. Orientation can be one of the following:</p>
+
+<table>
+<colgroup>
+<col style="text-align:left;">
+<col style="text-align:left;">
+</colgroup>
+
+<thead>
+<tr>
+	<th style="text-align:left;"></th>
+	<th style="text-align:left;"></th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+	<td style="text-align:left;"><strong>Portrait</strong></td>
+	<td style="text-align:left;">The device is in portrait mode, with the device held upright and the home button at the bottom.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>PortraitUpsideDown</strong></td>
+	<td style="text-align:left;">The device is in portrait mode but upside down, with the device held upright and the home button at the top.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>LandscapeLeft</strong></td>
+	<td style="text-align:left;">The device is in landscape mode, with the device held upright and the home button on the right side.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>LandscapeRight</strong></td>
+	<td style="text-align:left;">The device is in landscape mode, with the device held upright and the home button on the left side.</td>
+</tr>
+</tbody>
+</table>
+
+<p>You can control screen orientation by setting <a href="../ScriptReference/Screen-orientation.html">Screen.orientation</a> to one of those, or to <a href="../ScriptReference/ScreenOrientation.AutoRotation.html">ScreenOrientation.AutoRotation</a>.
+When you want auto-rotation, you can disable some orientation on a case by case basis. See the script reference pages for <a href="../ScriptReference/Screen-autorotateToPortrait.html">Screen.autorotateToPortrait</a>, <a href="../ScriptReference/Screen-autorotateToPortraitUpsideDown.html">Screen.autorotateToPortraitUpsideDown</a>, <a href="../ScriptReference/Screen-autorotateToLandscapeLeft.html">Screen.autorotateToLandscapeLeft</a> and<a href="../ScriptReference/Screen-autorotateToLandscapeRight.html">Screen.autorotateToLandscapeRight</a>
+</p>
+
+<h1>Advanced iOS scripting</h1>
+
+<h2>Determining Device Generation</h2>
+
+<p>Different device generations support different functionality and have widely varying performance. You should query the device’s generation and decide which functionality should be disabled to compensate for slower devices. You can find the device generation from the <a href="../ScriptReference/iOS.DeviceGeneration.html">iOS.DeviceGeneration</a> property.</p>
+
+<p>More information about different device generations, performance and supported functionality can be found in our <a href="iphone-Hardware.html">iPhone Hardware Guide</a>.</p>
+<div class="feedbackbox" id="feedbackbox">
+<div id="rating"><p>Did you find this page useful? Please give it a rating:<br><div id="ratecontent" class="c-rating"></div>
+</p></div>
+<div id="ratingThanks" style="display:none"><p>Thanks for rating this page!</p></div>
+<div id="problem"><p><a name="problem" onclick="document.getElementById('problemType').style.display = '';document.getElementById('problem').style.display = 'none';">Report a problem on this page</a></p></div>
+<div id="problemType" style="display:none"><p>What kind of problem would you like to report?<ul type="problems">
+<li><a name="needcode" onclick="                                                             document.getElementById('problemType').style.display = 'none';                                                             document.getElementById('problemThanks').style.display = '';                                                             SendFeedback('problem-needcode',window.location.href,0);                                                             document.getElementById('problemFormDescription').value='Needs code samples.';                                                             document.getElementById('problemNeedCodeForm').style.display = ''                                                         ">This page needs code samples</a></li>
+<li><a name="code" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-brokencode',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Code samples do not work.';                                                         document.getElementById('problemCodeForm').style.display = ''                                                         ">Code samples do not work</a></li>
+<li><a name="missing" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-missing',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Missing information';                                                         document.getElementById('problemMissingForm').style.display = ''                                                         ">Information is missing</a></li>
+<li><a name="incorrect" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-incorrect',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Incorrect information';                                                         document.getElementById('problemIncorrectForm').style.display = ''                                                         ">Information is incorrect</a></li>
+<li><a name="unclear" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-unclear',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Unclear or confusing information';                                                         document.getElementById('problemUnclearForm').style.display = ''                                                         ">Information is unclear or confusing</a></li>
+<li><a name="language" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-language',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Spelling or grammar error';                                                         document.getElementById('problemLanguageForm').style.display = ''                                                         ">There is a spelling/grammar error on this page</a></li>
+<li><a name="other" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-other',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='This page has a problem';                                                         document.getElementById('problemOtherForm').style.display = ''                                                         ">Something else</a></li>
+</ul>
+<p><known_issues><p>Is something described here not working as you expect it to? It might be a <b>Known Issue</b>. Please check with the Issue Tracker at <a href="https://issuetracker.unity3d.com">issuetracker.unity3d.com</a>.</p></known_issues></p>
+</p></div>
+<div id="problemThanks" style="display:none"><p>Thanks for letting us know! This page has been marked for review based on your feedback.<br><br>If you have time, you can provide more information to help us fix the problem faster.<br><br><a onclick="document.getElementById('problemMoreInfo').style.display = '';document.getElementById('problemThanks').style.display = 'none';">Provide more information</a><br>
+</p></div>
+<div id="problemMoreInfo" style="display:none">
+<p id="problemNeedCodeForm" style="display:none">You've told us this page needs code samples. If you'd like to help us further, you could provide a code sample, or tell us about what kind of code sample you'd like to see:</p>
+<p id="problemCodeForm" style="display:none">You've told us there are code samples on this page which don't work. If you know how to fix it, or have something better we could use instead, please let us know:</p>
+<p id="problemMissingForm" style="display:none">You've told us there is information missing from this page. Please tell us more about what's missing:</p>
+<p id="problemIncorrectForm" style="display:none">You've told us there is incorrect information on this page. If you know what we should change to make it correct, please tell us:</p>
+<p id="problemUnclearForm" style="display:none">You've told us this page has unclear or confusing information. Please tell us more about what you found unclear or confusing, or let us know how we could make it clearer:</p>
+<p id="problemLanguageForm" style="display:none">You've told us there is a spelling or grammar error on this page. Please tell us what's wrong:</p>
+<p id="problemOtherForm" style="display:none">You've told us this page has a problem. Please tell us more about what's wrong:</p>
+<form>
+<textarea id="problemFormSuggestionField" cols="40" rows="5"></textarea><input type="hidden" id="problemFormDescription"><input type="submit" id="problemFormDescriptionSubmit" value="Submit" onclick="                                             document.getElementById('problemMoreInfo').style.display = 'none';                                             document.getElementById('problemMoreInfoThanks').style.display = '';                                             return false;                                             ">
+</form>
+</div>
+<div id="problemMoreInfoThanks" style="display:none"><p>Thanks for helping to make the Unity documentation better!</p></div>
+<script>
+
+                                            var ratecontent = document.querySelector('#ratecontent'); // target element
+                                            var currentRating = 0; // initial rating
+                                            var maxRating= 5; // max rating
+
+                                            // callback to run after setting the rating
+                                            var callback = function(rating) {
+                                                document.getElementById('ratingThanks').style.display = '';
+                                                document.getElementById('ratecontent').style.display = 'none';
+                                                document.getElementById('rating').style.display = 'none';
+                                                SendFeedback("rating",window.location.href,rating);
+                                            };
+
+                                            // rating instance
+                                            var myRating = rating(ratecontent, currentRating, maxRating, callback);
+                                        </script>
+</div>
+<div class="nextprev clear">
+<div class="icon tt left mr1" data-distance="-40|-30|top">
+<span class="prev"><a href="iphone-joystick.html"></a></span><div class="tip">iOS Game Controller support</div>
+</div>
+<div class="icon tt right" data-distance="-40|-30|top">
+<span class="next"><a href="iphone-performance.html"></a></span><div class="tip">Optimizing Performance in iOS.</div>
+</div>
+</div>
+</div>
+</body></html>

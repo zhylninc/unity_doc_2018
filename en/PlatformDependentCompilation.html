@@ -1,0 +1,445 @@
+<html><head><title>html模版</title></head><body>Unity - Manual: Platform dependent compilation</br>
+<div class="breadcrumbs clear"><ul>
+<li><a href="UnityManual.html">Unity User Manual (2018.1 beta)</a></li>
+<li><a href="ScriptingSection.html">Scripting</a></li>
+<li><a href="ScriptingConcepts.html">Scripting Overview</a></li>
+<li>Platform dependent compilation</li>
+</ul></div>
+<div class="mb20"><div class="nextprev clear">
+<div class="icon tt left mr1" data-distance="-40|-30|top">
+<span class="prev"><a href="UnderstandingAutomaticMemoryManagement.html"></a></span><div class="tip">Understanding Automatic Memory Management</div>
+</div>
+<div class="icon tt right" data-distance="-40|-30|top">
+<span class="next"><a href="ScriptCompileOrderFolders.html"></a></span><div class="tip">Special folders and script compilation order</div>
+</div>
+</div></div>
+<div class="otherversionswrapper" onmouseover="setOtherVersionsDisplay(true)" onmouseout="setOtherVersionsDisplay(false)">
+<a>Other Versions</a><div class="otherversionscontent" id="OtherVersionsContent" style="display: none;">Cannot access other versions offline!</div>
+</div>
+<div class="scrollToFeedback"><a id="scrollToFeedback">Leave feedback</a></div>
+<h1>Platform dependent compilation</h1>
+<!--BeginSwitchLink--><!--EndSwitchLink-->
+<div class="clear"></div>
+
+<p>Unity includes a feature called <strong>Platform Dependent Compilation</strong>. This consists of some preprocessor directives that let you partition your scripts to compile and execute a section of code exclusively for one of the supported platforms.</p>
+
+<p>You can run this code within the Unity Editor, so you can compile the code specifically for your target platform and test it in the Editor!</p>
+
+<h2>Platform #define directives</h2>
+
+<p>The platform #define directives that Unity supports for your scripts are as follows:</p>
+
+<table>
+<colgroup>
+<col style="text-align:left;">
+<col style="text-align:left;">
+</colgroup>
+
+<thead>
+<tr>
+	<th style="text-align:left;"><strong>Property:</strong></th>
+	<th style="text-align:left;"><strong>Function:</strong></th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+	<td style="text-align:left;"><strong>UNITY_EDITOR</strong></td>
+	<td style="text-align:left;">#define directive for calling Unity Editor scripts from your game code.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>UNITY_EDITOR_WIN</strong></td>
+	<td style="text-align:left;">#define directive for Editor code on Windows.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>UNITY_EDITOR_OSX</strong></td>
+	<td style="text-align:left;">#define directive for Editor code on Mac OS X.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>UNITY_STANDALONE_OSX</strong></td>
+	<td style="text-align:left;">#define directive for compiling/executing code specifically for Mac OS X (including Universal, PPC and Intel architectures).</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>UNITY_STANDALONE_WIN</strong></td>
+	<td style="text-align:left;">#define directive for compiling/executing code specifically for Windows standalone applications.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>UNITY_STANDALONE_LINUX</strong></td>
+	<td style="text-align:left;">#define directive for compiling/executing code specifically for Linux standalone applications.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>UNITY_STANDALONE</strong></td>
+	<td style="text-align:left;">#define directive for compiling/executing code for any standalone platform (Mac OS X, Windows or Linux).</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>UNITY_WII</strong></td>
+	<td style="text-align:left;">#define directive for compiling/executing code for the Wii console.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>UNITY_IOS</strong></td>
+	<td style="text-align:left;">#define directive for compiling/executing code for the iOS platform.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>UNITY_IPHONE</strong></td>
+	<td style="text-align:left;">Deprecated. Use <strong>UNITY_IOS</strong> instead.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>UNITY_ANDROID</strong></td>
+	<td style="text-align:left;">#define directive for the Android platform.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>UNITY_PS4</strong></td>
+	<td style="text-align:left;">#define directive for running PlayStation 4 code.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>UNITY_XBOXONE</strong></td>
+	<td style="text-align:left;">#define directive for executing Xbox One code.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>UNITY_TIZEN</strong></td>
+	<td style="text-align:left;">#define directive for the Tizen platform.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>UNITY_TVOS</strong></td>
+	<td style="text-align:left;">#define directive for the Apple TV platform.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>UNITY_WSA</strong></td>
+	<td style="text-align:left;">#define directive for Universal Windows Platform. Additionally, <strong>NETFX_CORE</strong> is defined when compiling C# files against .NET Core and using .NET scripting backend.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>UNITY_WSA_10_0</strong></td>
+	<td style="text-align:left;">#define directive for Universal Windows Platform. Additionally <strong>WINDOWS_UWP</strong> is defined when compiling C# files against .NET Core.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>UNITY_WINRT</strong></td>
+	<td style="text-align:left;">Same as <strong>UNITY_WSA</strong>.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>UNITY_WINRT_10_0</strong></td>
+	<td style="text-align:left;">Equivalent to <strong>UNITY_WSA_10_0</strong>
+</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>UNITY_WEBGL</strong></td>
+	<td style="text-align:left;">#define directive for WebGL.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>UNITY_FACEBOOK</strong></td>
+	<td style="text-align:left;">#define directive for the Facebook platform (WebGL or Windows standalone).</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>UNITY_ADS</strong></td>
+	<td style="text-align:left;">#define directive for calling Unity Ads methods from your game code. Version 5.2 and above.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>UNITY_ANALYTICS</strong></td>
+	<td style="text-align:left;">#define directive for calling Unity Analytics methods from your game code. Version 5.2 and above.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>UNITY_ASSERTIONS</strong></td>
+	<td style="text-align:left;">#define directive for assertions control process.</td>
+</tr>
+</tbody>
+</table>
+
+<p>From Unity 2.6.0 onwards, you can compile code selectively. The options available depend on the version of the Editor that you are working on.
+Given a version number <strong>X.Y.Z</strong> (for example, 2.6.0), Unity exposes three global #define directives in the following formats: <strong>UNITY_X</strong>, <strong>UNITY_X_Y</strong> and <strong>UNITY_X_Y_Z</strong>.</p>
+
+<p>Here is an example of #define directives exposed in Unity 5.0.1:</p>
+
+<table>
+<colgroup>
+<col style="text-align:left;">
+<col style="text-align:left;">
+</colgroup>
+
+<thead>
+<tr>
+	<th style="text-align:left;"></th>
+	<th style="text-align:left;"></th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+	<td style="text-align:left;"><strong>UNITY_5</strong></td>
+	<td style="text-align:left;">#define directive for the release version of Unity 5, exposed in every 5.X.Y release.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>UNITY_5_0</strong></td>
+	<td style="text-align:left;">#define directive for the major version of Unity 5.0, exposed in every 5.0.Z release.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>UNITY_5_0_1</strong></td>
+	<td style="text-align:left;">#define directive for the minor version of Unity 5.0.1.</td>
+</tr>
+</tbody>
+</table>
+
+<p>Starting from Unity 5.3.4, you can compile code selectively based on the earliest version of Unity required to compile or execute a given portion of code. Given the same version format as above (<strong>X.Y.Z</strong>), Unity exposes one global #define in the format <strong>UNITY_X_Y_OR_NEWER</strong>, that can be used for this purpose.</p>
+
+<p>The supported #define directives are:</p>
+
+<table>
+<colgroup>
+<col style="text-align:left;">
+<col style="text-align:left;">
+</colgroup>
+
+<thead>
+<tr>
+	<th style="text-align:left;"></th>
+	<th style="text-align:left;"></th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+	<td style="text-align:left;"><strong>ENABLE_MONO</strong></td>
+	<td style="text-align:left;">Scripting backend #define for Mono.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>ENABLE_IL2CPP</strong></td>
+	<td style="text-align:left;">Scripting backend #define for IL2CPP.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>ENABLE_DOTNET</strong></td>
+	<td style="text-align:left;">Scripting backend #define for .NET.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>NETFX_CORE</strong></td>
+	<td style="text-align:left;">Defined when building scripts against .NET Core class libraries on .NET.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>NET_2_0</strong></td>
+	<td style="text-align:left;">Defined when building scripts against .NET 2.0 API compatibility level on Mono and IL2CPP.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>NET_2_0_SUBSET</strong></td>
+	<td style="text-align:left;">Defined when building scripts against .NET 2.0 Subset API compatibility level on Mono and IL2CPP.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>NET_4_6</strong></td>
+	<td style="text-align:left;">Defined when building scripts against .NET 4.6 API compatibility level on Mono and IL2CPP.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>ENABLE_WINMD_SUPPORT</strong></td>
+	<td style="text-align:left;">Defined when Windows Runtime support is enabled on IL2CPP and .NET. See <a href="IL2CPP-WindowsRuntimeSupport.html">Windows Runtime Support</a> for more details.</td>
+</tr>
+</tbody>
+</table>
+
+<p>You use the DEVELOPMENT_BUILD #define to identify whether your script is running in a player which was built with the “Development Build” option enabled.</p>
+
+<p>You can also compile code selectively depending on the scripting back-end.</p>
+
+<h2>Testing precompiled code</h2>
+
+<p>Below is an example of how to use the precompiled code. It prints a message that depends on the platform you have selected for your target build.</p>
+
+<p>First of all, select the platform you want to test your code against by going to <strong>File &gt; Build Settings</strong>. This displays the <strong>Build Settings</strong> window; select your target platform from here.</p>
+
+<figure>
+<img src="../uploads/Main/BuildSettings.png" alt="Build Settings window with PC, Mac &amp; Linux selected as the target platforms">
+<figcaption>Build Settings window with PC, Mac &amp; Linux selected as the target platforms</figcaption>
+</figure>
+
+<p>Select the platform you want to test your precompiled code against and click <strong>Switch Platform</strong> to tell Unity which platform you are targeting.</p>
+
+<p>Create a script and copy/paste the following code:</p>
+
+<pre><code>// JS
+function Awake() {
+  #if UNITY_EDITOR
+    Debug.Log(&quot;Unity Editor&quot;);
+  #endif
+    
+  #if UNITY_IPHONE
+    Debug.Log(&quot;Iphone&quot;);
+  #endif
+
+  #if UNITY_STANDALONE_OSX
+    Debug.Log(&quot;Stand Alone OSX&quot;);
+  #endif
+
+  #if UNITY_STANDALONE_WIN
+    Debug.Log(&quot;Stand Alone Windows&quot;);
+  #endif    
+}
+
+
+// C#
+using UnityEngine;
+using System.Collections;
+
+public class PlatformDefines : MonoBehaviour {
+  void Start () {
+
+    #if UNITY_EDITOR
+      Debug.Log(&quot;Unity Editor&quot;);
+    #endif
+    
+    #if UNITY_IOS
+      Debug.Log(&quot;Iphone&quot;);
+    #endif
+
+    #if UNITY_STANDALONE_OSX
+    Debug.Log(&quot;Stand Alone OSX&quot;);
+    #endif
+
+    #if UNITY_STANDALONE_WIN
+      Debug.Log(&quot;Stand Alone Windows&quot;);
+    #endif
+
+  }          
+}
+
+
+</code></pre>
+
+<p>To test the code, click <strong>Play Mode</strong>. Confirm that the code works by checking for the relevant message in the Unity console, depending on which platform you selected - for example, if you choose <strong>iOS</strong>, the message “Iphone” is set to appear in the console.</p>
+
+<p>Note that in C# you can use a <code>CONDITIONAL</code> attribute which is a more clean, less error-prone way of stripping out functions. See <a href="http://msdn.microsoft.com/en-us/library/4xssyw96(v=vs.90).aspx">http://msdn.microsoft.com/en-us/library/4xssyw96(v=vs.90).aspx</a> for more information.</p>
+
+<p>In addition to the basic <code>#if</code> compiler directive, you can also use a multiway test in C# and JavaScript:</p>
+
+<pre><code>
+#if UNITY_EDITOR
+    Debug.Log(&quot;Unity Editor&quot;);
+
+#elif UNITY_IOS
+    Debug.Log(&quot;Unity iPhone&quot;);
+
+#else
+    Debug.Log(&quot;Any other platform&quot;);
+
+#endif
+
+
+</code></pre>
+
+<h2>Platform custom #defines</h2>
+
+<p>It is also possible to add to the built-in selection of #define directives by supplying your own. Open the <strong>Other Settings</strong> panel of the <a href="class-PlayerSettings.html">Player Settings</a> and navigate to the <strong>Scripting Define Symbols</strong> text box.</p>
+
+<figure>
+<img src="../uploads/Main/ScriptDefines.png" alt="">
+</figure>
+
+<p>Enter the names of the symbols you want to define for that particular platform, separated by semicolons. These symbols can then be used as the conditions for <code>#if</code> directives, just like the built-in ones.</p>
+
+<h2>Global custom #defines</h2>
+
+<p>You can define your own preprocessor directives to control which code gets included when compiling. To do this you must add a text file with the extra directives to the <strong>Assets</strong> folder. The name of the file depends on the language you are using. The extension is <strong>.rsp</strong>:</p>
+
+<table>
+<colgroup>
+<col style="text-align:left;">
+<col style="text-align:left;">
+</colgroup>
+
+<thead>
+<tr>
+	<th style="text-align:left;"></th>
+	<th style="text-align:left;"></th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+	<td style="text-align:left;">C# (player and editor scripts)</td>
+	<td style="text-align:left;">&lt;Project Path&gt;/Assets/mcs.rsp</td>
+</tr>
+<tr>
+	<td style="text-align:left;">UnityScript</td>
+	<td style="text-align:left;">&lt;Project Path&gt;/Assets/us.rsp</td>
+</tr>
+</tbody>
+</table>
+
+<p>As an example, if you include the single line <code>-define:UNITY_DEBUG</code> in your <strong>mcs.rsp</strong> file, the #define directive <code>UNITY_DEBUG</code> exists as a global #define for C# scripts, except for Editor scripts.</p>
+
+<p>Every time you make changes to <strong>.rsp</strong> files, you need to recompile in order for them to be effective. You can do this by updating or reimporting a single script (.js or .cs) file.</p>
+
+<p><strong>NOTE</strong></p>
+
+<p>If you want to modify only global #define directives, use <strong>Scripting Define Symbols</strong> in <a href="class-PlayerSettings.html">Player Settings</a>, as this covers all the compilers. If you choose the <strong>.rsp</strong> files instead, you need to provide one file for every compiler Unity uses, and you don’t know when one or another compiler is used.</p>
+
+<p>The use of <strong>.rsp</strong> files is described in the ‘Help’ section of the <strong>mcs</strong> application which is included in the Editor installation folder. You can get more information by running <code>mcs -help</code>. </p>
+
+<p>Note that the <strong>.rsp</strong> file needs to match the compiler being invoked. For example:</p>
+
+<ul>
+<li>when targeting any players or the editor, <strong>mcs</strong> is used with <code>mcs.rsp</code>, and</li>
+<li>when targeting MS compiler, <strong>csc</strong> is used with <code>csc.rsp</code>, etc.</li>
+</ul>
+
+<hr>
+
+<ul>
+<li><p>
+<span class="page-edit">2017–11–20 Page amended with no <a href="DocumentationEditorialReview.html">editorial review</a>
+</span><br>
+</p></li>
+<li><p><span class="page-history">Removed Samsung TV support.</span></p></li>
+</ul>
+<div class="feedbackbox" id="feedbackbox">
+<div id="rating"><p>Did you find this page useful? Please give it a rating:<br><div id="ratecontent" class="c-rating"></div>
+</p></div>
+<div id="ratingThanks" style="display:none"><p>Thanks for rating this page!</p></div>
+<div id="problem"><p><a name="problem" onclick="document.getElementById('problemType').style.display = '';document.getElementById('problem').style.display = 'none';">Report a problem on this page</a></p></div>
+<div id="problemType" style="display:none"><p>What kind of problem would you like to report?<ul type="problems">
+<li><a name="needcode" onclick="                                                             document.getElementById('problemType').style.display = 'none';                                                             document.getElementById('problemThanks').style.display = '';                                                             SendFeedback('problem-needcode',window.location.href,0);                                                             document.getElementById('problemFormDescription').value='Needs code samples.';                                                             document.getElementById('problemNeedCodeForm').style.display = ''                                                         ">This page needs code samples</a></li>
+<li><a name="code" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-brokencode',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Code samples do not work.';                                                         document.getElementById('problemCodeForm').style.display = ''                                                         ">Code samples do not work</a></li>
+<li><a name="missing" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-missing',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Missing information';                                                         document.getElementById('problemMissingForm').style.display = ''                                                         ">Information is missing</a></li>
+<li><a name="incorrect" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-incorrect',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Incorrect information';                                                         document.getElementById('problemIncorrectForm').style.display = ''                                                         ">Information is incorrect</a></li>
+<li><a name="unclear" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-unclear',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Unclear or confusing information';                                                         document.getElementById('problemUnclearForm').style.display = ''                                                         ">Information is unclear or confusing</a></li>
+<li><a name="language" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-language',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Spelling or grammar error';                                                         document.getElementById('problemLanguageForm').style.display = ''                                                         ">There is a spelling/grammar error on this page</a></li>
+<li><a name="other" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-other',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='This page has a problem';                                                         document.getElementById('problemOtherForm').style.display = ''                                                         ">Something else</a></li>
+</ul>
+<p><known_issues><p>Is something described here not working as you expect it to? It might be a <b>Known Issue</b>. Please check with the Issue Tracker at <a href="https://issuetracker.unity3d.com">issuetracker.unity3d.com</a>.</p></known_issues></p>
+</p></div>
+<div id="problemThanks" style="display:none"><p>Thanks for letting us know! This page has been marked for review based on your feedback.<br><br>If you have time, you can provide more information to help us fix the problem faster.<br><br><a onclick="document.getElementById('problemMoreInfo').style.display = '';document.getElementById('problemThanks').style.display = 'none';">Provide more information</a><br>
+</p></div>
+<div id="problemMoreInfo" style="display:none">
+<p id="problemNeedCodeForm" style="display:none">You've told us this page needs code samples. If you'd like to help us further, you could provide a code sample, or tell us about what kind of code sample you'd like to see:</p>
+<p id="problemCodeForm" style="display:none">You've told us there are code samples on this page which don't work. If you know how to fix it, or have something better we could use instead, please let us know:</p>
+<p id="problemMissingForm" style="display:none">You've told us there is information missing from this page. Please tell us more about what's missing:</p>
+<p id="problemIncorrectForm" style="display:none">You've told us there is incorrect information on this page. If you know what we should change to make it correct, please tell us:</p>
+<p id="problemUnclearForm" style="display:none">You've told us this page has unclear or confusing information. Please tell us more about what you found unclear or confusing, or let us know how we could make it clearer:</p>
+<p id="problemLanguageForm" style="display:none">You've told us there is a spelling or grammar error on this page. Please tell us what's wrong:</p>
+<p id="problemOtherForm" style="display:none">You've told us this page has a problem. Please tell us more about what's wrong:</p>
+<form>
+<textarea id="problemFormSuggestionField" cols="40" rows="5"></textarea><input type="hidden" id="problemFormDescription"><input type="submit" id="problemFormDescriptionSubmit" value="Submit" onclick="                                             document.getElementById('problemMoreInfo').style.display = 'none';                                             document.getElementById('problemMoreInfoThanks').style.display = '';                                             return false;                                             ">
+</form>
+</div>
+<div id="problemMoreInfoThanks" style="display:none"><p>Thanks for helping to make the Unity documentation better!</p></div>
+<script>
+
+                                            var ratecontent = document.querySelector('#ratecontent'); // target element
+                                            var currentRating = 0; // initial rating
+                                            var maxRating= 5; // max rating
+
+                                            // callback to run after setting the rating
+                                            var callback = function(rating) {
+                                                document.getElementById('ratingThanks').style.display = '';
+                                                document.getElementById('ratecontent').style.display = 'none';
+                                                document.getElementById('rating').style.display = 'none';
+                                                SendFeedback("rating",window.location.href,rating);
+                                            };
+
+                                            // rating instance
+                                            var myRating = rating(ratecontent, currentRating, maxRating, callback);
+                                        </script>
+</div>
+<div class="nextprev clear">
+<div class="icon tt left mr1" data-distance="-40|-30|top">
+<span class="prev"><a href="UnderstandingAutomaticMemoryManagement.html"></a></span><div class="tip">Understanding Automatic Memory Management</div>
+</div>
+<div class="icon tt right" data-distance="-40|-30|top">
+<span class="next"><a href="ScriptCompileOrderFolders.html"></a></span><div class="tip">Special folders and script compilation order</div>
+</div>
+</div>
+</div>
+</body></html>

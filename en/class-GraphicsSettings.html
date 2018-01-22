@@ -1,0 +1,358 @@
+<html><head><title>html模版</title></head><body>Unity - Manual: Graphics Settings</br>
+<div class="breadcrumbs clear"><ul>
+<li><a href="UnityManual.html">Unity User Manual (2018.1 beta)</a></li>
+<li><a href="UnityOverview.html">Working in Unity</a></li>
+<li><a href="EditorFeatures.html">Editor Features</a></li>
+<li><a href="comp-ManagerGroup.html">Settings Managers</a></li>
+<li>Graphics Settings</li>
+</ul></div>
+<div class="mb20"><div class="nextprev clear">
+<div class="icon tt left mr1" data-distance="-40|-30|top">
+<span class="prev"><a href="class-QualitySettings.html"></a></span><div class="tip">Quality Settings</div>
+</div>
+<div class="icon tt right" data-distance="-40|-30|top">
+<span class="next"><a href="class-MonoManager.html"></a></span><div class="tip">Script Execution Order Settings</div>
+</div>
+</div></div>
+<div class="otherversionswrapper" onmouseover="setOtherVersionsDisplay(true)" onmouseout="setOtherVersionsDisplay(false)">
+<a>Other Versions</a><div class="otherversionscontent" id="OtherVersionsContent" style="display: none;">Cannot access other versions offline!</div>
+</div>
+<div class="scrollToFeedback"><a id="scrollToFeedback">Leave feedback</a></div>
+<h1>Graphics Settings</h1>
+<!--BeginSwitchLink--><!--EndSwitchLink-->
+<div class="clear"></div>
+
+<figure>
+<img src="../uploads/Main/GraphicsSettings.png" alt="">
+</figure>
+
+<h3>Scriptable RenderLoop settings</h3>
+
+<p>This is an experimental setting which allows you to define a series of commands to control exactly how the Scene should be rendered (instead of using the default rendering pipeline used by Unity). For more information on this experimental feature, see the Scriptable Render Pipeline documentation on GitHub.</p>
+
+<h3>Camera settings</h3>
+
+<p>These properties control various rendering settings.</p>
+
+<table>
+<colgroup>
+<col style="text-align:left;">
+<col style="text-align:left;">
+</colgroup>
+
+<thead>
+<tr>
+	<th style="text-align:left;"><strong>Setting:</strong></th>
+	<th style="text-align:left;"><strong>Description:</strong></th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+	<td style="text-align:left;"><strong>Transparancy Sort Mode</strong></td>
+	<td style="text-align:left;">Renderers in Unity are sorted by several criteria such as their layer number, or their distance from camera. Transparency Sort Mode adds the ability to order renderable objects by their distance along a specific axis. This is generally only useful in 2D development; for example, sorting Sprites by height or along the Y axis.</td>
+</tr>
+<tr>
+	<td style="text-align:left;">Default</td>
+	<td style="text-align:left;">Sorts objects based on the Camera mode.</td>
+</tr>
+<tr>
+	<td style="text-align:left;">Perspective</td>
+	<td style="text-align:left;">Sorts objects based on perspective view.</td>
+</tr>
+<tr>
+	<td style="text-align:left;">Orthographic</td>
+	<td style="text-align:left;">Sorts objects based on orthographic view.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>Transparancy Sort Axis</strong></td>
+	<td style="text-align:left;">Use this to set a custom Transparency Sort Mode.</td>
+</tr>
+</tbody>
+</table>
+
+<h3>Tier settings</h3>
+
+<figure>
+<img src="../uploads/Main/GraphicsSettings2.png" alt="Tier Settings as displayed in the PlayerSettings Inspector window">
+<figcaption>Tier Settings as displayed in the PlayerSettings Inspector window</figcaption>
+</figure>
+
+<p>These settings allow you to make platform-specific adjustments to rendering and shader compilation, by tweaking builtin defines. For example, you can use this to enable Cascaded Shadows on high-tier iOS devices, but to disable them on low-tier devices to improve performance. Tiers are defined by <a href="../ScriptReference/Rendering.GraphicsTier.html">Rendering.GraphicsTier</a>.</p>
+
+<table>
+<colgroup>
+<col style="text-align:left;">
+<col style="text-align:left;">
+</colgroup>
+
+<thead>
+<tr>
+	<th style="text-align:left;"><strong>Property::</strong></th>
+	<th style="text-align:left;"><strong>Function:</strong></th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+	<td style="text-align:left;"><strong>Standard Shader Quality</strong></td>
+	<td style="text-align:left;">Allows you to select Standard Shader Quality.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>Reflection Probes Box Projection</strong></td>
+	<td style="text-align:left;">Allows you to specify whether Reflection Probes Box Projection should be used.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>Reflection Probes Blending</strong></td>
+	<td style="text-align:left;">Allows you to specify whether Reflection Probes Blending should be enabled.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>Detail Normal Map</strong></td>
+	<td style="text-align:left;">Allows you to specify whether Detail Normal Map should be sampled if assigned.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>Enable Semitransparent Shadows</strong></td>
+	<td style="text-align:left;">Allows you to specify whether Semitransparent Shadows should be enabled.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>Cascaded Shadows</strong></td>
+	<td style="text-align:left;">Allows you to specify whether cascaded shadow maps should be used.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>Use HDR</strong></td>
+	<td style="text-align:left;">Setting this field to true enables HDR rendering for this tier. Setting it to false disables HDR rendering for this tier. See Also: <a href="HDR.html">High Dynamic Range rendering</a>
+</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>HDR Mode</strong></td>
+	<td style="text-align:left;">The CameraHDRMode to use for this tier.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>Rendering Path</strong></td>
+	<td style="text-align:left;">The rendering path that should be used.</td>
+</tr>
+</tbody>
+</table>
+
+<h3>Built-in shader settings</h3>
+
+<p>Use these settings to specify which shader is used to do lighting pass calculations in each rendering path listed.</p>
+
+<table>
+<colgroup>
+<col style="text-align:left;">
+<col style="text-align:left;">
+</colgroup>
+
+<thead>
+<tr>
+	<th style="text-align:left;"><strong>Shader:</strong></th>
+	<th style="text-align:left;"><strong>Calculation:</strong></th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+	<td style="text-align:left;"><strong>Deferred</strong></td>
+	<td style="text-align:left;">Used when using Deferred lighting, see [Camera: Rendering Path)(class-Camera)</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>Deferred Reflection</strong></td>
+	<td style="text-align:left;">Used when using Deferred reflection (ie reflection probes) along deferred lighting, see [Camera: Rendering Path)(class-Camera_)</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>Screen Space shadows</strong></td>
+	<td style="text-align:left;">Used when using screen space shadow.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>Legacy deferred</strong></td>
+	<td style="text-align:left;">Used when using Legacy deferred lighting, see [Camera: Rendering Path)(class-Camera).</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>Motion vectors</strong></td>
+	<td style="text-align:left;">Used when using Legacy deferred lighting,. seem <a href="class-MeshRenderer.html">MeshRenderer::Motion Vectors</a>.</td>
+</tr>
+</tbody>
+</table>
+
+<table>
+<colgroup>
+<col style="text-align:left;">
+<col style="text-align:left;">
+</colgroup>
+
+<thead>
+<tr>
+	<th style="text-align:left;"><strong>Setting:</strong></th>
+	<th style="text-align:left;"><strong>Description:</strong></th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+	<td style="text-align:left;">
+<strong>Built-in shader</strong> (Default value)</td>
+	<td style="text-align:left;">Use Unity’s built-in shaders to do the calculation.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>Custom shader</strong></td>
+	<td style="text-align:left;">Use your own compatible shader to do the calculation. This enables you to do deep customization of deferred rendering.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>No Support</strong></td>
+	<td style="text-align:left;">Disable this calculation. Use this setting if you are not using deferred shading or lighting. This will save some space in the built game data files.</td>
+</tr>
+</tbody>
+</table>
+
+<h3>Always-included Shaders</h3>
+
+<p>Specify a list of <a href="class-Shader.html">Shaders</a> that will always be stored along with the project, even if nothing in your scenes actually uses them. It is important to add shaders used by streamed AssetBundles to this list to ensure they can be accessed.</p>
+
+<h3>Shader stripping - Lightmap modes and Fog modes</h3>
+
+<p>Lower your build data size and improve loading times by stripping out certain shaders involved with lighting and fog.</p>
+
+<table>
+<colgroup>
+<col style="text-align:left;">
+<col style="text-align:left;">
+</colgroup>
+
+<thead>
+<tr>
+	<th style="text-align:left;"><strong><em>Setting:</em></strong></th>
+	<th style="text-align:left;"><strong><em>Description:</em></strong></th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+	<td style="text-align:left;">
+<strong>Automatic</strong> (Default value)</td>
+	<td style="text-align:left;">Unity looks at your scenes and lightmapping settings to figure out which fog and lightmapping modes are not in use, and skips corresponding shader variants.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>Manual</strong></td>
+	<td style="text-align:left;">Specify which modes to use yourself. Select this if you are <a href="AssetBundles-Building.html">building asset bundles</a> or changing fog modes from a script at runtime, to ensure that the modes you want to use are included.</td>
+</tr>
+</tbody>
+</table>
+
+<h3>Shader stripping - Instancing variants</h3>
+
+<table>
+<colgroup>
+<col style="text-align:left;">
+<col style="text-align:left;">
+</colgroup>
+
+<thead>
+<tr>
+	<th style="text-align:left;"><strong><em>Setting:</em></strong></th>
+	<th style="text-align:left;"><strong><em>Description:</em></strong></th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+	<td style="text-align:left;">
+<strong>Strip Unused</strong> (Default value)</td>
+	<td style="text-align:left;">When a project is built, Unity only includes instancing shader variants if at least one material referencing the shader has the “Enable instancing” checkbox ticked. Unity strips any shaders that are not referenced by materials with the “Enable instancing” checkbox ticked.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>Strip All</strong></td>
+	<td style="text-align:left;">Strip all instancing shader variants, even if they are being used.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>Keep All</strong></td>
+	<td style="text-align:left;">Keep all instancing shader variants, even if they are not being used.</td>
+</tr>
+</tbody>
+</table>
+
+<p>See <a href="GPUInstancing.html">GPU instancing</a> for more information about Instancing variants.</p>
+
+<h3>Shader preloading</h3>
+
+<p>Specify a list of shader variant collection assets to preload while loading the game. Shader variants specified in this list are loaded during entire lifetime of the application. Use it for preloading very frequently used shaders. See <a href="OptimizingShaderLoadTime.html">Optimizing Shader Load Time</a> page for details.</p>
+
+<h2>See also</h2>
+
+<ul>
+<li><a href="OptimizingShaderLoadTime.html">Optimizing Shader Load Time</a></li>
+<li><a href="OptimizingGraphicsPerformance.html">Optimizing Graphics Performance</a></li>
+<li><a href="SL-Shader.html">Shaders reference</a></li>
+</ul>
+
+<hr>
+
+<ul>
+<li><span class="page-edit">17–05–08 Page amended with limited <a href="DocumentationEditorialReview.html">editorial review</a>
+</span></li>
+<li>
+<span class="page-history">Updated Tier Setting description</span><br>
+</li>
+<li>
+<span class="page-history">New features added in 5.6</span><br>
+</li>
+</ul>
+<div class="feedbackbox" id="feedbackbox">
+<div id="rating"><p>Did you find this page useful? Please give it a rating:<br><div id="ratecontent" class="c-rating"></div>
+</p></div>
+<div id="ratingThanks" style="display:none"><p>Thanks for rating this page!</p></div>
+<div id="problem"><p><a name="problem" onclick="document.getElementById('problemType').style.display = '';document.getElementById('problem').style.display = 'none';">Report a problem on this page</a></p></div>
+<div id="problemType" style="display:none"><p>What kind of problem would you like to report?<ul type="problems">
+<li><a name="needcode" onclick="                                                             document.getElementById('problemType').style.display = 'none';                                                             document.getElementById('problemThanks').style.display = '';                                                             SendFeedback('problem-needcode',window.location.href,0);                                                             document.getElementById('problemFormDescription').value='Needs code samples.';                                                             document.getElementById('problemNeedCodeForm').style.display = ''                                                         ">This page needs code samples</a></li>
+<li><a name="code" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-brokencode',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Code samples do not work.';                                                         document.getElementById('problemCodeForm').style.display = ''                                                         ">Code samples do not work</a></li>
+<li><a name="missing" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-missing',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Missing information';                                                         document.getElementById('problemMissingForm').style.display = ''                                                         ">Information is missing</a></li>
+<li><a name="incorrect" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-incorrect',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Incorrect information';                                                         document.getElementById('problemIncorrectForm').style.display = ''                                                         ">Information is incorrect</a></li>
+<li><a name="unclear" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-unclear',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Unclear or confusing information';                                                         document.getElementById('problemUnclearForm').style.display = ''                                                         ">Information is unclear or confusing</a></li>
+<li><a name="language" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-language',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Spelling or grammar error';                                                         document.getElementById('problemLanguageForm').style.display = ''                                                         ">There is a spelling/grammar error on this page</a></li>
+<li><a name="other" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-other',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='This page has a problem';                                                         document.getElementById('problemOtherForm').style.display = ''                                                         ">Something else</a></li>
+</ul>
+<p><known_issues><p>Is something described here not working as you expect it to? It might be a <b>Known Issue</b>. Please check with the Issue Tracker at <a href="https://issuetracker.unity3d.com">issuetracker.unity3d.com</a>.</p></known_issues></p>
+</p></div>
+<div id="problemThanks" style="display:none"><p>Thanks for letting us know! This page has been marked for review based on your feedback.<br><br>If you have time, you can provide more information to help us fix the problem faster.<br><br><a onclick="document.getElementById('problemMoreInfo').style.display = '';document.getElementById('problemThanks').style.display = 'none';">Provide more information</a><br>
+</p></div>
+<div id="problemMoreInfo" style="display:none">
+<p id="problemNeedCodeForm" style="display:none">You've told us this page needs code samples. If you'd like to help us further, you could provide a code sample, or tell us about what kind of code sample you'd like to see:</p>
+<p id="problemCodeForm" style="display:none">You've told us there are code samples on this page which don't work. If you know how to fix it, or have something better we could use instead, please let us know:</p>
+<p id="problemMissingForm" style="display:none">You've told us there is information missing from this page. Please tell us more about what's missing:</p>
+<p id="problemIncorrectForm" style="display:none">You've told us there is incorrect information on this page. If you know what we should change to make it correct, please tell us:</p>
+<p id="problemUnclearForm" style="display:none">You've told us this page has unclear or confusing information. Please tell us more about what you found unclear or confusing, or let us know how we could make it clearer:</p>
+<p id="problemLanguageForm" style="display:none">You've told us there is a spelling or grammar error on this page. Please tell us what's wrong:</p>
+<p id="problemOtherForm" style="display:none">You've told us this page has a problem. Please tell us more about what's wrong:</p>
+<form>
+<textarea id="problemFormSuggestionField" cols="40" rows="5"></textarea><input type="hidden" id="problemFormDescription"><input type="submit" id="problemFormDescriptionSubmit" value="Submit" onclick="                                             document.getElementById('problemMoreInfo').style.display = 'none';                                             document.getElementById('problemMoreInfoThanks').style.display = '';                                             return false;                                             ">
+</form>
+</div>
+<div id="problemMoreInfoThanks" style="display:none"><p>Thanks for helping to make the Unity documentation better!</p></div>
+<script>
+
+                                            var ratecontent = document.querySelector('#ratecontent'); // target element
+                                            var currentRating = 0; // initial rating
+                                            var maxRating= 5; // max rating
+
+                                            // callback to run after setting the rating
+                                            var callback = function(rating) {
+                                                document.getElementById('ratingThanks').style.display = '';
+                                                document.getElementById('ratecontent').style.display = 'none';
+                                                document.getElementById('rating').style.display = 'none';
+                                                SendFeedback("rating",window.location.href,rating);
+                                            };
+
+                                            // rating instance
+                                            var myRating = rating(ratecontent, currentRating, maxRating, callback);
+                                        </script>
+</div>
+<div class="nextprev clear">
+<div class="icon tt left mr1" data-distance="-40|-30|top">
+<span class="prev"><a href="class-QualitySettings.html"></a></span><div class="tip">Quality Settings</div>
+</div>
+<div class="icon tt right" data-distance="-40|-30|top">
+<span class="next"><a href="class-MonoManager.html"></a></span><div class="tip">Script Execution Order Settings</div>
+</div>
+</div>
+</div>
+</body></html>

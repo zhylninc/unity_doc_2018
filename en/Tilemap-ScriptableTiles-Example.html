@@ -1,0 +1,201 @@
+<html><head><title>html模版</title></head><body>Unity - Manual:  Scriptable Tile example</br>
+<div class="breadcrumbs clear"><ul>
+<li><a href="UnityManual.html">Unity User Manual (2018.1 beta)</a></li>
+<li><a href="Unity2D.html">2D</a></li>
+<li><a href="Tilemap.html"> Tilemap</a></li>
+<li><a href="Tilemap-ScriptableTiles.html"> Scriptable Tiles</a></li>
+<li> Scriptable Tile example</li>
+</ul></div>
+<div class="mb20"><div class="nextprev clear">
+<div class="icon tt left mr1" data-distance="-40|-30|top">
+<span class="prev"><a href="Tilemap-ScriptableTiles-OtherClasses.html"></a></span><div class="tip"> Other useful classes</div>
+</div>
+<div class="icon tt right" data-distance="-40|-30|top">
+<span class="next"><a href="Tilemap-ScriptableBrushes.html"></a></span><div class="tip"> Scriptable Brushes</div>
+</div>
+</div></div>
+<div class="otherversionswrapper" onmouseover="setOtherVersionsDisplay(true)" onmouseout="setOtherVersionsDisplay(false)">
+<a>Other Versions</a><div class="otherversionscontent" id="OtherVersionsContent" style="display: none;">Cannot access other versions offline!</div>
+</div>
+<div class="scrollToFeedback"><a id="scrollToFeedback">Leave feedback</a></div>
+<h1>Scriptable Tile example</h1>
+<!--BeginSwitchLink--><!--EndSwitchLink-->
+<div class="clear"></div>
+
+<figure>
+<img src="../uploads/Main/Tilemap-ScriptableTiles-Example-31.png" alt="">
+</figure>
+
+<p>The <code>RoadTile</code> example provide the ability to easily layout linear segments onto the Tilemap, such as roads or pipes, with a minimal set of sprites. The following is a script used to create the Tile. </p>
+
+<pre><code>using UnityEngine;
+using System.Collections;
+#if UNITY_EDITOR
+using UnityEditor;
+#endif
+
+public class RoadTile : Tile 
+{
+    public Sprite[] m_Sprites;
+    public Sprite m_Preview;
+    // This refreshes itself and other RoadTiles that are orthogonally and diagonally adjacent
+    public override void RefreshTile(Vector3Int location, ITilemap tilemap)
+    {
+        for (int yd = -1; yd &lt;= 1; yd++)
+            for (int xd = -1; xd &lt;= 1; xd++)
+            {
+                Vector3Int position = new Vector3Int(location.x + xd, location.y + yd, location.z);
+                if (HasRoadTile(tilemap, position))
+                    tilemap.RefreshTile(position);
+            }
+    }
+    // This determines which sprite is used based on the RoadTiles that are adjacent to it and rotates it to fit the other tiles.
+    // As the rotation is determined by the RoadTile, the TileFlags.OverrideTransform is set for the tile.
+    public override void GetTileData(Vector3Int location, ITilemap tilemap, ref TileData tileData)
+    {
+        int mask = HasRoadTile(tilemap, location + new Vector3Int(0, 1, 0)) ? 1 : 0;
+        mask += HasRoadTile(tilemap, location + new Vector3Int(1, 0, 0)) ? 2 : 0;
+        mask += HasRoadTile(tilemap, location + new Vector3Int(0, -1, 0)) ? 4 : 0;
+        mask += HasRoadTile(tilemap, location + new Vector3Int(-1, 0, 0)) ? 8 : 0;
+        int index = GetIndex((byte)mask);
+        if (index &gt;= 0 &amp;&amp; index &lt; m_Sprites.Length)
+        {
+            tileData.sprite = m_Sprites[index];
+            tileData.color = Color.white;
+            tileData.transform.SetTRS(Vector3.zero, GetRotation((byte) mask), Vector3.one);
+            tileData.flags = TileFlags.LockTransform;
+            tileData.colliderType = ColliderType.None;
+        }
+        else
+        {
+        Debug.LogWarning(&quot;Not enough sprites in RoadTile instance&quot;);
+}
+    }
+    // This determines if the Tile at the position is the same RoadTile.
+    private bool HasRoadTile(ITilemap tilemap, Vector3Int position)
+    {
+        return tilemap.GetTile(position) == this;
+    }
+    // The following determines which sprite to use based on the number of adjacent RoadTiles
+    private int GetIndex(byte mask)
+    {
+        switch (mask)
+        {
+            case 0: return 0;
+            case 3:
+            case 6:
+            case 9:
+            case 12: return 1;
+            case 1:
+            case 2:
+            case 4:
+            case 5:
+            case 10:
+            case 8: return 2;
+            case 7:
+            case 11:
+            case 13:
+            case 14: return 3;
+            case 15: return 4;
+        }
+        return -1;
+    }
+// The following determines which rotation to use based on the positions of adjacent RoadTiles
+    private Quaternion GetRotation(byte mask)
+    {
+        switch (mask)
+        {
+            case 9:
+            case 10:
+            case 7:
+            case 2:
+            case 8:
+                return Quaternion.Euler(0f, 0f, -90f);
+            case 3:
+            case 14:
+                return Quaternion.Euler(0f, 0f, -180f);
+            case 6:
+            case 13:
+                return Quaternion.Euler(0f, 0f, -270f);
+        }
+        return Quaternion.Euler(0f, 0f, 0f);
+    }
+#if UNITY_EDITOR
+// The following is a helper that adds a menu item to create a RoadTile Asset
+    [MenuItem(&quot;Assets/Create/RoadTile&quot;)]
+    public static void CreateRoadTile()
+    {
+        string path = EditorUtility.SaveFilePanelInProject(&quot;Save Road Tile&quot;, &quot;New Road Tile&quot;, &quot;Asset&quot;, &quot;Save Road Tile&quot;, &quot;Assets&quot;);
+        if (path == &quot;&quot;)
+            return;
+    AssetDatabase.CreateAsset(ScriptableObject.CreateInstance&lt;RoadTile&gt;(), path);
+    }
+#endif
+}
+</code></pre>
+
+<hr>
+
+<ul>
+<li><span class="page-edit">2017–09–06 Page published with limited <a href="DocumentationEditorialReview.html">editorial review</a>
+</span></li>
+</ul>
+<div class="feedbackbox" id="feedbackbox">
+<div id="rating"><p>Did you find this page useful? Please give it a rating:<br><div id="ratecontent" class="c-rating"></div>
+</p></div>
+<div id="ratingThanks" style="display:none"><p>Thanks for rating this page!</p></div>
+<div id="problem"><p><a name="problem" onclick="document.getElementById('problemType').style.display = '';document.getElementById('problem').style.display = 'none';">Report a problem on this page</a></p></div>
+<div id="problemType" style="display:none"><p>What kind of problem would you like to report?<ul type="problems">
+<li><a name="needcode" onclick="                                                             document.getElementById('problemType').style.display = 'none';                                                             document.getElementById('problemThanks').style.display = '';                                                             SendFeedback('problem-needcode',window.location.href,0);                                                             document.getElementById('problemFormDescription').value='Needs code samples.';                                                             document.getElementById('problemNeedCodeForm').style.display = ''                                                         ">This page needs code samples</a></li>
+<li><a name="code" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-brokencode',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Code samples do not work.';                                                         document.getElementById('problemCodeForm').style.display = ''                                                         ">Code samples do not work</a></li>
+<li><a name="missing" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-missing',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Missing information';                                                         document.getElementById('problemMissingForm').style.display = ''                                                         ">Information is missing</a></li>
+<li><a name="incorrect" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-incorrect',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Incorrect information';                                                         document.getElementById('problemIncorrectForm').style.display = ''                                                         ">Information is incorrect</a></li>
+<li><a name="unclear" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-unclear',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Unclear or confusing information';                                                         document.getElementById('problemUnclearForm').style.display = ''                                                         ">Information is unclear or confusing</a></li>
+<li><a name="language" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-language',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Spelling or grammar error';                                                         document.getElementById('problemLanguageForm').style.display = ''                                                         ">There is a spelling/grammar error on this page</a></li>
+<li><a name="other" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-other',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='This page has a problem';                                                         document.getElementById('problemOtherForm').style.display = ''                                                         ">Something else</a></li>
+</ul>
+<p><known_issues><p>Is something described here not working as you expect it to? It might be a <b>Known Issue</b>. Please check with the Issue Tracker at <a href="https://issuetracker.unity3d.com">issuetracker.unity3d.com</a>.</p></known_issues></p>
+</p></div>
+<div id="problemThanks" style="display:none"><p>Thanks for letting us know! This page has been marked for review based on your feedback.<br><br>If you have time, you can provide more information to help us fix the problem faster.<br><br><a onclick="document.getElementById('problemMoreInfo').style.display = '';document.getElementById('problemThanks').style.display = 'none';">Provide more information</a><br>
+</p></div>
+<div id="problemMoreInfo" style="display:none">
+<p id="problemNeedCodeForm" style="display:none">You've told us this page needs code samples. If you'd like to help us further, you could provide a code sample, or tell us about what kind of code sample you'd like to see:</p>
+<p id="problemCodeForm" style="display:none">You've told us there are code samples on this page which don't work. If you know how to fix it, or have something better we could use instead, please let us know:</p>
+<p id="problemMissingForm" style="display:none">You've told us there is information missing from this page. Please tell us more about what's missing:</p>
+<p id="problemIncorrectForm" style="display:none">You've told us there is incorrect information on this page. If you know what we should change to make it correct, please tell us:</p>
+<p id="problemUnclearForm" style="display:none">You've told us this page has unclear or confusing information. Please tell us more about what you found unclear or confusing, or let us know how we could make it clearer:</p>
+<p id="problemLanguageForm" style="display:none">You've told us there is a spelling or grammar error on this page. Please tell us what's wrong:</p>
+<p id="problemOtherForm" style="display:none">You've told us this page has a problem. Please tell us more about what's wrong:</p>
+<form>
+<textarea id="problemFormSuggestionField" cols="40" rows="5"></textarea><input type="hidden" id="problemFormDescription"><input type="submit" id="problemFormDescriptionSubmit" value="Submit" onclick="                                             document.getElementById('problemMoreInfo').style.display = 'none';                                             document.getElementById('problemMoreInfoThanks').style.display = '';                                             return false;                                             ">
+</form>
+</div>
+<div id="problemMoreInfoThanks" style="display:none"><p>Thanks for helping to make the Unity documentation better!</p></div>
+<script>
+
+                                            var ratecontent = document.querySelector('#ratecontent'); // target element
+                                            var currentRating = 0; // initial rating
+                                            var maxRating= 5; // max rating
+
+                                            // callback to run after setting the rating
+                                            var callback = function(rating) {
+                                                document.getElementById('ratingThanks').style.display = '';
+                                                document.getElementById('ratecontent').style.display = 'none';
+                                                document.getElementById('rating').style.display = 'none';
+                                                SendFeedback("rating",window.location.href,rating);
+                                            };
+
+                                            // rating instance
+                                            var myRating = rating(ratecontent, currentRating, maxRating, callback);
+                                        </script>
+</div>
+<div class="nextprev clear">
+<div class="icon tt left mr1" data-distance="-40|-30|top">
+<span class="prev"><a href="Tilemap-ScriptableTiles-OtherClasses.html"></a></span><div class="tip"> Other useful classes</div>
+</div>
+<div class="icon tt right" data-distance="-40|-30|top">
+<span class="next"><a href="Tilemap-ScriptableBrushes.html"></a></span><div class="tip"> Scriptable Brushes</div>
+</div>
+</div>
+</div>
+</body></html>

@@ -1,0 +1,182 @@
+<html><head><title>html模版</title></head><body>Unity - Manual: Debugging DirectX 11 shaders with Visual Studio</br>
+<div class="breadcrumbs clear"><ul>
+<li><a href="UnityManual.html">Unity User Manual (2018.1 beta)</a></li>
+<li><a href="Graphics.html">Graphics</a></li>
+<li><a href="GraphicsReference.html">Graphics Reference</a></li>
+<li><a href="SL-Reference.html"> Shader Reference</a></li>
+<li><a href="SL-AdvancedTopics.html">Advanced ShaderLab topics</a></li>
+<li>Debugging DirectX 11 shaders with Visual Studio</li>
+</ul></div>
+<div class="mb20"><div class="nextprev clear">
+<div class="icon tt left mr1" data-distance="-40|-30|top">
+<span class="prev"><a href="SL-TextureArrays.html"></a></span><div class="tip">Texture arrays</div>
+</div>
+<div class="icon tt right" data-distance="-40|-30|top">
+<span class="next"><a href="SL-ImplementingTexGen.html"></a></span><div class="tip"> Implementing Fixed Function TexGen in Shaders</div>
+</div>
+</div></div>
+<div class="otherversionswrapper" onmouseover="setOtherVersionsDisplay(true)" onmouseout="setOtherVersionsDisplay(false)">
+<a>Other Versions</a><div class="otherversionscontent" id="OtherVersionsContent" style="display: none;">Cannot access other versions offline!</div>
+</div>
+<div class="scrollToFeedback"><a id="scrollToFeedback">Leave feedback</a></div>
+<h1>Debugging DirectX 11 shaders with Visual Studio</h1>
+<!--BeginSwitchLink--><!--EndSwitchLink-->
+<div class="clear"></div>
+
+<p>In Visual Studio 2012, Microsoft has indroduced Graphics Debugger, you can use it to capture a frame from platforms like Unity Editor, Windows Standalone or Universal Windows Platform.</p>
+
+<p>It’s recommended to use Visual Studio 2013, as it contains several fixes for Graphics Debugger.</p>
+
+<p>
+<strong>Note:</strong> Unity Editor contains multiple child windows inside, this may cause Graphics Debugger to capture frame from incorrect window, to ensure that correct window will be captured, check ‘Maximize on Play’ tab, and hit Play button before capturing, but even then there’s no guarantee that the correct window will be captured, that’s why it’s not recommended to use Unity Editor for frame capturing.</p>
+
+<p>
+<strong>Note:</strong> Frames can only be captured if Unity is running under DirectX 11, you can select DirectX 11 from Player Settings (PC, Mac &amp; LinuxStandalone) -&gt; Other Settings.</p>
+
+<p>Steps to capture frame from Unity Editor or Windows Standalone:</p>
+
+<ul>
+<li>Launch Visual Studio 2013</li>
+<li>Go to File-&gt;New-&gt;Project-&gt;Visual C++-&gt;Empty Project</li>
+<li>Go to Project-&gt;Properties-&gt;Configuration Properties-&gt;Debugging</li>
+<li>In <strong>Command</strong> field, replace $(TargetPath) with path to Unity Editor or Windows Standalone, for ex., C:\MyApp\MyApp.exe</li>
+<li>(Optional) In <strong>Command Arguments</strong> specify <strong>-force-d3d11</strong>, this will force Windows Standalone or Unity Editor to run under DirectX 11</li>
+<li><img src="../uploads/Main/ShaderDebuggingVSProps.png" alt="Project Properties"></li>
+<li>You’re ready to run Graphics Debugger, go to Debug-&gt;Graphics-&gt;Start Diagnostics</li>
+<li>If everything is configured correctly you should see “Use ‘Print Screen’ key to capture a frame” message in top left corner of the application. See screenshot below.</li>
+<li><img src="../uploads/Main/ShaderDebuggingStandalone.png" alt="Screenshot from Windows Standalone application running with Graphics Debugger"></li>
+</ul>
+
+<p>Steps to debug DirectX 11 shader:</p>
+
+<ul>
+<li>To debug a shader you have to compile with debug symbols, to do that, you have insert <strong>#pragma enable_d3d11_debug_symbols</strong>
+</li>
+<li>Let’s try to create a basic example:
+
+<ul>
+<li>Create a new Unity project</li>
+<li>Create a new shader in Assets window</li>
+<li>Insert <strong>#pragma enable_d3d11_debug_symbols</strong>
+</li>
+<li>Create a new material and select your custom shader</li>
+<li>Assign a material to some object, for ex., a cube</li>
+<li>Build Windows Standalone application</li>
+<li>Capture a frame with steps mentioned above</li>
+</ul>
+</li>
+</ul>
+
+<p>Your shader should look like this:</p>
+
+<pre><code>Shader &quot;Custom/NewShader&quot; {
+    Properties {
+        _MainTex (&quot;Base (RGB)&quot;, 2D) = &quot;white&quot; {}
+    }
+    SubShader {
+        Tags { &quot;RenderType&quot;=&quot;Opaque&quot; }
+        LOD 200
+        
+        CGPROGRAM
+        #pragma surface surf Lambert
+        #pragma enable_d3d11_debug_symbols
+        sampler2D _MainTex;
+
+        struct Input {
+            float2 uv_MainTex;
+        };
+
+        void surf (Input IN, inout SurfaceOutput o) {
+            half4 c = tex2D (_MainTex, IN.uv_MainTex);
+            o.Albedo = c.rgb;
+            o.Alpha = c.a;
+        }
+        ENDCG
+    } 
+    FallBack &quot;Diffuse&quot;
+}
+
+</code></pre>
+
+<p>If everything done correctly, you should see the following captured frame, right click and select <strong>Pixel History</strong> and select the pixel of an object which has your custom shader assigned.</p>
+
+<figure>
+<img src="../uploads/Main/ShaderDebuggingCapturedFrame.png" alt="Captured frame">
+<figcaption>Captured frame</figcaption>
+</figure>
+
+<p>Click the <strong>play</strong> button next to the <strong>Vertex Shader</strong> (circled in red in screenshot above), you should be able to debug vertex shader.</p>
+
+<figure>
+<img src="../uploads/Main/ShaderDebuggingVertexShader.png" alt="Debugging vertex shader">
+<figcaption>Debugging vertex shader</figcaption>
+</figure>
+
+<h3>Universal Windows Platform</h3>
+
+<p>For Universal Windows Platform, it’s a bit easier because you don’t need to create a dummy Visual Studio project as the project is already created by Unity.</p>
+
+<p>Steps for capturing the frame and shader debugging are the same like for Unity Editor or Windows Standalone.</p>
+
+<h2>Alternative shader debugging techniques</h2>
+
+<p>In the Unity Editor, you can also use <a href="RenderDocIntegration.html">RenderDoc</a> to debug shaders, by capturing the scene from within the editor and debugging in the standalone tool.</p>
+<div class="feedbackbox" id="feedbackbox">
+<div id="rating"><p>Did you find this page useful? Please give it a rating:<br><div id="ratecontent" class="c-rating"></div>
+</p></div>
+<div id="ratingThanks" style="display:none"><p>Thanks for rating this page!</p></div>
+<div id="problem"><p><a name="problem" onclick="document.getElementById('problemType').style.display = '';document.getElementById('problem').style.display = 'none';">Report a problem on this page</a></p></div>
+<div id="problemType" style="display:none"><p>What kind of problem would you like to report?<ul type="problems">
+<li><a name="needcode" onclick="                                                             document.getElementById('problemType').style.display = 'none';                                                             document.getElementById('problemThanks').style.display = '';                                                             SendFeedback('problem-needcode',window.location.href,0);                                                             document.getElementById('problemFormDescription').value='Needs code samples.';                                                             document.getElementById('problemNeedCodeForm').style.display = ''                                                         ">This page needs code samples</a></li>
+<li><a name="code" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-brokencode',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Code samples do not work.';                                                         document.getElementById('problemCodeForm').style.display = ''                                                         ">Code samples do not work</a></li>
+<li><a name="missing" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-missing',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Missing information';                                                         document.getElementById('problemMissingForm').style.display = ''                                                         ">Information is missing</a></li>
+<li><a name="incorrect" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-incorrect',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Incorrect information';                                                         document.getElementById('problemIncorrectForm').style.display = ''                                                         ">Information is incorrect</a></li>
+<li><a name="unclear" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-unclear',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Unclear or confusing information';                                                         document.getElementById('problemUnclearForm').style.display = ''                                                         ">Information is unclear or confusing</a></li>
+<li><a name="language" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-language',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Spelling or grammar error';                                                         document.getElementById('problemLanguageForm').style.display = ''                                                         ">There is a spelling/grammar error on this page</a></li>
+<li><a name="other" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-other',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='This page has a problem';                                                         document.getElementById('problemOtherForm').style.display = ''                                                         ">Something else</a></li>
+</ul>
+<p><known_issues><p>Is something described here not working as you expect it to? It might be a <b>Known Issue</b>. Please check with the Issue Tracker at <a href="https://issuetracker.unity3d.com">issuetracker.unity3d.com</a>.</p></known_issues></p>
+</p></div>
+<div id="problemThanks" style="display:none"><p>Thanks for letting us know! This page has been marked for review based on your feedback.<br><br>If you have time, you can provide more information to help us fix the problem faster.<br><br><a onclick="document.getElementById('problemMoreInfo').style.display = '';document.getElementById('problemThanks').style.display = 'none';">Provide more information</a><br>
+</p></div>
+<div id="problemMoreInfo" style="display:none">
+<p id="problemNeedCodeForm" style="display:none">You've told us this page needs code samples. If you'd like to help us further, you could provide a code sample, or tell us about what kind of code sample you'd like to see:</p>
+<p id="problemCodeForm" style="display:none">You've told us there are code samples on this page which don't work. If you know how to fix it, or have something better we could use instead, please let us know:</p>
+<p id="problemMissingForm" style="display:none">You've told us there is information missing from this page. Please tell us more about what's missing:</p>
+<p id="problemIncorrectForm" style="display:none">You've told us there is incorrect information on this page. If you know what we should change to make it correct, please tell us:</p>
+<p id="problemUnclearForm" style="display:none">You've told us this page has unclear or confusing information. Please tell us more about what you found unclear or confusing, or let us know how we could make it clearer:</p>
+<p id="problemLanguageForm" style="display:none">You've told us there is a spelling or grammar error on this page. Please tell us what's wrong:</p>
+<p id="problemOtherForm" style="display:none">You've told us this page has a problem. Please tell us more about what's wrong:</p>
+<form>
+<textarea id="problemFormSuggestionField" cols="40" rows="5"></textarea><input type="hidden" id="problemFormDescription"><input type="submit" id="problemFormDescriptionSubmit" value="Submit" onclick="                                             document.getElementById('problemMoreInfo').style.display = 'none';                                             document.getElementById('problemMoreInfoThanks').style.display = '';                                             return false;                                             ">
+</form>
+</div>
+<div id="problemMoreInfoThanks" style="display:none"><p>Thanks for helping to make the Unity documentation better!</p></div>
+<script>
+
+                                            var ratecontent = document.querySelector('#ratecontent'); // target element
+                                            var currentRating = 0; // initial rating
+                                            var maxRating= 5; // max rating
+
+                                            // callback to run after setting the rating
+                                            var callback = function(rating) {
+                                                document.getElementById('ratingThanks').style.display = '';
+                                                document.getElementById('ratecontent').style.display = 'none';
+                                                document.getElementById('rating').style.display = 'none';
+                                                SendFeedback("rating",window.location.href,rating);
+                                            };
+
+                                            // rating instance
+                                            var myRating = rating(ratecontent, currentRating, maxRating, callback);
+                                        </script>
+</div>
+<div class="nextprev clear">
+<div class="icon tt left mr1" data-distance="-40|-30|top">
+<span class="prev"><a href="SL-TextureArrays.html"></a></span><div class="tip">Texture arrays</div>
+</div>
+<div class="icon tt right" data-distance="-40|-30|top">
+<span class="next"><a href="SL-ImplementingTexGen.html"></a></span><div class="tip"> Implementing Fixed Function TexGen in Shaders</div>
+</div>
+</div>
+</div>
+</body></html>

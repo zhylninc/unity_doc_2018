@@ -1,0 +1,205 @@
+<html><head><title>html模版</title></head><body>Unity - Manual: Layers</br>
+<div class="breadcrumbs clear"><ul>
+<li><a href="UnityManual.html">Unity User Manual (2018.1 beta)</a></li>
+<li><a href="Graphics.html">Graphics</a></li>
+<li><a href="GraphicsOverview.html">Graphics Overview</a></li>
+<li>Layers</li>
+</ul></div>
+<div class="mb20"><div class="nextprev clear">
+<div class="icon tt left mr1" data-distance="-40|-30|top">
+<span class="prev"><a href="OptimizingShaderLoadTime.html"></a></span><div class="tip"> Optimizing Shader Load Time</div>
+</div>
+<div class="icon tt right" data-distance="-40|-30|top">
+<span class="next"><a href="LayerBasedCollision.html"></a></span><div class="tip">Layer-based collision detection</div>
+</div>
+</div></div>
+<div class="otherversionswrapper" onmouseover="setOtherVersionsDisplay(true)" onmouseout="setOtherVersionsDisplay(false)">
+<a>Other Versions</a><div class="otherversionscontent" id="OtherVersionsContent" style="display: none;">Cannot access other versions offline!</div>
+</div>
+<div class="scrollToFeedback"><a id="scrollToFeedback">Leave feedback</a></div>
+<h1>Layers</h1>
+<!--BeginSwitchLink--><!--EndSwitchLink-->
+<div class="clear"></div>
+
+<p>
+<strong>Layers</strong> are most commonly used by <strong>Cameras</strong> to render only a part of the scene, and by <strong>Lights</strong> to illuminate only parts of the scene. But they can also be used by raycasting to selectively ignore colliders or to create <a href="LayerBasedCollision.html">collisions</a>.</p>
+
+<h2>Creating Layers</h2>
+
+<p>The first step is to create a new layer, which we can then assign to a <strong>GameObject</strong>. To create a new layer, open the Edit menu and select <strong>Project Settings-&gt;Tags and Layers</strong>.</p>
+
+<p>We create a new layer in one of the empty User Layers. We choose layer 8.</p>
+
+<figure>
+<img src="../uploads/Main/Layer-CreateNewLayer.png" alt="">
+</figure>
+
+<h2>Assigning Layers</h2>
+
+<p>Now that you have created a new layer, you have to assign the layer to one of the game objects.</p>
+
+<figure>
+<img src="../uploads/Main/Layer-ChooseLayer.png" alt="">
+</figure>
+
+<p>In the tag manager we assigned the Player layer to be in layer 8.</p>
+
+<h2>Drawing only a part of the scene with the camera’s culling mask</h2>
+
+<p>Using the camera’s culling mask, you can selectively render objects which are in one particular layer.
+To do this, select the camera that should selectively render objects.</p>
+
+<p>Modify the culling mask by checking or unchecking layers in the culling mask property.</p>
+
+<figure>
+<img src="../uploads/Main/Layer-CullingMask.png" alt="">
+</figure>
+
+<p>Be aware that UI elements aren’t culled. Screen space canvas children do not respect the camera’s culling mask.</p>
+
+<h2>Casting Rays Selectively</h2>
+
+<p>Using layers you can cast rays and ignore colliders in specific layers.
+For example you might want to cast a ray only against the player layer and ignore all other colliders.</p>
+
+<p>The Physics.Raycast function takes a bitmask, where each bit determines if a layer will be ignored or not.
+If all bits in the layerMask are on, we will collide against all colliders.
+If the layerMask = 0, we will never find any collisions with the ray.</p>
+
+<pre><code>// JavaScript example.
+
+// bit shift the index of the layer to get a bit mask
+var layerMask = 1 &lt;&lt; 8;
+// Does the ray intersect any objects which are in the player layer.
+if (Physics.Raycast (transform.position, Vector3.forward, Mathf.Infinity, layerMask))
+    print (&quot;The ray hit the player&quot;);
+
+
+// C# example.
+
+int layerMask = 1 &lt;&lt; 8;
+        
+// Does the ray intersect any objects which are in the player layer.
+if (Physics.Raycast(transform.position, Vector3.forward, Mathf.Infinity, layerMask))
+    Debug.Log(&quot;The ray hit the player&quot;);
+
+
+</code></pre>
+
+<p>In the real world you want to do the inverse of that however. We want to cast a ray against all colliders except those in the Player layer.</p>
+
+<pre><code>// JavaScript example.
+function Update () {
+  // Bit shift the index of the layer (8) to get a bit mask
+  var layerMask = 1 &lt;&lt; 8;
+  // This would cast rays only against colliders in layer 8.
+  // But instead we want to collide against everything except layer 8. The ~ operator does this, it inverts a bitmask.
+  layerMask = ~layerMask;
+
+  var hit : RaycastHit;
+  // Does the ray intersect any objects excluding the player layer
+  if (Physics.Raycast (transform.position, transform.TransformDirection (Vector3.forward), hit, Mathf.Infinity, layerMask)) {
+    Debug.DrawRay (transform.position, transform.TransformDirection (Vector3.forward) * hit.distance, Color.yellow);
+    print (&quot;Did Hit&quot;);
+  } else {
+    Debug.DrawRay (transform.position, transform.TransformDirection (Vector3.forward) *1000, Color.white);
+    print (&quot;Did not Hit&quot;);
+  }
+}
+
+
+// C# example.
+void Update () {
+    // Bit shift the index of the layer (8) to get a bit mask
+    int layerMask = 1 &lt;&lt; 8;
+        
+    // This would cast rays only against colliders in layer 8.
+    // But instead we want to collide against everything except layer 8. The ~ operator does this, it inverts a bitmask.
+    layerMask = ~layerMask;
+    
+    RaycastHit hit;
+    // Does the ray intersect any objects excluding the player layer
+    if (Physics.Raycast(transform.position, transform.TransformDirection (Vector3.forward), out hit, Mathf.Infinity, layerMask)) {
+        Debug.DrawRay(transform.position, transform.TransformDirection (Vector3.forward) * hit.distance, Color.yellow);
+        Debug.Log(&quot;Did Hit&quot;);
+    } else {
+        Debug.DrawRay(transform.position, transform.TransformDirection (Vector3.forward) *1000, Color.white);
+        Debug.Log(&quot;Did not Hit&quot;);
+    }
+}
+
+</code></pre>
+
+<p>When you don’t pass a layerMask to the Raycast function, it will only ignore colliders that use the IgnoreRaycast layer.
+This is the easiest way to ignore some colliders when casting a ray.</p>
+
+<p>
+<strong>Note</strong>: Layer 31 is used internally by the Editor’s Preview window mechanics. To prevent clashes, do not use this layer.</p>
+
+<hr>
+
+<ul>
+<li><p><span class="page-edit">2017–05–08 Page amended with limited <a href="DocumentationEditorialReview.html">editorial review</a>
+</span></p></li>
+<li><p>
+<span class="page-history">Culling mask information updated in Unity 2017.1</span> </p></li>
+</ul>
+<div class="feedbackbox" id="feedbackbox">
+<div id="rating"><p>Did you find this page useful? Please give it a rating:<br><div id="ratecontent" class="c-rating"></div>
+</p></div>
+<div id="ratingThanks" style="display:none"><p>Thanks for rating this page!</p></div>
+<div id="problem"><p><a name="problem" onclick="document.getElementById('problemType').style.display = '';document.getElementById('problem').style.display = 'none';">Report a problem on this page</a></p></div>
+<div id="problemType" style="display:none"><p>What kind of problem would you like to report?<ul type="problems">
+<li><a name="needcode" onclick="                                                             document.getElementById('problemType').style.display = 'none';                                                             document.getElementById('problemThanks').style.display = '';                                                             SendFeedback('problem-needcode',window.location.href,0);                                                             document.getElementById('problemFormDescription').value='Needs code samples.';                                                             document.getElementById('problemNeedCodeForm').style.display = ''                                                         ">This page needs code samples</a></li>
+<li><a name="code" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-brokencode',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Code samples do not work.';                                                         document.getElementById('problemCodeForm').style.display = ''                                                         ">Code samples do not work</a></li>
+<li><a name="missing" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-missing',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Missing information';                                                         document.getElementById('problemMissingForm').style.display = ''                                                         ">Information is missing</a></li>
+<li><a name="incorrect" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-incorrect',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Incorrect information';                                                         document.getElementById('problemIncorrectForm').style.display = ''                                                         ">Information is incorrect</a></li>
+<li><a name="unclear" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-unclear',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Unclear or confusing information';                                                         document.getElementById('problemUnclearForm').style.display = ''                                                         ">Information is unclear or confusing</a></li>
+<li><a name="language" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-language',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Spelling or grammar error';                                                         document.getElementById('problemLanguageForm').style.display = ''                                                         ">There is a spelling/grammar error on this page</a></li>
+<li><a name="other" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-other',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='This page has a problem';                                                         document.getElementById('problemOtherForm').style.display = ''                                                         ">Something else</a></li>
+</ul>
+<p><known_issues><p>Is something described here not working as you expect it to? It might be a <b>Known Issue</b>. Please check with the Issue Tracker at <a href="https://issuetracker.unity3d.com">issuetracker.unity3d.com</a>.</p></known_issues></p>
+</p></div>
+<div id="problemThanks" style="display:none"><p>Thanks for letting us know! This page has been marked for review based on your feedback.<br><br>If you have time, you can provide more information to help us fix the problem faster.<br><br><a onclick="document.getElementById('problemMoreInfo').style.display = '';document.getElementById('problemThanks').style.display = 'none';">Provide more information</a><br>
+</p></div>
+<div id="problemMoreInfo" style="display:none">
+<p id="problemNeedCodeForm" style="display:none">You've told us this page needs code samples. If you'd like to help us further, you could provide a code sample, or tell us about what kind of code sample you'd like to see:</p>
+<p id="problemCodeForm" style="display:none">You've told us there are code samples on this page which don't work. If you know how to fix it, or have something better we could use instead, please let us know:</p>
+<p id="problemMissingForm" style="display:none">You've told us there is information missing from this page. Please tell us more about what's missing:</p>
+<p id="problemIncorrectForm" style="display:none">You've told us there is incorrect information on this page. If you know what we should change to make it correct, please tell us:</p>
+<p id="problemUnclearForm" style="display:none">You've told us this page has unclear or confusing information. Please tell us more about what you found unclear or confusing, or let us know how we could make it clearer:</p>
+<p id="problemLanguageForm" style="display:none">You've told us there is a spelling or grammar error on this page. Please tell us what's wrong:</p>
+<p id="problemOtherForm" style="display:none">You've told us this page has a problem. Please tell us more about what's wrong:</p>
+<form>
+<textarea id="problemFormSuggestionField" cols="40" rows="5"></textarea><input type="hidden" id="problemFormDescription"><input type="submit" id="problemFormDescriptionSubmit" value="Submit" onclick="                                             document.getElementById('problemMoreInfo').style.display = 'none';                                             document.getElementById('problemMoreInfoThanks').style.display = '';                                             return false;                                             ">
+</form>
+</div>
+<div id="problemMoreInfoThanks" style="display:none"><p>Thanks for helping to make the Unity documentation better!</p></div>
+<script>
+
+                                            var ratecontent = document.querySelector('#ratecontent'); // target element
+                                            var currentRating = 0; // initial rating
+                                            var maxRating= 5; // max rating
+
+                                            // callback to run after setting the rating
+                                            var callback = function(rating) {
+                                                document.getElementById('ratingThanks').style.display = '';
+                                                document.getElementById('ratecontent').style.display = 'none';
+                                                document.getElementById('rating').style.display = 'none';
+                                                SendFeedback("rating",window.location.href,rating);
+                                            };
+
+                                            // rating instance
+                                            var myRating = rating(ratecontent, currentRating, maxRating, callback);
+                                        </script>
+</div>
+<div class="nextprev clear">
+<div class="icon tt left mr1" data-distance="-40|-30|top">
+<span class="prev"><a href="OptimizingShaderLoadTime.html"></a></span><div class="tip"> Optimizing Shader Load Time</div>
+</div>
+<div class="icon tt right" data-distance="-40|-30|top">
+<span class="next"><a href="LayerBasedCollision.html"></a></span><div class="tip">Layer-based collision detection</div>
+</div>
+</div>
+</div>
+</body></html>

@@ -1,0 +1,162 @@
+<html><head><title>html模版</title></head><body>Unity - Manual: Monetization</br>
+<div class="breadcrumbs clear"><ul>
+<li><a href="UnityManual.html">Unity User Manual (2018.1 beta)</a></li>
+<li><a href="LegacyTopics.html">Legacy Topics</a></li>
+<li><a href="UnityAnalyticsSDK.html">Legacy Unity Analytics (SDK Workflow)</a></li>
+<li><a href="UnityAnalyticsAdvancedSDK.html">Advanced Integration (SDK)</a></li>
+<li>Monetization</li>
+</ul></div>
+<div class="mb20"><div class="nextprev clear">
+<div class="icon tt left mr1" data-distance="-40|-30|top">
+<span class="prev"><a href="UnityAnalyticsCustomEventsSDK.html"></a></span><div class="tip">Custom Events</div>
+</div>
+<div class="icon tt right" data-distance="-40|-30|top">
+<span class="next"><a href="UnityAnalyticsReceiptVerificationSDK.html"></a></span><div class="tip">Receipt Verification</div>
+</div>
+</div></div>
+<div class="otherversionswrapper" onmouseover="setOtherVersionsDisplay(true)" onmouseout="setOtherVersionsDisplay(false)">
+<a>Other Versions</a><div class="otherversionscontent" id="OtherVersionsContent" style="display: none;">Cannot access other versions offline!</div>
+</div>
+<div class="scrollToFeedback"><a id="scrollToFeedback">Leave feedback</a></div>
+<h1>Monetization</h1>
+<!--BeginSwitchLink--><!--EndSwitchLink-->
+<div class="clear"></div>
+
+<p>Unity Analytics allows you to monitor your in-game revenue. By implementing receipt verification you’ll quickly see legitimate or fraudulent transactions.</p>
+
+<p>Unity Analytics provides a flexible method for tracking monetization events through in-app purchases. This method should be called every time a player triggers a monetization event. The Transaction method requires a price parameter, a currency and an optional Apple iTunes / Google Play receipt string.</p>
+
+<p>Unity Analytics provides the <strong>UnityAnalytics.Transaction</strong> method for tracking monetization events through in-app purchases. This method should be called every time a player triggers a monetization event. The <strong>UnityAnalytics.Transaction</strong> method requires a price parameter, a currency and an optional Apple iTunes / Google Play receipt string.</p>
+
+<pre><code>  // Reference the Unity Analytics SDK package
+  using UnityEngine.Cloud.Analytics;
+
+  // Use this call for each and every place that a player triggers a monetization event
+  UnityAnalytics.Transaction(string productId, decimal price,
+  string currency, string receipt,
+  string signature);
+</code></pre>
+
+<table>
+<colgroup>
+<col style="text-align:left;">
+<col style="text-align:left;">
+</colgroup>
+
+<thead>
+<tr>
+	<th style="text-align:left;" colspan="3"><strong><em>UnityAnalytics.Transaction Input Parameters</em></strong></th>
+</tr>
+<tr>
+	<th style="text-align:left;"><strong><em>Name</em></strong></th>
+	<th style="text-align:left;"><strong><em>Type</em></strong></th>
+	<th style="text-align:left;"><strong><em>Description</em></strong></th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+	<td style="text-align:left;"><strong>productId</strong></td>
+	<td style="text-align:left;">string</td>
+	<td style="text-align:left;">The id of the purchased item.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>price</strong></td>
+	<td style="text-align:left;">decimal</td>
+	<td style="text-align:left;">The price of the item.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>currency</strong></td>
+	<td style="text-align:left;">string</td>
+	<td style="text-align:left;">Abbreviation of the currency used for the transaction. For example “USD” (United States Dollars). See <a href="http://en.wikipedia.org/wiki/ISO_4217">here</a> for a standardized list of currency abbreviations.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>receipt</strong></td>
+	<td style="text-align:left;">string</td>
+	<td style="text-align:left;">Receipt data (iOS) or receipt ID (Android) for in-app purchases to verify purchases with Apple iTunes or Google play. Use <strong>null</strong> in the absence of receipts. For more details see <a href="UnityAnalyticsReceiptVerificationSDK.html">Receipt Verification</a>.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>signature</strong></td>
+	<td style="text-align:left;">string</td>
+	<td style="text-align:left;">Android receipt signature. If using native Android use the <strong>INAPP_DATA_SIGNATURE</strong> string containing the signature of the purchase data that was signed with the private key of the developer. The data signature uses the RSASSA-PKCS1-v1_5 scheme. Pass in <strong>null</strong> in the absence of a signature.</td>
+</tr>
+</tbody>
+</table>
+
+<p>The example below is for a $0.99 transaction in USD without receipt validation.</p>
+
+<pre><code>UnityAnalytics.Transaction(&quot;12345abcde&quot;, 0.99m, &quot;USD&quot;, null, null);
+</code></pre>
+
+<h2>Press Play</h2>
+
+<p>To send test Monetization data to our servers and validate your integration, trigger a purchase during Editor Play mode. If integration is successful, your test data will display in the table below.</p>
+
+<figure>
+<img src="../uploads/Main/AnalyticsPlayGame.gif" alt="">
+</figure>
+
+<h2>Validate</h2>
+
+<figure>
+<img src="../uploads/Main/AnalyticsValidate.png" alt="">
+</figure>
+<div class="feedbackbox" id="feedbackbox">
+<div id="rating"><p>Did you find this page useful? Please give it a rating:<br><div id="ratecontent" class="c-rating"></div>
+</p></div>
+<div id="ratingThanks" style="display:none"><p>Thanks for rating this page!</p></div>
+<div id="problem"><p><a name="problem" onclick="document.getElementById('problemType').style.display = '';document.getElementById('problem').style.display = 'none';">Report a problem on this page</a></p></div>
+<div id="problemType" style="display:none"><p>What kind of problem would you like to report?<ul type="problems">
+<li><a name="needcode" onclick="                                                             document.getElementById('problemType').style.display = 'none';                                                             document.getElementById('problemThanks').style.display = '';                                                             SendFeedback('problem-needcode',window.location.href,0);                                                             document.getElementById('problemFormDescription').value='Needs code samples.';                                                             document.getElementById('problemNeedCodeForm').style.display = ''                                                         ">This page needs code samples</a></li>
+<li><a name="code" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-brokencode',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Code samples do not work.';                                                         document.getElementById('problemCodeForm').style.display = ''                                                         ">Code samples do not work</a></li>
+<li><a name="missing" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-missing',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Missing information';                                                         document.getElementById('problemMissingForm').style.display = ''                                                         ">Information is missing</a></li>
+<li><a name="incorrect" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-incorrect',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Incorrect information';                                                         document.getElementById('problemIncorrectForm').style.display = ''                                                         ">Information is incorrect</a></li>
+<li><a name="unclear" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-unclear',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Unclear or confusing information';                                                         document.getElementById('problemUnclearForm').style.display = ''                                                         ">Information is unclear or confusing</a></li>
+<li><a name="language" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-language',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Spelling or grammar error';                                                         document.getElementById('problemLanguageForm').style.display = ''                                                         ">There is a spelling/grammar error on this page</a></li>
+<li><a name="other" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-other',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='This page has a problem';                                                         document.getElementById('problemOtherForm').style.display = ''                                                         ">Something else</a></li>
+</ul>
+<p><known_issues><p>Is something described here not working as you expect it to? It might be a <b>Known Issue</b>. Please check with the Issue Tracker at <a href="https://issuetracker.unity3d.com">issuetracker.unity3d.com</a>.</p></known_issues></p>
+</p></div>
+<div id="problemThanks" style="display:none"><p>Thanks for letting us know! This page has been marked for review based on your feedback.<br><br>If you have time, you can provide more information to help us fix the problem faster.<br><br><a onclick="document.getElementById('problemMoreInfo').style.display = '';document.getElementById('problemThanks').style.display = 'none';">Provide more information</a><br>
+</p></div>
+<div id="problemMoreInfo" style="display:none">
+<p id="problemNeedCodeForm" style="display:none">You've told us this page needs code samples. If you'd like to help us further, you could provide a code sample, or tell us about what kind of code sample you'd like to see:</p>
+<p id="problemCodeForm" style="display:none">You've told us there are code samples on this page which don't work. If you know how to fix it, or have something better we could use instead, please let us know:</p>
+<p id="problemMissingForm" style="display:none">You've told us there is information missing from this page. Please tell us more about what's missing:</p>
+<p id="problemIncorrectForm" style="display:none">You've told us there is incorrect information on this page. If you know what we should change to make it correct, please tell us:</p>
+<p id="problemUnclearForm" style="display:none">You've told us this page has unclear or confusing information. Please tell us more about what you found unclear or confusing, or let us know how we could make it clearer:</p>
+<p id="problemLanguageForm" style="display:none">You've told us there is a spelling or grammar error on this page. Please tell us what's wrong:</p>
+<p id="problemOtherForm" style="display:none">You've told us this page has a problem. Please tell us more about what's wrong:</p>
+<form>
+<textarea id="problemFormSuggestionField" cols="40" rows="5"></textarea><input type="hidden" id="problemFormDescription"><input type="submit" id="problemFormDescriptionSubmit" value="Submit" onclick="                                             document.getElementById('problemMoreInfo').style.display = 'none';                                             document.getElementById('problemMoreInfoThanks').style.display = '';                                             return false;                                             ">
+</form>
+</div>
+<div id="problemMoreInfoThanks" style="display:none"><p>Thanks for helping to make the Unity documentation better!</p></div>
+<script>
+
+                                            var ratecontent = document.querySelector('#ratecontent'); // target element
+                                            var currentRating = 0; // initial rating
+                                            var maxRating= 5; // max rating
+
+                                            // callback to run after setting the rating
+                                            var callback = function(rating) {
+                                                document.getElementById('ratingThanks').style.display = '';
+                                                document.getElementById('ratecontent').style.display = 'none';
+                                                document.getElementById('rating').style.display = 'none';
+                                                SendFeedback("rating",window.location.href,rating);
+                                            };
+
+                                            // rating instance
+                                            var myRating = rating(ratecontent, currentRating, maxRating, callback);
+                                        </script>
+</div>
+<div class="nextprev clear">
+<div class="icon tt left mr1" data-distance="-40|-30|top">
+<span class="prev"><a href="UnityAnalyticsCustomEventsSDK.html"></a></span><div class="tip">Custom Events</div>
+</div>
+<div class="icon tt right" data-distance="-40|-30|top">
+<span class="next"><a href="UnityAnalyticsReceiptVerificationSDK.html"></a></span><div class="tip">Receipt Verification</div>
+</div>
+</div>
+</div>
+</body></html>

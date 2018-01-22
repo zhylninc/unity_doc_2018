@@ -1,0 +1,396 @@
+<html><head><title>html模版</title></head><body>Unity - Manual: NetworkBehaviour </br>
+<div class="breadcrumbs clear"><ul>
+<li><a href="UnityManual.html">Unity User Manual (2018.1 beta)</a></li>
+<li><a href="UNet.html">Multiplayer and Networking</a></li>
+<li><a href="UNetReference.html">Networking Reference</a></li>
+<li>NetworkBehaviour </li>
+</ul></div>
+<div class="mb20"><div class="nextprev clear">
+<div class="icon tt left mr1" data-distance="-40|-30|top">
+<span class="prev"><a href="class-NetworkAnimator.html"></a></span><div class="tip">NetworkAnimator</div>
+</div>
+<div class="icon tt right" data-distance="-40|-30|top">
+<span class="next"><a href="class-NetworkClient.html"></a></span><div class="tip">NetworkClient </div>
+</div>
+</div></div>
+<div class="otherversionswrapper" onmouseover="setOtherVersionsDisplay(true)" onmouseout="setOtherVersionsDisplay(false)">
+<a>Other Versions</a><div class="otherversionscontent" id="OtherVersionsContent" style="display: none;">Cannot access other versions offline!</div>
+</div>
+<div class="scrollToFeedback"><a id="scrollToFeedback">Leave feedback</a></div>
+<h1>NetworkBehaviour</h1>
+<!--BeginSwitchLink--><!--EndSwitchLink-->
+<div class="clear"></div>
+
+<p>NetworkBehaviours are special scripts that work with objects with the NetworkIdentity component. These scripts are able to perform HLAPI functions such as Commands, ClientRPCs, SyncEvents and SyncVars.</p>
+
+<p>With the server authoritative system of the Unity Network System, networked objects with NetworkIdentities must be “spawned” by the server using NetworkServer.Spawn(). This causes them to be assigned a NetworkInstanceId and be created on clients that are connected to the server. </p>
+
+<h2>Properties</h2>
+
+<table>
+<colgroup>
+<col style="text-align:left;">
+<col style="text-align:left;">
+<col style="text-align:left;">
+</colgroup>
+
+<thead>
+<tr>
+	<th style="text-align:left;" colspan="2"><strong><em>Property:</em></strong></th>
+	<th style="text-align:left;"><strong><em>Function:</em></strong></th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+	<td style="text-align:left;" colspan="2"><strong>isLocalPlayer</strong></td>
+	<td style="text-align:left;">True if this object is the player object for the local client.</td>
+</tr>
+<tr>
+	<td style="text-align:left;" colspan="2"><strong>isServer</strong></td>
+	<td style="text-align:left;">True if this object is running on the server, and has been spawned.</td>
+</tr>
+<tr>
+	<td style="text-align:left;" colspan="2"><strong>isClient</strong></td>
+	<td style="text-align:left;">True if this object is running on a client.</td>
+</tr>
+<tr>
+	<td style="text-align:left;" colspan="2"><strong>hasAuthority</strong></td>
+	<td style="text-align:left;">True if this object is the authoritative version of the object. So either on the server, or on the client with localPlayerAuthority.</td>
+</tr>
+<tr>
+	<td style="text-align:left;" colspan="2"><strong>assetId</strong></td>
+	<td style="text-align:left;">This is the assetId of the object’s NetworkIdentity.</td>
+</tr>
+<tr>
+	<td style="text-align:left;" colspan="2"><strong>netId</strong></td>
+	<td style="text-align:left;">This is the netId of the object’s NetworkIdentity.</td>
+</tr>
+<tr>
+	<td style="text-align:left;" colspan="2"><strong>playerControllerId</strong></td>
+	<td style="text-align:left;">This is the playerControllerId of the object’s NetworkIdentity.</td>
+</tr>
+<tr>
+	<td style="text-align:left;" colspan="2"><strong>connectionToServer</strong></td>
+	<td style="text-align:left;">NetworkConnection object to use to send to the server.</td>
+</tr>
+<tr>
+	<td style="text-align:left;" colspan="2"><strong>connectionToClient</strong></td>
+	<td style="text-align:left;">NetworkConnection object to use to send to the client.</td>
+</tr>
+</tbody>
+</table>
+
+<p>NetworkBehaviours have the following features that are described below.</p>
+
+<ul>
+<li>Synchronized Variables</li>
+<li>Network callbacks</li>
+<li>Server and Client functions</li>
+<li>Sending Commands</li>
+<li>Client RPC Calls</li>
+<li>Networked Events</li>
+</ul>
+
+<figure>
+<img src="../uploads/Main/UNetDirections.jpg" alt="">
+</figure>
+
+<h3>Synchronized Variables</h3>
+
+<p>Member variables of NetworkBehaviours can be synchronized from the server to clients. Since the server is authoritative in this system, synchronization is only in the server-to-client direction. Requests for clients to do things are handled by Commands, not by variables synchronized from clients.</p>
+
+<p>The <a href="../ScriptReference/Networking.SyncVarAttribute.html">SyncVar</a> attribute is used to tag member variables as being synchronized. SyncVars can be any basic type, not classes, lists, or other collections.</p>
+
+<pre><code>public class SpaceShip : NetworkBehaviour
+{
+    [SyncVar]
+    public int health;
+
+    [SyncVar]
+    public string playerName;
+}
+</code></pre>
+
+<p>When the value of a SyncVar is changed on the server, it will be sent to all of the ready clients in the game. When objects are spawned, they are created on the client with the latest state of all SyncVars from the server.</p>
+
+<h3>Network callbacks</h3>
+
+<p>There are callback functions that are invoked on NetworkBehaviour script for various network events. These are virtual functions on the base class, so they can be overridden in use code like this:</p>
+
+<pre><code>public class SpaceShip : NetworkBehaviour
+{
+    public override void OnStartServer()
+    {
+        // disable client stuff
+    }
+
+    public override void OnStartClient()
+    {
+        // register client events, enable effects
+    }
+}
+</code></pre>
+
+<p>The OnStartServer function is called when an object is spawned on the server, or when the server is started for objects in the scene. The OnStartClient function is called when the object is spawned on the client, or when the client connects to a server for objects in the scene. These functions are useful to do things that are specific to either the client or server, such as suppressing effects on a server, or setting up client-side events.</p>
+
+<p>Note that when a local client is being used, both of these functions will be called on the same object.</p>
+
+<p>Other callbacks include:</p>
+
+<ul>
+<li>OnSerialize - called to gather state to send from the server to clients</li>
+<li>OnDeSerialize - called to apply state to objects on clients</li>
+<li>OnNetworkDestroy - called on clients when server told the object to be destroyed</li>
+<li>OnStartLocalPlayer - called on clients for player objects for the local client (only)</li>
+<li>OnRebuildObservers - called on the server when the set of observers for an object is rebuild</li>
+<li>OnSetLocalVisibility - called on a host when the visibility of an object changes for the local client</li>
+<li>OnCheckObserver - called on the server to check visibility state for a new client</li>
+</ul>
+
+<h3>Server and Client functions</h3>
+
+<p>Member functions in NetworkBehaviours can be tagged with custom attributes to designate them as server-only or client-only functions. For example:</p>
+
+<pre><code>using UnityEngine;
+using UnityEngine.Networking;
+
+public class SimpleSpaceShip : NetworkBehaviour
+{
+    int health;
+
+    [Server]
+    public void TakeDamage( int amount)
+    {
+        // will only work on server
+        health -= amount;
+    }
+
+    [Client]
+    void ShowExplosion()
+    {
+        // will only run on client
+    }
+
+    [ClientCallback]
+    void Update()
+    {
+        // engine invoked callback - will only run on client
+    }
+}
+</code></pre>
+
+<p>These attributes make the function return immediately if they are called when the client or server is not active. They do not generate compile time errors, but they will emit a warning log message if called in the wrong scope. The attributes <a href="../ScriptReference/Networking.ServerCallbackAttribute.html">ServerCallback</a> and <a href="../ScriptReference/Networking.ClientCallbackAttribute.html">ClientCallback</a> can be used for engine callback functions that user code does not control the calling of. These attributes do not cause a warning to be generated.</p>
+
+<h3>Sending Commands</h3>
+
+<p>Commands are the way for clients to request to do something on the server. Since the HLAPI is a server authoritative system, clients can ONLY do things through commands. Commands are run on the player object on the server that corresponds to the client that sent the command. This routing happens automatically, so it is impossible for a client to send a command for a different player.</p>
+
+<p>Commands must begin with the prefix “Cmd” and have the [Command] custom attribute on them, like below:</p>
+
+<pre><code>using UnityEngine;
+using UnityEngine.Networking;
+
+public class SpaceShip : NetworkBehaviour
+{
+    bool alive;
+    float thrusting;
+    int spin;
+
+    [Command]
+    public void CmdThrust(float thrusting, int spin)
+    {   
+        if (!alive)
+        {
+            this.thrusting = 0;
+            this.spin = 0;
+            return;
+        }
+            
+        this.thrusting = thrusting;
+        this.spin = spin;
+    }
+
+    [ClientCallback]
+    void Update()
+    {
+        int spin = 0;
+        if (Input.GetKey(KeyCode.LeftArrow))
+        {
+            spin += 1;
+        }
+        if (Input.GetKey(KeyCode.RightArrow))
+        {
+            spin -= 1;
+        }
+        // this will be called on the server
+        CmdThrust(Input.GetAxis(&quot;Vertical&quot;), spin);
+    }
+}
+</code></pre>
+
+<p>Commands are called just by invoking the function normally on the client. But instead of the command function running on the client, it will be invoked on the player object of that client on the server. So, commands are typesafe, have built-in security and routing to the player, and use an efficient serialization mechanism for the arguments to make calling them fast.</p>
+
+<h3>Client RPC Calls</h3>
+
+<p>Client RPC calls are a way for server objects to cause things to happen on client objects. This is the reverse direction to how commands send messages, but the concepts are the same. Client RPC calls however are not only invoked on player objects, they can be invoked on any NetworkIdentity object. They must begin with the prefix “Rpc” and have the [ClientRPC] custom attribute, like below:</p>
+
+<pre><code>using UnityEngine;
+using UnityEngine.Networking;
+
+public class SpaceShipRpc : NetworkBehaviour
+{
+    [ClientRpc]
+    public void RpcDoOnClient(int foo)
+    {
+        Debug.Log(&quot;OnClient &quot; + foo);
+    }
+
+    [ServerCallback]
+    void Update()
+    {
+        int value = UnityEngine.Random.Range(0,100);
+        if (value &lt; 10)
+        {
+            // this will be invoked on all clients
+            RpcDoOnClient(value);
+        }
+    }
+}
+</code></pre>
+
+<h3>Networked Events</h3>
+
+<p>Networked events are like Client RPC calls, but instead of just calling a function on the client object, an Event on the client object is triggered. Other scripts that are registered for the event are then invoked - with the arguments from the server, so this allows networked inter-script interactions on the client. Events must start with the prefix “Event” and have the <a href="../ScriptReference/Networking.SyncEventAttribute.html">SyncEvent</a> custom attribute.</p>
+
+<p>Events can be used to build powerful networked game systems that can be extended by other scripts. This example shows how an effect script on the client can respond to events generated by a combat script on the server.</p>
+
+<pre><code>using UnityEngine;
+using UnityEngine.Networking;
+
+// Server script
+public class MyCombat : NetworkBehaviour
+{
+    public delegate void TakeDamageDelegate(int amount);
+    public delegate void DieDelegate();
+    public delegate void RespawnDelegate();
+    
+    float deathTimer;
+    bool alive;
+    int health;
+
+    [SyncEvent(channel=1)]
+    public event TakeDamageDelegate EventTakeDamage;
+    
+    [SyncEvent]
+    public event DieDelegate EventDie;
+    
+    [SyncEvent]
+    public event RespawnDelegate EventRespawn;
+
+    [Server]
+    void EventTakeDamage(int amount)
+    {
+        if (!alive)
+            return;
+            
+        if (health &gt; amount) {
+            health -= amount;
+        }
+        else
+        {
+            health = 0;
+            alive = false;
+            // send die event to all clients
+            EventDie();
+            deathTimer = Time.time + 5.0f;
+        }
+    }
+
+    [ServerCallback]
+    void Update()
+    {
+        if (!alive)
+        {
+            if (Time.time &gt; deathTimer)
+            {
+                Respawn();
+            }
+            return;
+        }
+    }
+
+    [Server]
+    void Respawn()
+    {
+        alive = true;
+        // send respawn event to all clients
+        EventRespawn();
+    }
+}
+</code></pre>
+
+<h2>Hints</h2>
+
+<ul>
+<li>This is a base class that provides Commands and ClientRpc calls.</li>
+</ul>
+<div class="feedbackbox" id="feedbackbox">
+<div id="rating"><p>Did you find this page useful? Please give it a rating:<br><div id="ratecontent" class="c-rating"></div>
+</p></div>
+<div id="ratingThanks" style="display:none"><p>Thanks for rating this page!</p></div>
+<div id="problem"><p><a name="problem" onclick="document.getElementById('problemType').style.display = '';document.getElementById('problem').style.display = 'none';">Report a problem on this page</a></p></div>
+<div id="problemType" style="display:none"><p>What kind of problem would you like to report?<ul type="problems">
+<li><a name="needcode" onclick="                                                             document.getElementById('problemType').style.display = 'none';                                                             document.getElementById('problemThanks').style.display = '';                                                             SendFeedback('problem-needcode',window.location.href,0);                                                             document.getElementById('problemFormDescription').value='Needs code samples.';                                                             document.getElementById('problemNeedCodeForm').style.display = ''                                                         ">This page needs code samples</a></li>
+<li><a name="code" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-brokencode',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Code samples do not work.';                                                         document.getElementById('problemCodeForm').style.display = ''                                                         ">Code samples do not work</a></li>
+<li><a name="missing" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-missing',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Missing information';                                                         document.getElementById('problemMissingForm').style.display = ''                                                         ">Information is missing</a></li>
+<li><a name="incorrect" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-incorrect',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Incorrect information';                                                         document.getElementById('problemIncorrectForm').style.display = ''                                                         ">Information is incorrect</a></li>
+<li><a name="unclear" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-unclear',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Unclear or confusing information';                                                         document.getElementById('problemUnclearForm').style.display = ''                                                         ">Information is unclear or confusing</a></li>
+<li><a name="language" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-language',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Spelling or grammar error';                                                         document.getElementById('problemLanguageForm').style.display = ''                                                         ">There is a spelling/grammar error on this page</a></li>
+<li><a name="other" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-other',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='This page has a problem';                                                         document.getElementById('problemOtherForm').style.display = ''                                                         ">Something else</a></li>
+</ul>
+<p><known_issues><p>Is something described here not working as you expect it to? It might be a <b>Known Issue</b>. Please check with the Issue Tracker at <a href="https://issuetracker.unity3d.com">issuetracker.unity3d.com</a>.</p></known_issues></p>
+</p></div>
+<div id="problemThanks" style="display:none"><p>Thanks for letting us know! This page has been marked for review based on your feedback.<br><br>If you have time, you can provide more information to help us fix the problem faster.<br><br><a onclick="document.getElementById('problemMoreInfo').style.display = '';document.getElementById('problemThanks').style.display = 'none';">Provide more information</a><br>
+</p></div>
+<div id="problemMoreInfo" style="display:none">
+<p id="problemNeedCodeForm" style="display:none">You've told us this page needs code samples. If you'd like to help us further, you could provide a code sample, or tell us about what kind of code sample you'd like to see:</p>
+<p id="problemCodeForm" style="display:none">You've told us there are code samples on this page which don't work. If you know how to fix it, or have something better we could use instead, please let us know:</p>
+<p id="problemMissingForm" style="display:none">You've told us there is information missing from this page. Please tell us more about what's missing:</p>
+<p id="problemIncorrectForm" style="display:none">You've told us there is incorrect information on this page. If you know what we should change to make it correct, please tell us:</p>
+<p id="problemUnclearForm" style="display:none">You've told us this page has unclear or confusing information. Please tell us more about what you found unclear or confusing, or let us know how we could make it clearer:</p>
+<p id="problemLanguageForm" style="display:none">You've told us there is a spelling or grammar error on this page. Please tell us what's wrong:</p>
+<p id="problemOtherForm" style="display:none">You've told us this page has a problem. Please tell us more about what's wrong:</p>
+<form>
+<textarea id="problemFormSuggestionField" cols="40" rows="5"></textarea><input type="hidden" id="problemFormDescription"><input type="submit" id="problemFormDescriptionSubmit" value="Submit" onclick="                                             document.getElementById('problemMoreInfo').style.display = 'none';                                             document.getElementById('problemMoreInfoThanks').style.display = '';                                             return false;                                             ">
+</form>
+</div>
+<div id="problemMoreInfoThanks" style="display:none"><p>Thanks for helping to make the Unity documentation better!</p></div>
+<script>
+
+                                            var ratecontent = document.querySelector('#ratecontent'); // target element
+                                            var currentRating = 0; // initial rating
+                                            var maxRating= 5; // max rating
+
+                                            // callback to run after setting the rating
+                                            var callback = function(rating) {
+                                                document.getElementById('ratingThanks').style.display = '';
+                                                document.getElementById('ratecontent').style.display = 'none';
+                                                document.getElementById('rating').style.display = 'none';
+                                                SendFeedback("rating",window.location.href,rating);
+                                            };
+
+                                            // rating instance
+                                            var myRating = rating(ratecontent, currentRating, maxRating, callback);
+                                        </script>
+</div>
+<div class="nextprev clear">
+<div class="icon tt left mr1" data-distance="-40|-30|top">
+<span class="prev"><a href="class-NetworkAnimator.html"></a></span><div class="tip">NetworkAnimator</div>
+</div>
+<div class="icon tt right" data-distance="-40|-30|top">
+<span class="next"><a href="class-NetworkClient.html"></a></span><div class="tip">NetworkClient </div>
+</div>
+</div>
+</div>
+</body></html>

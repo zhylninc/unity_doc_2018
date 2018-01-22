@@ -1,0 +1,156 @@
+<html><head><title>html模版</title></head><body>Unity - Manual: Terrain Textures</br>
+<div class="breadcrumbs clear"><ul>
+<li><a href="UnityManual.html">Unity User Manual (2018.1 beta)</a></li>
+<li><a href="Graphics.html">Graphics</a></li>
+<li><a href="GraphicsOverview.html">Graphics Overview</a></li>
+<li><a href="script-Terrain.html">Terrain Engine</a></li>
+<li>Terrain Textures</li>
+</ul></div>
+<div class="mb20"><div class="nextprev clear">
+<div class="icon tt left mr1" data-distance="-40|-30|top">
+<span class="prev"><a href="terrain-Height.html"></a></span><div class="tip">Height Tools</div>
+</div>
+<div class="icon tt right" data-distance="-40|-30|top">
+<span class="next"><a href="terrain-Trees.html"></a></span><div class="tip">Trees</div>
+</div>
+</div></div>
+<div class="otherversionswrapper" onmouseover="setOtherVersionsDisplay(true)" onmouseout="setOtherVersionsDisplay(false)">
+<a>Other Versions</a><div class="otherversionscontent" id="OtherVersionsContent" style="display: none;">Cannot access other versions offline!</div>
+</div>
+<div class="scrollToFeedback"><a id="scrollToFeedback">Leave feedback</a></div>
+<h1>Terrain Textures</h1>
+<!--BeginSwitchLink--><!--EndSwitchLink-->
+<div class="clear"></div>
+
+<p>You can add texture images to the surface of a terrain to create coloration and fine detail. Since terrains are such large objects, it is standard practice to use a texture that repeats seamlessly and tile it over the surface (the repeat generally isn’t noticeable from a character’s viewpoint close to the ground). One texture will serve as the “background” image over the landscape but you can also paint areas of different textures to simulate different ground surfaces such as grass, desert and snow. The painted textures can be applied with variable transparency so you can have a gradual transition between grassy countryside and a sandy beach, for example.</p>
+
+<figure>
+<img src="../uploads/Main/TerrainTexSandDunes.png" alt="Sand dune terrain with sandy texture">
+<figcaption>Sand dune terrain with sandy texture</figcaption>
+</figure>
+
+<h2>Enabling Textures</h2>
+
+<p>The paintbrush button on the toolbar enables texture painting.</p>
+
+<figure>
+<img src="../uploads/Main/TerrainTexPaintTool.png" alt="">
+</figure>
+
+<p>Initially, the terrain has no textures assigned for painting. If you click the <em>Edit Textures</em> button and select <em>Add Texture</em> from the menu, you will see the <em>Add Terrain Texture</em> window. Here you can set a texture and its properties.</p>
+
+<p>Depending on the material type you set in <a href="terrain-OtherSettings.html">Terrain Settings</a>, the color channels of the main texture map may have different uses. These are listed below in <em>Terrain Texture Settings</em>.</p>
+
+<p>Click on <em>Select</em> to see your texture assets in a separate <em>Select Texture</em> window (not shown). Click on the texture you want and it displays in the <em>Add Terrain Texture</em> window. (See <em>Add Terrain Texture</em> window, before and after, in <em>Fig 1</em> below.)</p>
+
+<figure>
+<img src="../uploads/Main/TerrainAddTexWindowStandard.png" alt="Fig 1: Click on Select in the Add Terrain Texture window and choose a texture asset from the Select Texture window (not shown) - it then displays, ready to add to the terrain">
+<figcaption>Fig 1: Click on <em>Select</em> in the Add Terrain Texture window and choose a texture asset from the Select Texture window (not shown) - it then displays, ready to add to the terrain</figcaption>
+</figure>
+
+<h3>Terrain Texture Settings</h3>
+
+<p>Depending on the material type you set in <a href="terrain-OtherSettings.html">Terrain Settings</a>, the color channels of the main texture map may have different uses. The different <em>Add Terrain Texture</em> windows are listed here.</p>
+
+<p>
+<strong>Standard</strong> [image above in <em>Fig 1</em>]: RGB channels are the albedo color of the terrain surface, while alpha channel controls the smoothness. There is also a ‘Metallic’ slider which controls the overall look of the surface. </p>
+
+<p>
+<strong>Diffuse</strong>: RGB channels are the diffuse color. Alpha channel is not used. </p>
+
+<figure>
+<img src="../uploads/Main/TerrainAddTexWindowDiffuse.png" alt="Add Texture window (Diffuse)">
+<figcaption>Add Texture window (Diffuse)</figcaption>
+</figure>
+
+<p>
+<strong>Specular</strong>: RGB channels are the diffuse color. Alpha channel is the gloss map. </p>
+
+<figure>
+<img src="../uploads/Main/TerrainAddTexWindowSpecular.png" alt="Add Texture window (Specular)">
+<figcaption>Add Texture window (Specular)</figcaption>
+</figure>
+
+<p>
+<strong>Custom</strong>: How the splat map is used depends on your custom shader, but usually you want the RGB channels to be the base color. </p>
+
+<figure>
+<img src="../uploads/Main/TerrainAddTexWindowSplat2.png" alt="Add Texture window (Custom)">
+<figcaption>Add Texture window (Custom)</figcaption>
+</figure>
+
+<p>Besides the main texture map, you can also specify a normal texture for all of the 3 built-in material types. The texture type of the normal texture used here must be ‘Normal Map’ (you can change the texture type of a texture asset in its import settings). Shader code that handles normal map will be turned on only when at least one normal texture is set for the terrain, so you don’t need to pay the performance cost of normal map if you don’t use them. </p>
+
+<p>The <em>Size</em> property (just below the texture boxes) lets you set the width and height over which the image will stretch on the terrain’s surface. The <em>Offset</em> property determines how far from the terrain’s anchor point the tiling will start; you can set it to zero to start the tiling right in the corner. Once you have set the texture and properties to your liking, click the _<strong>Apply</strong> button to make the texture available to the terrain.</p>
+
+<p>To make changes to an added terrain texture, select its thumbnail, click the ‘Edit Textures’ button and select ‘Edit Texture…’ from the menu. Or, you can simply double click on its thumbnail. To remove a terrain texture, select its thumbnail, click the ‘Edit Textures’ button and select ‘Remove Texture’ from the menu. </p>
+
+<p>Note that if you want to assign a Texture to a Terrain, you need to open the Texture Importer and tick the <strong>Read/Write Enabled</strong> checkbox.</p>
+
+<h2>Texture Painting</h2>
+
+<p>The first texture you add will be used as a “background” to cover the terrain. However, you can add as many textures as you like; the subsequent ones will be available for painting using the familiar brush tools. Below the textures in the Terrain inspector, you will see the usual <em>Brush Size</em> and <em>Opacity</em> options but also an additional option called <em>Target Strength</em>. This sets the maximum opacity value that the brush will build up even if it passes over the same point repeatedly. This can be a useful way to add subtle patches of color variation within a single terrain type to break the monotony of a large, flat area with the same texture tile repeating over and over.</p>
+
+<figure>
+<img src="../uploads/Main/TerrainTexCorners.png" alt="Grass terrain with dirt texture painted on corners">
+<figcaption>Grass terrain with dirt texture painted on corners</figcaption>
+</figure>
+<div class="feedbackbox" id="feedbackbox">
+<div id="rating"><p>Did you find this page useful? Please give it a rating:<br><div id="ratecontent" class="c-rating"></div>
+</p></div>
+<div id="ratingThanks" style="display:none"><p>Thanks for rating this page!</p></div>
+<div id="problem"><p><a name="problem" onclick="document.getElementById('problemType').style.display = '';document.getElementById('problem').style.display = 'none';">Report a problem on this page</a></p></div>
+<div id="problemType" style="display:none"><p>What kind of problem would you like to report?<ul type="problems">
+<li><a name="needcode" onclick="                                                             document.getElementById('problemType').style.display = 'none';                                                             document.getElementById('problemThanks').style.display = '';                                                             SendFeedback('problem-needcode',window.location.href,0);                                                             document.getElementById('problemFormDescription').value='Needs code samples.';                                                             document.getElementById('problemNeedCodeForm').style.display = ''                                                         ">This page needs code samples</a></li>
+<li><a name="code" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-brokencode',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Code samples do not work.';                                                         document.getElementById('problemCodeForm').style.display = ''                                                         ">Code samples do not work</a></li>
+<li><a name="missing" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-missing',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Missing information';                                                         document.getElementById('problemMissingForm').style.display = ''                                                         ">Information is missing</a></li>
+<li><a name="incorrect" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-incorrect',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Incorrect information';                                                         document.getElementById('problemIncorrectForm').style.display = ''                                                         ">Information is incorrect</a></li>
+<li><a name="unclear" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-unclear',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Unclear or confusing information';                                                         document.getElementById('problemUnclearForm').style.display = ''                                                         ">Information is unclear or confusing</a></li>
+<li><a name="language" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-language',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Spelling or grammar error';                                                         document.getElementById('problemLanguageForm').style.display = ''                                                         ">There is a spelling/grammar error on this page</a></li>
+<li><a name="other" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-other',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='This page has a problem';                                                         document.getElementById('problemOtherForm').style.display = ''                                                         ">Something else</a></li>
+</ul>
+<p><known_issues><p>Is something described here not working as you expect it to? It might be a <b>Known Issue</b>. Please check with the Issue Tracker at <a href="https://issuetracker.unity3d.com">issuetracker.unity3d.com</a>.</p></known_issues></p>
+</p></div>
+<div id="problemThanks" style="display:none"><p>Thanks for letting us know! This page has been marked for review based on your feedback.<br><br>If you have time, you can provide more information to help us fix the problem faster.<br><br><a onclick="document.getElementById('problemMoreInfo').style.display = '';document.getElementById('problemThanks').style.display = 'none';">Provide more information</a><br>
+</p></div>
+<div id="problemMoreInfo" style="display:none">
+<p id="problemNeedCodeForm" style="display:none">You've told us this page needs code samples. If you'd like to help us further, you could provide a code sample, or tell us about what kind of code sample you'd like to see:</p>
+<p id="problemCodeForm" style="display:none">You've told us there are code samples on this page which don't work. If you know how to fix it, or have something better we could use instead, please let us know:</p>
+<p id="problemMissingForm" style="display:none">You've told us there is information missing from this page. Please tell us more about what's missing:</p>
+<p id="problemIncorrectForm" style="display:none">You've told us there is incorrect information on this page. If you know what we should change to make it correct, please tell us:</p>
+<p id="problemUnclearForm" style="display:none">You've told us this page has unclear or confusing information. Please tell us more about what you found unclear or confusing, or let us know how we could make it clearer:</p>
+<p id="problemLanguageForm" style="display:none">You've told us there is a spelling or grammar error on this page. Please tell us what's wrong:</p>
+<p id="problemOtherForm" style="display:none">You've told us this page has a problem. Please tell us more about what's wrong:</p>
+<form>
+<textarea id="problemFormSuggestionField" cols="40" rows="5"></textarea><input type="hidden" id="problemFormDescription"><input type="submit" id="problemFormDescriptionSubmit" value="Submit" onclick="                                             document.getElementById('problemMoreInfo').style.display = 'none';                                             document.getElementById('problemMoreInfoThanks').style.display = '';                                             return false;                                             ">
+</form>
+</div>
+<div id="problemMoreInfoThanks" style="display:none"><p>Thanks for helping to make the Unity documentation better!</p></div>
+<script>
+
+                                            var ratecontent = document.querySelector('#ratecontent'); // target element
+                                            var currentRating = 0; // initial rating
+                                            var maxRating= 5; // max rating
+
+                                            // callback to run after setting the rating
+                                            var callback = function(rating) {
+                                                document.getElementById('ratingThanks').style.display = '';
+                                                document.getElementById('ratecontent').style.display = 'none';
+                                                document.getElementById('rating').style.display = 'none';
+                                                SendFeedback("rating",window.location.href,rating);
+                                            };
+
+                                            // rating instance
+                                            var myRating = rating(ratecontent, currentRating, maxRating, callback);
+                                        </script>
+</div>
+<div class="nextprev clear">
+<div class="icon tt left mr1" data-distance="-40|-30|top">
+<span class="prev"><a href="terrain-Height.html"></a></span><div class="tip">Height Tools</div>
+</div>
+<div class="icon tt right" data-distance="-40|-30|top">
+<span class="next"><a href="terrain-Trees.html"></a></span><div class="tip">Trees</div>
+</div>
+</div>
+</div>
+</body></html>

@@ -1,0 +1,172 @@
+<html><head><title>html模版</title></head><body>Unity - Manual:  Timeline Playback Controls</br>
+<div class="breadcrumbs clear"><ul>
+<li><a href="UnityManual.html">Unity User Manual (2018.1 beta)</a></li>
+<li><a href="TimelineSection.html"> Timeline</a></li>
+<li><a href="TimelineEditorWindow.html"> Timeline Editor window</a></li>
+<li> Timeline Playback Controls</li>
+</ul></div>
+<div class="mb20"><div class="nextprev clear">
+<div class="icon tt left mr1" data-distance="-40|-30|top">
+<span class="prev"><a href="TimelinePreviewSelector.html"></a></span><div class="tip"> Timeline Preview and Timeline Selector</div>
+</div>
+<div class="icon tt right" data-distance="-40|-30|top">
+<span class="next"><a href="TimelineTrackList.html"></a></span><div class="tip"> Track List</div>
+</div>
+</div></div>
+<div class="otherversionswrapper" onmouseover="setOtherVersionsDisplay(true)" onmouseout="setOtherVersionsDisplay(false)">
+<a>Other Versions</a><div class="otherversionscontent" id="OtherVersionsContent" style="display: none;">Cannot access other versions offline!</div>
+</div>
+<div class="scrollToFeedback"><a id="scrollToFeedback">Leave feedback</a></div>
+<h2>Timeline Playback Controls</h2>
+
+<p>Use the buttons and fields in the Timeline Playback Controls to play the Timeline instance and to control the location of the Timeline Playhead.</p>
+
+<figure>
+<img src="../uploads/Main/timeline_playback_controls.png" alt="Timeline Playback Controls">
+<figcaption>Timeline Playback Controls</figcaption>
+</figure>
+
+<h3>Timeline Start button</h3>
+
+<figure>
+<img src="../uploads/Main/timeline_start_button.png" alt="">
+</figure>
+
+<p>Click the Timeline Start button, or hold Shift and press Comma (,), to move the Timeline Playhead to the start of the Timeline instance.</p>
+
+<h3>Previous Frame button</h3>
+
+<figure>
+<img src="../uploads/Main/timeline_previous_frame_button.png" alt="">
+</figure>
+
+<p>Click the Previous Frame button, or press Comma (,), to move the Timeline Playhead to the previous frame.</p>
+
+<h3>Timeline Play button</h3>
+
+<figure>
+<img src="../uploads/Main/timeline_play_button.png" alt="">
+</figure>
+
+<p>Click the Timeline Play button, or press the Spacebar, to preview the Timeline instance in Timeline Playback mode. Timeline Playback mode does the following:</p>
+
+<ul>
+<li><p>Begins playback at the current location of the Timeline Playhead and continues to the end of the Timeline instance. If the Play Range button is enabled, playback is restricted to a specified time range.</p></li>
+<li><p>The Timeline Playhead position moves along the Timeline instance. The Playhead Location field shows the position of the Timeline Playhead in either frames or seconds, depending on the <a href="TimelineSettings.html">Timeline settings</a>. </p></li>
+<li><p>To pause playback, click the Timeline Play button again, or press the Spacebar. </p></li>
+<li><p>When playback reaches the end of the Timeline instance, the Wrap Mode determines whether playback should hold, repeat, or do nothing. The Wrap Mode setting is a property of the the <a href="class-PlayableDirector.html">Playable Director component</a>.</p></li>
+</ul>
+
+<p>Timeline Playback mode provides a preview of the Timeline instance while in the Timeline Editor window. Timeline Playback mode is only a simulation of Game Mode that does not support audio playback. To preview a Timeline instance with audio, you can enable the Play on Awake option in the Playback Director component and preview game play by using the Play mode.</p>
+
+<h3>Next Frame button</h3>
+
+<figure>
+<img src="../uploads/Main/timeline_next_frame_button.png" alt="">
+</figure>
+
+<p>Click the Next Frame button, or press Period (.), to move the Timeline Playhead to the next frame.</p>
+
+<h3>Timeline End button</h3>
+
+<figure>
+<img src="../uploads/Main/timeline_end_button.png" alt="">
+</figure>
+
+<p>Click the Timeline End button, or hold Shift and press Period (,), to move the Timeline Playhead to the end of the timeline.</p>
+
+<h3>Play Range button</h3>
+
+<figure>
+<img src="../uploads/Main/timeline_play_range_button.png" alt="">
+</figure>
+
+<p>Enable the Play Range button to restrict playback to a specific range of seconds or frames. The timeline highlights the play range and indicates its start and end with white markers. To modify the play range, drag either marker.</p>
+
+<figure>
+<img src="../uploads/Main/timeline_play_range.png" alt="Play Range enabled with while markers defining range">
+<figcaption>Play Range enabled with while markers defining range</figcaption>
+</figure>
+
+<p>The <strong>Wrap Mode</strong> property of the <a href="class-PlayableDirector.html">Playable Director component</a> determines what happens when playback reaches the end marker.</p>
+
+<p>You can only set a play range when previewing a Timeline instance within the Timeline Editor window. Unity ignores the play range in Play mode.</p>
+
+<h3>The Playhead Location field and Timeline Playhead</h3>
+
+<p>The Timeline Playhead indicates the exact point in time being previewed in the Timeline Editor window. The Playhead Location field expresses the location of the Timeline Playhead in either frames or seconds. </p>
+
+<figure>
+<img src="../uploads/Main/timeline_playhead_location.png" alt="Playhead Location field and Timeline Playhead">
+<figcaption>Playhead Location field and Timeline Playhead</figcaption>
+</figure>
+
+<p>To jump the Timeline Playhead to a specific time, click the timeline. You can also enter the time value in the Playhead Location field and press Enter. When typing a value, frames are converted to seconds or seconds are converted to frames, based on the Timeline settings. For example, if the timeline is expressed as seconds with a frame rate of 30 frames per second, entering 180 in the Playhead Location field converts 180 frames to seconds and moves the Timeline Playhead to 6:00.</p>
+
+<p>To set the time format used by the Timeline Editor window, use the <a href="TimelineSettings.html">Timeline Settings</a>.</p>
+
+<hr>
+
+<ul>
+<li><span class="page-edit">2017–08–10 Page published with limited <a href="DocumentationEditorialReview.html">editorial review</a>
+</span></li>
+</ul>
+<div class="feedbackbox" id="feedbackbox">
+<div id="rating"><p>Did you find this page useful? Please give it a rating:<br><div id="ratecontent" class="c-rating"></div>
+</p></div>
+<div id="ratingThanks" style="display:none"><p>Thanks for rating this page!</p></div>
+<div id="problem"><p><a name="problem" onclick="document.getElementById('problemType').style.display = '';document.getElementById('problem').style.display = 'none';">Report a problem on this page</a></p></div>
+<div id="problemType" style="display:none"><p>What kind of problem would you like to report?<ul type="problems">
+<li><a name="needcode" onclick="                                                             document.getElementById('problemType').style.display = 'none';                                                             document.getElementById('problemThanks').style.display = '';                                                             SendFeedback('problem-needcode',window.location.href,0);                                                             document.getElementById('problemFormDescription').value='Needs code samples.';                                                             document.getElementById('problemNeedCodeForm').style.display = ''                                                         ">This page needs code samples</a></li>
+<li><a name="code" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-brokencode',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Code samples do not work.';                                                         document.getElementById('problemCodeForm').style.display = ''                                                         ">Code samples do not work</a></li>
+<li><a name="missing" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-missing',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Missing information';                                                         document.getElementById('problemMissingForm').style.display = ''                                                         ">Information is missing</a></li>
+<li><a name="incorrect" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-incorrect',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Incorrect information';                                                         document.getElementById('problemIncorrectForm').style.display = ''                                                         ">Information is incorrect</a></li>
+<li><a name="unclear" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-unclear',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Unclear or confusing information';                                                         document.getElementById('problemUnclearForm').style.display = ''                                                         ">Information is unclear or confusing</a></li>
+<li><a name="language" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-language',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Spelling or grammar error';                                                         document.getElementById('problemLanguageForm').style.display = ''                                                         ">There is a spelling/grammar error on this page</a></li>
+<li><a name="other" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-other',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='This page has a problem';                                                         document.getElementById('problemOtherForm').style.display = ''                                                         ">Something else</a></li>
+</ul>
+<p><known_issues><p>Is something described here not working as you expect it to? It might be a <b>Known Issue</b>. Please check with the Issue Tracker at <a href="https://issuetracker.unity3d.com">issuetracker.unity3d.com</a>.</p></known_issues></p>
+</p></div>
+<div id="problemThanks" style="display:none"><p>Thanks for letting us know! This page has been marked for review based on your feedback.<br><br>If you have time, you can provide more information to help us fix the problem faster.<br><br><a onclick="document.getElementById('problemMoreInfo').style.display = '';document.getElementById('problemThanks').style.display = 'none';">Provide more information</a><br>
+</p></div>
+<div id="problemMoreInfo" style="display:none">
+<p id="problemNeedCodeForm" style="display:none">You've told us this page needs code samples. If you'd like to help us further, you could provide a code sample, or tell us about what kind of code sample you'd like to see:</p>
+<p id="problemCodeForm" style="display:none">You've told us there are code samples on this page which don't work. If you know how to fix it, or have something better we could use instead, please let us know:</p>
+<p id="problemMissingForm" style="display:none">You've told us there is information missing from this page. Please tell us more about what's missing:</p>
+<p id="problemIncorrectForm" style="display:none">You've told us there is incorrect information on this page. If you know what we should change to make it correct, please tell us:</p>
+<p id="problemUnclearForm" style="display:none">You've told us this page has unclear or confusing information. Please tell us more about what you found unclear or confusing, or let us know how we could make it clearer:</p>
+<p id="problemLanguageForm" style="display:none">You've told us there is a spelling or grammar error on this page. Please tell us what's wrong:</p>
+<p id="problemOtherForm" style="display:none">You've told us this page has a problem. Please tell us more about what's wrong:</p>
+<form>
+<textarea id="problemFormSuggestionField" cols="40" rows="5"></textarea><input type="hidden" id="problemFormDescription"><input type="submit" id="problemFormDescriptionSubmit" value="Submit" onclick="                                             document.getElementById('problemMoreInfo').style.display = 'none';                                             document.getElementById('problemMoreInfoThanks').style.display = '';                                             return false;                                             ">
+</form>
+</div>
+<div id="problemMoreInfoThanks" style="display:none"><p>Thanks for helping to make the Unity documentation better!</p></div>
+<script>
+
+                                            var ratecontent = document.querySelector('#ratecontent'); // target element
+                                            var currentRating = 0; // initial rating
+                                            var maxRating= 5; // max rating
+
+                                            // callback to run after setting the rating
+                                            var callback = function(rating) {
+                                                document.getElementById('ratingThanks').style.display = '';
+                                                document.getElementById('ratecontent').style.display = 'none';
+                                                document.getElementById('rating').style.display = 'none';
+                                                SendFeedback("rating",window.location.href,rating);
+                                            };
+
+                                            // rating instance
+                                            var myRating = rating(ratecontent, currentRating, maxRating, callback);
+                                        </script>
+</div>
+<div class="nextprev clear">
+<div class="icon tt left mr1" data-distance="-40|-30|top">
+<span class="prev"><a href="TimelinePreviewSelector.html"></a></span><div class="tip"> Timeline Preview and Timeline Selector</div>
+</div>
+<div class="icon tt right" data-distance="-40|-30|top">
+<span class="next"><a href="TimelineTrackList.html"></a></span><div class="tip"> Track List</div>
+</div>
+</div>
+</div>
+</body></html>

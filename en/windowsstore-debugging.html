@@ -1,0 +1,145 @@
+<html><head><title>html模版</title></head><body>Unity - Manual: ﻿Universal Windows Platform: Debugging on .NET Scripting Backend</br>
+<div class="breadcrumbs clear"><ul>
+<li><a href="UnityManual.html">Unity User Manual (2018.1 beta)</a></li>
+<li><a href="PlatformSpecific.html">Platform-specific</a></li>
+<li><a href="Windows.html">Windows</a></li>
+<li><a href="WindowsStore.html">Universal Windows Platform</a></li>
+<li><a href="windowsstore-scriptingbackends.html"> Scripting Backends</a></li>
+<li><a href="windowsstore-dotnet.html"> Universal Windows Platform: .NET Scripting Backend</a></li>
+<li>﻿Universal Windows Platform: Debugging on .NET Scripting Backend</li>
+</ul></div>
+<div class="mb20"><div class="nextprev clear">
+<div class="icon tt left mr1" data-distance="-40|-30|top">
+<span class="prev"><a href="windowsstore-plugins.html"></a></span><div class="tip">Universal Windows Platform: Plugins on .NET Scripting Backend</div>
+</div>
+<div class="icon tt right" data-distance="-40|-30|top">
+<span class="next"><a href="windowsstore-il2cpp.html"></a></span><div class="tip">Universal Windows Platform: IL2CPP scripting back end</div>
+</div>
+</div></div>
+<div class="otherversionswrapper" onmouseover="setOtherVersionsDisplay(true)" onmouseout="setOtherVersionsDisplay(false)">
+<a>Other Versions</a><div class="otherversionscontent" id="OtherVersionsContent" style="display: none;">Cannot access other versions offline!</div>
+</div>
+<div class="scrollToFeedback"><a id="scrollToFeedback">Leave feedback</a></div>
+<h1>Universal Windows Platform: Debugging on .NET Scripting Backend</h1>
+<!--BeginSwitchLink--><!--EndSwitchLink-->
+<div class="clear"></div>
+
+<p>When you have a crash, or a weird behavior, always check the player log which is located here - <strong>&lt;user&gt;\AppData\Local\Packages&lt;productname&gt;\TempState\UnityPlayer.log</strong>. When submitting a bug, please include the player log as well, it can give invaluable information.</p>
+
+<p>Currently it’s only possible to debug C# scripts.</p>
+
+<p>
+<strong>Note</strong>: Universal Windows Platform are running with Microsoft .NET, that’s why it’s not possible to debug scripts with MonoDevelop, instead you have to use Visual Studio 2013.</p>
+
+<p>Here are simple steps how to do it:</p>
+
+<ul>
+<li>When building to Universal Windows Platform, check <strong>Unity C# projects</strong>
+</li>
+<li><img src="../uploads/Main/WSADebugging1.png" alt=""></li>
+<li>This will create Assembly-CSharp-* projects compatible with Universal Windows Apps</li>
+<li>
+<strong>Note</strong>: if previously <strong>Unity C# projects</strong> was unchecked, build to empty folder or delete <em>.sln and </em>.csproj, because Unity needs to add references to those files, but if they’ll be present - Unity won’t overwrite them</li>
+<li>Open the solution, you should see Assembly-CSharp-* projects included</li>
+<li>Place breakpoints in places of interest, and simply start application with the debugger</li>
+<li><img src="../uploads/Main/WSADebugging2.png" alt=""></li>
+</ul>
+
+<h3>Exceptions</h3>
+
+<p>When you run the application, you can tell Visual Studio to stop during exception. Go to <strong>Debug</strong> -&gt; <strong>Exceptions</strong>:</p>
+
+<ul>
+<li>Enable Common Language Runtime Exceptions and Managed Debugging Assistants - for managed exceptions</li>
+<li>Enable all exceptions if you’re getting exception in some unknown place</li>
+</ul>
+
+<p>
+<strong>Note</strong>: enabling all exceptions will make Visual Studio to stop even at the harmless exceptions like <strong>WinRT originate error</strong>, <strong>WinRT transform error</strong>, ignore those and simply continue</p>
+
+<h3>Resolving callstack from UnityPlayer.dll</h3>
+
+<p>There will be cases when you’ll have a crash in Unity engine itself, you can get useful information if you’re able to resolve the callstack, and provide it in the bug report if needed.</p>
+
+<p>
+<strong>Note</strong>: Callstacks from Unity engine can be resolved if <em>.pdb files are available, Unity provides </em>.pdb files for Debug configuration.</p>
+
+<p>Suppose you’ve encountered a crash in Unity engine and hit the breakpoint (<strong>Note</strong>: Visual Studio can stop at the crash if you enable all exceptions via <strong>Debug</strong> -&gt; <strong>Exceptions</strong> menu), go to <strong>Debug</strong> -&gt; <strong>Windows</strong> -&gt; <strong>Call Stack</strong>, Call Stack window should open up, if you don’t see function names from UnityPlayer.dll, that means the symbols weren’t loaded, to fix that, right click on that function and Load Symbols, UnityPlayer.pdb file will be located in [PathToYourProject]&gt;\Players\[Windows80 or Windows81]\[X86 or ARM or X64]\debug.</p>
+
+<figure>
+<img src="../uploads/Main/WSADebugging3.png" alt="">
+</figure>
+
+<h3>Microsoft-Windows-TWinUI</h3>
+
+<p>This is a log which might provide information why your application didn’t launch without debugger, it can be found in:</p>
+
+<p>
+<strong>Control Panel</strong> -&gt; <strong>Administrative Tools</strong> -&gt; <strong>Event Viewer</strong> -&gt; <strong>Applications And Services Log</strong> -&gt; <strong>Microsoft</strong> -&gt; <strong>Windows</strong> -&gt; <strong>Apps</strong> -&gt; <strong>Microsoft-Windows-TWinUI/Operational</strong>
+</p>
+
+<hr>
+
+<p>
+<span class="page-edit">• 2017–05–16 Page amended with no <a href="DocumentationEditorialReview.html">editorial review</a>
+</span><br>
+</p>
+<div class="feedbackbox" id="feedbackbox">
+<div id="rating"><p>Did you find this page useful? Please give it a rating:<br><div id="ratecontent" class="c-rating"></div>
+</p></div>
+<div id="ratingThanks" style="display:none"><p>Thanks for rating this page!</p></div>
+<div id="problem"><p><a name="problem" onclick="document.getElementById('problemType').style.display = '';document.getElementById('problem').style.display = 'none';">Report a problem on this page</a></p></div>
+<div id="problemType" style="display:none"><p>What kind of problem would you like to report?<ul type="problems">
+<li><a name="needcode" onclick="                                                             document.getElementById('problemType').style.display = 'none';                                                             document.getElementById('problemThanks').style.display = '';                                                             SendFeedback('problem-needcode',window.location.href,0);                                                             document.getElementById('problemFormDescription').value='Needs code samples.';                                                             document.getElementById('problemNeedCodeForm').style.display = ''                                                         ">This page needs code samples</a></li>
+<li><a name="code" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-brokencode',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Code samples do not work.';                                                         document.getElementById('problemCodeForm').style.display = ''                                                         ">Code samples do not work</a></li>
+<li><a name="missing" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-missing',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Missing information';                                                         document.getElementById('problemMissingForm').style.display = ''                                                         ">Information is missing</a></li>
+<li><a name="incorrect" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-incorrect',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Incorrect information';                                                         document.getElementById('problemIncorrectForm').style.display = ''                                                         ">Information is incorrect</a></li>
+<li><a name="unclear" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-unclear',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Unclear or confusing information';                                                         document.getElementById('problemUnclearForm').style.display = ''                                                         ">Information is unclear or confusing</a></li>
+<li><a name="language" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-language',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Spelling or grammar error';                                                         document.getElementById('problemLanguageForm').style.display = ''                                                         ">There is a spelling/grammar error on this page</a></li>
+<li><a name="other" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-other',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='This page has a problem';                                                         document.getElementById('problemOtherForm').style.display = ''                                                         ">Something else</a></li>
+</ul>
+<p><known_issues><p>Is something described here not working as you expect it to? It might be a <b>Known Issue</b>. Please check with the Issue Tracker at <a href="https://issuetracker.unity3d.com">issuetracker.unity3d.com</a>.</p></known_issues></p>
+</p></div>
+<div id="problemThanks" style="display:none"><p>Thanks for letting us know! This page has been marked for review based on your feedback.<br><br>If you have time, you can provide more information to help us fix the problem faster.<br><br><a onclick="document.getElementById('problemMoreInfo').style.display = '';document.getElementById('problemThanks').style.display = 'none';">Provide more information</a><br>
+</p></div>
+<div id="problemMoreInfo" style="display:none">
+<p id="problemNeedCodeForm" style="display:none">You've told us this page needs code samples. If you'd like to help us further, you could provide a code sample, or tell us about what kind of code sample you'd like to see:</p>
+<p id="problemCodeForm" style="display:none">You've told us there are code samples on this page which don't work. If you know how to fix it, or have something better we could use instead, please let us know:</p>
+<p id="problemMissingForm" style="display:none">You've told us there is information missing from this page. Please tell us more about what's missing:</p>
+<p id="problemIncorrectForm" style="display:none">You've told us there is incorrect information on this page. If you know what we should change to make it correct, please tell us:</p>
+<p id="problemUnclearForm" style="display:none">You've told us this page has unclear or confusing information. Please tell us more about what you found unclear or confusing, or let us know how we could make it clearer:</p>
+<p id="problemLanguageForm" style="display:none">You've told us there is a spelling or grammar error on this page. Please tell us what's wrong:</p>
+<p id="problemOtherForm" style="display:none">You've told us this page has a problem. Please tell us more about what's wrong:</p>
+<form>
+<textarea id="problemFormSuggestionField" cols="40" rows="5"></textarea><input type="hidden" id="problemFormDescription"><input type="submit" id="problemFormDescriptionSubmit" value="Submit" onclick="                                             document.getElementById('problemMoreInfo').style.display = 'none';                                             document.getElementById('problemMoreInfoThanks').style.display = '';                                             return false;                                             ">
+</form>
+</div>
+<div id="problemMoreInfoThanks" style="display:none"><p>Thanks for helping to make the Unity documentation better!</p></div>
+<script>
+
+                                            var ratecontent = document.querySelector('#ratecontent'); // target element
+                                            var currentRating = 0; // initial rating
+                                            var maxRating= 5; // max rating
+
+                                            // callback to run after setting the rating
+                                            var callback = function(rating) {
+                                                document.getElementById('ratingThanks').style.display = '';
+                                                document.getElementById('ratecontent').style.display = 'none';
+                                                document.getElementById('rating').style.display = 'none';
+                                                SendFeedback("rating",window.location.href,rating);
+                                            };
+
+                                            // rating instance
+                                            var myRating = rating(ratecontent, currentRating, maxRating, callback);
+                                        </script>
+</div>
+<div class="nextprev clear">
+<div class="icon tt left mr1" data-distance="-40|-30|top">
+<span class="prev"><a href="windowsstore-plugins.html"></a></span><div class="tip">Universal Windows Platform: Plugins on .NET Scripting Backend</div>
+</div>
+<div class="icon tt right" data-distance="-40|-30|top">
+<span class="next"><a href="windowsstore-il2cpp.html"></a></span><div class="tip">Universal Windows Platform: IL2CPP scripting back end</div>
+</div>
+</div>
+</div>
+</body></html>

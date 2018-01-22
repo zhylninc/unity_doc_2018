@@ -1,0 +1,163 @@
+<html><head><title>html模版</title></head><body>Unity - Manual: Navigation Areas and Costs</br>
+<div class="breadcrumbs clear"><ul>
+<li><a href="UnityManual.html">Unity User Manual (2018.1 beta)</a></li>
+<li><a href="Navigation.html">Navigation and Pathfinding</a></li>
+<li><a href="nav-Overview.html">Navigation Overview</a></li>
+<li>Navigation Areas and Costs</li>
+</ul></div>
+<div class="mb20"><div class="nextprev clear">
+<div class="icon tt left mr1" data-distance="-40|-30|top">
+<span class="prev"><a href="nav-HeightMesh.html"></a></span><div class="tip">Building Height Mesh for Accurate Character Placement</div>
+</div>
+<div class="icon tt right" data-distance="-40|-30|top">
+<span class="next"><a href="nav-AdditiveLoading.html"></a></span><div class="tip">Loading Multiple NavMeshes using Additive Loading</div>
+</div>
+</div></div>
+<div class="otherversionswrapper" onmouseover="setOtherVersionsDisplay(true)" onmouseout="setOtherVersionsDisplay(false)">
+<a>Other Versions</a><div class="otherversionscontent" id="OtherVersionsContent" style="display: none;">Cannot access other versions offline!</div>
+</div>
+<div class="scrollToFeedback"><a id="scrollToFeedback">Leave feedback</a></div>
+<h1>Navigation Areas and Costs</h1>
+<!--BeginSwitchLink--><!--EndSwitchLink-->
+<div class="clear"></div>
+
+<p>The <em>Navigation Areas</em> define how difficult it is to walk across a specific area, the lower cost areas will be preferred during path finding. In addition each NavMesh Agent has an <em>Area Mask</em> which can be used to specify on which areas the agent can move.</p>
+
+<figure>
+<img src="../uploads/Main/NavMeshAreaType.svg" alt="">
+</figure>
+
+<p>In the above example the area types are used for two common use cases:</p>
+
+<ul>
+<li>
+<strong>Water</strong> area is made more costly to walk by assigning it a higher cost, to deal with a scenario where walking on shallow water is slower.</li>
+<li>
+<strong>Door</strong> area is made accessible by specific characters, to create a scenario where humans can walk through doors, but zombies cannot.</li>
+</ul>
+
+<p>The area type can be assigned to every object that is included in the NavMesh baking, in addition, each Off-Mesh Link has a property to specify the area type.</p>
+
+<h2>Pathfinding Cost</h2>
+
+<p>In a nutshell, the cost allows you to control which areas the pathfinder favors when finding a path. For example, if you set the cost of an area to 3.0, traveling across that area is considered to be three times longer than alternative routes.</p>
+
+<p>To fully understand how the cost works, let’s take a look at how the pathfinder works.</p>
+
+<figure>
+<img src="../uploads/Main/NavMeshNodePositions.svg" alt="Nodes and links visited during pathfinding.">
+<figcaption>Nodes and links visited during pathfinding.</figcaption>
+</figure>
+
+<p>Unity uses A* to calculate the shortest path on the NavMesh. A* works on a graph of connected nodes. The algorithm starts from the nearest node to the path start and visits the connect nodes until the destination is reached.</p>
+
+<p>Since the Unity navigation representation is a mesh of polygons, the first thing the pathfinder needs to do is to place a point on each polygon, which is the location of the node. The shortest path is then calculated between these nodes.</p>
+
+<p>The yellow dots and lines in the above picture shows how the nodes and links are placed on the NavMesh, and in which order they are traversed during the A*.</p>
+
+<p>The cost to move between two nodes depends on the distance to travel and the cost associated with the area type of the polygon under the link, that is, <em>distance * cost</em>. In practice this means, that if the cost of an area is 2.0, the distance across such polygon will appear to be twice as long. The A* algorithm requires that all costs must be larger than 1.0.</p>
+
+<p>The effect of the costs on the resulting path can be hard to tune, especially for longer paths. The best way to approach costs is to treat them as hints. For example, if you want the agents to not to use Off-Mesh Links too often, you could increase their cost. But it can be challenging to tune a behavior where the agents to prefer to walk on sidewalks.</p>
+
+<p>Another thing you may notice on some levels is that the pathfinder does not always choose the very shortest path. The reason for this is the node placement. The effect can be noticeable in scenarios where big open areas are next to tiny obstacles, which results navigation mesh with very big and small polygons. In such cases the nodes on the big polygons may get placed anywhere in the big polygon and from the pathfinder’s point of view it looks like a detour.</p>
+
+<p>The <em>cost</em> per <em>area type</em> can be set globally in the <em>Areas</em> tab, or you can override them per agent using a script.</p>
+
+<h2>Area Types</h2>
+
+<figure>
+<img src="../uploads/Main/NavMeshAreaTypeList.png" alt="">
+</figure>
+
+<p>The area types are specified in the <em>Navigation Window</em>’s <em>Areas</em> tab. There are 29 custom types, and 3 built-in types: <em>Walkable</em>, <em>Not Walkable</em>, and <em>Jump</em>. </p>
+
+<ul>
+<li>
+<strong>Walkable</strong> is a generic area type which specifies that the area can be walked on.</li>
+<li>
+<strong>Not Walkable</strong> is a generic area type which prevents navigation. It is useful for cases where you want to mark certain object to be an obstacle, but without getting NavMesh on top of it.</li>
+<li>
+<strong>Jump</strong> is an area type that is assigned to all auto-generated Off-Mesh Links.</li>
+</ul>
+
+<p>If several objects of different area types are overlapping, the resulting navmesh area type will generally be the one with the highest index. There is one exception however: <em>Not Walkable</em> always takes precedence. Which can be helpful if you need to block out an area.</p>
+
+<h2>Area Mask</h2>
+
+<figure>
+<img src="../uploads/Main/NavMeshAreaMask.svg" alt="">
+</figure>
+
+<p>Each agent has an <em>Area Mask</em> which describes which areas it can use when navigating. The area mask can be set in the agent properties, or the bitmask can be manipulated using a script at runtime.</p>
+
+<p>The area mask is useful when you want only certain types characters to be able to walk through an area. For example, in a zombie evasion game, you could mark the area under each door with a <em>Door</em> area type, and uncheck the Door area from the zombie character’s Area Mask.</p>
+
+<h3>Further Reading</h3>
+
+<ul>
+<li>
+<a href="nav-BuildingNavMesh.html">Building a NavMesh</a> – workflow for NavMesh baking.</li>
+<li>
+<a href="../ScriptReference/AI.NavMeshAgent-areaMask.html">NavMeshAgent.areaMask</a> - Script API to set areaMask for an agent.</li>
+<li>
+<a href="../ScriptReference/AI.NavMeshAgent.SetAreaCost.html">NavMeshAgent.SetAreaCost()</a> - Script API to set area cost for an agent.</li>
+</ul>
+<div class="feedbackbox" id="feedbackbox">
+<div id="rating"><p>Did you find this page useful? Please give it a rating:<br><div id="ratecontent" class="c-rating"></div>
+</p></div>
+<div id="ratingThanks" style="display:none"><p>Thanks for rating this page!</p></div>
+<div id="problem"><p><a name="problem" onclick="document.getElementById('problemType').style.display = '';document.getElementById('problem').style.display = 'none';">Report a problem on this page</a></p></div>
+<div id="problemType" style="display:none"><p>What kind of problem would you like to report?<ul type="problems">
+<li><a name="needcode" onclick="                                                             document.getElementById('problemType').style.display = 'none';                                                             document.getElementById('problemThanks').style.display = '';                                                             SendFeedback('problem-needcode',window.location.href,0);                                                             document.getElementById('problemFormDescription').value='Needs code samples.';                                                             document.getElementById('problemNeedCodeForm').style.display = ''                                                         ">This page needs code samples</a></li>
+<li><a name="code" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-brokencode',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Code samples do not work.';                                                         document.getElementById('problemCodeForm').style.display = ''                                                         ">Code samples do not work</a></li>
+<li><a name="missing" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-missing',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Missing information';                                                         document.getElementById('problemMissingForm').style.display = ''                                                         ">Information is missing</a></li>
+<li><a name="incorrect" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-incorrect',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Incorrect information';                                                         document.getElementById('problemIncorrectForm').style.display = ''                                                         ">Information is incorrect</a></li>
+<li><a name="unclear" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-unclear',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Unclear or confusing information';                                                         document.getElementById('problemUnclearForm').style.display = ''                                                         ">Information is unclear or confusing</a></li>
+<li><a name="language" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-language',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Spelling or grammar error';                                                         document.getElementById('problemLanguageForm').style.display = ''                                                         ">There is a spelling/grammar error on this page</a></li>
+<li><a name="other" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-other',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='This page has a problem';                                                         document.getElementById('problemOtherForm').style.display = ''                                                         ">Something else</a></li>
+</ul>
+<p><known_issues><p>Is something described here not working as you expect it to? It might be a <b>Known Issue</b>. Please check with the Issue Tracker at <a href="https://issuetracker.unity3d.com">issuetracker.unity3d.com</a>.</p></known_issues></p>
+</p></div>
+<div id="problemThanks" style="display:none"><p>Thanks for letting us know! This page has been marked for review based on your feedback.<br><br>If you have time, you can provide more information to help us fix the problem faster.<br><br><a onclick="document.getElementById('problemMoreInfo').style.display = '';document.getElementById('problemThanks').style.display = 'none';">Provide more information</a><br>
+</p></div>
+<div id="problemMoreInfo" style="display:none">
+<p id="problemNeedCodeForm" style="display:none">You've told us this page needs code samples. If you'd like to help us further, you could provide a code sample, or tell us about what kind of code sample you'd like to see:</p>
+<p id="problemCodeForm" style="display:none">You've told us there are code samples on this page which don't work. If you know how to fix it, or have something better we could use instead, please let us know:</p>
+<p id="problemMissingForm" style="display:none">You've told us there is information missing from this page. Please tell us more about what's missing:</p>
+<p id="problemIncorrectForm" style="display:none">You've told us there is incorrect information on this page. If you know what we should change to make it correct, please tell us:</p>
+<p id="problemUnclearForm" style="display:none">You've told us this page has unclear or confusing information. Please tell us more about what you found unclear or confusing, or let us know how we could make it clearer:</p>
+<p id="problemLanguageForm" style="display:none">You've told us there is a spelling or grammar error on this page. Please tell us what's wrong:</p>
+<p id="problemOtherForm" style="display:none">You've told us this page has a problem. Please tell us more about what's wrong:</p>
+<form>
+<textarea id="problemFormSuggestionField" cols="40" rows="5"></textarea><input type="hidden" id="problemFormDescription"><input type="submit" id="problemFormDescriptionSubmit" value="Submit" onclick="                                             document.getElementById('problemMoreInfo').style.display = 'none';                                             document.getElementById('problemMoreInfoThanks').style.display = '';                                             return false;                                             ">
+</form>
+</div>
+<div id="problemMoreInfoThanks" style="display:none"><p>Thanks for helping to make the Unity documentation better!</p></div>
+<script>
+
+                                            var ratecontent = document.querySelector('#ratecontent'); // target element
+                                            var currentRating = 0; // initial rating
+                                            var maxRating= 5; // max rating
+
+                                            // callback to run after setting the rating
+                                            var callback = function(rating) {
+                                                document.getElementById('ratingThanks').style.display = '';
+                                                document.getElementById('ratecontent').style.display = 'none';
+                                                document.getElementById('rating').style.display = 'none';
+                                                SendFeedback("rating",window.location.href,rating);
+                                            };
+
+                                            // rating instance
+                                            var myRating = rating(ratecontent, currentRating, maxRating, callback);
+                                        </script>
+</div>
+<div class="nextprev clear">
+<div class="icon tt left mr1" data-distance="-40|-30|top">
+<span class="prev"><a href="nav-HeightMesh.html"></a></span><div class="tip">Building Height Mesh for Accurate Character Placement</div>
+</div>
+<div class="icon tt right" data-distance="-40|-30|top">
+<span class="next"><a href="nav-AdditiveLoading.html"></a></span><div class="tip">Loading Multiple NavMeshes using Additive Loading</div>
+</div>
+</div>
+</div>
+</body></html>

@@ -1,0 +1,409 @@
+<html><head><title>html模版</title></head><body>Unity - Manual:  Playmode test framework</br>
+<div class="breadcrumbs clear"><ul>
+<li><a href="UnityManual.html">Unity User Manual (2018.1 beta)</a></li>
+<li><a href="ScriptingSection.html">Scripting</a></li>
+<li><a href="ScriptingTools.html">Scripting Tools</a></li>
+<li> Playmode test framework</li>
+</ul></div>
+<div class="mb20"><div class="nextprev clear">
+<div class="icon tt left mr1" data-distance="-40|-30|top">
+<span class="prev"><a href="testing-editortestsrunner.html"></a></span><div class="tip">Unity Test Runner </div>
+</div>
+<div class="icon tt right" data-distance="-40|-30|top">
+<span class="next"><a href="IL2CPP.html"></a></span><div class="tip">IL2CPP</div>
+</div>
+</div></div>
+<div class="otherversionswrapper" onmouseover="setOtherVersionsDisplay(true)" onmouseout="setOtherVersionsDisplay(false)">
+<a>Other Versions</a><div class="otherversionscontent" id="OtherVersionsContent" style="display: none;">Cannot access other versions offline!</div>
+</div>
+<div class="scrollToFeedback"><a id="scrollToFeedback">Leave feedback</a></div>
+<h1>Playmode test framework</h1>
+<!--BeginSwitchLink--><!--EndSwitchLink-->
+<div class="clear"></div>
+
+<p>The playmode test framework contains utilities that can be used with <code>NUnit</code> constraints for comparing floating point values and some non-primitive objects like <code>Vector2</code>, <code>Vector4</code> and so on. These classes are placed in the <code>UnityEngine.TestTools.Utils</code> namespace.</p>
+
+<h2>Class: Utils</h2>
+
+<p>A class that contains utility functions.</p>
+
+<h3>AreFloatsEqual</h3>
+
+<p>
+<strong>Signature</strong> <code>public static bool AreFloatsEqual(float expected, float actual, float allowedRelativeError)</code>
+</p>
+
+<p>
+<strong>Description</strong>
+This method does a <em>relative epsilon comparison</em> of two floating point numbers for equality, and takes the relative error as the third parameter. The relative error is the absolute error divided by the magnitude of the exact value.</p>
+
+<p><strong>Usage</strong></p>
+
+<pre><code class="csharp">using NUnit.Framework;
+using UnityEngine.TestTools.Utils;
+
+[TestFixture]
+public class UtilTests
+{
+    [Test]
+    public void FloatsAreEqual()
+    {
+        float expected = 10e-8f;
+        float actual = 0f;
+        float allowedRelativeError = 10e-6f;
+        Assert.That(Utils.AreFloatsEqual(expected, actual, allowedRelativeError), Is.True);
+    }
+}
+</code></pre>
+
+<h3>AreFloatsEqualAbsoluteError</h3>
+
+<p>
+<strong>Signature</strong> <code>public static bool AreFloatsEqualAbsoluteError(float expected, float actual, float allowedAbsoluteError)</code>
+</p>
+
+<p>
+<strong>Description</strong>
+This method compares two floating point numbers for equality under the given tolerance.</p>
+
+<p><strong>Usage</strong></p>
+
+<pre><code class="csharp">using NUnit.Framework;
+using UnityEngine.TestTools.Utils;
+
+[TestFixture]
+public class UtilTests
+{
+    [Test]
+    public void FloatsAreAbsoluteEqual()
+    {
+        float expected = 0f;
+        float actual = 10e-6f;
+        float error = 10e-5f;
+        Assert.That(Utils.AreFloatsEqualAbsoluteError(expected, actual, error), Is.True);
+    }
+}
+</code></pre>
+
+<h3>CreatePrimitive</h3>
+
+<p>
+<strong>Signature</strong> public static GameObject CreatePrimitive(PrimitiveType type)</p>
+
+<p>
+<strong>Description</strong>
+This is analogous to <code>GameObject.CreatePrimitive</code>, but creates a primitive mesh renderer with a fast shader instead of the default built-in shader, optimized for testing performance. It returns a <code>GameObject</code> with primitive mesh renderer and collider.</p>
+
+<p><strong>Usage</strong></p>
+
+<pre><code class="csharp">var box = Utils.CreatePrimitive(PrimitiveType.Cube);
+</code></pre>
+
+<h2>FloatEqualityComparer</h2>
+
+<p>This implements <code>System.Collections.Generic.IEqualityComparer&lt;float&gt;</code>. This comparer can be used with <code>NUnit</code> constraints to compare two float values for equality using <em>relative epsilon comparison</em>. Internally, this comparer uses <code>Utils.AreFloatsEqual</code> to compare float values.</p>
+
+<p><strong>Usage</strong></p>
+
+<pre><code class="csharp">using NUnit.Framework;
+using UnityEngine.TestTools.Utils;
+
+[TestFixture]
+public class FloatsTest
+{
+    [Test]
+    public void FloatsAreEqual()
+    {
+        var comparer = new FloatEqualityComparer(10e-6f);
+        var actual = -0.00009f;
+        var expected = 0.00009f
+        Assert.That(actual, Is.EqualTo(expected).Using(comparer));
+
+        //Default allowed relative error 0.0001f
+        var actual = -0.01f;
+        var expected = 0.001f
+        Assert.That(actual, Is.EqualTo(expected).Using(FloatEqualityComparer.Instance));
+    }
+}
+</code></pre>
+
+<h2>ColorEqualityComparer</h2>
+
+<p>Use this class to compare two <code>UnityEngine.Color</code> objects for equality, with <code>NUnit</code> constraints. This class implements the <code>System.Collections.Generic.IEqualityComparer&lt;Color&gt;</code> interface. It considers <code>0.01f</code> as the default error for comparisons if a value is not provided in the <code>ColorEqualityComparer</code> constructor.</p>
+
+<p><strong>Usage</strong></p>
+
+<pre><code class="csharp">using UnityEngine;
+using NUnit.Framework;
+using UnityEngine.TestTools.Utils;
+
+[TestFixture]
+public class ColorTest
+{
+    [Test]
+    public void ColorsAreEqual()
+    {
+        //Allowed error 10e-5f
+        var comparer = new ColorEqualityComparer(10e-5f);
+        var firstColor = new Color(0f, 0f, 0f, 1f);
+        var secondColor = new Color(10e-6f, 0f, 0f, 1f);
+        Assert.That(firstColor, Is.EqualTo(secondColor).Using(comparer));
+
+        //Using default error
+        firstColor = new Color(0f, 0f, 0f, 0f);
+        secondColor = new Color(0f, 0f, 0f, 0f);
+        Assert.That(firstColor, Is.EqualTo(secondColor).Using(ColorEqualityComparer.Instance));
+    }
+}
+</code></pre>
+
+<h2>QuaternionEqualityComparer</h2>
+
+<p>Use this class to compare two <code>UnityEngine.Quaternion</code> objects for equality, with <code>NUnit</code> constraints. This class implements the <code>System.Collections.Generic.IEqualityComparer&lt;Quaternion&gt;</code> interface. Use the static instance <code>Instance</code> to compare with default error <code>0.00001f</code>. For any custom error value, use the single argument constructor.</p>
+
+<p><strong>Usage</strong></p>
+
+<pre><code class="csharp">using UnityEngine;
+using NUnit.Framework;
+using UnityEngine.TestTools.Utils;
+
+[TestFixture]
+public class QuaternionTest
+{
+    [Test]
+    public void QuaternionsAreEqual()
+    {
+        var actual = new Quaternion(10f, 0f, 0f, 0f);
+        var expected = new Quaternion(1f, 10f, 0f, 0f);
+        var comparer = new QuaternionEqualityComparer(10e-6f);
+        Assert.That(actual, Is.EqualTo(expected).Using(comparer));
+    }
+}
+</code></pre>
+
+<h2>Vector2EqualityComparer</h2>
+
+<p>Use this class to compare two <code>UnityEngine.Vector2</code> objects for equality, with <code>NUnit</code> constraints. This class implements the <code>System.Collections.Generic.IEqualityComparer&lt;Vector2&gt;</code> interface. Use the static <code>Instance</code> member to compare using default error <code>0.0001f</code>. You can supply a custom error value while constructing the comparer object. It uses a <em>relative epsilon comparison</em> (the absolute error divided by the magnitude of the exact value) of <code>Utils.AreFloatsEqual</code> to compare individual coordinates.</p>
+
+<p><strong>Usage</strong></p>
+
+<pre><code class="csharp">using UnityEngine;
+using NUnit.Framework;
+using UnityEngine.TestTools.Utils;
+
+[TestFixture]
+public class Vector2Test
+{
+    [Test]
+    public void Vector2AreEqual()
+    {
+        //Custom error
+        var actual = new Vector2(10e-7f, 10e-7f);
+        var expected = new Vector2(0f, 0f);
+        var comparer = new Vector2EqualityComparer(10e-6f);
+        Assert.That(actual, Is.EqualTo(expected).Using(comparer));
+
+        //Default error 0.0001f
+        actual = new Vector2(0.01f, 0.01f);
+        expected = new Vector2(0.01f, 0.01f);
+        Assert.That(actual, Is.EqualTo(expected).Using(Vector2EqualityComparer.Instance));
+    }
+}
+</code></pre>
+
+<h2>Vector3EqualityComparer</h2>
+
+<p>Use this class to compare two <code>UnityEngine.Vector3</code> objects for equality, with <code>NUnit</code> constraints. This class implements the <code>System.Collections.Generic.IEqualityComparer&lt;Vector3&gt;</code> interface. Use the static <code>Instance</code> member to compare using default error <code>0.0001f</code>. You can supply a custom error value while constructing the comparer object. It uses a <em>relative epsilon comparison</em> (the absolute error divided by the magnitude of the exact value) of <code>Utils.AreFloatsEqual</code> to compare individual coordinates.</p>
+
+<p><strong>Usage</strong></p>
+
+<pre><code class="csharp">
+using UnityEngine;
+using NUnit.Framework;
+using UnityEngine.TestTools.Utils;
+
+[TestFixture]
+public class Vector3Test
+{
+    [Test]
+    public void Vector3AreEqual()
+    {
+        //Custom error 10e-6f
+        var actual = new Vector3(10e-8f, 10e-8f, 10e-8f);
+        var expected = new Vector3(0f, 0f, 0f);
+        var comparer = new Vector3EqualityComparer(10e-6f);
+        Assert.That(actual, Is.EqualTo(expected).Using(comparer));
+
+        //Default error 0.0001f
+        actual = new Vector3(0.01f, 0.01f, 0f);
+        expected = new Vector3(0.01f, 0.01f, 0f);
+        Assert.That(actual, Is.EqualTo(expected).Using(Vector3EqualityComparer.Instance));
+    }
+}
+</code></pre>
+
+<h2>Vector4EqualityComparer</h2>
+
+<p>Use this class to compare two <code>UnityEngine.Vector4</code> objects for equality, with <code>NUnit</code> constraints. This class implements the <code>System.Collections.Generic.IEqualityComparer&lt;Vector4&gt;</code> interface. Use the static <code>Instance</code> member to compare using default error <code>0.0001f</code>. You can supply a custom error value while constructing the comparer object. It uses a <em>relative epsilon comparison</em> (the absolute error divided by the magnitude of the exact value) of <code>Utils.AreFloatsEqual</code> to compare individual coordinates.</p>
+
+<p><strong>Usage</strong></p>
+
+<pre><code class="csharp">using UnityEngine;
+using NUnit.Framework;
+using UnityEngine.TestTools.Utils;
+
+[TestFixture]
+public class Vector4Test
+{
+    [Test]
+    public void Vector4AreEqual()
+    {
+        //Custom error 10e-6f
+        var actual = new Vector4(0, 0, 1e-6f, 1e-6f);
+        var expected = new Vector4(1e-6f, 0f, 0f, 0f);
+        var comparer = new Vector4EqualityComparer(10e-6f);
+        Assert.That(actual, Is.EqualTo(expected).Using(comparer));
+
+        //Default error 0.0001f
+        actual = new Vector4(0.01f, 0.01f, 0f, 0f);
+        expected = new Vector4(0.01f, 0.01f, 0f, 0f);
+        Assert.That(actual, Is.EqualTo(expected).Using(Vector4EqualityComparer.Instance));
+    }
+}
+</code></pre>
+
+<h2>Vector2ComparerWithEqualsOperator</h2>
+
+<p>Use this class to compare two <code>UnityEngine.Vector2</code> objects for equality, with <code>NUnit</code> constraints. This class implements the <code>System.Collections.Generic.IEqualityComparer&lt;Vector2&gt;</code> interface. It uses the overload <code>operator==</code> of <code>UnityEngine.Vector2</code> to compare two <code>Vector2</code> objects.</p>
+
+<p><strong>Usage</strong></p>
+
+<pre><code class="csharp">using UnityEngine;
+using NUnit.Framework;
+using UnityEngine.TestTools.Utils;
+
+[TestFixture]
+public class Vector2Test
+{
+    [Test]
+    public void VectorsAreEqual()
+    {
+        var actual = new Vector2(10e-7f, 10e-7f);
+        var expected = new Vector2(0f, 0f);
+        Assert.That(actual, Is.EqualTo(expected).Using(Vector2ComparerWithEqualsOperator.Instance));
+    }
+}
+</code></pre>
+
+<h2>Vector3ComparerWithEqualsOperator</h2>
+
+<p>Use this class to compare two <code>UnityEngine.Vector3</code> objects for equality, with <code>NUnit</code> constraints. This class implements the <code>System.Collections.Generic.IEqualityComparer&lt;Vector3&gt;</code> interface. It uses the overload <code>operator==</code> of <code>UnityEngine.Vector3</code> to compare two <code>Vector3</code> objects.</p>
+
+<p><strong>Usage</strong></p>
+
+<pre><code class="csharp">using UnityEngine;
+using NUnit.Framework;
+using UnityEngine.TestTools.Utils;
+
+[TestFixture]
+public class Vector3Test
+{
+    [Test]
+    public void VectorsAreEqual()
+    {
+        var actual = new Vector3(10e-7f, 10e-7f, 10e-7f);
+        var expected = new Vector2(0f, 0f, 0f);
+        Assert.That(actual, Is.EqualTo(expected).Using(Vector3ComparerWithEqualsOperator.Instance));
+    }
+}
+</code></pre>
+
+<h2>Vector4ComparerWithEqualsOperator</h2>
+
+<p>Use this class to compare two <code>UnityEngine.Vector4</code> objects for equality, with <code>NUnit</code> constraints. This class implements the <code>System.Collections.Generic.IEqualityComparer&lt;Vector4&gt;</code> interface. It uses the overload <code>operator==</code> of <code>UnityEngine.Vector4</code> to compare two <code>Vector4</code> objects.</p>
+
+<p><strong>Usage</strong></p>
+
+<pre><code class="csharp">using UnityEngine;
+using NUnit.Framework;
+using UnityEngine.TestTools.Utils;
+
+[TestFixture]
+public class Vector4Test
+{
+    [Test]
+    public void Vector4AreEqual()
+    {
+        var actual = new Vector4(0, 0, 1e-6f, 1e-6f);
+        var expected = new Vector4(1e-6f, 0f, 0f, 0f);
+        Assert.That(actual, Is.EqualTo(expected).Using(Vector4ComparerWithEqualsOperator.Instance));
+    }
+}
+</code></pre>
+
+<hr>
+
+<ul>
+<li><p><span class="page-edit">2017–09–13 Page published with limited <a href="DocumentationEditorialReview.html">editorial review</a>
+</span></p></li>
+<li><p><span class="page-history">Playmode test framework utilities added in <a href="https://docs.unity3d.com/2017.3/Documentation/Manual/30_search.html?q=newin20173">2017.3</a> <span class="search-words">NewIn20173</span></span></p></li>
+</ul>
+<div class="feedbackbox" id="feedbackbox">
+<div id="rating"><p>Did you find this page useful? Please give it a rating:<br><div id="ratecontent" class="c-rating"></div>
+</p></div>
+<div id="ratingThanks" style="display:none"><p>Thanks for rating this page!</p></div>
+<div id="problem"><p><a name="problem" onclick="document.getElementById('problemType').style.display = '';document.getElementById('problem').style.display = 'none';">Report a problem on this page</a></p></div>
+<div id="problemType" style="display:none"><p>What kind of problem would you like to report?<ul type="problems">
+<li><a name="needcode" onclick="                                                             document.getElementById('problemType').style.display = 'none';                                                             document.getElementById('problemThanks').style.display = '';                                                             SendFeedback('problem-needcode',window.location.href,0);                                                             document.getElementById('problemFormDescription').value='Needs code samples.';                                                             document.getElementById('problemNeedCodeForm').style.display = ''                                                         ">This page needs code samples</a></li>
+<li><a name="code" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-brokencode',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Code samples do not work.';                                                         document.getElementById('problemCodeForm').style.display = ''                                                         ">Code samples do not work</a></li>
+<li><a name="missing" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-missing',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Missing information';                                                         document.getElementById('problemMissingForm').style.display = ''                                                         ">Information is missing</a></li>
+<li><a name="incorrect" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-incorrect',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Incorrect information';                                                         document.getElementById('problemIncorrectForm').style.display = ''                                                         ">Information is incorrect</a></li>
+<li><a name="unclear" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-unclear',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Unclear or confusing information';                                                         document.getElementById('problemUnclearForm').style.display = ''                                                         ">Information is unclear or confusing</a></li>
+<li><a name="language" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-language',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Spelling or grammar error';                                                         document.getElementById('problemLanguageForm').style.display = ''                                                         ">There is a spelling/grammar error on this page</a></li>
+<li><a name="other" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-other',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='This page has a problem';                                                         document.getElementById('problemOtherForm').style.display = ''                                                         ">Something else</a></li>
+</ul>
+<p><known_issues><p>Is something described here not working as you expect it to? It might be a <b>Known Issue</b>. Please check with the Issue Tracker at <a href="https://issuetracker.unity3d.com">issuetracker.unity3d.com</a>.</p></known_issues></p>
+</p></div>
+<div id="problemThanks" style="display:none"><p>Thanks for letting us know! This page has been marked for review based on your feedback.<br><br>If you have time, you can provide more information to help us fix the problem faster.<br><br><a onclick="document.getElementById('problemMoreInfo').style.display = '';document.getElementById('problemThanks').style.display = 'none';">Provide more information</a><br>
+</p></div>
+<div id="problemMoreInfo" style="display:none">
+<p id="problemNeedCodeForm" style="display:none">You've told us this page needs code samples. If you'd like to help us further, you could provide a code sample, or tell us about what kind of code sample you'd like to see:</p>
+<p id="problemCodeForm" style="display:none">You've told us there are code samples on this page which don't work. If you know how to fix it, or have something better we could use instead, please let us know:</p>
+<p id="problemMissingForm" style="display:none">You've told us there is information missing from this page. Please tell us more about what's missing:</p>
+<p id="problemIncorrectForm" style="display:none">You've told us there is incorrect information on this page. If you know what we should change to make it correct, please tell us:</p>
+<p id="problemUnclearForm" style="display:none">You've told us this page has unclear or confusing information. Please tell us more about what you found unclear or confusing, or let us know how we could make it clearer:</p>
+<p id="problemLanguageForm" style="display:none">You've told us there is a spelling or grammar error on this page. Please tell us what's wrong:</p>
+<p id="problemOtherForm" style="display:none">You've told us this page has a problem. Please tell us more about what's wrong:</p>
+<form>
+<textarea id="problemFormSuggestionField" cols="40" rows="5"></textarea><input type="hidden" id="problemFormDescription"><input type="submit" id="problemFormDescriptionSubmit" value="Submit" onclick="                                             document.getElementById('problemMoreInfo').style.display = 'none';                                             document.getElementById('problemMoreInfoThanks').style.display = '';                                             return false;                                             ">
+</form>
+</div>
+<div id="problemMoreInfoThanks" style="display:none"><p>Thanks for helping to make the Unity documentation better!</p></div>
+<script>
+
+                                            var ratecontent = document.querySelector('#ratecontent'); // target element
+                                            var currentRating = 0; // initial rating
+                                            var maxRating= 5; // max rating
+
+                                            // callback to run after setting the rating
+                                            var callback = function(rating) {
+                                                document.getElementById('ratingThanks').style.display = '';
+                                                document.getElementById('ratecontent').style.display = 'none';
+                                                document.getElementById('rating').style.display = 'none';
+                                                SendFeedback("rating",window.location.href,rating);
+                                            };
+
+                                            // rating instance
+                                            var myRating = rating(ratecontent, currentRating, maxRating, callback);
+                                        </script>
+</div>
+<div class="nextprev clear">
+<div class="icon tt left mr1" data-distance="-40|-30|top">
+<span class="prev"><a href="testing-editortestsrunner.html"></a></span><div class="tip">Unity Test Runner </div>
+</div>
+<div class="icon tt right" data-distance="-40|-30|top">
+<span class="next"><a href="IL2CPP.html"></a></span><div class="tip">IL2CPP</div>
+</div>
+</div>
+</div>
+</body></html>

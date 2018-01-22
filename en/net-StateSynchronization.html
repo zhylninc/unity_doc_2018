@@ -1,0 +1,138 @@
+<html><head><title>html模版</title></head><body>Unity - Manual: State Synchronization Details (Legacy)</br>
+<div class="breadcrumbs clear"><ul>
+<li><a href="UnityManual.html">Unity User Manual (2018.1 beta)</a></li>
+<li><a href="LegacyTopics.html">Legacy Topics</a></li>
+<li><a href="NetworkReferenceGuide.html">Legacy Network Reference Guide</a></li>
+<li>State Synchronization Details (Legacy)</li>
+</ul></div>
+<div class="mb20"><div class="nextprev clear">
+<div class="icon tt left mr1" data-distance="-40|-30|top">
+<span class="prev"><a href="net-RPCDetails.html"></a></span><div class="tip">RPC Details (Legacy)</div>
+</div>
+<div class="icon tt right" data-distance="-40|-30|top">
+<span class="next"><a href="net-NetworkInstantiate.html"></a></span><div class="tip">Network Instantiate (Legacy)</div>
+</div>
+</div></div>
+<div class="otherversionswrapper" onmouseover="setOtherVersionsDisplay(true)" onmouseout="setOtherVersionsDisplay(false)">
+<a>Other Versions</a><div class="otherversionscontent" id="OtherVersionsContent" style="display: none;">Cannot access other versions offline!</div>
+</div>
+<div class="scrollToFeedback"><a id="scrollToFeedback">Leave feedback</a></div>
+<h1>State Synchronization Details (Legacy)</h1>
+<!--BeginSwitchLink--><!--EndSwitchLink-->
+<div class="clear"></div>
+
+<p><em>(For new projects, you should use the <a href="UNet.html">new networking system introduced in 5.1</a>. This information is for legacy projects using the old networking system.)</em></p>
+
+<p>You can enable State Synchronization for a given Network View by choosing either <strong>Reliable Delta Compressed</strong> or <strong>Unreliable</strong> from the <strong>State Synchronization</strong> drop-down. You must then choose what kind of data will be synchronized using the <em>Observed</em> property.</p>
+
+<p>Unity can synchronize Transform, Animation, Rigidbody and MonoBehaviour components.</p>
+
+<p>
+<a href="class-Transform.html">Transforms</a> are serialized by storing position, rotation and scale. Parenting information is not transferred over the network.</p>
+
+<p>
+<a href="class-Animation.html">Animation</a> serializes each running animation state, that is the time, weight, speed and enabled properties.</p>
+
+<p>
+<a href="class-Rigidbody.html">Rigidbody</a> serializes position, rotation, velocity and angular velocity.</p>
+
+<p>Scripts (MonoBehaviours) call the function <a href="../ScriptReference/Network.OnSerializeNetworkView.html">OnSerializeNetworkView()</a>.</p>
+
+<h2>Reliability and bandwidth</h2>
+
+<p>Network Views currently support two reliability levels Reliable Delta Compressed and Unreliable.</p>
+
+<p>Both have their advantages and disadvantages, and the specific details of the game will determine which is the best to use.</p>
+
+<p>For additional information about minimizing bandwidth, please read the <a href="net-MinimizingBandwidth.html">Minimizing Bandwidth page</a>.</p>
+
+<h3>Reliable Delta Compressed</h3>
+
+<p>
+<strong>Reliable Delta Compressed</strong> mode will automatically compare the data that was last received by the client to the current state. If no data has changed since the last update then no data will be sent. However, the data will be compared on a per property basis. For example, if the Transform’s position has changed but its rotation has not then only the position will be sent across the network. Bandwidth is saved by transmitting only the changed data.</p>
+
+<p>Unity will also ensure that every UDP packet arrives reliably by resending it until receipt is determined. This means that if a packet is dropped, any packets sent later will not be applied until the dropped packet is re-sent and received. Until then, all later packets will be kept waiting in a buffer.</p>
+
+<h3>Unreliable</h3>
+
+<p>In <strong>Unreliable</strong> mode, Unity will send packets without checking that they have been received. This means that it doesn’t know which information has been received and so it is not safe to send only the changed data - the whole state will be sent with each update.</p>
+
+<h2>Deciding which method to use</h2>
+
+<p>The Network layer uses UDP, which is an unreliable, unordered protocol but it can used to send ordered packets reliably, just like TCP does. To do this, Unity internally uses ACKs and NACKs to control packet transmission, ensuring no packets are dropped. The downside to using reliable ordered packets is that if a packet is dropped or delayed, everything stops until that packet has arrived safely. This can cause transmission delays where there is significant network lag.</p>
+
+<p>Unreliable transmission is useful when you know that data will change every frame anyway. For example, in a racing game, you can practically rely that the player’s car is always moving, so the effects of a missed packet will soon be fixed by the next one.</p>
+
+<p>In general, you should use Unreliable sending where quick, frequent updates are more important than missed packets. Conversely, when data doesn’t change so frequently, you can use reliable delta compression to save bandwidth.</p>
+
+<h2>Prediction</h2>
+
+<p>When the server has <a href="net-HighLevelOverview.html">full authority</a> over the world state, the clients only change the game state according to updates they receive from the server. One problem with this is that the delay introduced by waiting for the server to respond can affect gameplay. For example, when a player presses a key to move forward, they won’t actually move until the updated state is received from the server. This delay depends on the latency of the connection so the worse the connection the less snappy the control system becomes.</p>
+
+<p>One possible solution to this is <strong>Client-side Prediction</strong> which means the client predicts the expected movement update from the server by using approximately the same internal model. So the player responds immediately to input but the server sees its position from the last update. When the state update finally arrives from the server, the client will compare what it predicted with what actually happened. This might differ because the server might know more about the environment around the player, the client just knows what it needs to know. Errors in prediction are corrected as they happen and if they are corrected continuously then the result will smoother and less noticeable.</p>
+
+<h2>Dead reckoning or interpolation/extrapolation</h2>
+
+<p>It is possible to apply the basic principle of client-side prediction to the opponents of the player. <strong>Extrapolation</strong> is the process of storing the last few known values of position, velocity and direction for an opponent and use these to predict where it should be in the immediate future. When the next state update finally arrives with the correct position, the client state will be updated with the exact information, which may make the character jump suddenly if the prediction was bad. In FPS games the behavior of players can be very erratic so this kind of prediction has limited success. If the lag gets high enough the opponent will jump severely as the prediction errors accumulate.</p>
+
+<p>
+<strong>Interpolation</strong> can be used when packets get dropped on the way to the client. This would normally cause the NPC’s movement to pause and then jump to the newest position when the new packet finally arrives. By delaying the world state by some set amount of time (like 100 ms) and then interpolating between the last known position and the new one, the movement between these two points, where packets were dropped, will be smooth.</p>
+<div class="feedbackbox" id="feedbackbox">
+<div id="rating"><p>Did you find this page useful? Please give it a rating:<br><div id="ratecontent" class="c-rating"></div>
+</p></div>
+<div id="ratingThanks" style="display:none"><p>Thanks for rating this page!</p></div>
+<div id="problem"><p><a name="problem" onclick="document.getElementById('problemType').style.display = '';document.getElementById('problem').style.display = 'none';">Report a problem on this page</a></p></div>
+<div id="problemType" style="display:none"><p>What kind of problem would you like to report?<ul type="problems">
+<li><a name="needcode" onclick="                                                             document.getElementById('problemType').style.display = 'none';                                                             document.getElementById('problemThanks').style.display = '';                                                             SendFeedback('problem-needcode',window.location.href,0);                                                             document.getElementById('problemFormDescription').value='Needs code samples.';                                                             document.getElementById('problemNeedCodeForm').style.display = ''                                                         ">This page needs code samples</a></li>
+<li><a name="code" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-brokencode',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Code samples do not work.';                                                         document.getElementById('problemCodeForm').style.display = ''                                                         ">Code samples do not work</a></li>
+<li><a name="missing" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-missing',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Missing information';                                                         document.getElementById('problemMissingForm').style.display = ''                                                         ">Information is missing</a></li>
+<li><a name="incorrect" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-incorrect',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Incorrect information';                                                         document.getElementById('problemIncorrectForm').style.display = ''                                                         ">Information is incorrect</a></li>
+<li><a name="unclear" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-unclear',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Unclear or confusing information';                                                         document.getElementById('problemUnclearForm').style.display = ''                                                         ">Information is unclear or confusing</a></li>
+<li><a name="language" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-language',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Spelling or grammar error';                                                         document.getElementById('problemLanguageForm').style.display = ''                                                         ">There is a spelling/grammar error on this page</a></li>
+<li><a name="other" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-other',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='This page has a problem';                                                         document.getElementById('problemOtherForm').style.display = ''                                                         ">Something else</a></li>
+</ul>
+<p><known_issues><p>Is something described here not working as you expect it to? It might be a <b>Known Issue</b>. Please check with the Issue Tracker at <a href="https://issuetracker.unity3d.com">issuetracker.unity3d.com</a>.</p></known_issues></p>
+</p></div>
+<div id="problemThanks" style="display:none"><p>Thanks for letting us know! This page has been marked for review based on your feedback.<br><br>If you have time, you can provide more information to help us fix the problem faster.<br><br><a onclick="document.getElementById('problemMoreInfo').style.display = '';document.getElementById('problemThanks').style.display = 'none';">Provide more information</a><br>
+</p></div>
+<div id="problemMoreInfo" style="display:none">
+<p id="problemNeedCodeForm" style="display:none">You've told us this page needs code samples. If you'd like to help us further, you could provide a code sample, or tell us about what kind of code sample you'd like to see:</p>
+<p id="problemCodeForm" style="display:none">You've told us there are code samples on this page which don't work. If you know how to fix it, or have something better we could use instead, please let us know:</p>
+<p id="problemMissingForm" style="display:none">You've told us there is information missing from this page. Please tell us more about what's missing:</p>
+<p id="problemIncorrectForm" style="display:none">You've told us there is incorrect information on this page. If you know what we should change to make it correct, please tell us:</p>
+<p id="problemUnclearForm" style="display:none">You've told us this page has unclear or confusing information. Please tell us more about what you found unclear or confusing, or let us know how we could make it clearer:</p>
+<p id="problemLanguageForm" style="display:none">You've told us there is a spelling or grammar error on this page. Please tell us what's wrong:</p>
+<p id="problemOtherForm" style="display:none">You've told us this page has a problem. Please tell us more about what's wrong:</p>
+<form>
+<textarea id="problemFormSuggestionField" cols="40" rows="5"></textarea><input type="hidden" id="problemFormDescription"><input type="submit" id="problemFormDescriptionSubmit" value="Submit" onclick="                                             document.getElementById('problemMoreInfo').style.display = 'none';                                             document.getElementById('problemMoreInfoThanks').style.display = '';                                             return false;                                             ">
+</form>
+</div>
+<div id="problemMoreInfoThanks" style="display:none"><p>Thanks for helping to make the Unity documentation better!</p></div>
+<script>
+
+                                            var ratecontent = document.querySelector('#ratecontent'); // target element
+                                            var currentRating = 0; // initial rating
+                                            var maxRating= 5; // max rating
+
+                                            // callback to run after setting the rating
+                                            var callback = function(rating) {
+                                                document.getElementById('ratingThanks').style.display = '';
+                                                document.getElementById('ratecontent').style.display = 'none';
+                                                document.getElementById('rating').style.display = 'none';
+                                                SendFeedback("rating",window.location.href,rating);
+                                            };
+
+                                            // rating instance
+                                            var myRating = rating(ratecontent, currentRating, maxRating, callback);
+                                        </script>
+</div>
+<div class="nextprev clear">
+<div class="icon tt left mr1" data-distance="-40|-30|top">
+<span class="prev"><a href="net-RPCDetails.html"></a></span><div class="tip">RPC Details (Legacy)</div>
+</div>
+<div class="icon tt right" data-distance="-40|-30|top">
+<span class="next"><a href="net-NetworkInstantiate.html"></a></span><div class="tip">Network Instantiate (Legacy)</div>
+</div>
+</div>
+</div>
+</body></html>

@@ -1,0 +1,255 @@
+<html><head><title>html模版</title></head><body>Unity - Manual: Custom Spawn Functions</br>
+<div class="breadcrumbs clear"><ul>
+<li><a href="UnityManual.html">Unity User Manual (2018.1 beta)</a></li>
+<li><a href="UNet.html">Multiplayer and Networking</a></li>
+<li><a href="UNetOverview.html">Networking Overview</a></li>
+<li><a href="UNetUsingHLAPI.html">The High Level API</a></li>
+<li>Custom Spawn Functions</li>
+</ul></div>
+<div class="mb20"><div class="nextprev clear">
+<div class="icon tt left mr1" data-distance="-40|-30|top">
+<span class="prev"><a href="UNetSpawning.html"></a></span><div class="tip">Object Spawning</div>
+</div>
+<div class="icon tt right" data-distance="-40|-30|top">
+<span class="next"><a href="UNetStateSync.html"></a></span><div class="tip">State Synchronization</div>
+</div>
+</div></div>
+<div class="otherversionswrapper" onmouseover="setOtherVersionsDisplay(true)" onmouseout="setOtherVersionsDisplay(false)">
+<a>Other Versions</a><div class="otherversionscontent" id="OtherVersionsContent" style="display: none;">Cannot access other versions offline!</div>
+</div>
+<div class="scrollToFeedback"><a id="scrollToFeedback">Leave feedback</a></div>
+<h2>Custom Spawn Functions</h2>
+
+<p>The default behaviour of creating spawned objects from prefabs on the client can be customized by using spawn handler functions. This way you have full control of how you spawn the object as well as how you un-spawn it. You can register functions to spawn and un-spawn client objects with <a href="../ScriptReference/Networking.ClientScene.RegisterSpawnHandler.html">ClientScene.RegisterSpawnHandler</a>. The server creates objects directly and then spawn them on the clients though this functionality. This function takes the asset ID of the object and two function delegates, one to handle creating objects on the client and one to handler destroying objects on the client. The asset ID can be a dynamic one or just the asset ID found on the prefab object you want to spawn (if you have one). </p>
+
+<p>The spawn / un-spawner need to have this object signature, this is defined in the high level API.</p>
+
+<pre><code>// Handles requests to spawn objects on the client
+public delegate GameObject SpawnDelegate(Vector3 position, NetworkHash128 assetId);
+
+// Handles requests to unspawn objects on the client
+public delegate void UnSpawnDelegate(GameObject spawned);
+</code></pre>
+
+<p>The asset ID passed to the spawn function can be found on <a href="../ScriptReference/Networking.NetworkIdentity-assetId.html">NetworkIdentity.assetId</a> for prefabs, where it is populated automatically. The registration for a dynamic asset ID is handled liked his:</p>
+
+<pre><code>// generate a new unique assetId 
+NetworkHash128 creatureAssetId = NetworkHash128.Parse(&quot;e2656f&quot;);
+
+// register handlers for the new assetId
+ClientScene.RegisterSpawnHandler(creatureAssetId, SpawnCreature, UnSpawnCreature);
+
+// get assetId on an existing prefab
+NetworkHash128 bulletAssetId = bulletPrefab.GetComponent&lt;NetworkIdentity&gt;().assetId;
+
+// register handlers for an existing prefab you'd like to custom spawn
+ClientScene.RegisterSpawnHandler(bulletAssetId, SpawnBullet, UnSpawnBullet);
+
+// spawn a bullet - SpawnBullet will be called on client.
+NetworkServer.Spawn(gameObject, creatureAssetId);
+</code></pre>
+
+<p>The spawn functions themselves are implemented with the delegate signature, here is the bullet spawner but the SpawnCreature would look the same but have different spawn logic</p>
+
+<pre><code>public GameObject SpawnBullet(Vector3 position, NetworkHash128 assetId)
+{
+    return (GameObject)Instantiate(m_BulletPrefab, position, Quaternion.identity);
+}
+public void UnSpawnBullet(GameObject spawned)
+{
+    Destroy(spawned);
+}
+</code></pre>
+
+<p>When using custom spawn functions, it is sometimes useful to be able to unspawn objects without destroying them. This can be done by calling <a href="../ScriptReference/Networking.NetworkServer.UnSpawn.html">NetworkServer.UnSpawn</a>. This causes a message to be sent to clients to un-spawn the object, so that the custom un-spawn function will be called on the clients. The object is not destroyed when this function is called.</p>
+
+<p>Note that on the host, object are not spawned for the local client as they already exist on the server. So no spawn handler functions will be called.</p>
+
+<h2>Setting up an object pool with custom spawn handlers</h2>
+
+<p>Here is an example of how you might set up a very simple object pooling system with custom spawn handlers. Spawning and unspawning then just puts objects in or out of the pool.</p>
+
+<pre><code>using UnityEngine;
+using UnityEngine.Networking;
+using System.Collections;
+
+public class SpawnManager : MonoBehaviour
+{
+    public int m_ObjectPoolSize = 5;
+    public GameObject m_Prefab;
+    public GameObject[] m_Pool;
+
+    public NetworkHash128 assetId { get; set; }
+    
+    public delegate GameObject SpawnDelegate(Vector3 position, NetworkHash128 assetId);
+    public delegate void UnSpawnDelegate(GameObject spawned);
+
+    void Start()
+    {
+        assetId = m_Prefab.GetComponent&lt;NetworkIdentity&gt; ().assetId;
+        m_Pool = new GameObject[m_ObjectPoolSize];
+        for (int i = 0; i &lt; m_ObjectPoolSize; ++i)
+        {
+            m_Pool[i] = (GameObject)Instantiate(m_Prefab, Vector3.zero, Quaternion.identity);
+            m_Pool[i].name = &quot;PoolObject&quot; + i;
+            m_Pool[i].SetActive(false);
+        }
+        
+        ClientScene.RegisterSpawnHandler(assetId, SpawnObject, UnSpawnObject);
+    }
+
+    public GameObject GetFromPool(Vector3 position)
+    {
+        foreach (var obj in m_Pool)
+        {
+            if (!obj.activeInHierarchy)
+            {
+                Debug.Log(&quot;Activating object &quot; + obj.name + &quot; at &quot; + position);
+                obj.transform.position = position;
+                obj.SetActive (true);
+                return obj;
+            }
+        }
+        Debug.LogError (&quot;Could not grab object from pool, nothing available&quot;);
+        return null;
+    }
+    
+    public GameObject SpawnObject(Vector3 position, NetworkHash128 assetId)
+    {
+        return GetFromPool(position);
+    }
+    
+    public void UnSpawnObject(GameObject spawned)
+    {
+        Debug.Log (&quot;Re-pooling object &quot; + spawned.name);
+        spawned.SetActive (false);
+    }
+}
+</code></pre>
+
+<p>To use this manager do the following</p>
+
+<ul>
+<li>This works in a scene like the one in the <a href="UNetSetup.html">Getting Started</a> guide.</li>
+<li>Create a new empty game object called “SpawnManager”</li>
+<li>Create a SpawnManager script for the code above and add that to a new SpawnManager object</li>
+<li>Drag a prefab you want to spawn multiple times to the prefab field and set the size (default is 5).</li>
+<li>Set up a reference to the spawn manager in the player movement script</li>
+</ul>
+
+<pre><code>SpawnManager spawnManager;
+
+void Start()
+{
+    spawnManager = GameObject.Find(&quot;SpawnManager&quot;).GetComponent&lt;SpawnManager&gt; ();
+}
+</code></pre>
+
+<ul>
+<li>The player logic could contain something like this to move and fire bullets</li>
+</ul>
+
+<pre><code>void Update()
+{
+    if (!isLocalPlayer)
+        return;
+    
+    var x = Input.GetAxis(&quot;Horizontal&quot;)*0.1f;
+    var z = Input.GetAxis(&quot;Vertical&quot;)*0.1f;
+    
+    transform.Translate(x, 0, z);
+
+    if (Input.GetKeyDown(KeyCode.Space))
+    {
+        // Command function is called on the client, but invoked on the server
+        CmdFire();
+    }
+}
+</code></pre>
+
+<ul>
+<li>In the fire logic on the player, make it use the object pool</li>
+</ul>
+
+<pre><code>[Command]
+void CmdFire()
+{
+    // Set up bullet on server
+    var bullet = spawnManager.GetFromPool(transform.position + transform.forward);  
+    bullet.GetComponent&lt;Rigidbody&gt;().velocity = transform.forward*4;
+    
+    // spawn bullet on client, custom spawn handler will be called
+    NetworkServer.Spawn(bullet, spawnManager.assetId);
+    
+    // when the bullet is destroyed on the server it is automatically destroyed on clients
+    StartCoroutine (Destroy (bullet, 2.0f));
+}
+
+public IEnumerator Destroy(GameObject go, float timer)
+{
+    yield return new WaitForSeconds (timer);
+    spawnManager.UnSpawnObject(go);
+    NetworkServer.UnSpawn(go);
+}
+</code></pre>
+
+<p>The automatic destruction shows how the objects are returned to the pool and re-used when you fire again.</p>
+<div class="feedbackbox" id="feedbackbox">
+<div id="rating"><p>Did you find this page useful? Please give it a rating:<br><div id="ratecontent" class="c-rating"></div>
+</p></div>
+<div id="ratingThanks" style="display:none"><p>Thanks for rating this page!</p></div>
+<div id="problem"><p><a name="problem" onclick="document.getElementById('problemType').style.display = '';document.getElementById('problem').style.display = 'none';">Report a problem on this page</a></p></div>
+<div id="problemType" style="display:none"><p>What kind of problem would you like to report?<ul type="problems">
+<li><a name="needcode" onclick="                                                             document.getElementById('problemType').style.display = 'none';                                                             document.getElementById('problemThanks').style.display = '';                                                             SendFeedback('problem-needcode',window.location.href,0);                                                             document.getElementById('problemFormDescription').value='Needs code samples.';                                                             document.getElementById('problemNeedCodeForm').style.display = ''                                                         ">This page needs code samples</a></li>
+<li><a name="code" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-brokencode',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Code samples do not work.';                                                         document.getElementById('problemCodeForm').style.display = ''                                                         ">Code samples do not work</a></li>
+<li><a name="missing" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-missing',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Missing information';                                                         document.getElementById('problemMissingForm').style.display = ''                                                         ">Information is missing</a></li>
+<li><a name="incorrect" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-incorrect',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Incorrect information';                                                         document.getElementById('problemIncorrectForm').style.display = ''                                                         ">Information is incorrect</a></li>
+<li><a name="unclear" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-unclear',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Unclear or confusing information';                                                         document.getElementById('problemUnclearForm').style.display = ''                                                         ">Information is unclear or confusing</a></li>
+<li><a name="language" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-language',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Spelling or grammar error';                                                         document.getElementById('problemLanguageForm').style.display = ''                                                         ">There is a spelling/grammar error on this page</a></li>
+<li><a name="other" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-other',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='This page has a problem';                                                         document.getElementById('problemOtherForm').style.display = ''                                                         ">Something else</a></li>
+</ul>
+<p><known_issues><p>Is something described here not working as you expect it to? It might be a <b>Known Issue</b>. Please check with the Issue Tracker at <a href="https://issuetracker.unity3d.com">issuetracker.unity3d.com</a>.</p></known_issues></p>
+</p></div>
+<div id="problemThanks" style="display:none"><p>Thanks for letting us know! This page has been marked for review based on your feedback.<br><br>If you have time, you can provide more information to help us fix the problem faster.<br><br><a onclick="document.getElementById('problemMoreInfo').style.display = '';document.getElementById('problemThanks').style.display = 'none';">Provide more information</a><br>
+</p></div>
+<div id="problemMoreInfo" style="display:none">
+<p id="problemNeedCodeForm" style="display:none">You've told us this page needs code samples. If you'd like to help us further, you could provide a code sample, or tell us about what kind of code sample you'd like to see:</p>
+<p id="problemCodeForm" style="display:none">You've told us there are code samples on this page which don't work. If you know how to fix it, or have something better we could use instead, please let us know:</p>
+<p id="problemMissingForm" style="display:none">You've told us there is information missing from this page. Please tell us more about what's missing:</p>
+<p id="problemIncorrectForm" style="display:none">You've told us there is incorrect information on this page. If you know what we should change to make it correct, please tell us:</p>
+<p id="problemUnclearForm" style="display:none">You've told us this page has unclear or confusing information. Please tell us more about what you found unclear or confusing, or let us know how we could make it clearer:</p>
+<p id="problemLanguageForm" style="display:none">You've told us there is a spelling or grammar error on this page. Please tell us what's wrong:</p>
+<p id="problemOtherForm" style="display:none">You've told us this page has a problem. Please tell us more about what's wrong:</p>
+<form>
+<textarea id="problemFormSuggestionField" cols="40" rows="5"></textarea><input type="hidden" id="problemFormDescription"><input type="submit" id="problemFormDescriptionSubmit" value="Submit" onclick="                                             document.getElementById('problemMoreInfo').style.display = 'none';                                             document.getElementById('problemMoreInfoThanks').style.display = '';                                             return false;                                             ">
+</form>
+</div>
+<div id="problemMoreInfoThanks" style="display:none"><p>Thanks for helping to make the Unity documentation better!</p></div>
+<script>
+
+                                            var ratecontent = document.querySelector('#ratecontent'); // target element
+                                            var currentRating = 0; // initial rating
+                                            var maxRating= 5; // max rating
+
+                                            // callback to run after setting the rating
+                                            var callback = function(rating) {
+                                                document.getElementById('ratingThanks').style.display = '';
+                                                document.getElementById('ratecontent').style.display = 'none';
+                                                document.getElementById('rating').style.display = 'none';
+                                                SendFeedback("rating",window.location.href,rating);
+                                            };
+
+                                            // rating instance
+                                            var myRating = rating(ratecontent, currentRating, maxRating, callback);
+                                        </script>
+</div>
+<div class="nextprev clear">
+<div class="icon tt left mr1" data-distance="-40|-30|top">
+<span class="prev"><a href="UNetSpawning.html"></a></span><div class="tip">Object Spawning</div>
+</div>
+<div class="icon tt right" data-distance="-40|-30|top">
+<span class="next"><a href="UNetStateSync.html"></a></span><div class="tip">State Synchronization</div>
+</div>
+</div>
+</div>
+</body></html>

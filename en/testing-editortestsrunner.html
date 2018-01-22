@@ -1,0 +1,440 @@
+<html><head><title>html模版</title></head><body>Unity - Manual: Unity Test Runner </br>
+<div class="breadcrumbs clear"><ul>
+<li><a href="UnityManual.html">Unity User Manual (2018.1 beta)</a></li>
+<li><a href="ScriptingSection.html">Scripting</a></li>
+<li><a href="ScriptingTools.html">Scripting Tools</a></li>
+<li>Unity Test Runner </li>
+</ul></div>
+<div class="mb20"><div class="nextprev clear">
+<div class="icon tt left mr1" data-distance="-40|-30|top">
+<span class="prev"><a href="LogFiles.html"></a></span><div class="tip">Log Files</div>
+</div>
+<div class="icon tt right" data-distance="-40|-30|top">
+<span class="next"><a href="PlaymodeTestFramework.html"></a></span><div class="tip"> Playmode test framework</div>
+</div>
+</div></div>
+<div class="otherversionswrapper" onmouseover="setOtherVersionsDisplay(true)" onmouseout="setOtherVersionsDisplay(false)">
+<a>Other Versions</a><div class="otherversionscontent" id="OtherVersionsContent" style="display: none;">Cannot access other versions offline!</div>
+</div>
+<div class="scrollToFeedback"><a id="scrollToFeedback">Leave feedback</a></div>
+<h1>Unity Test Runner</h1>
+<!--BeginSwitchLink--><!--EndSwitchLink-->
+<div class="clear"></div>
+
+<p>The Unity Test Runner is a tool that tests your code in both Edit mode and Play mode, and also on target platforms such as <a href="Standalone.html">Standalone</a>, Android, or iOS.</p>
+
+<p>The Unity Test Runner can be accessed via <strong>Window</strong> &gt; <strong>Test Runner</strong>.</p>
+
+<figure>
+<img src="../uploads/Main/TestRunner1.png" alt="The Test Runner window">
+<figcaption>The Test Runner window</figcaption>
+</figure>
+
+<p>The Unity Test Runner uses a Unity integration of the NUnit library, which is an open-source unit testing library for .Net languages. More information about NUnit can be found on <a href="http://www.nunit.org/">the official NUnit website</a> and <a href="https://github.com/nunit/docs/wiki/NUnit-Documentation">the NUnit documentation on GitHub</a>.</p>
+
+<p>
+<a href="../ScriptReference/TestTools.UnityTestAttribute.html"><code>UnityTestAttribute</code></a> is the main addition to the standard NUnit library for the Unity Test Runner. This is a type of unit test that allows you to skip a frame from within a test (which allows background tasks to finish). Execute <code>UnityTestAttribute</code> as a <a href="../ScriptReference/Coroutine.html">coroutine</a> when running in Play mode and in the <a href="../ScriptReference/EditorApplication-update.html"><code>EditorApplication.update</code></a> callback loop when running in Edit mode.</p>
+
+<h2>Known issues and limitations</h2>
+
+<p>The following are known issues and limitations of the Unity Test Runner:</p>
+
+<ul>
+<li><p>
+<code>UnityTestAttribute</code> is not supported on WebGL and WSA platform.</p></li>
+<li><p>Test runner doesn’t currently support AOT platforms.</p></li>
+<li><p>
+<a href="https://www.nunit.org/index.php?p=parameterizedTests&amp;r=2.5">Parameterized tests</a> are not supported for <code>UnityTest</code> (except for ValueSource).</p></li>
+<li><p>Automated tests in platform players (for example <a href="Standalone.html">Standalone</a>, Android, or iOS) run from the command line are not currently supported.</p></li>
+<li><p>When making EditMode tests, you must create a folder name <strong>Editor</strong> to store them in. </p></li>
+</ul>
+
+<p><br></p>
+
+<h2>How to use Unity Test Runner</h2>
+
+<p>The documentation on this page assumes the reader has basic knowledge of unit testing and NUnit. If you are new to NUnit or would like more information, refer to the <a href="https://github.com/nunit/docs/wiki/NUnit-Documentation">NUnit documentation on GitHub</a>.</p>
+
+<p>To use the Unity Test Runner, open the Test Runner window and navigate to <strong>Window</strong> &gt; <strong>Test Runner</strong>.</p>
+
+<figure>
+<img src="../uploads/Main/TestRunner1.png" alt="The Test Runner window">
+<figcaption>The Test Runner window</figcaption>
+</figure>
+
+<p>If no tests are present in your Project, you can click the <strong>Create EditMode test</strong> button to create a basic test script.</p>
+
+<p>You can also create test scripts by navigating to <strong>Assets</strong> &gt; <strong>Create</strong> &gt; <strong>Testing</strong>, and selecting either <strong>EditMode Test C# Script</strong> or <strong>PlayMode Test C# Script</strong>.</p>
+
+<h3>Testing in Edit mode</h3>
+
+<p>When in Edit mode, tests run from the Test Runner window, as seen in the screenshot above.</p>
+
+<p>Make sure the <strong>EditMode</strong> button is selected, and click the <strong>Create EditMode test</strong> button to create a basic test script. Open and edit this in MonoDevelop - or your preferred integrated development environment (IDE) - as required.</p>
+
+<p>Execute <a href="../ScriptReference/TestTools.UnityTestAttribute.html"><code>UnityTestAttribute</code></a> in the <a href="../ScriptReference/EditorApplication-update.html"><code>EditorApplication.update</code></a> callback loop when running in Edit mode. </p>
+
+<h3>Testing in Play mode</h3>
+
+<p>Before using the Unity Test Runner in Play mode, enable it from the Test Runner window.</p>
+
+<p>To do this:</p>
+
+<ol>
+<li><p>Navigate to <strong>Window</strong> &gt; <strong>Test Runner</strong>.</p></li>
+<li><p>Click the <strong>PlayMode</strong> button. </p></li>
+<li><p>Click the <strong>Enable playmode tests</strong> button.</p></li>
+</ol>
+
+<figure>
+<img src="../uploads/Main/TestRunner3.png" alt="The Test Runner window with the PlayMode button selected">
+<figcaption>The Test Runner window with the <strong>PlayMode</strong> button selected</figcaption>
+</figure>
+
+<ol>
+<li>In the resulting dialog box (seen in the screenshot below), click <strong>Enable</strong>.</li>
+</ol>
+
+<figure>
+<img src="../uploads/Main/TestRunner4.png" alt="The Enable PlayMode Tests confirmation dialog box">
+<figcaption>The <strong>Enable PlayMode Tests</strong> confirmation dialog box</figcaption>
+</figure>
+
+<ol>
+<li>A dialog box tells you to restart the Editor. Click the <strong>Ok</strong> button and manually restart the Editor (make sure to save your Project before restarting).</li>
+</ol>
+
+<p>Create PlayMode test scripts by selecting the <strong>PlayMode</strong> button in the Test Runner window and clicking the <strong>Create Playmode test with methods</strong> button. This creates a basic test script that you can open and edit in MonoDevelop - or your preferred IDE - as required.</p>
+
+<p>Note that enabling Play mode testing includes additional assemblies in your Project’s build, which can increase your Project’s size as well as build time.</p>
+
+<p>Disable testing in Play mode by clicking the context button at the top-right of the Test Runner window and then selecting <strong>Disable playmode tests runner</strong> from the drop-down menu.</p>
+
+<figure>
+<img src="../uploads/Main/TestRunner5.png" alt="The Test Runner window with the context button drop-down menu open and the Disable playmode tests runner option selected">
+<figcaption>The Test Runner window with the context button drop-down menu open and the <strong>Disable playmode tests runner</strong> option selected</figcaption>
+</figure>
+
+<p>Execute <a href="../ScriptReference/TestTools.UnityTestAttribute.html"><code>UnityTestAttribute</code></a> as a <a href="../ScriptReference/Coroutine.html">coroutine</a> when running in Play mode. </p>
+
+<hr>
+
+<p>Writing and executing tests in Unity Test Runner</p>
+
+<p>The Unity Test Runner tests your code in Edit mode and Play mode as well as on target platforms such as <a href="Standalone.html">Standalone</a>, Android, or iOS.</p>
+
+<p>The documentation on this page discusses writing and executing tests in the the Unity Test Runner, and assumes the reader has knowledge of both <a href="CreatingAndUsingScripts.html">scripting</a> and the Unity Test Runner.</p>
+
+<p>
+<strong>Note:</strong> <code>UnityTestAttribute</code> is not supported on WebGL and AOT platforms.</p>
+
+<h2>UnityTestAttribute</h2>
+
+<p>
+<a href="../ScriptReference/TestTools.UnityTestAttribute.html"><code>UnityTestAttribute</code></a> requires you to return <code>IEnumerator</code>. In Play mode, execute the test as a <a href="../ScriptReference/Coroutine.html">coroutine</a>. In Edit mode, you can yield null from the test, which skips the current frame.</p>
+
+<p>
+<br>
+<strong>Regular NUnit test (works in Edit mode and Play mode)</strong>
+</p>
+
+<pre><code>[Test]
+public void GameObject_CreatedWithGiven_WillHaveTheName()
+{
+    var go = new GameObject(&quot;MyGameObject&quot;);
+    Assert.AreEqual(“MyGameObject”, go.name);
+}
+</code></pre>
+
+<p><br></p>
+
+<p><strong>Example in Play mode</strong></p>
+
+<pre><code>[UnityTest]
+public IEnumerator GameObject_WithRigidBody_WillBeAffectedByPhysics()
+{
+    var go = new GameObject();
+    go.AddComponent&lt;Rigidbody&gt;();
+    var originalPosition = go.transform.position.y;
+    
+    yield return new WaitForFixedUpdate();
+
+    Assert.AreNotEqual(originalPosition, go.transform.position.y);
+}
+</code></pre>
+
+<p>
+<br>
+<strong>Example in Edit mode </strong>
+</p>
+
+<pre><code>[UnityTest]
+public IEnumerator EditorUtility_WhenExecuted_ReturnsSuccess()
+{
+    var utility = RunEditorUtilityInTheBackgroud();
+
+    while (utility.isRunning)
+    {
+        yield return null;
+    }
+
+    Assert.IsTrue(utility.isSuccess);
+}
+</code></pre>
+
+<h2>UnityPlatformAttribute</h2>
+
+<p>
+<a href="../ScriptReference/TestTools.UnityPlatformAttribute.html"><code>UnityPlatformAttribute</code></a> is for filtering tests based on the the executing platform.</p>
+
+<p>The behavior is as expected from the nunit PlatformAttribute.</p>
+
+<pre><code>
+[Test]
+[UnityPlatform (RuntimePlatform.WindowsPlayer)]
+public void TestMethod1()
+{
+   Assert.AreEqual(Application.platform, RuntimePlatform.WindowsPlayer);
+}
+
+[Test]
+[UnityPlatform(exclude = new[] {RuntimePlatform.WindowsEditor })]
+public void TestMethod2()
+{
+   Assert.AreNotEqual(Application.platform, RuntimePlatform.WindowsEditor);
+}
+
+</code></pre>
+
+<p>UnityPlatform can also be used to only execute editor tests on a given platform.</p>
+
+<h2>PrebuildSetupAttribute</h2>
+
+<p>Use <a href="../ScriptReference/TestTools.PrebuildSetupAttribute.html"><code>PrebuildSetupAttribute</code></a> if you need to perform any extra setup before the test starts. To do this, specify the class type that implements the <code>IPrebuildSetup</code> interface. If you need run the setup code for the whole class (for example if you want to execute some code before the test starts, such as Asset preparation or setup required for a specific test), implement the <code>IPrebuildSetup</code> interface in the class for tests.</p>
+
+<pre><code>public class TestsWithPrebuildStep : IPrebuildSetup
+{
+    public void Setup()
+    {
+        // Run this code before the tests are executed
+    }
+
+    [Test]
+    //PrebuildSetupAttribute can be skipped because it's implemented in the same class
+    [PrebuildSetup(typeof(TestsWithPrebuildStep))]
+    public void Test()
+    {
+        (...)
+    }
+}
+</code></pre>
+
+<p>Execute the <code>PrebuildSetup</code> code before entering Play mode or building a player. Setup can use UnityEditor namespace and its function, but in order to avoid compilation error, you must place it either in the “editor” folder or it must be guarded with #if UNITY_EDITOR directive.</p>
+
+<h2>LogAssert</h2>
+
+<p>A test fails if a message other than a regular log or warning message is logged. Use the <code>LogAssert</code> class to make a message expected in the log and prevent the test from failing.</p>
+
+<p>If an expected message doesn’t appear, the test also reports as failed. The test also fails if any regular log or warning messages don’t appear.</p>
+
+<p><strong>Example</strong></p>
+
+<pre><code>[Test]
+public void LogAssertExample()
+{
+    //Expect a regular log message
+    LogAssert.Expect(LogType.Log, &quot;Log message&quot;);
+    //A log message is expected so without the following line
+    //the test would fail
+    Debug.Log(&quot;Log message&quot;);
+    //An error log is printed
+    Debug.LogError(&quot;Error message&quot;);
+    //Without expecting an error log, the test would fail
+    LogAssert.Expect(LogType.Error, &quot;Error message&quot;);
+}
+</code></pre>
+
+<h2>MonoBehaviourTest</h2>
+
+<p>
+<code>MonoBehaviourTest</code> is wrapper for writing <a href="../ScriptReference/MonoBehaviour.html">MonoBehaviour</a> tests, and also a <a href="../ScriptReference/Coroutine.html">coroutine</a>. Yield <code>MonoBehaviourTest</code> from <code>UnityTest</code> to instantiate the specified MonoBehaviour and wait for it to finish executing. Implement the <code>IMonoBehaviourTest</code> interface to indicate when the test is done.</p>
+
+<p><strong>Example</strong></p>
+
+<pre><code>[UnityTest]
+public IEnumerator MonoBehaviourTest_Works()
+{
+    yield return new MonoBehaviourTest&lt;MyMonoBehaviourTest&gt;();
+}
+
+public class MyMonoBehaviourTest : MonoBehaviour, IMonoBehaviourTest
+{
+    private int frameCount;
+    public bool IsTestFinished
+    {
+        get { return frameCount &gt; 10; }
+    }
+
+     void Update()
+     {
+        frameCount++;
+     }
+}
+</code></pre>
+
+<h2>Running tests on platforms</h2>
+
+<p>You can run tests on specific platforms in Play mode.</p>
+
+<p>The target platform is the current Platform selected in build options.</p>
+
+<p>To do this, select the <strong>PlayMode</strong> button in the Test Runner window and then click the <strong>Run all in player</strong> button.</p>
+
+<p>Note that your current platform displays in brackets on the button - for example, in the screenshot below the button reads <strong>Run all in player (StandaloneWindows)</strong> as the current platform is Windows.</p>
+
+<figure>
+<img src="../uploads/Main/TestRunner6.png" alt="The Test Runner window with the Run all in player button highlighted">
+<figcaption>The Test Runner window with the <strong>Run all in player</strong> button highlighted</figcaption>
+</figure>
+
+<p>Click the <strong>Run all in the player</strong> button to build and run your tests on the currently active target platform. Test results display following execution.</p>
+
+<figure>
+<img src="../uploads/Main/TestRunner7.png" alt="The Player following a successful test run">
+<figcaption>The Player following a successful test run</figcaption>
+</figure>
+
+<p>For the editor to get the test results from the platform to the Editor starting the test run, they need to be on same network.</p>
+
+<p>If the connection is up and running, the application running on the platform will report back the test results, and it will show the tests executed, and shut down the test application running on the platform.</p>
+
+<p>Some platforms do not allow to shut down the application with <a href="../ScriptReference/Application.Quit.html">Application.Quit</a>, they will keep running after reporting test results.</p>
+
+<p>If the connection can not get instantiated, you can visually see the tests succeed in the running application. Note that running tests on platforms with arguments, in this state, would not get xml test results.</p>
+
+<h2>Running from the command line</h2>
+
+<p>To do this, run Unity with following <a href="CommandLineArguments.html">arguments</a>:</p>
+
+<ul>
+<li><p>
+<code>runTest</code> - Executes tests in the Project.</p></li>
+<li>
+<p>
+<code>testPlatform</code> - The platform you want to run tests on. </p>
+
+<ul>
+<li>
+<p>Available platforms</p>
+
+<ul>
+<li><p>If unspecified, <code>editmode</code> tests execute by <strong>default</strong>.</p></li>
+<li><p>
+<code>playmode</code> and <code>editmode</code>. </p></li>
+<li>
+<p>Platform/Type convention is from the <a href="../ScriptReference/BuildTarget.html">BuildTarget</a> enum.
+The tested and official supported platforms:</p>
+
+<ul>
+<li><p><a href="../ScriptReference/BuildTarget.StandaloneWindows.html"><code>StandaloneWindows</code></a></p></li>
+<li><p><a href="../ScriptReference/BuildTarget.StandaloneWindows64.html"><code>StandaloneWindows64</code></a></p></li>
+<li><p><a href="../ScriptReference/BuildTarget.StandaloneOSXIntel.html"><code>StandaloneOSXIntel</code></a></p></li>
+<li><p><a href="../ScriptReference/BuildTarget.StandaloneOSXIntel64.html"><code>StandaloneOSXIntel64</code></a></p></li>
+<li><p><a href="../ScriptReference/BuildTarget.iOS.html"><code>iOS</code></a></p></li>
+<li><p><a href="../ScriptReference/BuildTarget.tvOS.html"><code>tvOS</code></a></p></li>
+<li><p><a href="../ScriptReference/BuildTarget.Android.html"><code>Android</code></a></p></li>
+<li><p><a href="../ScriptReference/BuildTarget.PS4.html"><code>PS4</code></a></p></li>
+<li><p><a href="../ScriptReference/BuildTarget.XboxOne.html"><code>XboxOne</code></a></p></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>
+<code>testResults</code> - The path indicating where the result file should be saved. The result file is saved in Project’s root folder by default.
+<br>
+<strong>Example</strong>
+</p></li>
+</ul>
+
+<pre><code>&gt;Unity.exe -runTests -projectPath PATH_TO_YOUR_PROJECT -testResults C:\temp\results.xml -testPlatform editmode
+</code></pre>
+
+<p>
+<strong>Note:</strong> This differs depending on your operating system - the above example shows a command line argument on Windows.</p>
+
+<p>
+<strong>Tip:</strong>
+On Windows, in order to read the result code of the executed command, run the following:
+<code>start /WAIT Unity.exe ARGUMENT_LIST</code>.
+<br><br>
+</p>
+
+<hr>
+
+<ul>
+<li><p><span class="page-edit">2017–06–01 Page published with no <a href="DocumentationEditorialReview.html">editorial review</a>
+</span></p></li>
+<li><p><span class="page-history"> Updated feature in Unity 5.6</span></p></li>
+<li><p><span class="page-history">UnityPlatformAttribute added in Unity <a href="../Manual/30_search.html?q=newin20171">2017.1</a> <span class="search-words">NewIn20171</span></span></p></li>
+</ul>
+<div class="feedbackbox" id="feedbackbox">
+<div id="rating"><p>Did you find this page useful? Please give it a rating:<br><div id="ratecontent" class="c-rating"></div>
+</p></div>
+<div id="ratingThanks" style="display:none"><p>Thanks for rating this page!</p></div>
+<div id="problem"><p><a name="problem" onclick="document.getElementById('problemType').style.display = '';document.getElementById('problem').style.display = 'none';">Report a problem on this page</a></p></div>
+<div id="problemType" style="display:none"><p>What kind of problem would you like to report?<ul type="problems">
+<li><a name="needcode" onclick="                                                             document.getElementById('problemType').style.display = 'none';                                                             document.getElementById('problemThanks').style.display = '';                                                             SendFeedback('problem-needcode',window.location.href,0);                                                             document.getElementById('problemFormDescription').value='Needs code samples.';                                                             document.getElementById('problemNeedCodeForm').style.display = ''                                                         ">This page needs code samples</a></li>
+<li><a name="code" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-brokencode',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Code samples do not work.';                                                         document.getElementById('problemCodeForm').style.display = ''                                                         ">Code samples do not work</a></li>
+<li><a name="missing" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-missing',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Missing information';                                                         document.getElementById('problemMissingForm').style.display = ''                                                         ">Information is missing</a></li>
+<li><a name="incorrect" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-incorrect',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Incorrect information';                                                         document.getElementById('problemIncorrectForm').style.display = ''                                                         ">Information is incorrect</a></li>
+<li><a name="unclear" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-unclear',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Unclear or confusing information';                                                         document.getElementById('problemUnclearForm').style.display = ''                                                         ">Information is unclear or confusing</a></li>
+<li><a name="language" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-language',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Spelling or grammar error';                                                         document.getElementById('problemLanguageForm').style.display = ''                                                         ">There is a spelling/grammar error on this page</a></li>
+<li><a name="other" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-other',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='This page has a problem';                                                         document.getElementById('problemOtherForm').style.display = ''                                                         ">Something else</a></li>
+</ul>
+<p><known_issues><p>Is something described here not working as you expect it to? It might be a <b>Known Issue</b>. Please check with the Issue Tracker at <a href="https://issuetracker.unity3d.com">issuetracker.unity3d.com</a>.</p></known_issues></p>
+</p></div>
+<div id="problemThanks" style="display:none"><p>Thanks for letting us know! This page has been marked for review based on your feedback.<br><br>If you have time, you can provide more information to help us fix the problem faster.<br><br><a onclick="document.getElementById('problemMoreInfo').style.display = '';document.getElementById('problemThanks').style.display = 'none';">Provide more information</a><br>
+</p></div>
+<div id="problemMoreInfo" style="display:none">
+<p id="problemNeedCodeForm" style="display:none">You've told us this page needs code samples. If you'd like to help us further, you could provide a code sample, or tell us about what kind of code sample you'd like to see:</p>
+<p id="problemCodeForm" style="display:none">You've told us there are code samples on this page which don't work. If you know how to fix it, or have something better we could use instead, please let us know:</p>
+<p id="problemMissingForm" style="display:none">You've told us there is information missing from this page. Please tell us more about what's missing:</p>
+<p id="problemIncorrectForm" style="display:none">You've told us there is incorrect information on this page. If you know what we should change to make it correct, please tell us:</p>
+<p id="problemUnclearForm" style="display:none">You've told us this page has unclear or confusing information. Please tell us more about what you found unclear or confusing, or let us know how we could make it clearer:</p>
+<p id="problemLanguageForm" style="display:none">You've told us there is a spelling or grammar error on this page. Please tell us what's wrong:</p>
+<p id="problemOtherForm" style="display:none">You've told us this page has a problem. Please tell us more about what's wrong:</p>
+<form>
+<textarea id="problemFormSuggestionField" cols="40" rows="5"></textarea><input type="hidden" id="problemFormDescription"><input type="submit" id="problemFormDescriptionSubmit" value="Submit" onclick="                                             document.getElementById('problemMoreInfo').style.display = 'none';                                             document.getElementById('problemMoreInfoThanks').style.display = '';                                             return false;                                             ">
+</form>
+</div>
+<div id="problemMoreInfoThanks" style="display:none"><p>Thanks for helping to make the Unity documentation better!</p></div>
+<script>
+
+                                            var ratecontent = document.querySelector('#ratecontent'); // target element
+                                            var currentRating = 0; // initial rating
+                                            var maxRating= 5; // max rating
+
+                                            // callback to run after setting the rating
+                                            var callback = function(rating) {
+                                                document.getElementById('ratingThanks').style.display = '';
+                                                document.getElementById('ratecontent').style.display = 'none';
+                                                document.getElementById('rating').style.display = 'none';
+                                                SendFeedback("rating",window.location.href,rating);
+                                            };
+
+                                            // rating instance
+                                            var myRating = rating(ratecontent, currentRating, maxRating, callback);
+                                        </script>
+</div>
+<div class="nextprev clear">
+<div class="icon tt left mr1" data-distance="-40|-30|top">
+<span class="prev"><a href="LogFiles.html"></a></span><div class="tip">Log Files</div>
+</div>
+<div class="icon tt right" data-distance="-40|-30|top">
+<span class="next"><a href="PlaymodeTestFramework.html"></a></span><div class="tip"> Playmode test framework</div>
+</div>
+</div>
+</div>
+</body></html>

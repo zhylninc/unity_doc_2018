@@ -1,0 +1,195 @@
+<html><head><title>html模版</title></head><body>Unity - Manual:  Asset Packages</br>
+<div class="breadcrumbs clear"><ul>
+<li><a href="UnityManual.html">Unity User Manual (2018.1 beta)</a></li>
+<li><a href="UnityOverview.html">Working in Unity</a></li>
+<li><a href="AssetWorkflow.html">Asset Workflow</a></li>
+<li> Asset Packages</li>
+</ul></div>
+<div class="mb20"><div class="nextprev clear">
+<div class="icon tt left mr1" data-distance="-40|-30|top">
+<span class="prev"><a href="AssetStore.html"></a></span><div class="tip">Importing from the Asset Store</div>
+</div>
+<div class="icon tt right" data-distance="-40|-30|top">
+<span class="next"><a href="HOWTO-InstallStandardAssets.html"></a></span><div class="tip">Standard Assets</div>
+</div>
+</div></div>
+<div class="otherversionswrapper" onmouseover="setOtherVersionsDisplay(true)" onmouseout="setOtherVersionsDisplay(false)">
+<a>Other Versions</a><div class="otherversionscontent" id="OtherVersionsContent" style="display: none;">Cannot access other versions offline!</div>
+</div>
+<div class="scrollToFeedback"><a id="scrollToFeedback">Leave feedback</a></div>
+<h1>Asset Packages</h1>
+<!--BeginSwitchLink--><!--EndSwitchLink-->
+<div class="clear"></div>
+
+<p>Unity <strong>packages</strong> are a handy way of sharing and re-using Unity projects and collections of assets;
+Unity <strong>Standard Assets</strong> and items on the Unity <strong>Asset Store</strong> are supplied in packages, for example.<br>
+<strong>Packages</strong> are collections of files and data from Unity projects, or elements of projects,
+which are compressed and stored in one file, similar to Zip files.
+Like Zip files, a package maintains its original directory structure when it is unpacked,
+as well as meta-data about assets (such as import settings and links to other assets).</p>
+
+<p>In Unity, the menu option <strong>Export Package</strong> compresses and stores the collection,
+while <strong>Import Package</strong> unpacks the collection into your currently open Unity project.</p>
+
+<p>This page contains information on:</p>
+
+<ul>
+<li>Import Package: - Standard Asset Packages - Custom Packages</li>
+<li>Export Package</li>
+<li>Exporting Updated Packages</li>
+</ul>
+
+<h2>Import Package</h2>
+
+<p>You can import <strong>Standard Asset Packages</strong>, which are asset collections pre-made and supplied with Unity,
+and <strong>Custom Packages</strong>, which are made by people using Unity.</p>
+
+<p>Choose <strong>Assets &gt; Import Package &gt;</strong> to import both types of package.</p>
+
+<figure>
+<img src="../uploads/Main/ImportPackageMenu.png" alt="Fig 1: Asset&gt;Import Package menu">
+<figcaption>Fig 1: Asset&gt;Import Package menu</figcaption>
+</figure>
+
+<h3>Standard Asset Packages</h3>
+
+<p>Unity <strong>‘Standard Assets’</strong> consist of several different packages:
+<strong>2D, Cameras, Characters, CrossPlatformInput, Effects, Environment, ParticleSystems, Prototyping, Utility, Vehicles</strong>.</p>
+
+<p>To import a new <strong>Standard Asset</strong> package:</p>
+
+<ol>
+<li><p>Open the project you want to import assets into.</p></li>
+<li><p>Choose <strong>Assets &gt; Import Package &gt;</strong> plus the name of the package you want to import,
+and the <strong>Import Unity Package</strong> dialog box displays, with all the items in the package pre-checked,
+ready to install. (See <em>Fig 2: New install Import Unity Package Dialog Box</em>.)</p></li>
+<li><p>Select <strong>Import</strong> and Unity puts the contents of the package into a <strong>Standard Asset</strong> folder,
+which you can access from your <strong>Project View</strong>. </p></li>
+</ol>
+
+<figure>
+<img src="../uploads/Main/NewInstallImportPackageDialog.png" alt="Fig 2: New install Import Unity Package dialog box">
+<figcaption>Fig 2: New install Import Unity Package dialog box</figcaption>
+</figure>
+
+<h3>Custom Packages</h3>
+
+<p>You can import custom packages which have been exported from your own projects or from projects made by other Unity users.</p>
+
+<p>To import a new custom package:</p>
+
+<ol>
+<li><p>Open the project you want to import assets into.</p></li>
+<li><p>Choose <strong>Assets &gt; Import Package &gt; Custom Package…</strong> to bring up up File Explorer (Windows) or Finder (Mac).</p></li>
+<li><p>Select the package you want from Explorer or Finder, and the <strong>Import Unity Package</strong> dialog box displays,
+with all the items in the package pre-checked, ready to install. (See <em>Fig 4: New install Import Unity Package dialog box</em>.)</p></li>
+<li><p>Select <strong>Import</strong> and Unity puts the contents of the package into the <strong>Assets</strong> folder,
+which you can access from your <strong>Project View</strong>. </p></li>
+</ol>
+
+<figure>
+<img src="../uploads/Main/CustomPackageInstallDialog.png" alt="Fig 4: New install Import Unity Package dialog box">
+<figcaption>Fig 4: New install Import Unity Package dialog box</figcaption>
+</figure>
+
+<h2>Export Package</h2>
+
+<p>Use <strong>Export Package</strong> to create your own <strong>Custom Package</strong>.</p>
+
+<ol>
+<li>Open the project you want to export assets from.</li>
+<li>Choose <strong>Assets &gt; Export Package…</strong> from the menu to bring up the <strong>Exporting Package</strong> dialog box.
+(See <em>Fig 6: Exporting Package dialog box</em>.)</li>
+<li>In the dialog box, select the assets you want to include in the package by clicking on the boxes so they are checked.</li>
+<li>Leave the <strong>include dependencies</strong> box checked to auto-select any assets used by the ones you have selected.</li>
+<li>Click on <strong>Export</strong> to bring up File Explorer (Windows) or Finder (Mac) and choose where you want to store your package file.
+Name and save the package anywhere you like.</li>
+</ol>
+
+<p>
+<strong>HINT:</strong> When exporting a package Unity can export all dependencies as well.
+So, for example, if you select a Scene and export a package with all dependencies, then all models,
+textures and other assets that appear in the scene will be exported as well.
+This can be a quick way of exporting a bunch of assets without manually locating them all.</p>
+
+<figure>
+<img src="../uploads/Main/ExportPackageDialog.png" alt="Fig 6: Exporting Package dialog box">
+<figcaption>Fig 6: Exporting Package dialog box</figcaption>
+</figure>
+
+<h2>Exporting Updated Packages</h2>
+
+<p>Sometimes you may want to change the contents of a package and create a newer, updated version of your asset package.
+To do this:</p>
+
+<ul>
+<li><p>Select the asset files you want in your package (select both the unchanged ones and the new ones).</p></li>
+<li><p>Export the files as described above in <strong><em>Export Package</em></strong>, above. </p></li>
+</ul>
+
+<p>
+<strong>NOTE:</strong> You can re-name an updated package and Unity will recognise it as an update, so you can use incremental naming, for example: MyAssetPackageVer1, MyAssetPackageVer2.</p>
+
+<p>
+<strong>HINT:</strong> It is not good practise to remove files from packages and then replace them with the same name:
+Unity will recognise them as different and possibly conflicting files and so display a warning symbol when they are imported.
+If you have removed a file and then decide to replace it, it is better to give it a different, but related name to the original.</p>
+<div class="feedbackbox" id="feedbackbox">
+<div id="rating"><p>Did you find this page useful? Please give it a rating:<br><div id="ratecontent" class="c-rating"></div>
+</p></div>
+<div id="ratingThanks" style="display:none"><p>Thanks for rating this page!</p></div>
+<div id="problem"><p><a name="problem" onclick="document.getElementById('problemType').style.display = '';document.getElementById('problem').style.display = 'none';">Report a problem on this page</a></p></div>
+<div id="problemType" style="display:none"><p>What kind of problem would you like to report?<ul type="problems">
+<li><a name="needcode" onclick="                                                             document.getElementById('problemType').style.display = 'none';                                                             document.getElementById('problemThanks').style.display = '';                                                             SendFeedback('problem-needcode',window.location.href,0);                                                             document.getElementById('problemFormDescription').value='Needs code samples.';                                                             document.getElementById('problemNeedCodeForm').style.display = ''                                                         ">This page needs code samples</a></li>
+<li><a name="code" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-brokencode',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Code samples do not work.';                                                         document.getElementById('problemCodeForm').style.display = ''                                                         ">Code samples do not work</a></li>
+<li><a name="missing" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-missing',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Missing information';                                                         document.getElementById('problemMissingForm').style.display = ''                                                         ">Information is missing</a></li>
+<li><a name="incorrect" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-incorrect',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Incorrect information';                                                         document.getElementById('problemIncorrectForm').style.display = ''                                                         ">Information is incorrect</a></li>
+<li><a name="unclear" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-unclear',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Unclear or confusing information';                                                         document.getElementById('problemUnclearForm').style.display = ''                                                         ">Information is unclear or confusing</a></li>
+<li><a name="language" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-language',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Spelling or grammar error';                                                         document.getElementById('problemLanguageForm').style.display = ''                                                         ">There is a spelling/grammar error on this page</a></li>
+<li><a name="other" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-other',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='This page has a problem';                                                         document.getElementById('problemOtherForm').style.display = ''                                                         ">Something else</a></li>
+</ul>
+<p><known_issues><p>Is something described here not working as you expect it to? It might be a <b>Known Issue</b>. Please check with the Issue Tracker at <a href="https://issuetracker.unity3d.com">issuetracker.unity3d.com</a>.</p></known_issues></p>
+</p></div>
+<div id="problemThanks" style="display:none"><p>Thanks for letting us know! This page has been marked for review based on your feedback.<br><br>If you have time, you can provide more information to help us fix the problem faster.<br><br><a onclick="document.getElementById('problemMoreInfo').style.display = '';document.getElementById('problemThanks').style.display = 'none';">Provide more information</a><br>
+</p></div>
+<div id="problemMoreInfo" style="display:none">
+<p id="problemNeedCodeForm" style="display:none">You've told us this page needs code samples. If you'd like to help us further, you could provide a code sample, or tell us about what kind of code sample you'd like to see:</p>
+<p id="problemCodeForm" style="display:none">You've told us there are code samples on this page which don't work. If you know how to fix it, or have something better we could use instead, please let us know:</p>
+<p id="problemMissingForm" style="display:none">You've told us there is information missing from this page. Please tell us more about what's missing:</p>
+<p id="problemIncorrectForm" style="display:none">You've told us there is incorrect information on this page. If you know what we should change to make it correct, please tell us:</p>
+<p id="problemUnclearForm" style="display:none">You've told us this page has unclear or confusing information. Please tell us more about what you found unclear or confusing, or let us know how we could make it clearer:</p>
+<p id="problemLanguageForm" style="display:none">You've told us there is a spelling or grammar error on this page. Please tell us what's wrong:</p>
+<p id="problemOtherForm" style="display:none">You've told us this page has a problem. Please tell us more about what's wrong:</p>
+<form>
+<textarea id="problemFormSuggestionField" cols="40" rows="5"></textarea><input type="hidden" id="problemFormDescription"><input type="submit" id="problemFormDescriptionSubmit" value="Submit" onclick="                                             document.getElementById('problemMoreInfo').style.display = 'none';                                             document.getElementById('problemMoreInfoThanks').style.display = '';                                             return false;                                             ">
+</form>
+</div>
+<div id="problemMoreInfoThanks" style="display:none"><p>Thanks for helping to make the Unity documentation better!</p></div>
+<script>
+
+                                            var ratecontent = document.querySelector('#ratecontent'); // target element
+                                            var currentRating = 0; // initial rating
+                                            var maxRating= 5; // max rating
+
+                                            // callback to run after setting the rating
+                                            var callback = function(rating) {
+                                                document.getElementById('ratingThanks').style.display = '';
+                                                document.getElementById('ratecontent').style.display = 'none';
+                                                document.getElementById('rating').style.display = 'none';
+                                                SendFeedback("rating",window.location.href,rating);
+                                            };
+
+                                            // rating instance
+                                            var myRating = rating(ratecontent, currentRating, maxRating, callback);
+                                        </script>
+</div>
+<div class="nextprev clear">
+<div class="icon tt left mr1" data-distance="-40|-30|top">
+<span class="prev"><a href="AssetStore.html"></a></span><div class="tip">Importing from the Asset Store</div>
+</div>
+<div class="icon tt right" data-distance="-40|-30|top">
+<span class="next"><a href="HOWTO-InstallStandardAssets.html"></a></span><div class="tip">Standard Assets</div>
+</div>
+</div>
+</div>
+</body></html>

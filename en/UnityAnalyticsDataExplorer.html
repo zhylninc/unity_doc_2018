@@ -1,0 +1,286 @@
+<html><head><title>html模版</title></head><body>Unity - Manual:  Data Explorer</br>
+<div class="breadcrumbs clear"><ul>
+<li><a href="UnityManual.html">Unity User Manual (2018.1 beta)</a></li>
+<li><a href="UnityServices.html">Unity Services &amp; Dashboard</a></li>
+<li><a href="UnityAnalytics.html">Unity Analytics</a></li>
+<li><a href="UnityAnalyticsDashboard.html"> Analytics Dashboard</a></li>
+<li> Data Explorer</li>
+</ul></div>
+<div class="mb20"><div class="nextprev clear">
+<div class="icon tt left mr1" data-distance="-40|-30|top">
+<span class="prev"><a href="UnityAnalyticsDashbaordOverview.html"></a></span><div class="tip"> Overview tab </div>
+</div>
+<div class="icon tt right" data-distance="-40|-30|top">
+<span class="next"><a href="UnityAnalyticsFunnelAnalyzer.html"></a></span><div class="tip"> Funnel Analyzer tab </div>
+</div>
+</div></div>
+<div class="otherversionswrapper" onmouseover="setOtherVersionsDisplay(true)" onmouseout="setOtherVersionsDisplay(false)">
+<a>Other Versions</a><div class="otherversionscontent" id="OtherVersionsContent" style="display: none;">Cannot access other versions offline!</div>
+</div>
+<div class="scrollToFeedback"><a id="scrollToFeedback">Leave feedback</a></div>
+<h1>Data Explorer</h1>
+<!--BeginSwitchLink--><!--EndSwitchLink-->
+<div class="clear"></div>
+
+<p>Build reports for your Unity Analytics metrics and events using the Data Explorer. The Data Explorer reports show how selected metrics and custom events change over time.</p>
+
+<figure>
+<img src="../uploads/Main/UnityAnalyticsDataExplorer1.png" alt="A report in the Data Explorer tab showing MAU over time">
+<figcaption>A report in the Data Explorer tab showing MAU over time</figcaption>
+</figure>
+
+<h2>Create a new report</h2>
+
+<p>To create a Data Explorer report:</p>
+
+<ol>
+<li>Navigate to the Analytics Dashboard for your project.</li>
+<li>Click the <strong>Data Explorer</strong> tab.</li>
+<li>Add <strong>Metrics</strong>, <strong>Custom Events</strong>, and <strong>Ad Metrics</strong> to the report by clicking the + buttons next to the desired type of data. (The Ad Metrics option is disabled for projects not using Unity Ads.)
+<img src="../uploads/Main/UnityAnalyticsDataExplorer2.png" alt="">
+</li>
+<li>Set the date range and chart type as desired. See <a href="#ReportOptions">Report Options</a> for more information.</li>
+</ol>
+
+<p>
+<strong>Note</strong>: The default report includes a single metric. You can change the metric type and segment for this item. (To delete this item, you must first add a second item – you cannot delete the last data item on a report.)</p>
+
+<p>To save a report for future viewing:</p>
+
+<ol>
+<li><p>Click the <strong>New Report</strong> button.</p></li>
+<li><p>On the dialog that opens, enter a name for the report and click <strong>OK</strong>.</p></li>
+</ol>
+
+<p>To view a saved report in the future, click the <strong>Saved Reports</strong> dropdown and select the report name in the list. You can adjust the date range to view the same report with your latest data.</p>
+
+<h2>Copy a report</h2>
+
+<p>To copy an existing Data Explorer report:</p>
+
+<ol>
+<li><p>Navigate to your Analytics Dashboard for your project.</p></li>
+<li><p>Click the <strong>Data Explorer</strong> tab.</p></li>
+<li><p>Click the <strong>Saved Reports</strong> dropdown and select the report name in the list.
+<img src="../uploads/Main/UnityAnalyticsDataExplorer3.png" alt="">
+</p></li>
+<li><p>Adjust the date range, chart type or other options as desired. See <a href="#ReportOptions">Report Options</a> for more information.</p></li>
+<li><p>Click the <strong>New Report</strong> button.</p></li>
+<li><p>On the dialog that opens, enter a name for the report copy and click <strong>Ok</strong>.</p></li>
+</ol>
+
+<h2>Download report data</h2>
+
+<p>To download a comma-separated value file (CSV) containing the data in a report:</p>
+
+<ol>
+<li>Navigate to your Analytics Dashboard for your project.</li>
+<li>Click the <strong>Data Explorer</strong> tab.</li>
+<li>Load a saved report or create a new one.</li>
+<li>Adjust the date range or other options as desired. See <a href="#ReportOptions">Report Options</a> for more information.
+Click the <strong>CSV</strong> button to download the data for the currently displayed report.</li>
+</ol>
+
+<p>
+<strong>Note:</strong> CSV download exports precisely what you see in the chart/table. If you have a Unity Pro subscription, you can also download all of your Analytics data in raw form from the <a href="UnityAnalyticsRawDataExport.html">Raw Data Export</a> tab or through the Raw Data Export REST API.</p>
+
+<p><a name="ReportOptions"></a></p>
+
+<h2>Report options</h2>
+
+<p>You can add the following types of data to a report:</p>
+
+<ul>
+<li>
+<strong>Metric</strong> – Analytics metrics are computed from the Core Analytics events sent automatically whenever someone plays your game. These metrics include such things as how many people played your game, how long they played, and how much money they spent on in-app purchases.</li>
+<li>
+<strong>Custom Event</strong> – Custom events are the events that you dispatch from your game to measure behavior or other factors unique to your game. See <a href="UnityAnalyticsCustomEvents.html">Custom events</a> for more information about defining and using custom events.</li>
+<li>
+<strong>Ad Metric</strong> – Ad metrics report data from the Unity Ads Service (only available if you are using Unity Ads.)</li>
+</ul>
+
+<figure>
+<img src="../uploads/Main/UnityAnalyticsDataExplorer4.png" alt="">
+</figure>
+
+<p>You can add up to twenty data items to a single report. The charts will display the appropriate units for the vertical scale as long as there are no more than two data items that use different units of measure.</p>
+
+<p>You can set the date range for a report and select different chart types.</p>
+
+<h3>Metric and Ad Metric options</h3>
+
+<p>When you add a <strong>Metric</strong> or <strong>Ad Metric</strong> to the chart, you must set the name and can choose a data <strong>Segment</strong>:</p>
+
+<figure>
+<img src="../uploads/Main/UnityAnalyticsDataExplorer5.png" alt="A metric data item on a report">
+<figcaption>A metric data item on a report</figcaption>
+</figure>
+
+<ul>
+<li>A – The metric name</li>
+<li>B – The segment of the data to show</li>
+<li>C – Delete the metric from the report</li>
+</ul>
+
+<p>For each data item, you can specify a <strong>Segment</strong> of the data to display. A <strong>Segment</strong> is a subset of the data for that item, selected according to a set of rules. For example, the <strong>Android Users</strong> segment includes data only for players on the Android platform, while the <strong>iOS Users</strong> segment includes data only for players on the iOS platform. </p>
+
+<p>The Analytics Service includes a set of standard segments. You can also create your own custom <strong>Segments</strong>. Use the <a href="UnityAnalyticsSegmentBuilder.html">Segment Builder</a> to view the definitions of the standard segments and to build your own custom <strong>Segments</strong>. Note that when you create a custom <strong>Segment</strong>, it only applies to newly collected metrics and events. Older data is not reprocessed for inclusion in a new <strong>Segment</strong>.</p>
+
+<h3>Custom event options</h3>
+
+<p>When you add a <strong>Custom Event</strong> to a report, you can set additional options based on the event parameters.</p>
+
+<figure>
+<img src="../uploads/Main/UnityAnalyticsDataExplorer6.png" alt="A custom event entry on a report has two extra fields (and a pie chart button)">
+<figcaption>A custom event entry on a report has two extra fields (and a pie chart button)</figcaption>
+</figure>
+
+<ul>
+<li>A – Show a pie chart (only for categorizable data items)</li>
+<li>B – The name of the <strong>Custom Event</strong>
+</li>
+<li>C – The <strong>Segment</strong> of the data to show</li>
+<li>D – The custom event <strong>Parameter</strong> name and display options</li>
+<li>E – How to aggregate parameter values</li>
+<li>F – Delete the custom event from the report</li>
+</ul>
+
+<p>When a <strong>Custom Event</strong> has parameters, you can choose how the data for that event is displayed on the chart. You can show the count of each distinct value received or, for numeric properties, the sum or average of the values of all the events received:</p>
+
+<figure>
+<img src="../uploads/Main/UnityAnalyticsDataExplorer7.png" alt="Parameter display options">
+<figcaption>Parameter display options</figcaption>
+</figure>
+
+<p>The symbols displayed after the <strong>Parameter</strong> name indicate how the <strong>Parameter</strong> is displayed. The string (A) and boolean (Venn diagram) symbols indicate that the <strong>Parameter</strong> values are categorizable into distinct groups. The numeric symbol (#) indicates that the <strong>Parameter</strong> value is a number that can be averaged or summed in addition to being counted. Note that numeric <strong>Parameters</strong> appear in the list twice, once with a string symbol and once with a numeric symbol, giving you the option of treating a numeric <strong>Parameter</strong> as either a categorizable or a aggregatable value. </p>
+
+<p>When showing categorizable <strong>Parameter</strong> values, only the ten most common values are broken out into individual groups. The rest of the values are lumped together in an <strong>Other</strong> group. Thus, treating numeric <strong>Parameters</strong> as categorizable strings is generally only useful for <strong>Parameters</strong> with a limited set of distinct values.</p>
+
+<p>You can view the set of distinct values at the bottom of the chart. You can also view a pie-chart of the values by clicking the pie-chart button in front of the data item. Only a single pie chart can be displayed at a time.</p>
+
+<p>
+<strong>Note:</strong> To download the data in a categorizable-data pie chart, click the pie-chart button next to the Custom Event before clicking the <strong>CSV</strong> button.</p>
+
+<figure>
+<img src="../uploads/Main/UnityAnalyticsDataExplorer8.png" alt="A pie chart for a level_complete event">
+<figcaption>A pie chart for a level_complete event</figcaption>
+</figure>
+
+<h3>Chart types</h3>
+
+<p>You can choose the following chart types for a report:</p>
+
+<figure>
+<img src="../uploads/Main/UnityAnalyticsDataExplorer9.png" alt="">
+</figure>
+
+<ul>
+<li>
+<strong>Spline</strong> – A smoothed line chart</li>
+<li>
+<strong>Column</strong> – A bar chart</li>
+<li>
+<strong>Stacked</strong> – A stacked area chart</li>
+<li>
+<strong>Table</strong> – A table of values</li>
+<li>
+<strong>Pie</strong> – A pie chart (only available for individual, categorizable Custom Event parameters)</li>
+</ul>
+
+<h4>Chart Zoom</h4>
+
+<p>You can zoom in on the <strong>Spline</strong>, <strong>Column</strong> and <strong>Stacked</strong> charts by clicking on the chart and dragging across the section you want to view in more detail.</p>
+
+<figure>
+<img src="../uploads/Main/UnityAnalyticsDataExplorer10.png" alt="Click and drag to zoom in on a section of the chart">
+<figcaption>Click and drag to zoom in on a section of the chart</figcaption>
+</figure>
+
+<p>When you are zoomed in, the chart displays a <strong>Reset Zoom</strong> button, which restores the chart to display the entire date range.</p>
+
+<h2>Annotations</h2>
+
+<p>You can use annotations to mark the dates of important external factors that might affect your game’s analytics data, such as game updates, marketing campaigns, and promotions. Add date-based annotations to the Data Explorer reports using the Annotations section below the report chart. </p>
+
+<figure>
+<img src="../uploads/Main/UnityAnalyticsDataExplorer11.png" alt="Annotation marker shown on a report chart">
+<figcaption>Annotation marker shown on a report chart</figcaption>
+</figure>
+
+<p>Annotations are project-wide, not specific to an individual report. Annotations display on all report charts whenever the Annotations section is open. </p>
+
+<p><strong>To add an annotation:</strong></p>
+
+<ol>
+<li>On any Data Explorer report, click the <strong>+ Annotations</strong> button to open the <strong>Annotations</strong> section (if not already open).</li>
+<li>Click in the date box and set the date for the annotation. You can only add one annotation record for a given day.</li>
+<li>Enter a name or descriptive text for the annotation.</li>
+<li>Click <strong>Save</strong>.</li>
+</ol>
+
+<hr>
+
+<ul>
+<li><span class="page-edit">2017–08–29 Page published with <a href="DocumentationEditorialReview.html">editorial review</a>
+</span></li>
+<li><span class="page-history">New feature in Unity 2017.1</span></li>
+</ul>
+<div class="feedbackbox" id="feedbackbox">
+<div id="rating"><p>Did you find this page useful? Please give it a rating:<br><div id="ratecontent" class="c-rating"></div>
+</p></div>
+<div id="ratingThanks" style="display:none"><p>Thanks for rating this page!</p></div>
+<div id="problem"><p><a name="problem" onclick="document.getElementById('problemType').style.display = '';document.getElementById('problem').style.display = 'none';">Report a problem on this page</a></p></div>
+<div id="problemType" style="display:none"><p>What kind of problem would you like to report?<ul type="problems">
+<li><a name="needcode" onclick="                                                             document.getElementById('problemType').style.display = 'none';                                                             document.getElementById('problemThanks').style.display = '';                                                             SendFeedback('problem-needcode',window.location.href,0);                                                             document.getElementById('problemFormDescription').value='Needs code samples.';                                                             document.getElementById('problemNeedCodeForm').style.display = ''                                                         ">This page needs code samples</a></li>
+<li><a name="code" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-brokencode',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Code samples do not work.';                                                         document.getElementById('problemCodeForm').style.display = ''                                                         ">Code samples do not work</a></li>
+<li><a name="missing" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-missing',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Missing information';                                                         document.getElementById('problemMissingForm').style.display = ''                                                         ">Information is missing</a></li>
+<li><a name="incorrect" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-incorrect',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Incorrect information';                                                         document.getElementById('problemIncorrectForm').style.display = ''                                                         ">Information is incorrect</a></li>
+<li><a name="unclear" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-unclear',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Unclear or confusing information';                                                         document.getElementById('problemUnclearForm').style.display = ''                                                         ">Information is unclear or confusing</a></li>
+<li><a name="language" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-language',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Spelling or grammar error';                                                         document.getElementById('problemLanguageForm').style.display = ''                                                         ">There is a spelling/grammar error on this page</a></li>
+<li><a name="other" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-other',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='This page has a problem';                                                         document.getElementById('problemOtherForm').style.display = ''                                                         ">Something else</a></li>
+</ul>
+<p><known_issues><p>Is something described here not working as you expect it to? It might be a <b>Known Issue</b>. Please check with the Issue Tracker at <a href="https://issuetracker.unity3d.com">issuetracker.unity3d.com</a>.</p></known_issues></p>
+</p></div>
+<div id="problemThanks" style="display:none"><p>Thanks for letting us know! This page has been marked for review based on your feedback.<br><br>If you have time, you can provide more information to help us fix the problem faster.<br><br><a onclick="document.getElementById('problemMoreInfo').style.display = '';document.getElementById('problemThanks').style.display = 'none';">Provide more information</a><br>
+</p></div>
+<div id="problemMoreInfo" style="display:none">
+<p id="problemNeedCodeForm" style="display:none">You've told us this page needs code samples. If you'd like to help us further, you could provide a code sample, or tell us about what kind of code sample you'd like to see:</p>
+<p id="problemCodeForm" style="display:none">You've told us there are code samples on this page which don't work. If you know how to fix it, or have something better we could use instead, please let us know:</p>
+<p id="problemMissingForm" style="display:none">You've told us there is information missing from this page. Please tell us more about what's missing:</p>
+<p id="problemIncorrectForm" style="display:none">You've told us there is incorrect information on this page. If you know what we should change to make it correct, please tell us:</p>
+<p id="problemUnclearForm" style="display:none">You've told us this page has unclear or confusing information. Please tell us more about what you found unclear or confusing, or let us know how we could make it clearer:</p>
+<p id="problemLanguageForm" style="display:none">You've told us there is a spelling or grammar error on this page. Please tell us what's wrong:</p>
+<p id="problemOtherForm" style="display:none">You've told us this page has a problem. Please tell us more about what's wrong:</p>
+<form>
+<textarea id="problemFormSuggestionField" cols="40" rows="5"></textarea><input type="hidden" id="problemFormDescription"><input type="submit" id="problemFormDescriptionSubmit" value="Submit" onclick="                                             document.getElementById('problemMoreInfo').style.display = 'none';                                             document.getElementById('problemMoreInfoThanks').style.display = '';                                             return false;                                             ">
+</form>
+</div>
+<div id="problemMoreInfoThanks" style="display:none"><p>Thanks for helping to make the Unity documentation better!</p></div>
+<script>
+
+                                            var ratecontent = document.querySelector('#ratecontent'); // target element
+                                            var currentRating = 0; // initial rating
+                                            var maxRating= 5; // max rating
+
+                                            // callback to run after setting the rating
+                                            var callback = function(rating) {
+                                                document.getElementById('ratingThanks').style.display = '';
+                                                document.getElementById('ratecontent').style.display = 'none';
+                                                document.getElementById('rating').style.display = 'none';
+                                                SendFeedback("rating",window.location.href,rating);
+                                            };
+
+                                            // rating instance
+                                            var myRating = rating(ratecontent, currentRating, maxRating, callback);
+                                        </script>
+</div>
+<div class="nextprev clear">
+<div class="icon tt left mr1" data-distance="-40|-30|top">
+<span class="prev"><a href="UnityAnalyticsDashbaordOverview.html"></a></span><div class="tip"> Overview tab </div>
+</div>
+<div class="icon tt right" data-distance="-40|-30|top">
+<span class="next"><a href="UnityAnalyticsFunnelAnalyzer.html"></a></span><div class="tip"> Funnel Analyzer tab </div>
+</div>
+</div>
+</div>
+</body></html>

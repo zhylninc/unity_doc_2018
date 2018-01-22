@@ -1,0 +1,168 @@
+<html><head><title>html模版</title></head><body>Unity - Manual:  Trimming clips</br>
+<div class="breadcrumbs clear"><ul>
+<li><a href="UnityManual.html">Unity User Manual (2018.1 beta)</a></li>
+<li><a href="TimelineSection.html"> Timeline</a></li>
+<li><a href="TimelineEditorWindow.html"> Timeline Editor window</a></li>
+<li><a href="TimelineClipsView.html"> Clips view</a></li>
+<li> Trimming clips</li>
+</ul></div>
+<div class="mb20"><div class="nextprev clear">
+<div class="icon tt left mr1" data-distance="-40|-30|top">
+<span class="prev"><a href="TimelineDuplicatingClips.html"></a></span><div class="tip"> Duplicating clips</div>
+</div>
+<div class="icon tt right" data-distance="-40|-30|top">
+<span class="next"><a href="TimelineSplittingClips.html"></a></span><div class="tip"> Splitting clips</div>
+</div>
+</div></div>
+<div class="otherversionswrapper" onmouseover="setOtherVersionsDisplay(true)" onmouseout="setOtherVersionsDisplay(false)">
+<a>Other Versions</a><div class="otherversionscontent" id="OtherVersionsContent" style="display: none;">Cannot access other versions offline!</div>
+</div>
+<div class="scrollToFeedback"><a id="scrollToFeedback">Leave feedback</a></div>
+<h3>Trimming clips</h3>
+
+<p>Drag the start or end of a clip to trim its duration. Dragging the start or end of a clip automatically selects the clip, showing its properties in the Inspector window. Use the <a href="script-EditorClip.html">Clip Timing properties</a> in the Inspector window to set the start, end, duration, and offset (Clip In) of a clip to exact values.</p>
+
+<figure>
+<img src="../uploads/Main/timeline_inspector_clip_timing.png" alt="Position and trim a clip by adjusting its Start, End, Duration, and Clip In properties in the Inspector window">
+<figcaption>Position and trim a clip by adjusting its Start, End, Duration, and Clip In properties in the Inspector window</figcaption>
+</figure>
+
+<h4>Trimming the start of a clip</h4>
+
+<p>When trimming the start of an Animation clip or Audio clip in the Clips view, the start cannot be dragged before the start of the source asset that the clip is based on. Trimming an Animation clip or Audio clip after the start of the source asset selects the section of the source asset used by the clip.</p>
+
+<figure>
+<img src="../uploads/Main/timeline_clip_trim_start_keys.png" alt="Trimming the start of an Animation clip selects the section of key animation used by the clip">
+<figcaption>Trimming the start of an Animation clip selects the section of key animation used by the clip</figcaption>
+</figure>
+
+<p>Trimming a clip is non-destructive. Trim the clip again to modify its start to include the animation, or the audio waveform, cut off during a previous trim. You can also <a href="TimelineResettingClips.html">reset a clip</a> to undo trims or other edits.</p>
+
+<p>To trim the start of a clip to a precise time or frame, use the <strong>Clip In</strong> property in the Inspector window. Changing the <strong>Clip In</strong> property has the same effect as trimming the start of a clip after the start of its source asset.</p>
+
+<h4>Trimming the end of a clip</h4>
+
+<p>As with the start of the clip, trimming an Animation clip or Audio clip before the end of the source asset, trims the part of the source asset used by the clip.</p>
+
+<figure>
+<img src="../uploads/Main/timeline_clip_trim_end_keys.png" alt="Trimming the end of an Animation clip trims its key animation">
+<figcaption>Trimming the end of an Animation clip trims its key animation</figcaption>
+</figure>
+
+<p>If you trim the end of an Animation clip or Audio clip past the end of the source asset the clip is based on, the extra clip area either holds or loops, depending on the settings of the source asset.</p>
+
+<p>For example, an Animation clip named “End Move” uses the motion file “Recorded(2)” as its source asset. The motion file “Recorded(2)” is set to loop. Trimming the end of the Animation clip past the end of the “Recorded(2)” source asset fills the extra clip area by looping “Recorded(2)”. A white animation curve shows the hold or loop.</p>
+
+<figure>
+<img src="../uploads/Main/timeline_clip_trim_loop.png" alt="A white animation curve indicates whether the extra clip area holds or loops data, depending on the source asset">
+<figcaption>A white animation curve indicates whether the extra clip area holds or loops data, depending on the source asset</figcaption>
+</figure>
+
+<p>To choose whether the extra clip area holds or loops, select the source asset to change its settings in the Inspector window. Depending on the type of source asset, different properties control whether the source asset holds or loops.</p>
+
+<p>If you are unsure which source asset is used by a clip, select the clip in the Clips view, Right-click and select <strong>Find Source Asset</strong> from the context menu. This highlights the source asset in the Project window. </p>
+
+<h4>Trimming the end of looping clips</h4>
+
+<p>The Timeline Editor window provides special trimming options for Animation clips or Audio clips with loops. These special trim options either remove the last partial loop or complete the last partial loop.</p>
+
+<p>For example, the Animation clip named run_away is over three times longer than the source asset on which it is based. Since the source asset is set to loop, the Animation clip loops the source asset until the Animation clip ends which results in a partial loop.</p>
+
+<figure>
+<img src="../uploads/Main/timeline_last_loop_before.png" alt="L1, L2, and L3 signify complete loops. The clip ends partially through the fourth loop, L4.">
+<figcaption>L1, L2, and L3 signify complete loops. The clip ends partially through the fourth loop, L4.</figcaption>
+</figure>
+
+<p>To extend the end of the clip and complete a partial loop, select the clip, Right-click and select <strong>Editing</strong> &gt; <strong>Complete Last Loop</strong>. To trim the clip at the last complete loop, select the clip, Right-clip and select <strong>Editing</strong> &gt; <strong>Trim Last Loop</strong>.</p>
+
+<figure>
+<img src="../uploads/Main/timeline_last_loop_complete.png" alt="The result of select Editing &gt; Complete Last Loop">
+<figcaption>The result of select Editing &gt; Complete Last Loop</figcaption>
+</figure>
+
+<figure>
+<img src="../uploads/Main/timeline_last_loop_trim.png" alt="The result of select Editing &gt; Trim Last Loop">
+<figcaption>The result of select Editing &gt; Trim Last Loop</figcaption>
+</figure>
+
+<h4>Trimming with the Timeline Playhead</h4>
+
+<p>You can also trim a clip based on the location of the playhead. To trim using the playhead, position the playhead within the clip to be trimmed. Right-click the clip and select either <strong>Editing</strong> &gt; <strong>Trim Start</strong> or <strong>Editing</strong> &gt; <strong>Trim End</strong>. <strong>Trim Start</strong> trims the start of the clip to the playhead. <strong>Trim End</strong> trims the end of the clip to the playhead.</p>
+
+<figure>
+<img src="../uploads/Main/timeline_playhead_trim_before.png" alt="Move the Timeline Playhead within the clip">
+<figcaption>Move the Timeline Playhead within the clip</figcaption>
+</figure>
+
+<figure>
+<img src="../uploads/Main/timeline_playhead_trim_after.png" alt="Right-click and select Editing &gt; Trim Start to trim the start of the clip to the playhead">
+<figcaption>Right-click and select Editing &gt; Trim Start to trim the start of the clip to the playhead</figcaption>
+</figure>
+
+<p>If you select clips on multiple tracks, only the selected clips that intersect the playhead are trimmed.</p>
+
+<hr>
+
+<ul>
+<li><span class="page-edit">2017–08–10 Page published with limited <a href="DocumentationEditorialReview.html">editorial review</a>
+</span></li>
+</ul>
+<div class="feedbackbox" id="feedbackbox">
+<div id="rating"><p>Did you find this page useful? Please give it a rating:<br><div id="ratecontent" class="c-rating"></div>
+</p></div>
+<div id="ratingThanks" style="display:none"><p>Thanks for rating this page!</p></div>
+<div id="problem"><p><a name="problem" onclick="document.getElementById('problemType').style.display = '';document.getElementById('problem').style.display = 'none';">Report a problem on this page</a></p></div>
+<div id="problemType" style="display:none"><p>What kind of problem would you like to report?<ul type="problems">
+<li><a name="needcode" onclick="                                                             document.getElementById('problemType').style.display = 'none';                                                             document.getElementById('problemThanks').style.display = '';                                                             SendFeedback('problem-needcode',window.location.href,0);                                                             document.getElementById('problemFormDescription').value='Needs code samples.';                                                             document.getElementById('problemNeedCodeForm').style.display = ''                                                         ">This page needs code samples</a></li>
+<li><a name="code" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-brokencode',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Code samples do not work.';                                                         document.getElementById('problemCodeForm').style.display = ''                                                         ">Code samples do not work</a></li>
+<li><a name="missing" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-missing',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Missing information';                                                         document.getElementById('problemMissingForm').style.display = ''                                                         ">Information is missing</a></li>
+<li><a name="incorrect" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-incorrect',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Incorrect information';                                                         document.getElementById('problemIncorrectForm').style.display = ''                                                         ">Information is incorrect</a></li>
+<li><a name="unclear" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-unclear',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Unclear or confusing information';                                                         document.getElementById('problemUnclearForm').style.display = ''                                                         ">Information is unclear or confusing</a></li>
+<li><a name="language" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-language',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Spelling or grammar error';                                                         document.getElementById('problemLanguageForm').style.display = ''                                                         ">There is a spelling/grammar error on this page</a></li>
+<li><a name="other" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-other',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='This page has a problem';                                                         document.getElementById('problemOtherForm').style.display = ''                                                         ">Something else</a></li>
+</ul>
+<p><known_issues><p>Is something described here not working as you expect it to? It might be a <b>Known Issue</b>. Please check with the Issue Tracker at <a href="https://issuetracker.unity3d.com">issuetracker.unity3d.com</a>.</p></known_issues></p>
+</p></div>
+<div id="problemThanks" style="display:none"><p>Thanks for letting us know! This page has been marked for review based on your feedback.<br><br>If you have time, you can provide more information to help us fix the problem faster.<br><br><a onclick="document.getElementById('problemMoreInfo').style.display = '';document.getElementById('problemThanks').style.display = 'none';">Provide more information</a><br>
+</p></div>
+<div id="problemMoreInfo" style="display:none">
+<p id="problemNeedCodeForm" style="display:none">You've told us this page needs code samples. If you'd like to help us further, you could provide a code sample, or tell us about what kind of code sample you'd like to see:</p>
+<p id="problemCodeForm" style="display:none">You've told us there are code samples on this page which don't work. If you know how to fix it, or have something better we could use instead, please let us know:</p>
+<p id="problemMissingForm" style="display:none">You've told us there is information missing from this page. Please tell us more about what's missing:</p>
+<p id="problemIncorrectForm" style="display:none">You've told us there is incorrect information on this page. If you know what we should change to make it correct, please tell us:</p>
+<p id="problemUnclearForm" style="display:none">You've told us this page has unclear or confusing information. Please tell us more about what you found unclear or confusing, or let us know how we could make it clearer:</p>
+<p id="problemLanguageForm" style="display:none">You've told us there is a spelling or grammar error on this page. Please tell us what's wrong:</p>
+<p id="problemOtherForm" style="display:none">You've told us this page has a problem. Please tell us more about what's wrong:</p>
+<form>
+<textarea id="problemFormSuggestionField" cols="40" rows="5"></textarea><input type="hidden" id="problemFormDescription"><input type="submit" id="problemFormDescriptionSubmit" value="Submit" onclick="                                             document.getElementById('problemMoreInfo').style.display = 'none';                                             document.getElementById('problemMoreInfoThanks').style.display = '';                                             return false;                                             ">
+</form>
+</div>
+<div id="problemMoreInfoThanks" style="display:none"><p>Thanks for helping to make the Unity documentation better!</p></div>
+<script>
+
+                                            var ratecontent = document.querySelector('#ratecontent'); // target element
+                                            var currentRating = 0; // initial rating
+                                            var maxRating= 5; // max rating
+
+                                            // callback to run after setting the rating
+                                            var callback = function(rating) {
+                                                document.getElementById('ratingThanks').style.display = '';
+                                                document.getElementById('ratecontent').style.display = 'none';
+                                                document.getElementById('rating').style.display = 'none';
+                                                SendFeedback("rating",window.location.href,rating);
+                                            };
+
+                                            // rating instance
+                                            var myRating = rating(ratecontent, currentRating, maxRating, callback);
+                                        </script>
+</div>
+<div class="nextprev clear">
+<div class="icon tt left mr1" data-distance="-40|-30|top">
+<span class="prev"><a href="TimelineDuplicatingClips.html"></a></span><div class="tip"> Duplicating clips</div>
+</div>
+<div class="icon tt right" data-distance="-40|-30|top">
+<span class="next"><a href="TimelineSplittingClips.html"></a></span><div class="tip"> Splitting clips</div>
+</div>
+</div>
+</div>
+</body></html>

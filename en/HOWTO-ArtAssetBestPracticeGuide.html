@@ -1,0 +1,247 @@
+<html><head><title>html模版</title></head><body>Unity - Manual:  Art Asset best practice guide</br>
+<div class="breadcrumbs clear"><ul>
+<li><a href="UnityManual.html">Unity User Manual (2018.1 beta)</a></li>
+<li><a href="Graphics.html">Graphics</a></li>
+<li><a href="GraphicsHowTos.html">Graphics HOWTOs</a></li>
+<li> Art Asset best practice guide</li>
+</ul></div>
+<div class="mb20"><div class="nextprev clear">
+<div class="icon tt left mr1" data-distance="-40|-30|top">
+<span class="prev"><a href="HOWTO-Water.html"></a></span><div class="tip">Water in Unity</div>
+</div>
+<div class="icon tt right" data-distance="-40|-30|top">
+<span class="next"><a href="HOWTO-importObject.html"></a></span><div class="tip">How do I import models from my 3D app?</div>
+</div>
+</div></div>
+<div class="otherversionswrapper" onmouseover="setOtherVersionsDisplay(true)" onmouseout="setOtherVersionsDisplay(false)">
+<a>Other Versions</a><div class="otherversionscontent" id="OtherVersionsContent" style="display: none;">Cannot access other versions offline!</div>
+</div>
+<div class="scrollToFeedback"><a id="scrollToFeedback">Leave feedback</a></div>
+<h1>Art Asset best practice guide</h1>
+<!--BeginSwitchLink--><!--EndSwitchLink-->
+<div class="clear"></div>
+
+<p>Unity supports textured 3D models from a variety of programs or sources. This short guide has been put together by games artists with developers at Unity to help you create Assets that work better and more efficiently in your Unity project.</p>
+
+<h2>Scale and units</h2>
+
+<p>Working to scale can be important for both lighting and physics simulation.</p>
+
+<ul>
+<li>Set your system and project units to Metric for your software to work consistently with Unity.
+
+<ul>
+<li>Be aware that different systems use different units - for example, the system unit default for Max is inches while in Maya it is centimeters.</li>
+<li>Unity has different scaling for FBX and 3D application files on import. Make sure you check the FBX import scale setting in Inspector. See documentation on <a href="class-FBXImporter.html">Importing models</a> for more information.</li>
+<li>For example, if you want to achieve Scale Factor = 1, File Scale = 1 and Object Transform Scale = 1, use the 3D application-native file formats, listed in <a href="HOWTO-importObject.html">Importing Objects</a>.</li>
+<li>If in doubt, export a meter cube with your Scene to match in Unity.</li>
+</ul>
+</li>
+<li>Animation frame rate defaults can be different in different packages. Because of this, it is a good idea to set this consistently across your pipeline (for example, at 30fps).</li>
+</ul>
+
+<h2>Files and objects</h2>
+
+<ul>
+<li>Name objects in your Scene sensibly and uniquely. This helps you locate and troubleshoot specific Meshes in your project.</li>
+<li>Avoid special characters such as <code>*()?&quot;#$</code>.</li>
+<li>Use simple but descriptive names for both objects and files in order to allow for duplication later.</li>
+<li>Keep your hierarchies as simple as you can.</li>
+<li>With big projects in your 3D application, consider having a working file outside your Unity project directory. This can often save time when running updates and importing unnecessary data.</li>
+</ul>
+
+<figure>
+<img src="../uploads/Main/HierarchyWrongRight.png" alt="Sensibly named objects help you find things quickly">
+<figcaption>Sensibly named objects help you find things quickly</figcaption>
+</figure>
+
+<h3>Mesh</h3>
+
+<ul>
+<li>Build with an efficient topology. Use polygons only where you need them.</li>
+<li>Optimise your geometry if it has too many polygons. Many character models need to be intelligently optimized or even rebuilt by an artist, especially if sourced or built from:
+
+<ul>
+<li>3D capture data</li>
+<li>Poser</li>
+<li>Zbrush</li>
+<li>Other high density NURBS patch models designed for render</li>
+</ul>
+</li>
+<li>Where you can afford them, evenly spaced polygons in buildings, landscape and architecture will help spread lighting and avoid awkward kinks.</li>
+<li>Avoid really long thin triangles.</li>
+</ul>
+
+<figure>
+<img src="../uploads/Main/GeomWrongRight.png" alt="Stairway to framerate heaven">
+<figcaption>Stairway to framerate heaven</figcaption>
+</figure>
+
+<p>The method you use to construct objects can have a massive effect on the number of polygons, especially when not optimized. In this diagram, the same shape mesh has 156 triangles on the right and 726 on the left. 726 may not sound like a great deal of polygons, but if this is used 40 times in a level, you will really start to see the savings. A good rule of thumb is often to start simple and add detail where needed. It’s always easier to add polygons than take them away.</p>
+
+<h3>Textures</h3>
+
+<p>If you author your textures to a power of two (for example, 512x512 or 256x1024), the textures will be more efficient and won’t need rescaling at build time. You can use up to 4096x4096 pixels, but 2048x2048 is the highest available on many graphics cards and platforms.</p>
+
+<p>Search online for expert advice on creating good textures, but some of these guidelines can help you get the most efficient results from your project:</p>
+
+<ul>
+<li>Work with a high-resolution source file outside your Unity project (such as a .psd or Gimp file). You can always downsize from the source, but not the other way round.</li>
+<li>Use the Texture resolution output you require in your Scene (save a copy, for example a 256x256 optimised .png or a .tga file). You can make a judgement based on where the Texture will be seen and where it is mapped.</li>
+<li>Store your output Texture files together in your Unity project (for example, in \Assets\textures).</li>
+<li>Make sure your 3D working file refers to the same Textures, for consistency when you save or export.</li>
+<li>Make use of the available space in your Texture, but be aware of different Materials requiring different parts of the same Texture. You can end up using or loading that Texture multiple times.</li>
+<li>For alpha and elements that may require different Shaders, separate the Textures. For example, the single Texture, below left, has been replaced by three smaller Textures, below right.</li>
+</ul>
+
+<figure>
+<img src="../uploads/Main/Pack_WrongRight2.png" alt="One Texture (left) versus three Textures (right)">
+<figcaption>One Texture (left) versus three Textures (right)</figcaption>
+</figure>
+
+<ul>
+<li>Make use of tiling Textures which seamlessly repeat. This allows you to use better resolution repeating over space.</li>
+<li>Remove easily noticeable repeating elements from your bitmap, and be careful with contrast. To add details, use decals and objects to break up the repeats.</li>
+</ul>
+
+<figure>
+<img src="../uploads/Main/TexWrongRight.png" alt="Tiling Textures">
+<figcaption>Tiling Textures</figcaption>
+</figure>
+
+<ul>
+<li>Unity takes care of compression for the output platform, so unless your source is already a .jpg of the correct resolution, it’s better to use a lossless format for your Textures.</li>
+<li>When creating a Texture page from photographs, reduce the page to individual modular sections that can repeat. For example, you don’t need 12 of the same window using up Texture space. This means you can have more pixel detail for that one window.</li>
+</ul>
+
+<figure>
+<img src="../uploads/Main/BuildingWrongRight.png" alt="Less is more when it comes to windows">
+<figcaption>Less is more when it comes to windows</figcaption>
+</figure>
+
+<h3>Materials</h3>
+
+<ul>
+<li>Organize and name the materials in your Scene. This way you can find and edit your materials in Unity more easily when they’ve imported.</li>
+<li>You can choose to create Materials in Unity from either:
+
+<ul>
+<li>&lt;modelname&gt; - &lt;material name&gt;
+or</li>
+<li>&lt;texture name&gt;
+Make sure you know which one you want.</li>
+</ul>
+</li>
+<li>Settings for Materials in your native package will not all be imported to Unity:
+
+<ul>
+<li>
+<strong>Diffuse Colour</strong>, <strong>Diffuse Texture</strong> and <strong>Names</strong> are usually supported.</li>
+<li>Shader model, specular, normal, other secondary Textures and substance material settings are not recognised or imported.</li>
+</ul>
+</li>
+</ul>
+
+<h3>Import and export</h3>
+
+<p>Unity can use two types of files: Saved 3D application files, and Exported 3D formats. Which you decide to use can be quite important.</p>
+
+<h2>Saved application files</h2>
+
+<p>Unity can import, through conversion, Max, Maya, Blender, Cinema4D, Modo, Lightwave and Cheetah3D files, e.g. .MAX, .MB, .MA etc. See more in <a href="HOWTO-importObject.html">Importing Objects</a>.</p>
+
+<p><strong>Advantages:</strong></p>
+
+<ul>
+<li>Quick iteration process (save and Unity updates)</li>
+<li>Simple initially</li>
+</ul>
+
+<p><strong>Disadvantages:</strong></p>
+
+<ul>
+<li>A licensed copy of that software must be installed on all machines using the Unity project</li>
+<li>Files can become bloated with unnecessary data</li>
+<li>Big files can slow Unity updates</li>
+<li>Less Validation and harder to troubleshoot problems</li>
+</ul>
+
+<h2>Exported 3D formats</h2>
+
+<p>Unity can also read FBX, OBJ, 3DS, DAE and DXF files. For a general export guide, you can refer to <a href="HOWTO-exportFBX.html">the FBX export guide</a>.</p>
+
+<p><strong>Advantages:</strong></p>
+
+<ul>
+<li>Only export the data you need</li>
+<li>Verify your data (re-import into 3D package) before Unity</li>
+<li>Generally smaller files</li>
+<li>Encourages a modular approach</li>
+</ul>
+
+<p>
+<strong>Disadvantages</strong>:</p>
+
+<ul>
+<li>Can be slower pipeline or prototyping and iterations</li>
+<li>Easier to lose track of versions between source (working file) and game data (exported FBX)</li>
+</ul>
+<div class="feedbackbox" id="feedbackbox">
+<div id="rating"><p>Did you find this page useful? Please give it a rating:<br><div id="ratecontent" class="c-rating"></div>
+</p></div>
+<div id="ratingThanks" style="display:none"><p>Thanks for rating this page!</p></div>
+<div id="problem"><p><a name="problem" onclick="document.getElementById('problemType').style.display = '';document.getElementById('problem').style.display = 'none';">Report a problem on this page</a></p></div>
+<div id="problemType" style="display:none"><p>What kind of problem would you like to report?<ul type="problems">
+<li><a name="needcode" onclick="                                                             document.getElementById('problemType').style.display = 'none';                                                             document.getElementById('problemThanks').style.display = '';                                                             SendFeedback('problem-needcode',window.location.href,0);                                                             document.getElementById('problemFormDescription').value='Needs code samples.';                                                             document.getElementById('problemNeedCodeForm').style.display = ''                                                         ">This page needs code samples</a></li>
+<li><a name="code" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-brokencode',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Code samples do not work.';                                                         document.getElementById('problemCodeForm').style.display = ''                                                         ">Code samples do not work</a></li>
+<li><a name="missing" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-missing',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Missing information';                                                         document.getElementById('problemMissingForm').style.display = ''                                                         ">Information is missing</a></li>
+<li><a name="incorrect" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-incorrect',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Incorrect information';                                                         document.getElementById('problemIncorrectForm').style.display = ''                                                         ">Information is incorrect</a></li>
+<li><a name="unclear" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-unclear',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Unclear or confusing information';                                                         document.getElementById('problemUnclearForm').style.display = ''                                                         ">Information is unclear or confusing</a></li>
+<li><a name="language" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-language',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Spelling or grammar error';                                                         document.getElementById('problemLanguageForm').style.display = ''                                                         ">There is a spelling/grammar error on this page</a></li>
+<li><a name="other" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-other',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='This page has a problem';                                                         document.getElementById('problemOtherForm').style.display = ''                                                         ">Something else</a></li>
+</ul>
+<p><known_issues><p>Is something described here not working as you expect it to? It might be a <b>Known Issue</b>. Please check with the Issue Tracker at <a href="https://issuetracker.unity3d.com">issuetracker.unity3d.com</a>.</p></known_issues></p>
+</p></div>
+<div id="problemThanks" style="display:none"><p>Thanks for letting us know! This page has been marked for review based on your feedback.<br><br>If you have time, you can provide more information to help us fix the problem faster.<br><br><a onclick="document.getElementById('problemMoreInfo').style.display = '';document.getElementById('problemThanks').style.display = 'none';">Provide more information</a><br>
+</p></div>
+<div id="problemMoreInfo" style="display:none">
+<p id="problemNeedCodeForm" style="display:none">You've told us this page needs code samples. If you'd like to help us further, you could provide a code sample, or tell us about what kind of code sample you'd like to see:</p>
+<p id="problemCodeForm" style="display:none">You've told us there are code samples on this page which don't work. If you know how to fix it, or have something better we could use instead, please let us know:</p>
+<p id="problemMissingForm" style="display:none">You've told us there is information missing from this page. Please tell us more about what's missing:</p>
+<p id="problemIncorrectForm" style="display:none">You've told us there is incorrect information on this page. If you know what we should change to make it correct, please tell us:</p>
+<p id="problemUnclearForm" style="display:none">You've told us this page has unclear or confusing information. Please tell us more about what you found unclear or confusing, or let us know how we could make it clearer:</p>
+<p id="problemLanguageForm" style="display:none">You've told us there is a spelling or grammar error on this page. Please tell us what's wrong:</p>
+<p id="problemOtherForm" style="display:none">You've told us this page has a problem. Please tell us more about what's wrong:</p>
+<form>
+<textarea id="problemFormSuggestionField" cols="40" rows="5"></textarea><input type="hidden" id="problemFormDescription"><input type="submit" id="problemFormDescriptionSubmit" value="Submit" onclick="                                             document.getElementById('problemMoreInfo').style.display = 'none';                                             document.getElementById('problemMoreInfoThanks').style.display = '';                                             return false;                                             ">
+</form>
+</div>
+<div id="problemMoreInfoThanks" style="display:none"><p>Thanks for helping to make the Unity documentation better!</p></div>
+<script>
+
+                                            var ratecontent = document.querySelector('#ratecontent'); // target element
+                                            var currentRating = 0; // initial rating
+                                            var maxRating= 5; // max rating
+
+                                            // callback to run after setting the rating
+                                            var callback = function(rating) {
+                                                document.getElementById('ratingThanks').style.display = '';
+                                                document.getElementById('ratecontent').style.display = 'none';
+                                                document.getElementById('rating').style.display = 'none';
+                                                SendFeedback("rating",window.location.href,rating);
+                                            };
+
+                                            // rating instance
+                                            var myRating = rating(ratecontent, currentRating, maxRating, callback);
+                                        </script>
+</div>
+<div class="nextprev clear">
+<div class="icon tt left mr1" data-distance="-40|-30|top">
+<span class="prev"><a href="HOWTO-Water.html"></a></span><div class="tip">Water in Unity</div>
+</div>
+<div class="icon tt right" data-distance="-40|-30|top">
+<span class="next"><a href="HOWTO-importObject.html"></a></span><div class="tip">How do I import models from my 3D app?</div>
+</div>
+</div>
+</div>
+</body></html>

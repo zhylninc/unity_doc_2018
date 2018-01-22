@@ -1,0 +1,458 @@
+<html><head><title>html模版</title></head><body>Unity - Manual: Surface Shaders with DX11 / OpenGL Core Tessellation</br>
+<div class="breadcrumbs clear"><ul>
+<li><a href="UnityManual.html">Unity User Manual (2018.1 beta)</a></li>
+<li><a href="Graphics.html">Graphics</a></li>
+<li><a href="GraphicsReference.html">Graphics Reference</a></li>
+<li><a href="SL-Reference.html"> Shader Reference</a></li>
+<li><a href="SL-SurfaceShaders.html"> Writing Surface Shaders</a></li>
+<li>Surface Shaders with DX11 / OpenGL Core Tessellation</li>
+</ul></div>
+<div class="mb20"><div class="nextprev clear">
+<div class="icon tt left mr1" data-distance="-40|-30|top">
+<span class="prev"><a href="SL-SurfaceShaderLightingExamples.html"></a></span><div class="tip">Surface Shader lighting examples</div>
+</div>
+<div class="icon tt right" data-distance="-40|-30|top">
+<span class="next"><a href="SL-ShaderPrograms.html"></a></span><div class="tip">Writing vertex and fragment shaders</div>
+</div>
+</div></div>
+<div class="otherversionswrapper" onmouseover="setOtherVersionsDisplay(true)" onmouseout="setOtherVersionsDisplay(false)">
+<a>Other Versions</a><div class="otherversionscontent" id="OtherVersionsContent" style="display: none;">Cannot access other versions offline!</div>
+</div>
+<div class="scrollToFeedback"><a id="scrollToFeedback">Leave feedback</a></div>
+<h1>Surface Shaders with DX11 / OpenGL Core Tessellation</h1>
+<!--BeginSwitchLink--><!--EndSwitchLink-->
+<div class="clear"></div>
+
+<p>
+<a href="SL-SurfaceShaders.html">Surface Shaders</a> have some support for DirectX 11 / OpenGL Core GPU Tessellation. Idea is:</p>
+
+<ul>
+<li>Tessellation is indicated by <code>tessellate:FunctionName</code> modifier. That function computes triangle edge and inside tessellation factors.</li>
+<li>When tessellation is used, “vertex modifier” (<code>vertex:FunctionName</code>) is invoked <em>after</em> tessellation, for each generated vertex in the domain shader. Here you’d typically to displacement mapping.</li>
+<li>Surface shaders can optionally compute <a href="https://www.google.lt/search?q=phong+tessellation">phong tessellation</a> to smooth model surface even without any displacement mapping.</li>
+</ul>
+
+<p>Current limitations of tessellation support:</p>
+
+<ul>
+<li>Only triangle domain - no quads, no isoline tessellation.</li>
+<li>When tessellation is used, the shader is automatically compiled into Shader Model <a href="SL-ShaderCompileTargets.html">4.6 target</a>, which means it will only work on DX11/12, OpenGL Core and PS4/XB1.</li>
+</ul>
+
+<h2>No GPU tessellation, displacement in the vertex modifier</h2>
+
+<p>Let’s start with a surface shader that does some displacement mapping <em>without</em> using tessellation. It just moves vertices along their normals based on amount coming from a displacement map:</p>
+
+<pre><code>    Shader &quot;Tessellation Sample&quot; {
+        Properties {
+            _MainTex (&quot;Base (RGB)&quot;, 2D) = &quot;white&quot; {}
+            _DispTex (&quot;Disp Texture&quot;, 2D) = &quot;gray&quot; {}
+            _NormalMap (&quot;Normalmap&quot;, 2D) = &quot;bump&quot; {}
+            _Displacement (&quot;Displacement&quot;, Range(0, 1.0)) = 0.3
+            _Color (&quot;Color&quot;, color) = (1,1,1,0)
+            _SpecColor (&quot;Spec color&quot;, color) = (0.5,0.5,0.5,0.5)
+        }
+        SubShader {
+            Tags { &quot;RenderType&quot;=&quot;Opaque&quot; }
+            LOD 300
+            
+            CGPROGRAM
+            #pragma surface surf BlinnPhong addshadow fullforwardshadows vertex:disp nolightmap
+            #pragma target 4.6
+
+            struct appdata {
+                float4 vertex : POSITION;
+                float4 tangent : TANGENT;
+                float3 normal : NORMAL;
+                float2 texcoord : TEXCOORD0;
+            };
+
+            sampler2D _DispTex;
+            float _Displacement;
+
+            void disp (inout appdata v)
+            {
+                float d = tex2Dlod(_DispTex, float4(v.texcoord.xy,0,0)).r * _Displacement;
+                v.vertex.xyz += v.normal * d;
+            }
+
+            struct Input {
+                float2 uv_MainTex;
+            };
+
+            sampler2D _MainTex;
+            sampler2D _NormalMap;
+            fixed4 _Color;
+
+            void surf (Input IN, inout SurfaceOutput o) {
+                half4 c = tex2D (_MainTex, IN.uv_MainTex) * _Color;
+                o.Albedo = c.rgb;
+                o.Specular = 0.2;
+                o.Gloss = 1.0;
+                o.Normal = UnpackNormal(tex2D(_NormalMap, IN.uv_MainTex));
+            }
+            ENDCG
+        }
+        FallBack &quot;Diffuse&quot;
+    }
+</code></pre>
+
+<p>The above shader is fairly standard, points of intetest:</p>
+
+<ul>
+<li>Vertex modifier <code>disp</code> samples the displacement map and moves vertices along their normals.</li>
+<li>It uses custom “vertex data input” structure (<code>appdata</code>) instead of default <code>appdata_full</code>. This is not needed yet, but it’s more efficient for tessellation to use as small structure as possible.</li>
+<li>Since our vertex data does not have 2nd UV coordinate, we add <code>nolightmap</code> directive to exclude lightmaps.</li>
+</ul>
+
+<p>Here’s how some simple objects would look like with this shader:</p>
+
+<figure>
+<img src="../uploads/Main/SurfaceShaderTess1-none.png" alt="">
+</figure>
+
+<h2>Fixed amount of tessellation</h2>
+
+<p>Let’s add fixed amount of tessellation, i.e. the same tessellation level for the whole mesh. This approach is suitable if your model’s faces are roughly the same size on screen. Some script could then change the tessellation level from code, based on distance to the camera.</p>
+
+<pre><code>    Shader &quot;Tessellation Sample&quot; {
+        Properties {
+            _Tess (&quot;Tessellation&quot;, Range(1,32)) = 4
+            _MainTex (&quot;Base (RGB)&quot;, 2D) = &quot;white&quot; {}
+            _DispTex (&quot;Disp Texture&quot;, 2D) = &quot;gray&quot; {}
+            _NormalMap (&quot;Normalmap&quot;, 2D) = &quot;bump&quot; {}
+            _Displacement (&quot;Displacement&quot;, Range(0, 1.0)) = 0.3
+            _Color (&quot;Color&quot;, color) = (1,1,1,0)
+            _SpecColor (&quot;Spec color&quot;, color) = (0.5,0.5,0.5,0.5)
+        }
+        SubShader {
+            Tags { &quot;RenderType&quot;=&quot;Opaque&quot; }
+            LOD 300
+            
+            CGPROGRAM
+            #pragma surface surf BlinnPhong addshadow fullforwardshadows vertex:disp tessellate:tessFixed nolightmap
+            #pragma target 4.6
+
+            struct appdata {
+                float4 vertex : POSITION;
+                float4 tangent : TANGENT;
+                float3 normal : NORMAL;
+                float2 texcoord : TEXCOORD0;
+            };
+
+            float _Tess;
+
+            float4 tessFixed()
+            {
+                return _Tess;
+            }
+
+            sampler2D _DispTex;
+            float _Displacement;
+
+            void disp (inout appdata v)
+            {
+                float d = tex2Dlod(_DispTex, float4(v.texcoord.xy,0,0)).r * _Displacement;
+                v.vertex.xyz += v.normal * d;
+            }
+
+            struct Input {
+                float2 uv_MainTex;
+            };
+
+            sampler2D _MainTex;
+            sampler2D _NormalMap;
+            fixed4 _Color;
+
+            void surf (Input IN, inout SurfaceOutput o) {
+                half4 c = tex2D (_MainTex, IN.uv_MainTex) * _Color;
+                o.Albedo = c.rgb;
+                o.Specular = 0.2;
+                o.Gloss = 1.0;
+                o.Normal = UnpackNormal(tex2D(_NormalMap, IN.uv_MainTex));
+            }
+            ENDCG
+        }
+        FallBack &quot;Diffuse&quot;
+    }
+</code></pre>
+
+<p>The tessellation function, <code>tessFixed</code> in our shader, returns four tessellation factors as a single float4 value: tree factors for each edge of the triangle, and one factor for the inside of the triangle. Here, we just return a constant value that is set in material properties.</p>
+
+<figure>
+<img src="../uploads/Main/SurfaceShaderTess2-fixed.png" alt="">
+</figure>
+
+<h2>Distance-based tessellation</h2>
+
+<p>We can also change tessellation level based on distance from the camera. For example, we could define two distance values; distance at which tessellation is at maximum (say, 10 meters), and distance towards which tessellation level gradually decreases (say, 20 meters).</p>
+
+<pre><code>    Shader &quot;Tessellation Sample&quot; {
+        Properties {
+            _Tess (&quot;Tessellation&quot;, Range(1,32)) = 4
+            _MainTex (&quot;Base (RGB)&quot;, 2D) = &quot;white&quot; {}
+            _DispTex (&quot;Disp Texture&quot;, 2D) = &quot;gray&quot; {}
+            _NormalMap (&quot;Normalmap&quot;, 2D) = &quot;bump&quot; {}
+            _Displacement (&quot;Displacement&quot;, Range(0, 1.0)) = 0.3
+            _Color (&quot;Color&quot;, color) = (1,1,1,0)
+            _SpecColor (&quot;Spec color&quot;, color) = (0.5,0.5,0.5,0.5)
+        }
+        SubShader {
+            Tags { &quot;RenderType&quot;=&quot;Opaque&quot; }
+            LOD 300
+            
+            CGPROGRAM
+            #pragma surface surf BlinnPhong addshadow fullforwardshadows vertex:disp tessellate:tessDistance nolightmap
+            #pragma target 4.6
+            #include &quot;Tessellation.cginc&quot;
+
+            struct appdata {
+                float4 vertex : POSITION;
+                float4 tangent : TANGENT;
+                float3 normal : NORMAL;
+                float2 texcoord : TEXCOORD0;
+            };
+
+            float _Tess;
+
+            float4 tessDistance (appdata v0, appdata v1, appdata v2) {
+                float minDist = 10.0;
+                float maxDist = 25.0;
+                return UnityDistanceBasedTess(v0.vertex, v1.vertex, v2.vertex, minDist, maxDist, _Tess);
+            }
+
+            sampler2D _DispTex;
+            float _Displacement;
+
+            void disp (inout appdata v)
+            {
+                float d = tex2Dlod(_DispTex, float4(v.texcoord.xy,0,0)).r * _Displacement;
+                v.vertex.xyz += v.normal * d;
+            }
+
+            struct Input {
+                float2 uv_MainTex;
+            };
+
+            sampler2D _MainTex;
+            sampler2D _NormalMap;
+            fixed4 _Color;
+
+            void surf (Input IN, inout SurfaceOutput o) {
+                half4 c = tex2D (_MainTex, IN.uv_MainTex) * _Color;
+                o.Albedo = c.rgb;
+                o.Specular = 0.2;
+                o.Gloss = 1.0;
+                o.Normal = UnpackNormal(tex2D(_NormalMap, IN.uv_MainTex));
+            }
+            ENDCG
+        }
+        FallBack &quot;Diffuse&quot;
+    }
+</code></pre>
+
+<p>Here the tessellation function takes three parameters; the vertex data of three triangle corners before tessellation. This is needed to compute tessellation levels, which depend on vertex positions now. We include a built-in helper file <code>Tessellation.cginc</code> and call <code>UnityDistanceBasedTess</code> function from it to do all the work. That function computes distance of each vertex to the camera and derives final tessellation factors.</p>
+
+<figure>
+<img src="../uploads/Main/SurfaceShaderTess3-distance.png" alt="">
+</figure>
+
+<h2>Edge length based tessellation</h2>
+
+<p>Purely distance based tessellation is good only when triangle sizes are quite similar. In the image above, you can see that objects that have small triangles are tessellated too much, while objects that have large triangles aren’t tessellated enough.</p>
+
+<p>Instead, tessellation levels could be computed based on triangle edge length on the screen - the longer the edge, the larger tessellation factor should be applied.</p>
+
+<pre><code>    Shader &quot;Tessellation Sample&quot; {
+        Properties {
+            _EdgeLength (&quot;Edge length&quot;, Range(2,50)) = 15
+            _MainTex (&quot;Base (RGB)&quot;, 2D) = &quot;white&quot; {}
+            _DispTex (&quot;Disp Texture&quot;, 2D) = &quot;gray&quot; {}
+            _NormalMap (&quot;Normalmap&quot;, 2D) = &quot;bump&quot; {}
+            _Displacement (&quot;Displacement&quot;, Range(0, 1.0)) = 0.3
+            _Color (&quot;Color&quot;, color) = (1,1,1,0)
+            _SpecColor (&quot;Spec color&quot;, color) = (0.5,0.5,0.5,0.5)
+        }
+        SubShader {
+            Tags { &quot;RenderType&quot;=&quot;Opaque&quot; }
+            LOD 300
+            
+            CGPROGRAM
+            #pragma surface surf BlinnPhong addshadow fullforwardshadows vertex:disp tessellate:tessEdge nolightmap
+            #pragma target 4.6
+            #include &quot;Tessellation.cginc&quot;
+
+            struct appdata {
+                float4 vertex : POSITION;
+                float4 tangent : TANGENT;
+                float3 normal : NORMAL;
+                float2 texcoord : TEXCOORD0;
+            };
+
+            float _EdgeLength;
+
+            float4 tessEdge (appdata v0, appdata v1, appdata v2)
+            {
+                return UnityEdgeLengthBasedTess (v0.vertex, v1.vertex, v2.vertex, _EdgeLength);
+            }
+
+            sampler2D _DispTex;
+            float _Displacement;
+
+            void disp (inout appdata v)
+            {
+                float d = tex2Dlod(_DispTex, float4(v.texcoord.xy,0,0)).r * _Displacement;
+                v.vertex.xyz += v.normal * d;
+            }
+
+            struct Input {
+                float2 uv_MainTex;
+            };
+
+            sampler2D _MainTex;
+            sampler2D _NormalMap;
+            fixed4 _Color;
+
+            void surf (Input IN, inout SurfaceOutput o) {
+                half4 c = tex2D (_MainTex, IN.uv_MainTex) * _Color;
+                o.Albedo = c.rgb;
+                o.Specular = 0.2;
+                o.Gloss = 1.0;
+                o.Normal = UnpackNormal(tex2D(_NormalMap, IN.uv_MainTex));
+            }
+            ENDCG
+        }
+        FallBack &quot;Diffuse&quot;
+    }
+</code></pre>
+
+<p>Here again, we just call <code>UnityEdgeLengthBasedTess</code> function from <code>Tessellation.cginc</code> to do all the actual work.</p>
+
+<figure>
+<img src="../uploads/Main/SurfaceShaderTess4-edgelength.png" alt="">
+</figure>
+
+<p>For performance reasons, it’s advisable to call <code>UnityEdgeLengthBasedTessCull</code> function instead, which will do patch frustum culling. This makes the shader a bit more expensive, but saves a lot of GPU work for parts of meshes that are outside of camera’s view.</p>
+
+<h2>Phong Tessellation</h2>
+
+<p>
+<a href="https://www.google.lt/search?q=phong+tessellation">Phong Tessellation</a> modifies positions of the subdivided faces so that the resulting surface follows the mesh normals a bit. It’s quite an effective way of making low-poly meshes become more smooth.</p>
+
+<p>Unity’s surface shaders can compute Phong tessellation automatically using <code>tessphong:VariableName</code> compilation directive. Here’s an example shader:</p>
+
+<pre><code>    Shader &quot;Phong Tessellation&quot; {
+        Properties {
+            _EdgeLength (&quot;Edge length&quot;, Range(2,50)) = 5
+            _Phong (&quot;Phong Strengh&quot;, Range(0,1)) = 0.5
+            _MainTex (&quot;Base (RGB)&quot;, 2D) = &quot;white&quot; {}
+            _Color (&quot;Color&quot;, color) = (1,1,1,0)
+        }
+        SubShader {
+            Tags { &quot;RenderType&quot;=&quot;Opaque&quot; }
+            LOD 300
+            
+            CGPROGRAM
+            #pragma surface surf Lambert vertex:dispNone tessellate:tessEdge tessphong:_Phong nolightmap
+            #include &quot;Tessellation.cginc&quot;
+
+            struct appdata {
+                float4 vertex : POSITION;
+                float3 normal : NORMAL;
+                float2 texcoord : TEXCOORD0;
+            };
+
+            void dispNone (inout appdata v) { }
+
+            float _Phong;
+            float _EdgeLength;
+
+            float4 tessEdge (appdata v0, appdata v1, appdata v2)
+            {
+                return UnityEdgeLengthBasedTess (v0.vertex, v1.vertex, v2.vertex, _EdgeLength);
+            }
+
+            struct Input {
+                float2 uv_MainTex;
+            };
+
+            fixed4 _Color;
+            sampler2D _MainTex;
+
+            void surf (Input IN, inout SurfaceOutput o) {
+                half4 c = tex2D (_MainTex, IN.uv_MainTex) * _Color;
+                o.Albedo = c.rgb;
+                o.Alpha = c.a;
+            }
+
+            ENDCG
+        }
+        FallBack &quot;Diffuse&quot;
+    }
+</code></pre>
+
+<p>Here’s a comparison between regular shader (top row) and one that uses Phong tessellation (bottom row). You can see that even without any displacement mapping,
+the surface becomes more round.</p>
+
+<figure>
+<img src="../uploads/Main/SurfaceShaderPhongTess.png" alt="">
+</figure>
+<div class="feedbackbox" id="feedbackbox">
+<div id="rating"><p>Did you find this page useful? Please give it a rating:<br><div id="ratecontent" class="c-rating"></div>
+</p></div>
+<div id="ratingThanks" style="display:none"><p>Thanks for rating this page!</p></div>
+<div id="problem"><p><a name="problem" onclick="document.getElementById('problemType').style.display = '';document.getElementById('problem').style.display = 'none';">Report a problem on this page</a></p></div>
+<div id="problemType" style="display:none"><p>What kind of problem would you like to report?<ul type="problems">
+<li><a name="needcode" onclick="                                                             document.getElementById('problemType').style.display = 'none';                                                             document.getElementById('problemThanks').style.display = '';                                                             SendFeedback('problem-needcode',window.location.href,0);                                                             document.getElementById('problemFormDescription').value='Needs code samples.';                                                             document.getElementById('problemNeedCodeForm').style.display = ''                                                         ">This page needs code samples</a></li>
+<li><a name="code" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-brokencode',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Code samples do not work.';                                                         document.getElementById('problemCodeForm').style.display = ''                                                         ">Code samples do not work</a></li>
+<li><a name="missing" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-missing',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Missing information';                                                         document.getElementById('problemMissingForm').style.display = ''                                                         ">Information is missing</a></li>
+<li><a name="incorrect" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-incorrect',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Incorrect information';                                                         document.getElementById('problemIncorrectForm').style.display = ''                                                         ">Information is incorrect</a></li>
+<li><a name="unclear" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-unclear',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Unclear or confusing information';                                                         document.getElementById('problemUnclearForm').style.display = ''                                                         ">Information is unclear or confusing</a></li>
+<li><a name="language" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-language',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Spelling or grammar error';                                                         document.getElementById('problemLanguageForm').style.display = ''                                                         ">There is a spelling/grammar error on this page</a></li>
+<li><a name="other" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-other',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='This page has a problem';                                                         document.getElementById('problemOtherForm').style.display = ''                                                         ">Something else</a></li>
+</ul>
+<p><known_issues><p>Is something described here not working as you expect it to? It might be a <b>Known Issue</b>. Please check with the Issue Tracker at <a href="https://issuetracker.unity3d.com">issuetracker.unity3d.com</a>.</p></known_issues></p>
+</p></div>
+<div id="problemThanks" style="display:none"><p>Thanks for letting us know! This page has been marked for review based on your feedback.<br><br>If you have time, you can provide more information to help us fix the problem faster.<br><br><a onclick="document.getElementById('problemMoreInfo').style.display = '';document.getElementById('problemThanks').style.display = 'none';">Provide more information</a><br>
+</p></div>
+<div id="problemMoreInfo" style="display:none">
+<p id="problemNeedCodeForm" style="display:none">You've told us this page needs code samples. If you'd like to help us further, you could provide a code sample, or tell us about what kind of code sample you'd like to see:</p>
+<p id="problemCodeForm" style="display:none">You've told us there are code samples on this page which don't work. If you know how to fix it, or have something better we could use instead, please let us know:</p>
+<p id="problemMissingForm" style="display:none">You've told us there is information missing from this page. Please tell us more about what's missing:</p>
+<p id="problemIncorrectForm" style="display:none">You've told us there is incorrect information on this page. If you know what we should change to make it correct, please tell us:</p>
+<p id="problemUnclearForm" style="display:none">You've told us this page has unclear or confusing information. Please tell us more about what you found unclear or confusing, or let us know how we could make it clearer:</p>
+<p id="problemLanguageForm" style="display:none">You've told us there is a spelling or grammar error on this page. Please tell us what's wrong:</p>
+<p id="problemOtherForm" style="display:none">You've told us this page has a problem. Please tell us more about what's wrong:</p>
+<form>
+<textarea id="problemFormSuggestionField" cols="40" rows="5"></textarea><input type="hidden" id="problemFormDescription"><input type="submit" id="problemFormDescriptionSubmit" value="Submit" onclick="                                             document.getElementById('problemMoreInfo').style.display = 'none';                                             document.getElementById('problemMoreInfoThanks').style.display = '';                                             return false;                                             ">
+</form>
+</div>
+<div id="problemMoreInfoThanks" style="display:none"><p>Thanks for helping to make the Unity documentation better!</p></div>
+<script>
+
+                                            var ratecontent = document.querySelector('#ratecontent'); // target element
+                                            var currentRating = 0; // initial rating
+                                            var maxRating= 5; // max rating
+
+                                            // callback to run after setting the rating
+                                            var callback = function(rating) {
+                                                document.getElementById('ratingThanks').style.display = '';
+                                                document.getElementById('ratecontent').style.display = 'none';
+                                                document.getElementById('rating').style.display = 'none';
+                                                SendFeedback("rating",window.location.href,rating);
+                                            };
+
+                                            // rating instance
+                                            var myRating = rating(ratecontent, currentRating, maxRating, callback);
+                                        </script>
+</div>
+<div class="nextprev clear">
+<div class="icon tt left mr1" data-distance="-40|-30|top">
+<span class="prev"><a href="SL-SurfaceShaderLightingExamples.html"></a></span><div class="tip">Surface Shader lighting examples</div>
+</div>
+<div class="icon tt right" data-distance="-40|-30|top">
+<span class="next"><a href="SL-ShaderPrograms.html"></a></span><div class="tip">Writing vertex and fragment shaders</div>
+</div>
+</div>
+</div>
+</body></html>

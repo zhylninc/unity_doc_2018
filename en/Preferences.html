@@ -1,0 +1,323 @@
+<html><head><title>html模版</title></head><body>Unity - Manual: Preferences</br>
+<div class="breadcrumbs clear"><ul>
+<li><a href="UnityManual.html">Unity User Manual (2018.1 beta)</a></li>
+<li><a href="UnityOverview.html">Working in Unity</a></li>
+<li><a href="EditorFeatures.html">Editor Features</a></li>
+<li>Preferences</li>
+</ul></div>
+<div class="mb20"><div class="nextprev clear">
+<div class="icon tt left mr1" data-distance="-40|-30|top">
+<span class="prev"><a href="2DAnd3DModeSettings.html"></a></span><div class="tip">2D and 3D Mode Settings</div>
+</div>
+<div class="icon tt right" data-distance="-40|-30|top">
+<span class="next"><a href="BuildSettings.html"></a></span><div class="tip"> Build Settings</div>
+</div>
+</div></div>
+<div class="otherversionswrapper" onmouseover="setOtherVersionsDisplay(true)" onmouseout="setOtherVersionsDisplay(false)">
+<a>Other Versions</a><div class="otherversionscontent" id="OtherVersionsContent" style="display: none;">Cannot access other versions offline!</div>
+</div>
+<div class="scrollToFeedback"><a id="scrollToFeedback">Leave feedback</a></div>
+<h1>Preferences</h1>
+<!--BeginSwitchLink--><!--EndSwitchLink-->
+<div class="clear"></div>
+
+<p>Unity provides a number of preference settings to allow you to customise the behaviour of the Unity Editor. To access them, go to <strong>Unity</strong> &gt; <strong>Preferences</strong> (on macOS) or <strong>Edit</strong> &gt; <strong>Preferences…</strong> (Windows).</p>
+
+<h2>General</h2>
+
+<figure>
+<img src="../uploads/Main/PrefsGeneral.png" alt="">
+</figure>
+
+<table>
+<colgroup>
+<col style="text-align:left;">
+<col style="text-align:left;">
+</colgroup>
+
+<thead>
+<tr>
+	<th style="text-align:left;"><strong>Setting</strong></th>
+	<th style="text-align:left;"><strong>Properties</strong></th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+	<td style="text-align:left;"><strong>Auto Refresh</strong></td>
+	<td style="text-align:left;">Check this box to update Assets automatically as they change.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>Load Previous Project on Startup</strong></td>
+	<td style="text-align:left;">Check this box to always load the previous project at startup.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>Compress Assets on Import</strong></td>
+	<td style="text-align:left;">Check this box to automatically compress Assets during import.</td>
+</tr>
+<tr>
+	<td style="text-align:left;">
+<strong>OSX Color Picker</strong> (macOS)</td>
+	<td style="text-align:left;">Check this box to use the native macOS color picker instead of Unity’s own.</td>
+</tr>
+<tr>
+	<td style="text-align:left;">
+<strong>Disable Editor Analytics</strong> (Pro only)</td>
+	<td style="text-align:left;">Check this box to stop the Editor automatically sending information back to Unity.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>Show Asset Store search hits</strong></td>
+	<td style="text-align:left;">Check this box to show the number of free/paid Assets from the Asset Store in the Project Browser.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>Verify Saving Assets</strong></td>
+	<td style="text-align:left;">Check this box if you wish to verify which Assets to save individually on quitting Unity.</td>
+</tr>
+<tr>
+	<td style="text-align:left;">
+<strong>Editor Skin</strong> (Plus/Pro only)</td>
+	<td style="text-align:left;">Select the drop-down to choose which skin to apply to the Unity Editor. Choose <strong>Personal</strong> for light grey with black text, or <strong>Professional</strong> for dark grey with white text.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>Enable Alpha Numeric Sorting </strong></td>
+	<td style="text-align:left;">Check this box to enable a new button in the top-right corner of the <a href="Hierarchy.html">Hierarchy</a> window, allowing you to switch between Transform sort (which is the default behaviour) and Alphanumeric sort.</td>
+</tr>
+</tbody>
+</table>
+
+<h2>External tools</h2>
+
+<figure>
+<img src="../uploads/Main/PrefsExtTools.png" alt="">
+</figure>
+
+<table>
+<colgroup>
+<col style="text-align:left;">
+<col style="text-align:left;">
+</colgroup>
+
+<thead>
+<tr>
+	<th style="text-align:left;"><strong>Setting</strong></th>
+	<th style="text-align:left;"><strong>Properties</strong></th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+	<td style="text-align:left;"><strong>External Script Editor</strong></td>
+	<td style="text-align:left;">Select which application Unity should use to open script files. Unity automatically passes the correct arguments to script editors it has built-in support for. Unity has built-in support for MonoDevelop, Xamarin Studio, Visual Studio (Express) and Visual Studio Code.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>External Script Editor Args</strong></td>
+	<td style="text-align:left;">Select which arguments to pass to the external script editor.<br><code>$(File)</code> is replaced with a path to a file being opened.<br><code>$(Line)</code> is replaced with a line number that editor should jump to.<br><code>$(ProjectPath)</code> is replaced with the path to the open project.<br> If not set on macOS, then the default mechanism for opening files is used. Otherwise, the external script editor is only launched with the arguments without trying to open the script file using the default mechanism. <br> See below for examples of external script editor arguments.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>Add .unityproj’s to .sln</strong></td>
+	<td style="text-align:left;">Check this box to add UnityScript (.unityproj) projects to the generated solution (.sln) file. This is enabled by default for MonoDevelop and Xamarin Studio, and disabled by default for Visual Studio (Express) and Visual Studio Code.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>Editor Attaching</strong></td>
+	<td style="text-align:left;">Check this box to allow debugging of scripts in the Unity Editor. If this option is disabled, it is not possible to attach a script debugger to Unity to debug your scripts.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>Image application</strong></td>
+	<td style="text-align:left;">Choose which application you want Unity to use to open image files.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>Revision Control Diff/Merge</strong></td>
+	<td style="text-align:left;">Choose which application you want Unity to use to resolve file differences with the Asset server. Unity detects these tools in their default installation locations (and checks registry keys for TortoiseMerge, WinMerge, PlasticSCM Merge, and Beyond Compare 4 on Windows).</td>
+</tr>
+</tbody>
+</table>
+
+<h3>Examples of script editor arguments</h3>
+
+<ul>
+<li>
+<strong>Gvim/Vim</strong>: <code>--remote-tab-silent +$(Line) &quot;$File&quot;</code>
+</li>
+<li>
+<strong>Notepad2</strong>: <code>-g $(Line) &quot;$(File)&quot;</code>
+</li>
+<li>
+<strong>Sublime Text 2</strong>: <code>&quot;$(File)&quot;:$(Line)</code>
+</li>
+<li>
+<strong>Notepad++</strong>: <code>-n$(Line) &quot;$(File)&quot;</code>
+</li>
+</ul>
+
+<h2>Colors</h2>
+
+<figure>
+<img src="../uploads/Main/PrefsColors.png" alt="">
+</figure>
+
+<p>This panel allows you to choose the colors that Unity uses when displaying various user interface elements.</p>
+
+<h2>Keys</h2>
+
+<figure>
+<img src="../uploads/Main/PrefsKeys.png" alt="">
+</figure>
+
+<p>This panel allows you to set the keystrokes that activate the various commands in Unity.</p>
+
+<h2>GI Cache</h2>
+
+<figure>
+<img src="../uploads/Main/PrefsGICache.png" alt="">
+</figure>
+
+<table>
+<colgroup>
+<col style="text-align:left;">
+<col style="text-align:left;">
+</colgroup>
+
+<thead>
+<tr>
+	<th style="text-align:left;"><strong>Setting</strong></th>
+	<th style="text-align:left;"><strong>Properties</strong></th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+	<td style="text-align:left;"><strong>Maximum Cache Size (GB)</strong></td>
+	<td style="text-align:left;">Use the slider to set the maximum GI cache folder size. The GI cache folder will be kept below this size whenever possible. Unused files are periodically deleted to create more space. This is carried out by the Editor automatically, and doesn’t require you to do anything.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>Custom cache location</strong></td>
+	<td style="text-align:left;">Check this box to allow a custom location for the GI cache folder. The cache folder will be shared between all projects.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>Cache compression</strong></td>
+	<td style="text-align:left;">Check this box to enable a fast real-time compression of the GI Cache files, to reduce the size of the generated data. If you need to access the raw Enlighten data, disable Cache Compression and clean the cache.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>Clean Cache</strong></td>
+	<td style="text-align:left;">Use this button to clear the cache directory.</td>
+</tr>
+</tbody>
+</table>
+
+<h2>2D</h2>
+
+<figure>
+<img src="../uploads/Main/Prefs2D.png" alt="">
+</figure>
+
+<table>
+<colgroup>
+<col style="text-align:left;">
+<col style="text-align:left;">
+</colgroup>
+
+<thead>
+<tr>
+	<th style="text-align:left;"><strong>Setting</strong></th>
+	<th style="text-align:left;"><strong>Properties</strong></th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+	<td style="text-align:left;"><strong>Maximum Sprite Atlas Cache Size (GB)</strong></td>
+	<td style="text-align:left;">Use the slider to set the maximum sprite atlas cache folder size. The sprite atlas cache folder will be kept below this size whenever possible.</td>
+</tr>
+</tbody>
+</table>
+
+<h2>Cache Server</h2>
+
+<figure>
+<img src="../uploads/Main/PrefsCacheServer.png" alt="">
+</figure>
+
+<table>
+<colgroup>
+<col style="text-align:left;">
+<col style="text-align:left;">
+</colgroup>
+
+<thead>
+<tr>
+	<th style="text-align:left;"><strong>Setting</strong></th>
+	<th style="text-align:left;"><strong>Properties</strong></th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+	<td style="text-align:left;"><strong>Use Cache Server</strong></td>
+	<td style="text-align:left;">Check this box to use a dedicated cache server.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>IP Address</strong></td>
+	<td style="text-align:left;">Enter the IP address of the dedicated cache server here, if enabled.</td>
+</tr>
+</tbody>
+</table>
+
+<div class="feedbackbox" id="feedbackbox">
+<div id="rating"><p>Did you find this page useful? Please give it a rating:<br><div id="ratecontent" class="c-rating"></div>
+</p></div>
+<div id="ratingThanks" style="display:none"><p>Thanks for rating this page!</p></div>
+<div id="problem"><p><a name="problem" onclick="document.getElementById('problemType').style.display = '';document.getElementById('problem').style.display = 'none';">Report a problem on this page</a></p></div>
+<div id="problemType" style="display:none"><p>What kind of problem would you like to report?<ul type="problems">
+<li><a name="needcode" onclick="                                                             document.getElementById('problemType').style.display = 'none';                                                             document.getElementById('problemThanks').style.display = '';                                                             SendFeedback('problem-needcode',window.location.href,0);                                                             document.getElementById('problemFormDescription').value='Needs code samples.';                                                             document.getElementById('problemNeedCodeForm').style.display = ''                                                         ">This page needs code samples</a></li>
+<li><a name="code" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-brokencode',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Code samples do not work.';                                                         document.getElementById('problemCodeForm').style.display = ''                                                         ">Code samples do not work</a></li>
+<li><a name="missing" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-missing',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Missing information';                                                         document.getElementById('problemMissingForm').style.display = ''                                                         ">Information is missing</a></li>
+<li><a name="incorrect" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-incorrect',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Incorrect information';                                                         document.getElementById('problemIncorrectForm').style.display = ''                                                         ">Information is incorrect</a></li>
+<li><a name="unclear" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-unclear',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Unclear or confusing information';                                                         document.getElementById('problemUnclearForm').style.display = ''                                                         ">Information is unclear or confusing</a></li>
+<li><a name="language" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-language',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Spelling or grammar error';                                                         document.getElementById('problemLanguageForm').style.display = ''                                                         ">There is a spelling/grammar error on this page</a></li>
+<li><a name="other" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-other',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='This page has a problem';                                                         document.getElementById('problemOtherForm').style.display = ''                                                         ">Something else</a></li>
+</ul>
+<p><known_issues><p>Is something described here not working as you expect it to? It might be a <b>Known Issue</b>. Please check with the Issue Tracker at <a href="https://issuetracker.unity3d.com">issuetracker.unity3d.com</a>.</p></known_issues></p>
+</p></div>
+<div id="problemThanks" style="display:none"><p>Thanks for letting us know! This page has been marked for review based on your feedback.<br><br>If you have time, you can provide more information to help us fix the problem faster.<br><br><a onclick="document.getElementById('problemMoreInfo').style.display = '';document.getElementById('problemThanks').style.display = 'none';">Provide more information</a><br>
+</p></div>
+<div id="problemMoreInfo" style="display:none">
+<p id="problemNeedCodeForm" style="display:none">You've told us this page needs code samples. If you'd like to help us further, you could provide a code sample, or tell us about what kind of code sample you'd like to see:</p>
+<p id="problemCodeForm" style="display:none">You've told us there are code samples on this page which don't work. If you know how to fix it, or have something better we could use instead, please let us know:</p>
+<p id="problemMissingForm" style="display:none">You've told us there is information missing from this page. Please tell us more about what's missing:</p>
+<p id="problemIncorrectForm" style="display:none">You've told us there is incorrect information on this page. If you know what we should change to make it correct, please tell us:</p>
+<p id="problemUnclearForm" style="display:none">You've told us this page has unclear or confusing information. Please tell us more about what you found unclear or confusing, or let us know how we could make it clearer:</p>
+<p id="problemLanguageForm" style="display:none">You've told us there is a spelling or grammar error on this page. Please tell us what's wrong:</p>
+<p id="problemOtherForm" style="display:none">You've told us this page has a problem. Please tell us more about what's wrong:</p>
+<form>
+<textarea id="problemFormSuggestionField" cols="40" rows="5"></textarea><input type="hidden" id="problemFormDescription"><input type="submit" id="problemFormDescriptionSubmit" value="Submit" onclick="                                             document.getElementById('problemMoreInfo').style.display = 'none';                                             document.getElementById('problemMoreInfoThanks').style.display = '';                                             return false;                                             ">
+</form>
+</div>
+<div id="problemMoreInfoThanks" style="display:none"><p>Thanks for helping to make the Unity documentation better!</p></div>
+<script>
+
+                                            var ratecontent = document.querySelector('#ratecontent'); // target element
+                                            var currentRating = 0; // initial rating
+                                            var maxRating= 5; // max rating
+
+                                            // callback to run after setting the rating
+                                            var callback = function(rating) {
+                                                document.getElementById('ratingThanks').style.display = '';
+                                                document.getElementById('ratecontent').style.display = 'none';
+                                                document.getElementById('rating').style.display = 'none';
+                                                SendFeedback("rating",window.location.href,rating);
+                                            };
+
+                                            // rating instance
+                                            var myRating = rating(ratecontent, currentRating, maxRating, callback);
+                                        </script>
+</div>
+<div class="nextprev clear">
+<div class="icon tt left mr1" data-distance="-40|-30|top">
+<span class="prev"><a href="2DAnd3DModeSettings.html"></a></span><div class="tip">2D and 3D Mode Settings</div>
+</div>
+<div class="icon tt right" data-distance="-40|-30|top">
+<span class="next"><a href="BuildSettings.html"></a></span><div class="tip"> Build Settings</div>
+</div>
+</div>
+</div>
+</body></html>

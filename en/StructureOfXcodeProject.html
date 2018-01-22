@@ -1,0 +1,133 @@
+<html><head><title>html模版</title></head><body>Unity - Manual: Structure of a Unity XCode Project</br>
+<div class="breadcrumbs clear"><ul>
+<li><a href="UnityManual.html">Unity User Manual (2018.1 beta)</a></li>
+<li><a href="PlatformSpecific.html">Platform-specific</a></li>
+<li><a href="iphone.html">iOS</a></li>
+<li><a href="iphone-GettingStarted.html">Getting started with iOS development</a></li>
+<li>Structure of a Unity XCode Project</li>
+</ul></div>
+<div class="mb20"><div class="nextprev clear">
+<div class="icon tt left mr1" data-distance="-40|-30|top">
+<span class="prev"><a href="iphone-BuildProcess.html"></a></span><div class="tip">Inside the iOS build process</div>
+</div>
+<div class="icon tt right" data-distance="-40|-30|top">
+<span class="next"><a href="MobileCustomizeSplashScreen.html"></a></span><div class="tip">Customizing an iOS Splash Screen</div>
+</div>
+</div></div>
+<div class="otherversionswrapper" onmouseover="setOtherVersionsDisplay(true)" onmouseout="setOtherVersionsDisplay(false)">
+<a>Other Versions</a><div class="otherversionscontent" id="OtherVersionsContent" style="display: none;">Cannot access other versions offline!</div>
+</div>
+<div class="scrollToFeedback"><a id="scrollToFeedback">Leave feedback</a></div>
+<h1>Structure of a Unity XCode Project</h1>
+<!--BeginSwitchLink--><!--EndSwitchLink-->
+<div class="clear"></div>
+
+<p>When you build a project for the iOS platform Unity will create a folder that contains an XCode project. This project is required to compile and sign your app before deploying on devices, and it allows you to prepare and bundle your game for distribution on the App Store.</p>
+
+<figure>
+<img src="../uploads/Main/Unity-iPhone-Project-Folder.png" alt="">
+</figure>
+
+<p>Before building the iOS project make sure that you set the <strong>Bundle Identifier</strong> in <strong>Player Settings</strong>. You may also choose the <strong>SDK version</strong> to run the game on the device or simulator.</p>
+
+<h2>Classes folder</h2>
+
+<p>This contains code that integrates the Unity Runtime and Objective-C. The contained files <code>main.mm</code> and <code>UnityAppController.mm/h</code> are the entry point of the application, and you can create your own AppDelegate, derived from UnityAppController. If you have plugins including <code>AppController.h</code> you can simply include <code>UnityAppController.h</code> instead. If you have <code>AppController.mm/h</code> in Plugins/iOS folders you can merge and rename them.</p>
+
+<p>Also the <code>iPhone_Profiler.h</code> file defines a compiler conditional to enable the Internal Profiler. This is a folder for code that doesn’t change often, and you can place your custom classes here. The changes to this folder are preserved between builds when the append mode is selected, but this function doesn’t support multiple build targets and requires a fixed structure of the <code>Libraries</code> folder.</p>
+
+<p>The Internal Profiler is fast and unobtrusive, and feeds basic information: </p>
+
+<ul>
+<li>which subsystem is taking most of the frame time,</li>
+<li>.NET heap size,</li>
+<li>GC event count/duration.
+See <a href="iphone-InternalProfiler.html">built-in profiler</a> for further information.</li>
+</ul>
+
+<h2>Data folder</h2>
+
+<p>This contains the serialized game assets, and .NET assemblies (<code>dll</code> files) as full code (or metadata if stripping is on). The <code>machine.config</code> file is the setup for various .NET services such as security, WebRequest, and more. The content of this folder is refreshed with each build, and you should not modify it.</p>
+
+<h2>Libraries folder</h2>
+
+<p>This contains the .NET assemblies translated into ARM assembler (<code>s</code> files). The <code>libiPhone-lib.a</code> file is the Unity Runtime static library, and <code>RegisterMonoModules.cpp</code> binds Unity native code with .NET. The content of this folder is refreshed with each build, and you should not modify it.</p>
+
+<h2>Other newly created custom folders</h2>
+
+<p>Your custom files can be placed here.</p>
+
+<h2>Graphic files</h2>
+
+<p>These are icons and splash screens (<code>png</code> files). These files are automatically managed by Unity. You can setup them in <strong>Player Settings</strong>.</p>
+
+<h2>Property List file</h2>
+
+<p>The <code>info.plist</code> is managed via <strong>Player Settings</strong> in Unity. This file is updated when building the player, instead of being replaced. You should not modify it unless it is really needed.</p>
+
+<h2>Other files</h2>
+
+<p>These include the XCode Project file (<code>xcodeproj</code> file), and framework links that are only shown in the <strong>Project Navigator</strong>.</p>
+
+<figure>
+<img src="../uploads/Main/Unity-iPhone-Project.png" alt="">
+</figure>
+<div class="feedbackbox" id="feedbackbox">
+<div id="rating"><p>Did you find this page useful? Please give it a rating:<br><div id="ratecontent" class="c-rating"></div>
+</p></div>
+<div id="ratingThanks" style="display:none"><p>Thanks for rating this page!</p></div>
+<div id="problem"><p><a name="problem" onclick="document.getElementById('problemType').style.display = '';document.getElementById('problem').style.display = 'none';">Report a problem on this page</a></p></div>
+<div id="problemType" style="display:none"><p>What kind of problem would you like to report?<ul type="problems">
+<li><a name="needcode" onclick="                                                             document.getElementById('problemType').style.display = 'none';                                                             document.getElementById('problemThanks').style.display = '';                                                             SendFeedback('problem-needcode',window.location.href,0);                                                             document.getElementById('problemFormDescription').value='Needs code samples.';                                                             document.getElementById('problemNeedCodeForm').style.display = ''                                                         ">This page needs code samples</a></li>
+<li><a name="code" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-brokencode',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Code samples do not work.';                                                         document.getElementById('problemCodeForm').style.display = ''                                                         ">Code samples do not work</a></li>
+<li><a name="missing" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-missing',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Missing information';                                                         document.getElementById('problemMissingForm').style.display = ''                                                         ">Information is missing</a></li>
+<li><a name="incorrect" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-incorrect',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Incorrect information';                                                         document.getElementById('problemIncorrectForm').style.display = ''                                                         ">Information is incorrect</a></li>
+<li><a name="unclear" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-unclear',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Unclear or confusing information';                                                         document.getElementById('problemUnclearForm').style.display = ''                                                         ">Information is unclear or confusing</a></li>
+<li><a name="language" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-language',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Spelling or grammar error';                                                         document.getElementById('problemLanguageForm').style.display = ''                                                         ">There is a spelling/grammar error on this page</a></li>
+<li><a name="other" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-other',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='This page has a problem';                                                         document.getElementById('problemOtherForm').style.display = ''                                                         ">Something else</a></li>
+</ul>
+<p><known_issues><p>Is something described here not working as you expect it to? It might be a <b>Known Issue</b>. Please check with the Issue Tracker at <a href="https://issuetracker.unity3d.com">issuetracker.unity3d.com</a>.</p></known_issues></p>
+</p></div>
+<div id="problemThanks" style="display:none"><p>Thanks for letting us know! This page has been marked for review based on your feedback.<br><br>If you have time, you can provide more information to help us fix the problem faster.<br><br><a onclick="document.getElementById('problemMoreInfo').style.display = '';document.getElementById('problemThanks').style.display = 'none';">Provide more information</a><br>
+</p></div>
+<div id="problemMoreInfo" style="display:none">
+<p id="problemNeedCodeForm" style="display:none">You've told us this page needs code samples. If you'd like to help us further, you could provide a code sample, or tell us about what kind of code sample you'd like to see:</p>
+<p id="problemCodeForm" style="display:none">You've told us there are code samples on this page which don't work. If you know how to fix it, or have something better we could use instead, please let us know:</p>
+<p id="problemMissingForm" style="display:none">You've told us there is information missing from this page. Please tell us more about what's missing:</p>
+<p id="problemIncorrectForm" style="display:none">You've told us there is incorrect information on this page. If you know what we should change to make it correct, please tell us:</p>
+<p id="problemUnclearForm" style="display:none">You've told us this page has unclear or confusing information. Please tell us more about what you found unclear or confusing, or let us know how we could make it clearer:</p>
+<p id="problemLanguageForm" style="display:none">You've told us there is a spelling or grammar error on this page. Please tell us what's wrong:</p>
+<p id="problemOtherForm" style="display:none">You've told us this page has a problem. Please tell us more about what's wrong:</p>
+<form>
+<textarea id="problemFormSuggestionField" cols="40" rows="5"></textarea><input type="hidden" id="problemFormDescription"><input type="submit" id="problemFormDescriptionSubmit" value="Submit" onclick="                                             document.getElementById('problemMoreInfo').style.display = 'none';                                             document.getElementById('problemMoreInfoThanks').style.display = '';                                             return false;                                             ">
+</form>
+</div>
+<div id="problemMoreInfoThanks" style="display:none"><p>Thanks for helping to make the Unity documentation better!</p></div>
+<script>
+
+                                            var ratecontent = document.querySelector('#ratecontent'); // target element
+                                            var currentRating = 0; // initial rating
+                                            var maxRating= 5; // max rating
+
+                                            // callback to run after setting the rating
+                                            var callback = function(rating) {
+                                                document.getElementById('ratingThanks').style.display = '';
+                                                document.getElementById('ratecontent').style.display = 'none';
+                                                document.getElementById('rating').style.display = 'none';
+                                                SendFeedback("rating",window.location.href,rating);
+                                            };
+
+                                            // rating instance
+                                            var myRating = rating(ratecontent, currentRating, maxRating, callback);
+                                        </script>
+</div>
+<div class="nextprev clear">
+<div class="icon tt left mr1" data-distance="-40|-30|top">
+<span class="prev"><a href="iphone-BuildProcess.html"></a></span><div class="tip">Inside the iOS build process</div>
+</div>
+<div class="icon tt right" data-distance="-40|-30|top">
+<span class="next"><a href="MobileCustomizeSplashScreen.html"></a></span><div class="tip">Customizing an iOS Splash Screen</div>
+</div>
+</div>
+</div>
+</body></html>

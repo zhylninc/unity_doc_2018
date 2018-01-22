@@ -1,0 +1,198 @@
+<html><head><title>html模版</title></head><body>Unity - Manual: 2D Blending</br>
+<div class="breadcrumbs clear"><ul>
+<li><a href="UnityManual.html">Unity User Manual (2018.1 beta)</a></li>
+<li><a href="AnimationSection.html">Animation</a></li>
+<li><a href="AnimatorControllers.html">Animator Controllers</a></li>
+<li><a href="class-BlendTree.html">Blend Trees</a></li>
+<li>2D Blending</li>
+</ul></div>
+<div class="mb20"><div class="nextprev clear">
+<div class="icon tt left mr1" data-distance="-40|-30|top">
+<span class="prev"><a href="BlendTree-1DBlending.html"></a></span><div class="tip">1D Blending</div>
+</div>
+<div class="icon tt right" data-distance="-40|-30|top">
+<span class="next"><a href="BlendTree-DirectBlending.html"></a></span><div class="tip">Direct Blending</div>
+</div>
+</div></div>
+<div class="otherversionswrapper" onmouseover="setOtherVersionsDisplay(true)" onmouseout="setOtherVersionsDisplay(false)">
+<a>Other Versions</a><div class="otherversionscontent" id="OtherVersionsContent" style="display: none;">Cannot access other versions offline!</div>
+</div>
+<div class="scrollToFeedback"><a id="scrollToFeedback">Leave feedback</a></div>
+<h1>2D Blending</h1>
+<!--BeginSwitchLink--><!--EndSwitchLink-->
+<div class="clear"></div>
+
+<p>The first option in the <strong>Inspector</strong> of a <strong>Blend Node</strong> is the <strong>Blend Type</strong>. This drop-down is used to select one of the different blend types that can blend according to one or two parameters. The 2D blending types blends the child motions according to two parameters.</p>
+
+<p>The different 2D Blend Types have different uses that they are suitable for. They differ in how the influence of each motion is calculated.</p>
+
+<p>
+<strong>2D Simple Directional</strong>: Best used when your motions represent different directions, such as “walk forward”, “walk backward”, “walk left”, and “walk right”, or “aim up”, “aim down”, “aim left”, and “aim right”. Optionally a single motion at position (0, 0) can be included, such as “idle” or “aim straight”. In the Simple Directional type there should <em>not</em> be multiple motions in the same direction, such as “walk forward” and “run forward”.</p>
+
+<p>
+<strong>2D Freeform Directional</strong>: This blend type is also used when your motions represent different directions, however you can have multiple motions in the same direction, for example “walk forward” and “run forward”. In the Freeform Directional type the set of motions should always include a single motion at position (0, 0), such as “idle”.</p>
+
+<p>
+<strong>2D Freeform Cartesian</strong>: Best used when your motions do not represent different directions. With Freeform Cartesian your X parameter and Y parameter can represent different concepts, such as angular speed and linear speed. An example would be motions such as “walk forward no turn”, “run forward no turn”, “walk forward turn right”, “run forward turn right” etc.</p>
+
+<p>
+<strong>Direct</strong>: This type of blend tree lets user control the weight of each node directly. Useful for facial shapes or random idle blending. </p>
+
+<p>After setting the Blend Type, the first thing you need is to select the two <a href="AnimationParameters.html">Animation Parameters</a> that will control this <a href="class-BlendTree.html">Blend Tree</a>. In this example, the parameters are <em>velocityX</em> (strafing) and <em>velocityZ</em> (forward speed).</p>
+
+<p>Then you can add individual animations by clicking <strong>+ -&gt; Add Motion Field</strong> to add an Animation Clip to the blend tree. When you’re done, it should look something like this:</p>
+
+<figure>
+<img src="../uploads/Main/MecanimBlendTree2D.png" alt="A 2D Blend Node with five Animation Clips.">
+<figcaption>A 2D Blend Node with five Animation Clips.</figcaption>
+</figure>
+
+<p>The positions in 2D blending are like the thresholds in 1D blending, except that there are two values instead of one, corresponding to each of the two parameters. Their positions along the horizontal X axis correspond to the first parameter, and their positions along the vertical Y axis correspond to the second parameter. A walking forward animation might have a velocityX of 0 and a velocityZ of 1.5, so those values should be typed into the Pos X and Pos Y number fields for the motion.</p>
+
+<h2>The 2D Blending Diagram</h2>
+
+<p>The diagram at the top of the Inspector shows the positions of the child motions in the 2D blend space. The motions are shown as blue dots. Motions with no Animation Clip or Blend Tree assigned have no influence on the blend and are shown as gray dots. You can select a motion by clicking on its dot in the diagram. Once selected, the influence of that motion for each point in the blending space is visualized as a blue field. The field is strongest right under the position of the motion, where the motion has full influence, meaning that its animation weight is 1 and the other animations have a weight of 0. Further away the influence decreases as the influence of other motions take over.</p>
+
+<figure>
+<img src="../uploads/Main/MecanimBlendTree2DDiagram.png" alt="The diagram at the top of the Blend Node Inspector visualizes the weights of the child motions over the extends of the parameter values.">
+<figcaption>The diagram at the top of the Blend Node Inspector visualizes the weights of the child motions over the extends of the parameter values.</figcaption>
+</figure>
+
+<p>The red dot indicates the values of the two <strong>Parameters</strong>. If you press <strong>Play</strong> in the <strong>Preview</strong> at the bottom of the <strong>Inspector</strong> and drag the red dot in the diagram around, you can see how the values of the parameters are controlling the blending of the different motions. In the diagram you can also see the influence of each motion represented as circles around each motion. You will see that if you move the red dot on top of one of the blue dots representing a motion, the circle for that motion gains its maximum radius and the circles for all other motions shrink down to nothing. At positions that are in between several motions, multiple of the nearby motions will have an influence on the blend. If you select one of the motions in order to see the blue influence field of that motion, you can see that as you move the red dot around, the circle size of the motion corresponds exactly with how strong the influence field is at various positions.</p>
+
+<p>When no motion is selected, the diagram shows a mix of all the influence fields that is more blue where a single motion dominates and less blue where many motions contribute to the blend.</p>
+
+<h2>Positions</h2>
+
+<p>You can change the positions of a motion by clicking on its corresponding blue dot in the diagram and dragging it around. You can also edit position coordinates of a motion in the motion list by typing in numbers in the number fields in the Pos X and Pos Y columns.</p>
+
+<p>The <strong>Compute Positions</strong> drop-down will set the positions from data of your choice obtained from the root motions in the Animation Clips. The data that is available to choose from is speed, velocity x, y, or z, and angular speed in degrees or radians. If one or both of your <strong>parameters</strong> correspond to one of these properties, you can compute the Pos X and/or Pos Y using the Compute Positions drop-down.</p>
+
+<table>
+<colgroup>
+<col style="text-align:left;">
+<col style="text-align:left;">
+</colgroup>
+
+<thead>
+<tr>
+	<th style="text-align:left;"><strong><em>Property:</em></strong></th>
+	<th style="text-align:left;"><strong><em>Function:</em></strong></th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+	<td style="text-align:left;"><strong>Velocity XZ</strong></td>
+	<td style="text-align:left;">Sets the Pos X of each motion according to its velocity.x and the Pos Y according to its velocity.z.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>Speed And Angular Speed</strong></td>
+	<td style="text-align:left;">Sets the Pos X of each motion according to its angular speed (in radians per second) and the Pos Y according to its speed.</td>
+</tr>
+</tbody>
+</table>
+
+<p>Furthermore you can mix and match by choosing <strong>Compute Position -&gt; X Position From</strong> and/or <strong>Compute Position -&gt; Y Position From</strong> to only auto-compute one of them at a time, leaving the other unchanged.</p>
+
+<table>
+<colgroup>
+<col style="text-align:left;">
+<col style="text-align:left;">
+</colgroup>
+
+<thead>
+<tr>
+	<th style="text-align:left;"><strong><em>Property:</em></strong></th>
+	<th style="text-align:left;"><strong><em>Function:</em></strong></th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+	<td style="text-align:left;"><strong>Speed</strong></td>
+	<td style="text-align:left;">Sets the Pos X or Pos Y of each motion according to its speed (the magnitude of the velocity).</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>Velocity X</strong></td>
+	<td style="text-align:left;">Sets the Pos X or Pos Y of each motion according to its velocity.x.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>Velocity Y</strong></td>
+	<td style="text-align:left;">Sets the Pos X or Pos Y of each motion according to its velocity.y.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>Velocity Z</strong></td>
+	<td style="text-align:left;">Sets the Pos X or Pos Y of each motion according to its velocity.z.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>Angular Speed (Rad)</strong></td>
+	<td style="text-align:left;">Sets the Pos X or Pos Y of each motion according to its angular speed in radians per second.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>Angular Speed (Deg)</strong></td>
+	<td style="text-align:left;">Sets the Pos X or Pos Y of each motion according to its angular speed in degrees per second.</td>
+</tr>
+</tbody>
+</table>
+
+<p>Say, for example, that your parameters correspond to sideways velocity and forward velocity, and that you have an idle animation with an average velocity (0, 0, 0), a walk animation with (0, 0, 1.5), and two strafe animations with velocities of (–1.5, 0, 0) and (1.5, 0, 0) respectively. Choosing the <em>Velocity XZ</em> option from the drop-down would set the positions of the motions according to the X and Z coordinates of those velocities.</p>
+<div class="feedbackbox" id="feedbackbox">
+<div id="rating"><p>Did you find this page useful? Please give it a rating:<br><div id="ratecontent" class="c-rating"></div>
+</p></div>
+<div id="ratingThanks" style="display:none"><p>Thanks for rating this page!</p></div>
+<div id="problem"><p><a name="problem" onclick="document.getElementById('problemType').style.display = '';document.getElementById('problem').style.display = 'none';">Report a problem on this page</a></p></div>
+<div id="problemType" style="display:none"><p>What kind of problem would you like to report?<ul type="problems">
+<li><a name="needcode" onclick="                                                             document.getElementById('problemType').style.display = 'none';                                                             document.getElementById('problemThanks').style.display = '';                                                             SendFeedback('problem-needcode',window.location.href,0);                                                             document.getElementById('problemFormDescription').value='Needs code samples.';                                                             document.getElementById('problemNeedCodeForm').style.display = ''                                                         ">This page needs code samples</a></li>
+<li><a name="code" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-brokencode',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Code samples do not work.';                                                         document.getElementById('problemCodeForm').style.display = ''                                                         ">Code samples do not work</a></li>
+<li><a name="missing" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-missing',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Missing information';                                                         document.getElementById('problemMissingForm').style.display = ''                                                         ">Information is missing</a></li>
+<li><a name="incorrect" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-incorrect',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Incorrect information';                                                         document.getElementById('problemIncorrectForm').style.display = ''                                                         ">Information is incorrect</a></li>
+<li><a name="unclear" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-unclear',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Unclear or confusing information';                                                         document.getElementById('problemUnclearForm').style.display = ''                                                         ">Information is unclear or confusing</a></li>
+<li><a name="language" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-language',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Spelling or grammar error';                                                         document.getElementById('problemLanguageForm').style.display = ''                                                         ">There is a spelling/grammar error on this page</a></li>
+<li><a name="other" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-other',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='This page has a problem';                                                         document.getElementById('problemOtherForm').style.display = ''                                                         ">Something else</a></li>
+</ul>
+<p><known_issues><p>Is something described here not working as you expect it to? It might be a <b>Known Issue</b>. Please check with the Issue Tracker at <a href="https://issuetracker.unity3d.com">issuetracker.unity3d.com</a>.</p></known_issues></p>
+</p></div>
+<div id="problemThanks" style="display:none"><p>Thanks for letting us know! This page has been marked for review based on your feedback.<br><br>If you have time, you can provide more information to help us fix the problem faster.<br><br><a onclick="document.getElementById('problemMoreInfo').style.display = '';document.getElementById('problemThanks').style.display = 'none';">Provide more information</a><br>
+</p></div>
+<div id="problemMoreInfo" style="display:none">
+<p id="problemNeedCodeForm" style="display:none">You've told us this page needs code samples. If you'd like to help us further, you could provide a code sample, or tell us about what kind of code sample you'd like to see:</p>
+<p id="problemCodeForm" style="display:none">You've told us there are code samples on this page which don't work. If you know how to fix it, or have something better we could use instead, please let us know:</p>
+<p id="problemMissingForm" style="display:none">You've told us there is information missing from this page. Please tell us more about what's missing:</p>
+<p id="problemIncorrectForm" style="display:none">You've told us there is incorrect information on this page. If you know what we should change to make it correct, please tell us:</p>
+<p id="problemUnclearForm" style="display:none">You've told us this page has unclear or confusing information. Please tell us more about what you found unclear or confusing, or let us know how we could make it clearer:</p>
+<p id="problemLanguageForm" style="display:none">You've told us there is a spelling or grammar error on this page. Please tell us what's wrong:</p>
+<p id="problemOtherForm" style="display:none">You've told us this page has a problem. Please tell us more about what's wrong:</p>
+<form>
+<textarea id="problemFormSuggestionField" cols="40" rows="5"></textarea><input type="hidden" id="problemFormDescription"><input type="submit" id="problemFormDescriptionSubmit" value="Submit" onclick="                                             document.getElementById('problemMoreInfo').style.display = 'none';                                             document.getElementById('problemMoreInfoThanks').style.display = '';                                             return false;                                             ">
+</form>
+</div>
+<div id="problemMoreInfoThanks" style="display:none"><p>Thanks for helping to make the Unity documentation better!</p></div>
+<script>
+
+                                            var ratecontent = document.querySelector('#ratecontent'); // target element
+                                            var currentRating = 0; // initial rating
+                                            var maxRating= 5; // max rating
+
+                                            // callback to run after setting the rating
+                                            var callback = function(rating) {
+                                                document.getElementById('ratingThanks').style.display = '';
+                                                document.getElementById('ratecontent').style.display = 'none';
+                                                document.getElementById('rating').style.display = 'none';
+                                                SendFeedback("rating",window.location.href,rating);
+                                            };
+
+                                            // rating instance
+                                            var myRating = rating(ratecontent, currentRating, maxRating, callback);
+                                        </script>
+</div>
+<div class="nextprev clear">
+<div class="icon tt left mr1" data-distance="-40|-30|top">
+<span class="prev"><a href="BlendTree-1DBlending.html"></a></span><div class="tip">1D Blending</div>
+</div>
+<div class="icon tt right" data-distance="-40|-30|top">
+<span class="next"><a href="BlendTree-DirectBlending.html"></a></span><div class="tip">Direct Blending</div>
+</div>
+</div>
+</div>
+</body></html>

@@ -1,0 +1,299 @@
+<html><head><title>html模版</title></head><body>Unity - Manual: Master Server (Legacy)</br>
+<div class="breadcrumbs clear"><ul>
+<li><a href="UnityManual.html">Unity User Manual (2018.1 beta)</a></li>
+<li><a href="LegacyTopics.html">Legacy Topics</a></li>
+<li><a href="NetworkReferenceGuide.html">Legacy Network Reference Guide</a></li>
+<li>Master Server (Legacy)</li>
+</ul></div>
+<div class="mb20"><div class="nextprev clear">
+<div class="icon tt left mr1" data-distance="-40|-30|top">
+<span class="prev"><a href="net-NetworkLevelLoad.html"></a></span><div class="tip">Network Level Loading (Legacy)</div>
+</div>
+<div class="icon tt right" data-distance="-40|-30|top">
+<span class="next"><a href="net-MasterServerBuild.html"></a></span><div class="tip">Building the Unity Networking Servers on your own (Legacy)</div>
+</div>
+</div></div>
+<div class="otherversionswrapper" onmouseover="setOtherVersionsDisplay(true)" onmouseout="setOtherVersionsDisplay(false)">
+<a>Other Versions</a><div class="otherversionscontent" id="OtherVersionsContent" style="display: none;">Cannot access other versions offline!</div>
+</div>
+<div class="scrollToFeedback"><a id="scrollToFeedback">Leave feedback</a></div>
+<h1>Master Server (Legacy)</h1>
+<!--BeginSwitchLink--><!--EndSwitchLink-->
+<div class="clear"></div>
+
+<p><em>(For new projects, you should use the <a href="UNet.html">new networking system introduced in 5.1</a>. This information is for legacy projects using the old networking system.)</em></p>
+
+<p>The Master Server is a meeting place that puts game instances in touch with the player clients who want to connect to them. It can also hide port numbers and IP addresses and perform other technical tasks that arise when setting up network connections, such as firewall handling and NAT punchthrough.</p>
+
+<p>Each individual running game instance provides a <strong>Game Type</strong> to the Master Server. When a player connects and queries the Master Server for their matching <strong>Game Type</strong>, the server responds with the list of running games along with the number of players in each and whether or not a password is needed to play. The two functions used to exchange this data are <a href="../ScriptReference/MasterServer.RegisterHost.html">MasterServer.RegisterHost()</a> for the Server, and <a href="../ScriptReference/MasterServer.RequestHostList.html">MasterServer.RequestHostList()</a> for the player client.</p>
+
+<p>When calling <strong>RegisterHost</strong>, you need to pass three arguments - <em>gameTypeName</em> (which is the previously mentioned <strong>Game Type</strong>), <em>gameName</em> and <em>comment</em> - for the host being registered. <strong>RequestHostList</strong> takes as an argument the <em>gameTypeName</em> of the hosts you are interested in connecting to. All the registered hosts of that type will then be returned to the requesting client. This is an asynchronous operation and the complete list can be retrieved with <strong>PollHostList()</strong> after it has arrived in full.</p>
+
+<p>The NAT punchthrough duty of the Master Server is actually handled by a separate process called the <strong>Facilitator</strong> but Unity’s Master Server runs both services in parallel.</p>
+
+<p>The <strong>Game Type</strong> is an identifying name that should be unique for each game (although Unity does not offer any central registration system to guarantee this). It makes sense to choose a distinctive name that is unlikely to be used by anyone else. If there are several different versions of you game then you may need to warn a user that their client is not compatible with the running server version. The version information can be passed in the comment field (this is actually binary data and so the version can be passed in any desired form). The game name is simply the name of the particular game instance as supplied by whoever set it up.</p>
+
+<p>The comment field can be used in more advanced ways if the Master Server is suitably modified (see the <em>Advanced</em> section at the bottom of the page for further information on how to do this). For example, you could reserve the first ten bytes of the comment field for a password and then extract the password in the Master Server when it receives the host update. It can then reject the host update if a password check fails. </p>
+
+<h2>Registering a game</h2>
+
+<p>Before registering a game, it is important to enable or disable the NAT functionality depending on whether or not it is supported by the host; you can do this with the <strong>useNat</strong> parameter of <a href="../ScriptReference/Network.InitializeServer.html">Network.InitializeServer</a>.</p>
+
+<p>A server might be started with code similar to this:-</p>
+
+<pre><code>using UnityEngine;
+using UnityEngine.Network;
+using System.Collections;
+
+public class ExampleScript : MonoBehaviour {
+    void OnGUI() {
+        if (GUILayout.Button (&quot;Start Server&quot;))
+        {
+            // Use NAT punchthrough if no public IP present
+            Network.InitializeServer(32, 25002, !Network.HavePublicAddress());
+            MasterServer.RegisterHost(&quot;MyUniqueGameType&quot;, &quot;JohnDoes game&quot;, &quot;l33t game for all&quot;);
+        }
+    }
+}
+</code></pre>
+
+<p><em>C# script example</em></p>
+
+<pre><code>function OnGUI() {
+    if (GUILayout.Button (&quot;Start Server&quot;))
+    {
+        // Use NAT punchthrough if no public IP present
+        Network.InitializeServer(32, 25002, !Network.HavePublicAddress());
+        MasterServer.RegisterHost(&quot;MyUniqueGameType&quot;, &quot;JohnDoes game&quot;, &quot;l33t game for all&quot;);
+    }
+}
+</code></pre>
+
+<p><em>JS script example</em></p>
+
+<p>Here we just decide if NAT punchthrough is needed by checking whether or not the machine has a public address. There is a more sophisticated function available called <a href="../ScriptReference/Network.TestConnection.html">Network.TestConnection</a> which can tell you if the host machine can do NAT or not. It also does connectivity testing for public IP addresses to see if a firewall is blocking the game port. Machines which have public IP addresses always pass the NAT test but if the test fails then the host will <strong>not</strong> be able to connect to NAT clients. In such a case, the user should be informed that port forwarding must be enabled for the game to work. Domestic broadband connections will usually have a NAT address but will not be able to set up port forwarding (since they don’t have a personal public IP address). In these cases, if the NAT test fails, the user should be informed that running a server is inadvisable given that only clients on the same local network will be able to connect.</p>
+
+<p>If a host enables NAT functionality without needing it then it will still be accessible. However, clients which cannot do NAT punchthrough might incorrectly think they cannot connect on the basis that the server has NAT enabled. </p>
+
+<h2>Connecting to a game</h2>
+
+<p>A <strong>HostData</strong> object is sent during host registrations or queries. It contains the following information about the host:-</p>
+
+<table>
+<colgroup>
+<col style="text-align:left;">
+<col style="text-align:left;">
+<col style="text-align:left;">
+</colgroup>
+
+<thead>
+<tr>
+	<th style="text-align:left;"></th>
+	<th style="text-align:left;"></th>
+	<th style="text-align:left;"></th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+	<td style="text-align:left;">boolean</td>
+	<td style="text-align:left;"><strong>useNat</strong></td>
+	<td style="text-align:left;">Indicates if the host uses NAT punchthrough.</td>
+</tr>
+<tr>
+	<td style="text-align:left;">String</td>
+	<td style="text-align:left;"><strong>gameType</strong></td>
+	<td style="text-align:left;">The game type of the host.</td>
+</tr>
+<tr>
+	<td style="text-align:left;">String</td>
+	<td style="text-align:left;"><strong>gameName</strong></td>
+	<td style="text-align:left;">The game name of the host.</td>
+</tr>
+<tr>
+	<td style="text-align:left;">int</td>
+	<td style="text-align:left;"><strong>connectedPlayers</strong></td>
+	<td style="text-align:left;">The number of currently connected players/clients.</td>
+</tr>
+<tr>
+	<td style="text-align:left;">int</td>
+	<td style="text-align:left;"><strong>playerLimit</strong></td>
+	<td style="text-align:left;">The maximum number of concurrent players/clients allowed.</td>
+</tr>
+<tr>
+	<td style="text-align:left;">String[]</td>
+	<td style="text-align:left;"><strong>IP</strong></td>
+	<td style="text-align:left;">The internal IP address of the host. On a server with a public address the external and internal addresses are the same. This field is defined as an array since all the IP addresses associated with all the active interfaces of the machine need to be checked when connecting internally.</td>
+</tr>
+<tr>
+	<td style="text-align:left;">int</td>
+	<td style="text-align:left;"><strong>port</strong></td>
+	<td style="text-align:left;">The port of the host.</td>
+</tr>
+<tr>
+	<td style="text-align:left;">boolean</td>
+	<td style="text-align:left;"><strong>passwordProtected</strong></td>
+	<td style="text-align:left;">Indicates whether you need to supply a password to be able to connect to this host.</td>
+</tr>
+<tr>
+	<td style="text-align:left;">String</td>
+	<td style="text-align:left;"><strong>comment</strong></td>
+	<td style="text-align:left;">Any comment which was set during host registration.</td>
+</tr>
+<tr>
+	<td style="text-align:left;">String</td>
+	<td style="text-align:left;"><strong>guid</strong></td>
+	<td style="text-align:left;">The network GUID of the host. This is needed to connect using NAT punchthrough.</td>
+</tr>
+</tbody>
+</table>
+
+<p>This information can be used by clients to see the connection capabilities of the hosts. When NAT is enabled you need to use the GUID of the host when connecting. This is automatically handled for you when the <strong>HostData</strong> is retrieved as you connect. The connection routine might look something like this:</p>
+
+<pre><code>using UnityEngine;
+using UnityEngine.Network;
+using System.Collections;
+
+public class ExampleScript : MonoBehaviour {
+    void Awake() {
+        MasterServer.RequestHostList(&quot;MadBubbleSmashGame&quot;);
+    }
+    
+    void OnGUI() {
+        HostData[] data = MasterServer.PollHostList();
+        // Go through all the hosts in the host list
+        foreach (var element in data)
+        {
+            GUILayout.BeginHorizontal();    
+            var name = element.gameName + &quot; &quot; + element.connectedPlayers + &quot; / &quot; + element.playerLimit;
+            GUILayout.Label(name);  
+            GUILayout.Space(5);
+            string hostInfo;
+            hostInfo = &quot;[&quot;;
+            foreach (var host in element.ip)
+                hostInfo = hostInfo + host + &quot;:&quot; + element.port + &quot; &quot;;
+            hostInfo = hostInfo + &quot;]&quot;;
+            GUILayout.Label(hostInfo);  
+            GUILayout.Space(5);
+            GUILayout.Label(element.comment);
+            GUILayout.Space(5);
+            GUILayout.FlexibleSpace();
+            if (GUILayout.Button(&quot;Connect&quot;))
+            {
+                // Connect to HostData struct, internally the correct method is used (GUID when using NAT).
+                Network.Connect(element);           
+            }
+            GUILayout.EndHorizontal();  
+        }
+    }
+}
+</code></pre>
+
+<p><em>C# script example</em></p>
+
+<pre><code>function Awake() {
+    MasterServer.RequestHostList(&quot;MadBubbleSmashGame&quot;);
+}
+
+function OnGUI() {
+    var data : HostData[] = MasterServer.PollHostList();
+    // Go through all the hosts in the host list
+    for (var element in data)
+    {
+        GUILayout.BeginHorizontal();    
+        var name = element.gameName + &quot; &quot; + element.connectedPlayers + &quot; / &quot; + element.playerLimit;
+        GUILayout.Label(name);  
+        GUILayout.Space(5);
+        var hostInfo;
+        hostInfo = &quot;[&quot;;
+        for (var host in element.ip)
+            hostInfo = hostInfo + host + &quot;:&quot; + element.port + &quot; &quot;;
+        hostInfo = hostInfo + &quot;]&quot;;
+        GUILayout.Label(hostInfo);  
+        GUILayout.Space(5);
+        GUILayout.Label(element.comment);
+        GUILayout.Space(5);
+        GUILayout.FlexibleSpace();
+        if (GUILayout.Button(&quot;Connect&quot;))
+        {
+            // Connect to HostData struct, internally the correct method is used (GUID when using NAT).
+            Network.Connect(element);           
+        }
+        GUILayout.EndHorizontal();  
+    }
+}
+</code></pre>
+
+<p><em>JS script example</em></p>
+
+<p>This example prints out all of the relevant host information returned by the Master Server. Other useful data like ping information or geographic location of hosts can be added to this.</p>
+
+<h2>NAT punchthrough</h2>
+
+<p>The availability of NAT punchthrough may determine whether or not a particular computer is suitable to use as a server. While some clients might be able to connect, there are others that might have trouble connecting to any NAT server.</p>
+
+<p>By default, NAT punchthrough is provided with the help of the Master Server but it need not be done this way. The Facilitator is the process that is actually used for the NAT punchthrough service. If two machines are connected to the Facilitator then it will appear as if they can both connect to each other as long as it uses the external IP and port. The Master Server is used to provide this external IP and port information which is otherwise hard to determine. That is why the Master Server and Facilitator are so tightly integrated. The Master Server and Facilitator have the same IP address by default, to change either one use <a href="../ScriptReference/MasterServer-ipAddress.html">MasterServer.ipAddress</a>, <a href="../ScriptReference/MasterServer-port.html">MasterServer.port</a>, <a href="../ScriptReference/Network-natFacilitatorIP.html">Network.natFacilitatorIP</a> and <a href="../ScriptReference/Network-natFacilitatorPort.html">Network.natFacilitatorPort</a>
+</p>
+
+<h2>Advanced</h2>
+
+<p>Unity Technologies also has a fully deployed Master Server available for testing purposes and this is actually the server that will be used by default. However, the source code is freely available for anyone to use and the server can be deployed on Windows, Linux and Mac OS. In addition to simply building the project from source, there might be cases where you want to modify the way in which the Master Server handles information and how it communicates. For example, you may be able to optimize the handling of host data or limit the number of clients returned on the host list. Such changes will require modifications to the source code; information about how to go about this can be found on the <a href="net-MasterServerBuild.html">Master Server Build page</a>.</p>
+<div class="feedbackbox" id="feedbackbox">
+<div id="rating"><p>Did you find this page useful? Please give it a rating:<br><div id="ratecontent" class="c-rating"></div>
+</p></div>
+<div id="ratingThanks" style="display:none"><p>Thanks for rating this page!</p></div>
+<div id="problem"><p><a name="problem" onclick="document.getElementById('problemType').style.display = '';document.getElementById('problem').style.display = 'none';">Report a problem on this page</a></p></div>
+<div id="problemType" style="display:none"><p>What kind of problem would you like to report?<ul type="problems">
+<li><a name="needcode" onclick="                                                             document.getElementById('problemType').style.display = 'none';                                                             document.getElementById('problemThanks').style.display = '';                                                             SendFeedback('problem-needcode',window.location.href,0);                                                             document.getElementById('problemFormDescription').value='Needs code samples.';                                                             document.getElementById('problemNeedCodeForm').style.display = ''                                                         ">This page needs code samples</a></li>
+<li><a name="code" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-brokencode',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Code samples do not work.';                                                         document.getElementById('problemCodeForm').style.display = ''                                                         ">Code samples do not work</a></li>
+<li><a name="missing" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-missing',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Missing information';                                                         document.getElementById('problemMissingForm').style.display = ''                                                         ">Information is missing</a></li>
+<li><a name="incorrect" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-incorrect',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Incorrect information';                                                         document.getElementById('problemIncorrectForm').style.display = ''                                                         ">Information is incorrect</a></li>
+<li><a name="unclear" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-unclear',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Unclear or confusing information';                                                         document.getElementById('problemUnclearForm').style.display = ''                                                         ">Information is unclear or confusing</a></li>
+<li><a name="language" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-language',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Spelling or grammar error';                                                         document.getElementById('problemLanguageForm').style.display = ''                                                         ">There is a spelling/grammar error on this page</a></li>
+<li><a name="other" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-other',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='This page has a problem';                                                         document.getElementById('problemOtherForm').style.display = ''                                                         ">Something else</a></li>
+</ul>
+<p><known_issues><p>Is something described here not working as you expect it to? It might be a <b>Known Issue</b>. Please check with the Issue Tracker at <a href="https://issuetracker.unity3d.com">issuetracker.unity3d.com</a>.</p></known_issues></p>
+</p></div>
+<div id="problemThanks" style="display:none"><p>Thanks for letting us know! This page has been marked for review based on your feedback.<br><br>If you have time, you can provide more information to help us fix the problem faster.<br><br><a onclick="document.getElementById('problemMoreInfo').style.display = '';document.getElementById('problemThanks').style.display = 'none';">Provide more information</a><br>
+</p></div>
+<div id="problemMoreInfo" style="display:none">
+<p id="problemNeedCodeForm" style="display:none">You've told us this page needs code samples. If you'd like to help us further, you could provide a code sample, or tell us about what kind of code sample you'd like to see:</p>
+<p id="problemCodeForm" style="display:none">You've told us there are code samples on this page which don't work. If you know how to fix it, or have something better we could use instead, please let us know:</p>
+<p id="problemMissingForm" style="display:none">You've told us there is information missing from this page. Please tell us more about what's missing:</p>
+<p id="problemIncorrectForm" style="display:none">You've told us there is incorrect information on this page. If you know what we should change to make it correct, please tell us:</p>
+<p id="problemUnclearForm" style="display:none">You've told us this page has unclear or confusing information. Please tell us more about what you found unclear or confusing, or let us know how we could make it clearer:</p>
+<p id="problemLanguageForm" style="display:none">You've told us there is a spelling or grammar error on this page. Please tell us what's wrong:</p>
+<p id="problemOtherForm" style="display:none">You've told us this page has a problem. Please tell us more about what's wrong:</p>
+<form>
+<textarea id="problemFormSuggestionField" cols="40" rows="5"></textarea><input type="hidden" id="problemFormDescription"><input type="submit" id="problemFormDescriptionSubmit" value="Submit" onclick="                                             document.getElementById('problemMoreInfo').style.display = 'none';                                             document.getElementById('problemMoreInfoThanks').style.display = '';                                             return false;                                             ">
+</form>
+</div>
+<div id="problemMoreInfoThanks" style="display:none"><p>Thanks for helping to make the Unity documentation better!</p></div>
+<script>
+
+                                            var ratecontent = document.querySelector('#ratecontent'); // target element
+                                            var currentRating = 0; // initial rating
+                                            var maxRating= 5; // max rating
+
+                                            // callback to run after setting the rating
+                                            var callback = function(rating) {
+                                                document.getElementById('ratingThanks').style.display = '';
+                                                document.getElementById('ratecontent').style.display = 'none';
+                                                document.getElementById('rating').style.display = 'none';
+                                                SendFeedback("rating",window.location.href,rating);
+                                            };
+
+                                            // rating instance
+                                            var myRating = rating(ratecontent, currentRating, maxRating, callback);
+                                        </script>
+</div>
+<div class="nextprev clear">
+<div class="icon tt left mr1" data-distance="-40|-30|top">
+<span class="prev"><a href="net-NetworkLevelLoad.html"></a></span><div class="tip">Network Level Loading (Legacy)</div>
+</div>
+<div class="icon tt right" data-distance="-40|-30|top">
+<span class="next"><a href="net-MasterServerBuild.html"></a></span><div class="tip">Building the Unity Networking Servers on your own (Legacy)</div>
+</div>
+</div>
+</div>
+</body></html>

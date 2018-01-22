@@ -1,0 +1,207 @@
+<html><head><title>html模版</title></head><body>Unity - Manual: Water in Unity</br>
+<div class="breadcrumbs clear"><ul>
+<li><a href="UnityManual.html">Unity User Manual (2018.1 beta)</a></li>
+<li><a href="Graphics.html">Graphics</a></li>
+<li><a href="GraphicsHowTos.html">Graphics HOWTOs</a></li>
+<li>Water in Unity</li>
+</ul></div>
+<div class="mb20"><div class="nextprev clear">
+<div class="icon tt left mr1" data-distance="-40|-30|top">
+<span class="prev"><a href="HOWTO-FixZAxisIsUp.html"></a></span><div class="tip">How do I fix the rotation of an imported model?</div>
+</div>
+<div class="icon tt right" data-distance="-40|-30|top">
+<span class="next"><a href="HOWTO-ArtAssetBestPracticeGuide.html"></a></span><div class="tip"> Art Asset best practice guide</div>
+</div>
+</div></div>
+<div class="otherversionswrapper" onmouseover="setOtherVersionsDisplay(true)" onmouseout="setOtherVersionsDisplay(false)">
+<a>Other Versions</a><div class="otherversionscontent" id="OtherVersionsContent" style="display: none;">Cannot access other versions offline!</div>
+</div>
+<div class="scrollToFeedback"><a id="scrollToFeedback">Leave feedback</a></div>
+<h1>Water in Unity</h1>
+<!--BeginSwitchLink--><!--EndSwitchLink-->
+<div class="clear"></div>
+
+<p>Unity includes several water Prefabs (including the necessary Shaders, scripts and art Assets) within the <a href="HOWTO-InstallStandardAssets.html">Standard Assets packages</a>. Separate daylight and nighttime water Prefabs are provided.</p>
+
+<figure>
+<img src="../uploads/Main/Water_Reflective.png" alt="Reflective daylight water">
+<figcaption>Reflective daylight water</figcaption>
+</figure>
+
+<figure>
+<img src="../uploads/Main/Water_ReflectiveRefractive.png" alt="Reflective/Refractive daylight water">
+<figcaption>Reflective/Refractive daylight water</figcaption>
+</figure>
+
+<h2>Setting up water</h2>
+
+<p>Place one of the existing water Prefabs into your Scene. Make sure you have the <a href="HOWTO-InstallStandardAssets.html">Standard Assets installed</a>:</p>
+
+<ul>
+<li>Simple <strong>Daylight Simple Water</strong> and <strong>Nighttime Simple Water</strong> in <strong>Standard Assets</strong> &gt; <strong>Water</strong>.</li>
+<li>Fancier water - <strong>Daylight Water</strong> and <strong>Nighttime Water</strong> in <strong>Pro Standard Assets</strong> &gt; <strong>Water</strong> (this needs some Assets from <strong>Standard Assets</strong> &gt; <strong>Water</strong> as well). Water mode (Simple, Reflective, Refractive) can be set in the Inspector.</li>
+</ul>
+
+<p>The Prefab uses an oval-shaped Mesh for the water. If you need to use a different <a href="class-Mesh.html">Mesh</a>, change it in the <strong>Mesh Filter</strong> of the water GameObject:</p>
+
+<figure>
+<img src="../uploads/Main/Water_ChangeMesh.png" alt="">
+</figure>
+
+<h2>Creating water from scratch (Advanced)</h2>
+
+<p>Simple water requires attaching a script to a plane-like mesh and using the water shader:</p>
+
+<ol>
+<li>Have mesh for the water. This should be a flat mesh, oriented horizontally. UV coordinates are not required. The water GameObject should use the Water <strong>Layer</strong>, which you can set in the Inspector.</li>
+<li>Attach the <strong>WaterSimple</strong> script (from <strong>Standard Assets/Water/Sources</strong>) to the GameObject.</li>
+<li>Use the <strong>FX/Water (simple)</strong> Shader in the Material, or tweak one of the provided water Materials (<strong>Daylight Simple Water</strong> or <strong>Nighttime Simple Water</strong>).</li>
+</ol>
+
+<p>Reflective/refractive water requires similar steps to set up from scratch:</p>
+
+<ol>
+<li>Create a Mesh for the water. This should be a flat Mesh, oriented horizontally. UV coordinates are not required. The water GameObject should use the water <strong>Layer</strong>, which you can set in the Inspector.</li>
+<li>Attach the <strong>Water</strong> script (from <strong>Pro Standard Assets/Water/Sources</strong>) to the GameObject (Water rendering mode can be set in the Inspector: <strong>Simple</strong>, <strong>Reflective</strong> or <strong>Refractive</strong>.)</li>
+<li>Use the <strong>FX/Water</strong> Shader in the Material, or tweak one of the provided water Materials (<strong>Daylight Water</strong> or <strong>Nighttime Water</strong>).</li>
+</ol>
+
+<h2>Properties in water Materials</h2>
+
+<p>These properties are used in the <strong>Reflective</strong> and <strong>Refractive</strong> water Shaders. Most of them are used in the <strong>Simple</strong> water Shader as well.</p>
+
+<table>
+<colgroup>
+<col style="text-align:left;">
+<col style="text-align:left;">
+</colgroup>
+
+<thead>
+<tr>
+	<th style="text-align:left;"><strong><em>Property:</em></strong></th>
+	<th style="text-align:left;"><strong><em>Function:</em></strong></th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+	<td style="text-align:left;"><strong>Wave scale</strong></td>
+	<td style="text-align:left;">Scaling of waves normal map. The smaller the value, the larger water waves.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>Reflection/refraction distort</strong></td>
+	<td style="text-align:left;">How much reflection/refraction is distorted by the waves normal map.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>Refraction color</strong></td>
+	<td style="text-align:left;">Additional tint for refraction.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>Environment reflection/refraction</strong></td>
+	<td style="text-align:left;">Render textures for real-time reflection and refraction.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>Normalmap</strong></td>
+	<td style="text-align:left;">Defines the shape of the waves. The final waves are produced by combining these two normal maps, each scrolling at different direction, scale and speed. The second normal map is half as large as the first one.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>Wave speed</strong></td>
+	<td style="text-align:left;">Scrolling speed for first normal map (1st and 2nd numbers) and the second normal map (3rd and 4th numbers).</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>Fresnel</strong></td>
+	<td style="text-align:left;">A texture with alpha channel controlling the Fresnel effect - how much reflection vs. refraction is visible, based on viewing angle.</td>
+</tr>
+</tbody>
+</table>
+
+<p>The rest of the properties are not used by the <strong>Reflective</strong> and <strong>Refractive</strong> Shaders, but need to be set up in case the user’s video card does not support it and must fallback to the simpler shader:</p>
+
+<table>
+<colgroup>
+<col style="text-align:left;">
+<col style="text-align:left;">
+</colgroup>
+
+<thead>
+<tr>
+	<th style="text-align:left;"><strong><em>Property:</em></strong></th>
+	<th style="text-align:left;"><strong><em>Function:</em></strong></th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+	<td style="text-align:left;"><strong>Reflective color/cube and fresnel</strong></td>
+	<td style="text-align:left;">A texture that defines water color (RGB) and Fresnel effect (A) based on viewing angle.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>Horizon color</strong></td>
+	<td style="text-align:left;">The color of the water at horizon. `this is only used in the <strong>Simple</strong> water Shader.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>Fallback texture</strong></td>
+	<td style="text-align:left;">Define the fallback Texture used to represent the water on really old video cards, if none of the better looking Shaders can run.</td>
+</tr>
+</tbody>
+</table>
+
+<div class="feedbackbox" id="feedbackbox">
+<div id="rating"><p>Did you find this page useful? Please give it a rating:<br><div id="ratecontent" class="c-rating"></div>
+</p></div>
+<div id="ratingThanks" style="display:none"><p>Thanks for rating this page!</p></div>
+<div id="problem"><p><a name="problem" onclick="document.getElementById('problemType').style.display = '';document.getElementById('problem').style.display = 'none';">Report a problem on this page</a></p></div>
+<div id="problemType" style="display:none"><p>What kind of problem would you like to report?<ul type="problems">
+<li><a name="needcode" onclick="                                                             document.getElementById('problemType').style.display = 'none';                                                             document.getElementById('problemThanks').style.display = '';                                                             SendFeedback('problem-needcode',window.location.href,0);                                                             document.getElementById('problemFormDescription').value='Needs code samples.';                                                             document.getElementById('problemNeedCodeForm').style.display = ''                                                         ">This page needs code samples</a></li>
+<li><a name="code" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-brokencode',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Code samples do not work.';                                                         document.getElementById('problemCodeForm').style.display = ''                                                         ">Code samples do not work</a></li>
+<li><a name="missing" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-missing',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Missing information';                                                         document.getElementById('problemMissingForm').style.display = ''                                                         ">Information is missing</a></li>
+<li><a name="incorrect" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-incorrect',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Incorrect information';                                                         document.getElementById('problemIncorrectForm').style.display = ''                                                         ">Information is incorrect</a></li>
+<li><a name="unclear" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-unclear',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Unclear or confusing information';                                                         document.getElementById('problemUnclearForm').style.display = ''                                                         ">Information is unclear or confusing</a></li>
+<li><a name="language" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-language',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Spelling or grammar error';                                                         document.getElementById('problemLanguageForm').style.display = ''                                                         ">There is a spelling/grammar error on this page</a></li>
+<li><a name="other" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-other',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='This page has a problem';                                                         document.getElementById('problemOtherForm').style.display = ''                                                         ">Something else</a></li>
+</ul>
+<p><known_issues><p>Is something described here not working as you expect it to? It might be a <b>Known Issue</b>. Please check with the Issue Tracker at <a href="https://issuetracker.unity3d.com">issuetracker.unity3d.com</a>.</p></known_issues></p>
+</p></div>
+<div id="problemThanks" style="display:none"><p>Thanks for letting us know! This page has been marked for review based on your feedback.<br><br>If you have time, you can provide more information to help us fix the problem faster.<br><br><a onclick="document.getElementById('problemMoreInfo').style.display = '';document.getElementById('problemThanks').style.display = 'none';">Provide more information</a><br>
+</p></div>
+<div id="problemMoreInfo" style="display:none">
+<p id="problemNeedCodeForm" style="display:none">You've told us this page needs code samples. If you'd like to help us further, you could provide a code sample, or tell us about what kind of code sample you'd like to see:</p>
+<p id="problemCodeForm" style="display:none">You've told us there are code samples on this page which don't work. If you know how to fix it, or have something better we could use instead, please let us know:</p>
+<p id="problemMissingForm" style="display:none">You've told us there is information missing from this page. Please tell us more about what's missing:</p>
+<p id="problemIncorrectForm" style="display:none">You've told us there is incorrect information on this page. If you know what we should change to make it correct, please tell us:</p>
+<p id="problemUnclearForm" style="display:none">You've told us this page has unclear or confusing information. Please tell us more about what you found unclear or confusing, or let us know how we could make it clearer:</p>
+<p id="problemLanguageForm" style="display:none">You've told us there is a spelling or grammar error on this page. Please tell us what's wrong:</p>
+<p id="problemOtherForm" style="display:none">You've told us this page has a problem. Please tell us more about what's wrong:</p>
+<form>
+<textarea id="problemFormSuggestionField" cols="40" rows="5"></textarea><input type="hidden" id="problemFormDescription"><input type="submit" id="problemFormDescriptionSubmit" value="Submit" onclick="                                             document.getElementById('problemMoreInfo').style.display = 'none';                                             document.getElementById('problemMoreInfoThanks').style.display = '';                                             return false;                                             ">
+</form>
+</div>
+<div id="problemMoreInfoThanks" style="display:none"><p>Thanks for helping to make the Unity documentation better!</p></div>
+<script>
+
+                                            var ratecontent = document.querySelector('#ratecontent'); // target element
+                                            var currentRating = 0; // initial rating
+                                            var maxRating= 5; // max rating
+
+                                            // callback to run after setting the rating
+                                            var callback = function(rating) {
+                                                document.getElementById('ratingThanks').style.display = '';
+                                                document.getElementById('ratecontent').style.display = 'none';
+                                                document.getElementById('rating').style.display = 'none';
+                                                SendFeedback("rating",window.location.href,rating);
+                                            };
+
+                                            // rating instance
+                                            var myRating = rating(ratecontent, currentRating, maxRating, callback);
+                                        </script>
+</div>
+<div class="nextprev clear">
+<div class="icon tt left mr1" data-distance="-40|-30|top">
+<span class="prev"><a href="HOWTO-FixZAxisIsUp.html"></a></span><div class="tip">How do I fix the rotation of an imported model?</div>
+</div>
+<div class="icon tt right" data-distance="-40|-30|top">
+<span class="next"><a href="HOWTO-ArtAssetBestPracticeGuide.html"></a></span><div class="tip"> Art Asset best practice guide</div>
+</div>
+</div>
+</div>
+</body></html>

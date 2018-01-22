@@ -1,0 +1,288 @@
+<html><head><title>html模版</title></head><body>Unity - Manual:  Mesh Renderer</br>
+<div class="breadcrumbs clear"><ul>
+<li><a href="UnityManual.html">Unity User Manual (2018.1 beta)</a></li>
+<li><a href="Graphics.html">Graphics</a></li>
+<li><a href="GraphicsReference.html">Graphics Reference</a></li>
+<li><a href="comp-MeshGroup.html">Mesh Components</a></li>
+<li> Mesh Renderer</li>
+</ul></div>
+<div class="mb20"><div class="nextprev clear">
+<div class="icon tt left mr1" data-distance="-40|-30|top">
+<span class="prev"><a href="class-MeshFilter.html"></a></span><div class="tip">Mesh Filter</div>
+</div>
+<div class="icon tt right" data-distance="-40|-30|top">
+<span class="next"><a href="class-SkinnedMeshRenderer.html"></a></span><div class="tip">Skinned Mesh Renderer [DRAFT] </div>
+</div>
+</div></div>
+<div class="otherversionswrapper" onmouseover="setOtherVersionsDisplay(true)" onmouseout="setOtherVersionsDisplay(false)">
+<a>Other Versions</a><div class="otherversionscontent" id="OtherVersionsContent" style="display: none;">Cannot access other versions offline!</div>
+</div>
+<div class="scrollToFeedback"><a id="scrollToFeedback">Leave feedback</a></div>
+<h1>Mesh Renderer</h1>
+<!--BeginSwitchLink--><a href='../ScriptReference/MeshRenderer.html' title='Go to MeshRenderer page in the Scripting Reference' class='switch-link gray-btn sbtn left'>Switch to Scripting</a><!--EndSwitchLink-->
+<div class="clear"></div>
+
+<p>The Mesh Renderer takes the geometry from the <a href="class-MeshFilter.html">Mesh Filter</a> and renders it at the position defined by the object’s <a href="class-Transform.html">Transform</a> component.</p>
+
+<figure>
+<img src="../uploads/Main/class-MeshRenderer-0.png" alt="">
+</figure>
+
+<p>The Mesh Renderer GameObject Component as displayed in the Inspector window</p>
+
+<h2><strong>Properties</strong></h2>
+
+<table>
+<colgroup>
+<col style="text-align:left;">
+<col style="text-align:left;">
+</colgroup>
+
+<thead>
+<tr>
+	<th style="text-align:left;"><strong>Property:</strong></th>
+	<th style="text-align:left;"><strong>Function:</strong></th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+	<td style="text-align:left;"><strong>Light Probes</strong></td>
+	<td style="text-align:left;">Probe-based lighting interpolation mode.</td>
+</tr>
+<tr>
+	<td style="text-align:left;">    Off:</td>
+	<td style="text-align:left;">The Renderer doesn’t use any interpolated Light Probes.</td>
+</tr>
+<tr>
+	<td style="text-align:left;">    Blend Probes</td>
+	<td style="text-align:left;">The Renderer uses one interpolated Light Probe. This is the default option.</td>
+</tr>
+<tr>
+	<td style="text-align:left;">    Use Proxy Volume</td>
+	<td style="text-align:left;">The Renderer uses a 3D grid of interpolated Light Probes.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>Reflection Probes</strong></td>
+	<td style="text-align:left;">Specifies how the object is affected by reflections in the scene. You cannot disable this property in deferred rendering modes.</td>
+</tr>
+<tr>
+	<td style="text-align:left;">    Off</td>
+	<td style="text-align:left;">Reflection probes are disabled, skybox will be used for reflection.</td>
+</tr>
+<tr>
+	<td style="text-align:left;">    Blend Probes</td>
+	<td style="text-align:left;">Reflection probes are enabled. Blending occurs only between probes, useful in indoor environments. The renderer will use default reflection if there are no reflection probes nearby, but no blending between default reflection and probe will occur.</td>
+</tr>
+<tr>
+	<td style="text-align:left;">    Blend Probes and Skybox</td>
+	<td style="text-align:left;">Reflection probes are enabled. Blending occurs between probes or probes and default reflection, useful for outdoor environments.</td>
+</tr>
+<tr>
+	<td style="text-align:left;">    Simple</td>
+	<td style="text-align:left;">Reflection probes are enabled, but no blending will occur between probes when there are two overlapping volumes.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>Anchor Override</strong></td>
+	<td style="text-align:left;">A Transform used to determine the interpolation position when the <a href="https://docs.unity3d.com/Manual/LightProbes.html">Light Probe</a> or Reflection Probe systems are used.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>Cast Shadows</strong></td>
+	<td style="text-align:left;"></td>
+</tr>
+<tr>
+	<td style="text-align:left;">    On</td>
+	<td style="text-align:left;">The Mesh will cast a shadow when a shadow-casting Light shines on it</td>
+</tr>
+<tr>
+	<td style="text-align:left;">    Off</td>
+	<td style="text-align:left;">The Mesh will not cast shadows</td>
+</tr>
+<tr>
+	<td style="text-align:left;">    Two Sided</td>
+	<td style="text-align:left;">Two sided shadows are cast from either side of the Mesh. Two sided shadows are not supported by Enlighten or Progressive Lightmapper.</td>
+</tr>
+<tr>
+	<td style="text-align:left;">    Shadows Only</td>
+	<td style="text-align:left;">Shadows from the Mesh will be visible, but not the Mesh itself</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>Receive Shadows</strong></td>
+	<td style="text-align:left;">Enable this check box to make the Mesh display any shadows that are cast upon it. Review Shadows is only supported when using Progressive Lightmapper</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>Motion Vectors</strong></td>
+	<td style="text-align:left;">If enabled, the line has motion vectors rendered into the Camera motion vector Texture. See <a href="../ScriptReference/Renderer-motionVectorGenerationMode.html">Renderer.motionVectorGenerationMode</a> in the Scripting API reference documentation to learn more.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>Lightmap Static</strong></td>
+	<td style="text-align:left;">Enable this check box to indicate to Unity that the object’s location is fixed and it will participate in Global Illumination computations. If an object is not marked as Lightmap Static then it can still be lit using <a href="LightProbes.html">Light Probes</a>.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>Materials</strong></td>
+	<td style="text-align:left;">A list of Materials to render the model with.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>Dynamic Occluded</strong></td>
+	<td style="text-align:left;">Enable this check box to indicate to Unity that occlusion culling should be performed for this object even if it is not marked as static.</td>
+</tr>
+</tbody>
+</table>
+
+<p>Tick the lightmap static checkbox to display MeshRenderer Lightmap information in the Inspector(see also the <strong>static</strong> checkbox of the game object).</p>
+
+<figure>
+<img src="../uploads/Main/class-MeshRenderer-1.png" alt="">
+</figure>
+
+<figure>
+<img src="../uploads/Main/class-MeshRenderer-2.png" alt="">
+</figure>
+
+<h2>UV Charting Control</h2>
+
+<table>
+<colgroup>
+<col style="text-align:left;">
+<col style="text-align:left;">
+</colgroup>
+
+<thead>
+<tr>
+	<th style="text-align:left;"><strong>Property:</strong></th>
+	<th style="text-align:left;"><strong>Function:</strong></th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+	<td style="text-align:left;"><strong>Optimize Realtime Uvs</strong></td>
+	<td style="text-align:left;">Specifies whether the authored Mesh UVs are optimized for Realtime Global Illumination or not. When enabled, the authored UVs are merged, scaled and packed for optimisation purposes. <br>When disabled, the authored UVs will be scaled and packed, but not merged. <br>Note that the optimization will sometimes make misjudgements about discontinuities in the original UV mapping. For example, an intentionally sharp edge may be misinterpreted as a continuous surface.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>Max Distance</strong></td>
+	<td style="text-align:left;">Specifies the maximum worldspace distance to be used for UV chart simplification. If charts are within this distance they will be simplified.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>Max Angle</strong></td>
+	<td style="text-align:left;">Specifies the maximum angle in degrees between faces sharing a UV edge. If the angle between the faces is below this value, the UV charts will be simplified.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>Ignore normal</strong></td>
+	<td style="text-align:left;">Check this box to prevent the UV charts from being split during the precompute process for Realtime Global Illumination lighting.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>Min chart size</strong></td>
+	<td style="text-align:left;">Specifies the minimum texel size used for a UV chart. If stitching is required a value of 4 will create a chart of 4x4 texels to store lighting and directionality. If stitching is not required, a value of 2 will reduce the texel density and provide better lighting build times and game performance.</td>
+</tr>
+</tbody>
+</table>
+
+<h2>Lightmap settings</h2>
+
+<table>
+<colgroup>
+<col style="text-align:left;">
+<col style="text-align:left;">
+</colgroup>
+
+<thead>
+<tr>
+	<th style="text-align:left;"><strong>Property:</strong></th>
+	<th style="text-align:left;"><strong>Function:</strong></th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+	<td style="text-align:left;"><strong>Scale in Lightmap</strong></td>
+	<td style="text-align:left;">This value specifies the relative size of the object’s UVs within a lightmap. A value of 0 will result in the object not being lightmapped, but still contribute to lighting other objects in the scene. A value greater than 1.0 increases the number of pixels (ie, the lightmap resolution) used for this object while a value less than 1.0 decreases it. You can use this property to optimise lightmaps so that important and detailed areas are more accurately lit. For example: an isolated building with flat, dark walls will use a low lightmap scale (less than 1.0) while a collection of colourful motorcycles displayed close together warrant a high scale value.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>Prioritize illumination</strong></td>
+	<td style="text-align:left;">Check this box to tell Unity to always include this object in lighting calculations. Useful for objects that are strongly emissive to make sure that other objects will be illuminated by this object.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>Lightmap Parameters</strong></td>
+	<td style="text-align:left;">Allows you to choose or create a set of <a href="LightmapParameters.html">Lightmap Parameters</a> for the this object.</td>
+</tr>
+</tbody>
+</table>
+
+<h2>Details</h2>
+
+<p>Meshes imported from 3D packages can use multiple <a href="Materials.html">Materials</a>. All the Materials used by a Mesh Renderer are held in the <strong>Materials</strong> list. Each sub-Mesh uses one Material from the Materials list. If there are more Materials assigned to the Mesh Renderer than there are sub-Meshes in the Mesh, the first sub-Mesh is rendered with each of the remaining Materials, one on top of the next. This allows you to set up multi-pass rendering on that sub-Mesh - but note that this can impact the performance at run time. Also note that fully opaque Materials, simply overwrite the previous layers, causing a decrease in performance with no advantage.</p>
+
+<p>A Mesh can receive light from the <a href="LightProbes.html">Light Probe</a> system and reflections from the <a href="class-ReflectionProbe.html">Reflection Probe</a> system depending on the settings of the <strong>Use Light Probes</strong> and <strong>Use Reflection Probes</strong> options. For both types of probe, a single point is used as the Mesh’s notional position probe interpolation. By default, this is the centre of the Mesh’s bounding box, but you can change this by dragging a <a href="class-Transform.html">Transform</a> to the <strong>Anchor Override</strong> property (the Anchor Override affects both types of probe). </p>
+
+<p>It may be useful to set the anchor in cases where a GameObject contains two adjoining Meshes; since each Mesh has a separate bounding box, the two are lit discontinuously at the join by default. However, if you set both Meshes to use the same anchor point, then they are consistently lit. By default, a probe-lit Renderer receives lighting from a single Light Probe that is interpolated from the surrounding Light Probes in the Scene. Because of this, GameObjects have constant ambient lighting across the surface. It has a rotational gradient because it is using spherical harmonics, but it lacks a spatial gradient. This is more noticeable on larger objects or Particle Systems. The lighting across the GameObject matches the lighting at the anchor point, and if the GameObject straddles a lighting gradient, parts of the GameObject look incorrect. </p>
+
+<p>To alleviate this behavior, set the <strong>Light Probes</strong> property to <strong>Use Proxy Volume</strong>, with an additional <a href="class-LightProbeProxyVolume.html">Light Probe Proxy Volume</a> component. This generates a 3D grid of interpolated Light Probes inside a bounding volume where the resolution of the grid can be user-specified. The spherical harmonics coefficients of the interpolated Light Probes are updated into 3D Textures, which are sampled at render time to compute the contribution to the diffuse ambient lighting. This adds a spatial gradient to probe-lit GameObjects.</p>
+
+<hr>
+
+<ul>
+<li><p><span class="page-edit"> 2017–06–08 Page published with limited <a href="DocumentationEditorialReview.html">editorial review</a>
+</span></p></li>
+<li><p><span class="page-history">Updated supported lighting backends for Two Sided shadows and Recieve shadows.</span></p></li>
+<li><p><span class="page-history">Mesh Renderer UI updated in 5.6</span></p></li>
+</ul>
+<div class="feedbackbox" id="feedbackbox">
+<div id="rating"><p>Did you find this page useful? Please give it a rating:<br><div id="ratecontent" class="c-rating"></div>
+</p></div>
+<div id="ratingThanks" style="display:none"><p>Thanks for rating this page!</p></div>
+<div id="problem"><p><a name="problem" onclick="document.getElementById('problemType').style.display = '';document.getElementById('problem').style.display = 'none';">Report a problem on this page</a></p></div>
+<div id="problemType" style="display:none"><p>What kind of problem would you like to report?<ul type="problems">
+<li><a name="needcode" onclick="                                                             document.getElementById('problemType').style.display = 'none';                                                             document.getElementById('problemThanks').style.display = '';                                                             SendFeedback('problem-needcode',window.location.href,0);                                                             document.getElementById('problemFormDescription').value='Needs code samples.';                                                             document.getElementById('problemNeedCodeForm').style.display = ''                                                         ">This page needs code samples</a></li>
+<li><a name="code" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-brokencode',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Code samples do not work.';                                                         document.getElementById('problemCodeForm').style.display = ''                                                         ">Code samples do not work</a></li>
+<li><a name="missing" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-missing',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Missing information';                                                         document.getElementById('problemMissingForm').style.display = ''                                                         ">Information is missing</a></li>
+<li><a name="incorrect" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-incorrect',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Incorrect information';                                                         document.getElementById('problemIncorrectForm').style.display = ''                                                         ">Information is incorrect</a></li>
+<li><a name="unclear" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-unclear',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Unclear or confusing information';                                                         document.getElementById('problemUnclearForm').style.display = ''                                                         ">Information is unclear or confusing</a></li>
+<li><a name="language" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-language',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Spelling or grammar error';                                                         document.getElementById('problemLanguageForm').style.display = ''                                                         ">There is a spelling/grammar error on this page</a></li>
+<li><a name="other" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-other',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='This page has a problem';                                                         document.getElementById('problemOtherForm').style.display = ''                                                         ">Something else</a></li>
+</ul>
+<p><known_issues><p>Is something described here not working as you expect it to? It might be a <b>Known Issue</b>. Please check with the Issue Tracker at <a href="https://issuetracker.unity3d.com">issuetracker.unity3d.com</a>.</p></known_issues></p>
+</p></div>
+<div id="problemThanks" style="display:none"><p>Thanks for letting us know! This page has been marked for review based on your feedback.<br><br>If you have time, you can provide more information to help us fix the problem faster.<br><br><a onclick="document.getElementById('problemMoreInfo').style.display = '';document.getElementById('problemThanks').style.display = 'none';">Provide more information</a><br>
+</p></div>
+<div id="problemMoreInfo" style="display:none">
+<p id="problemNeedCodeForm" style="display:none">You've told us this page needs code samples. If you'd like to help us further, you could provide a code sample, or tell us about what kind of code sample you'd like to see:</p>
+<p id="problemCodeForm" style="display:none">You've told us there are code samples on this page which don't work. If you know how to fix it, or have something better we could use instead, please let us know:</p>
+<p id="problemMissingForm" style="display:none">You've told us there is information missing from this page. Please tell us more about what's missing:</p>
+<p id="problemIncorrectForm" style="display:none">You've told us there is incorrect information on this page. If you know what we should change to make it correct, please tell us:</p>
+<p id="problemUnclearForm" style="display:none">You've told us this page has unclear or confusing information. Please tell us more about what you found unclear or confusing, or let us know how we could make it clearer:</p>
+<p id="problemLanguageForm" style="display:none">You've told us there is a spelling or grammar error on this page. Please tell us what's wrong:</p>
+<p id="problemOtherForm" style="display:none">You've told us this page has a problem. Please tell us more about what's wrong:</p>
+<form>
+<textarea id="problemFormSuggestionField" cols="40" rows="5"></textarea><input type="hidden" id="problemFormDescription"><input type="submit" id="problemFormDescriptionSubmit" value="Submit" onclick="                                             document.getElementById('problemMoreInfo').style.display = 'none';                                             document.getElementById('problemMoreInfoThanks').style.display = '';                                             return false;                                             ">
+</form>
+</div>
+<div id="problemMoreInfoThanks" style="display:none"><p>Thanks for helping to make the Unity documentation better!</p></div>
+<script>
+
+                                            var ratecontent = document.querySelector('#ratecontent'); // target element
+                                            var currentRating = 0; // initial rating
+                                            var maxRating= 5; // max rating
+
+                                            // callback to run after setting the rating
+                                            var callback = function(rating) {
+                                                document.getElementById('ratingThanks').style.display = '';
+                                                document.getElementById('ratecontent').style.display = 'none';
+                                                document.getElementById('rating').style.display = 'none';
+                                                SendFeedback("rating",window.location.href,rating);
+                                            };
+
+                                            // rating instance
+                                            var myRating = rating(ratecontent, currentRating, maxRating, callback);
+                                        </script>
+</div>
+<div class="nextprev clear">
+<div class="icon tt left mr1" data-distance="-40|-30|top">
+<span class="prev"><a href="class-MeshFilter.html"></a></span><div class="tip">Mesh Filter</div>
+</div>
+<div class="icon tt right" data-distance="-40|-30|top">
+<span class="next"><a href="class-SkinnedMeshRenderer.html"></a></span><div class="tip">Skinned Mesh Renderer [DRAFT] </div>
+</div>
+</div>
+</div>
+</body></html>

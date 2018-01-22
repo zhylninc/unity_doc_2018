@@ -1,0 +1,166 @@
+<html><head><title>html模版</title></head><body>Unity - Manual: Using Audio In WebGL</br>
+<div class="breadcrumbs clear"><ul>
+<li><a href="UnityManual.html">Unity User Manual (2018.1 beta)</a></li>
+<li><a href="PlatformSpecific.html">Platform-specific</a></li>
+<li><a href="webgl.html">WebGL</a></li>
+<li><a href="webgl-gettingstarted.html">Getting started with WebGL development</a></li>
+<li>Using Audio In WebGL</li>
+</ul></div>
+<div class="mb20"><div class="nextprev clear">
+<div class="icon tt left mr1" data-distance="-40|-30|top">
+<span class="prev"><a href="webgl-networking.html"></a></span><div class="tip">WebGL Networking</div>
+</div>
+<div class="icon tt right" data-distance="-40|-30|top">
+<span class="next"><a href="webgl-performance.html"></a></span><div class="tip">WebGL performance considerations</div>
+</div>
+</div></div>
+<div class="otherversionswrapper" onmouseover="setOtherVersionsDisplay(true)" onmouseout="setOtherVersionsDisplay(false)">
+<a>Other Versions</a><div class="otherversionscontent" id="OtherVersionsContent" style="display: none;">Cannot access other versions offline!</div>
+</div>
+<div class="scrollToFeedback"><a id="scrollToFeedback">Leave feedback</a></div>
+<h1>Using Audio In WebGL</h1>
+<!--BeginSwitchLink--><!--EndSwitchLink-->
+<div class="clear"></div>
+
+<p>Audio in WebGL is done differently then on all other platforms. On other platforms we use FMOD internally to supply audio playback and mixing. Since the WebGL platform does not support threads, we need to use a different implementation, which is internally based on the Web Audio API, which lets the browser handle audio playback and mixing for us.</p>
+
+<p>Unfortunately, this limits audio functionality in Unity WebGL to supporting only the most basic features. This page will document what is expected to work. Anything not listed here is not currently supported on WebGL.</p>
+
+<h2>AudioSource</h2>
+
+<p>Audio sources support basic positional audio playback with pausing and resuming, panning, rolloff, pitch setting, and doppler effect support. </p>
+
+<p>The following <strong><a href="../ScriptReference/AudioSource.html"><code>AudioSource</code></a></strong> APIs are supported:</p>
+
+<p>Properties:</p>
+
+<ul>
+<li><strong><a href="../ScriptReference/AudioSource-clip.html"><code>clip</code></a></strong></li>
+<li><strong><a href="../ScriptReference/AudioSource-dopplerLevel.html"><code>dopplerLevel</code></a></strong></li>
+<li><strong><a href="../ScriptReference/AudioSource-ignoreListenerPause.html"><code>ignoreListenerPause</code></a></strong></li>
+<li><strong><a href="../ScriptReference/AudioSource-ignoreListenerVolume.html"><code>ignoreListenerVolume</code></a></strong></li>
+<li><strong><a href="../ScriptReference/AudioSource-isPlaying.html"><code>isPlaying</code></a></strong></li>
+<li><strong><a href="../ScriptReference/AudioSource-loop.html"><code>loop</code></a></strong></li>
+<li><strong><a href="../ScriptReference/AudioSource-maxDistance.html"><code>maxDistance</code></a></strong></li>
+<li><strong><a href="../ScriptReference/AudioSource-minDistance.html"><code>minDistance</code></a></strong></li>
+<li><strong><a href="../ScriptReference/AudioSource-mute.html"><code>mute</code></a></strong></li>
+<li>
+<strong><a href="../ScriptReference/AudioSource-pitch.html"><code>pitch</code></a></strong> (Note that only positive values for pitch are supported.)</li>
+<li><strong><a href="../ScriptReference/AudioSource-playOnAwake.html"><code>playOnAwake</code></a></strong></li>
+<li><strong><a href="../ScriptReference/AudioSource-rolloffMode.html"><code>rolloffMode</code></a></strong></li>
+<li><strong><a href="../ScriptReference/AudioSource-time.html"><code>time</code></a></strong></li>
+<li><strong><a href="../ScriptReference/AudioSource-timeSamples.html"><code>timeSamples</code></a></strong></li>
+<li><strong><a href="../ScriptReference/AudioSource-velocityUpdateMode.html"><code>velocityUpdateMode</code></a></strong></li>
+<li><strong><a href="../ScriptReference/AudioSource-volume.html"><code>volume</code></a></strong></li>
+</ul>
+
+<p>Methods:</p>
+
+<ul>
+<li><strong><a href="../ScriptReference/AudioSource.Pause.html"><code>Pause</code></a></strong></li>
+<li><strong><a href="../ScriptReference/AudioSource.Play.html"><code>Play</code></a></strong></li>
+<li><strong><a href="../ScriptReference/AudioSource.PlayDelayed.html"><code>PlayDelayed</code></a></strong></li>
+<li><strong><a href="../ScriptReference/AudioSource.PlayOneShot.html"><code>PlayOneShot</code></a></strong></li>
+<li><strong><a href="../ScriptReference/AudioSource.PlayScheduled.html"><code>PlayScheduled</code></a></strong></li>
+<li><strong><a href="../ScriptReference/AudioSource.SetScheduledEndTime.html"><code>SetScheduledEndTime</code></a></strong></li>
+<li><strong><a href="../ScriptReference/AudioSource.SetScheduledStartTime.html"><code>SetScheduledStartTime</code></a></strong></li>
+<li><strong><a href="../ScriptReference/AudioSource.Stop.html"><code>Stop</code></a></strong></li>
+<li><strong><a href="../ScriptReference/AudioSource.UnPause.html"><code>UnPause</code></a></strong></li>
+<li><strong><a href="../ScriptReference/AudioSource.PlayClipAtPoint.html"><code>PlayClipAtPoint</code></a></strong></li>
+</ul>
+
+<h2>AudioListener</h2>
+
+<p>All <strong><a href="../ScriptReference/AudioListener.html"><code>AudioListener</code></a></strong> APIs are supported.</p>
+
+<h2>AudioClip</h2>
+
+<p>Audio clips in WebGL will always be imported in the AAC format, as that is widely supported by different browsers.</p>
+
+<p>The following All <strong><a href="../ScriptReference/AudioClip.html"><code>AudioClip</code></a></strong> APIs are supported.
+ APIs are supported:</p>
+
+<p>Properties:</p>
+
+<ul>
+<li><strong><a href="../ScriptReference/AudioClip-length.html"><code>length</code></a></strong></li>
+<li><strong><a href="../ScriptReference/AudioClip-loadState.html"><code>loadState</code></a></strong></li>
+<li><strong><a href="../ScriptReference/AudioClip-samples.html"><code>samples</code></a></strong></li>
+</ul>
+
+<p>Methods:</p>
+
+<ul>
+<li>
+<strong><a href="../ScriptReference/AudioClip.Create.html"><code>Create</code></a></strong>. <code>AudioClip.Create</code> is supported partially: it will only work if the streaming parameter is set to false and the complete audio samples can be loaded at the time AudioClip.Create is called. It will then create the clip and load all samples before returning control.</li>
+<li>
+<strong><a href="../ScriptReference/AudioClip.SetData.html"><code>SetData</code></a></strong>. <code>AudioClip.SetData</code> is supported partially: it will only work for replacing the entire contents of the AudioClip. The <code>offsetSamples</code> parameter is ignored.</li>
+</ul>
+
+<h2>WWW.audioClip</h2>
+
+<p>
+<strong><a href="../ScriptReference/WWW-audioClip.html"><code>WWW.audioClip</code></a></strong> should work in WebGL, if the audio clip is in a format which is natively supported by the browser. See <a href="https://developer.mozilla.org/en-US/docs/Web/HTML/Supported_media_formats">here</a> for a list of supported formats in different browsers.</p>
+
+<h2>Microphone</h2>
+
+<p>The <strong><a href="../ScriptReference/Microphone.html"><code>Microphone</code></a></strong> class is not supported in WebGL.</p>
+<div class="feedbackbox" id="feedbackbox">
+<div id="rating"><p>Did you find this page useful? Please give it a rating:<br><div id="ratecontent" class="c-rating"></div>
+</p></div>
+<div id="ratingThanks" style="display:none"><p>Thanks for rating this page!</p></div>
+<div id="problem"><p><a name="problem" onclick="document.getElementById('problemType').style.display = '';document.getElementById('problem').style.display = 'none';">Report a problem on this page</a></p></div>
+<div id="problemType" style="display:none"><p>What kind of problem would you like to report?<ul type="problems">
+<li><a name="needcode" onclick="                                                             document.getElementById('problemType').style.display = 'none';                                                             document.getElementById('problemThanks').style.display = '';                                                             SendFeedback('problem-needcode',window.location.href,0);                                                             document.getElementById('problemFormDescription').value='Needs code samples.';                                                             document.getElementById('problemNeedCodeForm').style.display = ''                                                         ">This page needs code samples</a></li>
+<li><a name="code" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-brokencode',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Code samples do not work.';                                                         document.getElementById('problemCodeForm').style.display = ''                                                         ">Code samples do not work</a></li>
+<li><a name="missing" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-missing',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Missing information';                                                         document.getElementById('problemMissingForm').style.display = ''                                                         ">Information is missing</a></li>
+<li><a name="incorrect" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-incorrect',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Incorrect information';                                                         document.getElementById('problemIncorrectForm').style.display = ''                                                         ">Information is incorrect</a></li>
+<li><a name="unclear" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-unclear',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Unclear or confusing information';                                                         document.getElementById('problemUnclearForm').style.display = ''                                                         ">Information is unclear or confusing</a></li>
+<li><a name="language" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-language',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Spelling or grammar error';                                                         document.getElementById('problemLanguageForm').style.display = ''                                                         ">There is a spelling/grammar error on this page</a></li>
+<li><a name="other" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-other',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='This page has a problem';                                                         document.getElementById('problemOtherForm').style.display = ''                                                         ">Something else</a></li>
+</ul>
+<p><known_issues><p>Is something described here not working as you expect it to? It might be a <b>Known Issue</b>. Please check with the Issue Tracker at <a href="https://issuetracker.unity3d.com">issuetracker.unity3d.com</a>.</p></known_issues></p>
+</p></div>
+<div id="problemThanks" style="display:none"><p>Thanks for letting us know! This page has been marked for review based on your feedback.<br><br>If you have time, you can provide more information to help us fix the problem faster.<br><br><a onclick="document.getElementById('problemMoreInfo').style.display = '';document.getElementById('problemThanks').style.display = 'none';">Provide more information</a><br>
+</p></div>
+<div id="problemMoreInfo" style="display:none">
+<p id="problemNeedCodeForm" style="display:none">You've told us this page needs code samples. If you'd like to help us further, you could provide a code sample, or tell us about what kind of code sample you'd like to see:</p>
+<p id="problemCodeForm" style="display:none">You've told us there are code samples on this page which don't work. If you know how to fix it, or have something better we could use instead, please let us know:</p>
+<p id="problemMissingForm" style="display:none">You've told us there is information missing from this page. Please tell us more about what's missing:</p>
+<p id="problemIncorrectForm" style="display:none">You've told us there is incorrect information on this page. If you know what we should change to make it correct, please tell us:</p>
+<p id="problemUnclearForm" style="display:none">You've told us this page has unclear or confusing information. Please tell us more about what you found unclear or confusing, or let us know how we could make it clearer:</p>
+<p id="problemLanguageForm" style="display:none">You've told us there is a spelling or grammar error on this page. Please tell us what's wrong:</p>
+<p id="problemOtherForm" style="display:none">You've told us this page has a problem. Please tell us more about what's wrong:</p>
+<form>
+<textarea id="problemFormSuggestionField" cols="40" rows="5"></textarea><input type="hidden" id="problemFormDescription"><input type="submit" id="problemFormDescriptionSubmit" value="Submit" onclick="                                             document.getElementById('problemMoreInfo').style.display = 'none';                                             document.getElementById('problemMoreInfoThanks').style.display = '';                                             return false;                                             ">
+</form>
+</div>
+<div id="problemMoreInfoThanks" style="display:none"><p>Thanks for helping to make the Unity documentation better!</p></div>
+<script>
+
+                                            var ratecontent = document.querySelector('#ratecontent'); // target element
+                                            var currentRating = 0; // initial rating
+                                            var maxRating= 5; // max rating
+
+                                            // callback to run after setting the rating
+                                            var callback = function(rating) {
+                                                document.getElementById('ratingThanks').style.display = '';
+                                                document.getElementById('ratecontent').style.display = 'none';
+                                                document.getElementById('rating').style.display = 'none';
+                                                SendFeedback("rating",window.location.href,rating);
+                                            };
+
+                                            // rating instance
+                                            var myRating = rating(ratecontent, currentRating, maxRating, callback);
+                                        </script>
+</div>
+<div class="nextprev clear">
+<div class="icon tt left mr1" data-distance="-40|-30|top">
+<span class="prev"><a href="webgl-networking.html"></a></span><div class="tip">WebGL Networking</div>
+</div>
+<div class="icon tt right" data-distance="-40|-30|top">
+<span class="next"><a href="webgl-performance.html"></a></span><div class="tip">WebGL performance considerations</div>
+</div>
+</div>
+</div>
+</body></html>

@@ -1,0 +1,173 @@
+<html><head><title>html模版</title></head><body>Unity - Manual:  Shader assets</br>
+<div class="breadcrumbs clear"><ul>
+<li><a href="UnityManual.html">Unity User Manual (2018.1 beta)</a></li>
+<li><a href="Graphics.html">Graphics</a></li>
+<li><a href="GraphicsReference.html">Graphics Reference</a></li>
+<li><a href="SL-Reference.html"> Shader Reference</a></li>
+<li> Shader assets</li>
+</ul></div>
+<div class="mb20"><div class="nextprev clear">
+<div class="icon tt left mr1" data-distance="-40|-30|top">
+<span class="prev"><a href="SL-Other.html"></a></span><div class="tip"> ShaderLab: other commands</div>
+</div>
+<div class="icon tt right" data-distance="-40|-30|top">
+<span class="next"><a href="SL-AdvancedTopics.html"></a></span><div class="tip">Advanced ShaderLab topics</div>
+</div>
+</div></div>
+<div class="otherversionswrapper" onmouseover="setOtherVersionsDisplay(true)" onmouseout="setOtherVersionsDisplay(false)">
+<a>Other Versions</a><div class="otherversionscontent" id="OtherVersionsContent" style="display: none;">Cannot access other versions offline!</div>
+</div>
+<div class="scrollToFeedback"><a id="scrollToFeedback">Leave feedback</a></div>
+<h1>Shader assets</h1>
+<!--BeginSwitchLink--><a href='../ScriptReference/Shader.html' title='Go to Shader page in the Scripting Reference' class='switch-link gray-btn sbtn left'>Switch to Scripting</a><!--EndSwitchLink-->
+<div class="clear"></div>
+
+<p>Shaders are assets that contain code and instructions for the graphics card to execute.
+<a href="class-Material.html">Materials</a> reference shaders, and setup their parameters (textures, colors and so on).</p>
+
+<p>Unity contains some built-in shaders that are always available in your project (for example,
+the <a href="shader-StandardShader.html">Standard shader</a>). You can also <a href="ShadersOverview.html">write your own shaders</a> and apply <a href="PostProcessingOverview.html">post-processing effects</a>.</p>
+
+<h2>Creating a new shader</h2>
+
+<p>To create a new Shader, use <strong>Assets</strong> &gt; <strong>Create</strong> &gt; <strong>Shader</strong> from the
+main menu or the <strong>Project View</strong> context menu. A shader is a text file
+similar to a C# script, and is written in a combination of Cg/HLSL and ShaderLab languages
+(see <a href="ShadersOverview.html">writing shaders</a> page for details).</p>
+
+<figure>
+<img src="../uploads/Shaders/Inspector-Shader.png" alt="Shader inspector.">
+<figcaption>Shader inspector.</figcaption>
+</figure>
+
+<h3>Shader import settings</h3>
+
+<p>This inspector section allows specifying default textures for a shader. Whenever a new
+<a href="class-Material.html">Material</a> is created with this shader, these textures are
+automatically assigned.</p>
+
+<h3>Shader Inspector</h3>
+
+<p>The Shader Inspector displays basic information about the shader (mostly <a href="SL-SubShaderTags.html">shader tags</a>),
+and allows compiling and inspecting low-level compiled code.</p>
+
+<p>For <a href="SL-SurfaceShaders.html">Surface Shaders</a>, the <strong>Show generated code</strong>
+button displays all the code that Unity generates to handle lighting and shadowing. If you really want
+to customize the generated code, you can just copy and paste all of it back to your original shader file
+and start tweaking.</p>
+
+<figure>
+<img src="../uploads/Shaders/Inspector-ShaderCompilePopup.png" alt="Shader compilation popup menu.">
+<figcaption>Shader compilation popup menu.</figcaption>
+</figure>
+
+<p>The pop-up menu of the <strong>Compile and show code</strong> button allows inspecting final
+compiled shader code (e.g. assembly on Direct3D9, or low-level optimized GLSL for OpenGL ES) for selected
+platforms. This is mostly useful while optimizing shaders for performance; often you do want to know how
+many low-level instructions here generated in the end.</p>
+
+<p>The low-level generated code is useful for pasting into GPU shader performance analysis tools (like
+<a href="http://developer.amd.com/tools-and-sdks/graphics-development/gpu-shaderanalyzer/">AMD GPU ShaderAnalyzer</a>
+or <a href="http://community.imgtec.com/developers/powervr/tools/pvrshadereditor/">PVRShaderEditor</a>).</p>
+
+<h2>Shader compilation details</h2>
+
+<p>On shader import time, Unity does not compile the whole shader. This is because majority of shaders
+have a lot of <a href="SL-MultipleProgramVariants.html">variants</a> inside, and compiling all of them, for all possible
+platforms, would take a very long time. Instead, this is done:</p>
+
+<ul>
+<li>At import time, only do minimal processing of the shader (surface shader generation etc.).</li>
+<li>Actually compile the shader variants only when needed.</li>
+<li>Instead of typical work of compiling 100–10000 internal shaders at import time, this usually ends up compiling just a handful.</li>
+</ul>
+
+<p>At player build time, all the “not yet compiled” shader variants are compiled, so that they are in the game data even if the editor did not happen to use them.</p>
+
+<p>However, this does mean that a shader might have an error in there, which is not detected at shader
+import time. For example, you’re running editor using Direct3D 11, but a shader has an error if compiled
+for OpenGL. Or some <a href="SL-MultipleProgramVariants.html">variants</a> of the shader does not fit into shader model 2.0
+instruction limits, etc. These errors will be shown in the inspector if editor needs them; but it’s also a
+good practice to manually fully compile the shader for platforms you need, to check for errors. This can be
+done using the <strong>Compile and show code</strong> pop-up menu in the shader inspector.</p>
+
+<p>Shader compilation is carried out using a background process named <code>UnityShaderCompiler</code> that is started by Unity
+whenever it needs to compile shaders. Multiple compiler processes can be started (generally one per CPU
+core in your machine), so that at player build time shader compilation can be done in parallel. While the
+editor is not compiling shaders, the compiler processes do nothing and do not consume computer resources,
+so there’s no need to worry about them. They are also shut down when Unity editor quits.</p>
+
+<p>Individual shader variant compilation results are cached in the project, under <code>Library/ShaderCache</code> folder.
+This means that 100% identical shaders or their snippets will reuse previously compiled results. It also
+means that the shader cache folder can become quite large, if you have a lot of shaders that are changed
+often. It is always safe to delete it; it will just cause shader variants to be recompiled.</p>
+
+<h2>Further reading</h2>
+
+<ul>
+<li>
+<a href="class-Material.html">Material</a> assets.</li>
+<li>
+<a href="ShadersOverview.html">Writing Shaders overview</a>.</li>
+<li>
+<a href="SL-Reference.html">Shader reference</a>.</li>
+</ul>
+<div class="feedbackbox" id="feedbackbox">
+<div id="rating"><p>Did you find this page useful? Please give it a rating:<br><div id="ratecontent" class="c-rating"></div>
+</p></div>
+<div id="ratingThanks" style="display:none"><p>Thanks for rating this page!</p></div>
+<div id="problem"><p><a name="problem" onclick="document.getElementById('problemType').style.display = '';document.getElementById('problem').style.display = 'none';">Report a problem on this page</a></p></div>
+<div id="problemType" style="display:none"><p>What kind of problem would you like to report?<ul type="problems">
+<li><a name="needcode" onclick="                                                             document.getElementById('problemType').style.display = 'none';                                                             document.getElementById('problemThanks').style.display = '';                                                             SendFeedback('problem-needcode',window.location.href,0);                                                             document.getElementById('problemFormDescription').value='Needs code samples.';                                                             document.getElementById('problemNeedCodeForm').style.display = ''                                                         ">This page needs code samples</a></li>
+<li><a name="code" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-brokencode',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Code samples do not work.';                                                         document.getElementById('problemCodeForm').style.display = ''                                                         ">Code samples do not work</a></li>
+<li><a name="missing" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-missing',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Missing information';                                                         document.getElementById('problemMissingForm').style.display = ''                                                         ">Information is missing</a></li>
+<li><a name="incorrect" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-incorrect',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Incorrect information';                                                         document.getElementById('problemIncorrectForm').style.display = ''                                                         ">Information is incorrect</a></li>
+<li><a name="unclear" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-unclear',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Unclear or confusing information';                                                         document.getElementById('problemUnclearForm').style.display = ''                                                         ">Information is unclear or confusing</a></li>
+<li><a name="language" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-language',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Spelling or grammar error';                                                         document.getElementById('problemLanguageForm').style.display = ''                                                         ">There is a spelling/grammar error on this page</a></li>
+<li><a name="other" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-other',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='This page has a problem';                                                         document.getElementById('problemOtherForm').style.display = ''                                                         ">Something else</a></li>
+</ul>
+<p><known_issues><p>Is something described here not working as you expect it to? It might be a <b>Known Issue</b>. Please check with the Issue Tracker at <a href="https://issuetracker.unity3d.com">issuetracker.unity3d.com</a>.</p></known_issues></p>
+</p></div>
+<div id="problemThanks" style="display:none"><p>Thanks for letting us know! This page has been marked for review based on your feedback.<br><br>If you have time, you can provide more information to help us fix the problem faster.<br><br><a onclick="document.getElementById('problemMoreInfo').style.display = '';document.getElementById('problemThanks').style.display = 'none';">Provide more information</a><br>
+</p></div>
+<div id="problemMoreInfo" style="display:none">
+<p id="problemNeedCodeForm" style="display:none">You've told us this page needs code samples. If you'd like to help us further, you could provide a code sample, or tell us about what kind of code sample you'd like to see:</p>
+<p id="problemCodeForm" style="display:none">You've told us there are code samples on this page which don't work. If you know how to fix it, or have something better we could use instead, please let us know:</p>
+<p id="problemMissingForm" style="display:none">You've told us there is information missing from this page. Please tell us more about what's missing:</p>
+<p id="problemIncorrectForm" style="display:none">You've told us there is incorrect information on this page. If you know what we should change to make it correct, please tell us:</p>
+<p id="problemUnclearForm" style="display:none">You've told us this page has unclear or confusing information. Please tell us more about what you found unclear or confusing, or let us know how we could make it clearer:</p>
+<p id="problemLanguageForm" style="display:none">You've told us there is a spelling or grammar error on this page. Please tell us what's wrong:</p>
+<p id="problemOtherForm" style="display:none">You've told us this page has a problem. Please tell us more about what's wrong:</p>
+<form>
+<textarea id="problemFormSuggestionField" cols="40" rows="5"></textarea><input type="hidden" id="problemFormDescription"><input type="submit" id="problemFormDescriptionSubmit" value="Submit" onclick="                                             document.getElementById('problemMoreInfo').style.display = 'none';                                             document.getElementById('problemMoreInfoThanks').style.display = '';                                             return false;                                             ">
+</form>
+</div>
+<div id="problemMoreInfoThanks" style="display:none"><p>Thanks for helping to make the Unity documentation better!</p></div>
+<script>
+
+                                            var ratecontent = document.querySelector('#ratecontent'); // target element
+                                            var currentRating = 0; // initial rating
+                                            var maxRating= 5; // max rating
+
+                                            // callback to run after setting the rating
+                                            var callback = function(rating) {
+                                                document.getElementById('ratingThanks').style.display = '';
+                                                document.getElementById('ratecontent').style.display = 'none';
+                                                document.getElementById('rating').style.display = 'none';
+                                                SendFeedback("rating",window.location.href,rating);
+                                            };
+
+                                            // rating instance
+                                            var myRating = rating(ratecontent, currentRating, maxRating, callback);
+                                        </script>
+</div>
+<div class="nextprev clear">
+<div class="icon tt left mr1" data-distance="-40|-30|top">
+<span class="prev"><a href="SL-Other.html"></a></span><div class="tip"> ShaderLab: other commands</div>
+</div>
+<div class="icon tt right" data-distance="-40|-30|top">
+<span class="next"><a href="SL-AdvancedTopics.html"></a></span><div class="tip">Advanced ShaderLab topics</div>
+</div>
+</div>
+</div>
+</body></html>

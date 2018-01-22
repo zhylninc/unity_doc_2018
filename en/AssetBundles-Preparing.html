@@ -1,0 +1,135 @@
+<html><head><title>html模版</title></head><body>Unity - Manual:  Preparing Assets for AssetBundles</br>
+<div class="breadcrumbs clear"><ul>
+<li><a href="UnityManual.html">Unity User Manual (2018.1 beta)</a></li>
+<li><a href="UnityOverview.html">Working in Unity</a></li>
+<li><a href="AdvancedDevelopment.html">Advanced Development</a></li>
+<li><a href="AssetBundlesIntro.html"> AssetBundles</a></li>
+<li> Preparing Assets for AssetBundles</li>
+</ul></div>
+<div class="mb20"><div class="nextprev clear">
+<div class="icon tt left mr1" data-distance="-40|-30|top">
+<span class="prev"><a href="AssetBundles-Workflow.html"></a></span><div class="tip"> AssetBundle Workflow</div>
+</div>
+<div class="icon tt right" data-distance="-40|-30|top">
+<span class="next"><a href="AssetBundles-Building.html"></a></span><div class="tip"> Building AssetBundles</div>
+</div>
+</div></div>
+<div class="otherversionswrapper" onmouseover="setOtherVersionsDisplay(true)" onmouseout="setOtherVersionsDisplay(false)">
+<a>Other Versions</a><div class="otherversionscontent" id="OtherVersionsContent" style="display: none;">Cannot access other versions offline!</div>
+</div>
+<div class="scrollToFeedback"><a id="scrollToFeedback">Leave feedback</a></div>
+<h1>Preparing Assets for AssetBundles</h1>
+<!--BeginSwitchLink--><!--EndSwitchLink-->
+<div class="clear"></div>
+
+<p>When using AssetBundles you are free to assign any asset to any bundle you desire. However, there are certain strategies to consider when setting up your bundles. These grouping strategies are meant to be used however you see fit for your specific project. Feel free to mix and match these strategies as you see fit.</p>
+
+<h2>Logical Entity Grouping</h2>
+
+<p>Logical Entity Grouping is where assets are assigned to AssetBundles based on the functional portion of the project they represent. This includes sections such as User-Interface, characters, environments, and anything else that may appear frequently throughout the lifetime of the application.</p>
+
+<h3>Examples</h3>
+
+<ul>
+<li>Bundling all the textures and layout data for a User-Interface screen</li>
+<li>Bundling all the models and animations for a character/set of characters</li>
+<li>Bundling the textures and models for pieces of the scenery shared across multiple levels</li>
+</ul>
+
+<p>Logical Entity Grouping is ideal for downloadable content (DLC) for the fact that, with everything separated in this way, you’re able to make a change to a single entity and not require the download of additional, unchanged, assets. </p>
+
+<p>The biggest trick to being able to properly implement this strategy is that the developer assigning assets to their respective bundles must be familiar with precisely when and where each asset will be used by the project.</p>
+
+<h2>Type Grouping</h2>
+
+<p>For this strategy you’ll assign assets that are of similar type, such as audio tracks or language localization files, to a single AssetBundle.</p>
+
+<p>Type grouping is one of the better strategies for building AssetBundles to be used by multiple platforms. For example if your audio compression settings are identical between windows and mac platforms, you can pack all audio data into AssetBundles by themselves and reuse those bundles, whereas shaders tend to get compiled with more platform specific options so a shader bundle you build for mac may not be reused on windows. In addition, this method is great for making your AssetBundles compatible with more unity player versions as textures compression formats and settings change less frequently than something like your code scripts or prefabs.</p>
+
+<h2>Concurrent Content Grouping</h2>
+
+<p>Concurrent Content Grouping is the idea that you will bundle assets together that will be loaded and used at the same time. You could think of these types of bundles as being used for a level based game where each level contains totally unique characters, textures, music, etc. You would want to be absolutely certain that an asset in one of these AssetBundles is only used at the same time the rest of the assets in that bundle are going to be used. Having a dependency on a single asset inside a Concurrent Content Grouping bundle would result in significant increased load times. You would be forced to download the entire bundle for that single asset.</p>
+
+<p>The most common use-case for Concurrent Content Grouping bundles is for bundles that are based on scenes. In this assignment strategy, each scene bundle should contain most or all of that scenes dependencies.</p>
+
+<p>Note that a project absolutely can and should mix these strategies as your needs require. Using the optimal asset assignment strategy for any given scenario greatly increases efficiency for any project.</p>
+
+<p>For example, a project may decide to group its User-Interface (UI) elements for different platforms into their own Platform-UI specific bundle but group its interactive content by level/scene.</p>
+
+<p>Regardless of the strategy you follow, here are some additional tips that are good to keep in mind across the board:</p>
+
+<ul>
+<li>Split frequently updated objects into AssetBundles separate from objects that rarely change</li>
+<li>Group objects that are likely to be loaded simultaneously. Such as a model, its textures, and its animations</li>
+<li>If you notice multiple objects across multiple AssetBundles are dependant on a single asset from a completely different AssetBundle, move the dependency to a separate AssetBundle. If several AssetBundles are referencing the same group of assets in other AssetBundles, it may be worth pulling those dependencies into a shared AssetBundle to reduce duplication.</li>
+<li>If two sets of objects are unlikely to ever be loaded at the same time, such as Standard and High Definition assets, be sure they are in their own AssetBundles.</li>
+<li>Consider splitting apart an AssetBundle if less that 50% of that bundle is ever frequently loaded at the same time</li>
+<li>Consider combining AssetBundles that are small (less that 5 to 10 assets) but whose content is frequently loaded simultaneously</li>
+<li>If a group of objects are simply different versions of the same object, consider AssetBundle Variants</li>
+</ul>
+
+<hr>
+
+<ul>
+<li><span class="page-edit">2017–05–15 Page published with no <a href="DocumentationEditorialReview.html">editorial review</a>
+</span></li>
+</ul>
+<div class="feedbackbox" id="feedbackbox">
+<div id="rating"><p>Did you find this page useful? Please give it a rating:<br><div id="ratecontent" class="c-rating"></div>
+</p></div>
+<div id="ratingThanks" style="display:none"><p>Thanks for rating this page!</p></div>
+<div id="problem"><p><a name="problem" onclick="document.getElementById('problemType').style.display = '';document.getElementById('problem').style.display = 'none';">Report a problem on this page</a></p></div>
+<div id="problemType" style="display:none"><p>What kind of problem would you like to report?<ul type="problems">
+<li><a name="needcode" onclick="                                                             document.getElementById('problemType').style.display = 'none';                                                             document.getElementById('problemThanks').style.display = '';                                                             SendFeedback('problem-needcode',window.location.href,0);                                                             document.getElementById('problemFormDescription').value='Needs code samples.';                                                             document.getElementById('problemNeedCodeForm').style.display = ''                                                         ">This page needs code samples</a></li>
+<li><a name="code" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-brokencode',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Code samples do not work.';                                                         document.getElementById('problemCodeForm').style.display = ''                                                         ">Code samples do not work</a></li>
+<li><a name="missing" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-missing',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Missing information';                                                         document.getElementById('problemMissingForm').style.display = ''                                                         ">Information is missing</a></li>
+<li><a name="incorrect" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-incorrect',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Incorrect information';                                                         document.getElementById('problemIncorrectForm').style.display = ''                                                         ">Information is incorrect</a></li>
+<li><a name="unclear" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-unclear',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Unclear or confusing information';                                                         document.getElementById('problemUnclearForm').style.display = ''                                                         ">Information is unclear or confusing</a></li>
+<li><a name="language" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-language',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Spelling or grammar error';                                                         document.getElementById('problemLanguageForm').style.display = ''                                                         ">There is a spelling/grammar error on this page</a></li>
+<li><a name="other" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-other',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='This page has a problem';                                                         document.getElementById('problemOtherForm').style.display = ''                                                         ">Something else</a></li>
+</ul>
+<p><known_issues><p>Is something described here not working as you expect it to? It might be a <b>Known Issue</b>. Please check with the Issue Tracker at <a href="https://issuetracker.unity3d.com">issuetracker.unity3d.com</a>.</p></known_issues></p>
+</p></div>
+<div id="problemThanks" style="display:none"><p>Thanks for letting us know! This page has been marked for review based on your feedback.<br><br>If you have time, you can provide more information to help us fix the problem faster.<br><br><a onclick="document.getElementById('problemMoreInfo').style.display = '';document.getElementById('problemThanks').style.display = 'none';">Provide more information</a><br>
+</p></div>
+<div id="problemMoreInfo" style="display:none">
+<p id="problemNeedCodeForm" style="display:none">You've told us this page needs code samples. If you'd like to help us further, you could provide a code sample, or tell us about what kind of code sample you'd like to see:</p>
+<p id="problemCodeForm" style="display:none">You've told us there are code samples on this page which don't work. If you know how to fix it, or have something better we could use instead, please let us know:</p>
+<p id="problemMissingForm" style="display:none">You've told us there is information missing from this page. Please tell us more about what's missing:</p>
+<p id="problemIncorrectForm" style="display:none">You've told us there is incorrect information on this page. If you know what we should change to make it correct, please tell us:</p>
+<p id="problemUnclearForm" style="display:none">You've told us this page has unclear or confusing information. Please tell us more about what you found unclear or confusing, or let us know how we could make it clearer:</p>
+<p id="problemLanguageForm" style="display:none">You've told us there is a spelling or grammar error on this page. Please tell us what's wrong:</p>
+<p id="problemOtherForm" style="display:none">You've told us this page has a problem. Please tell us more about what's wrong:</p>
+<form>
+<textarea id="problemFormSuggestionField" cols="40" rows="5"></textarea><input type="hidden" id="problemFormDescription"><input type="submit" id="problemFormDescriptionSubmit" value="Submit" onclick="                                             document.getElementById('problemMoreInfo').style.display = 'none';                                             document.getElementById('problemMoreInfoThanks').style.display = '';                                             return false;                                             ">
+</form>
+</div>
+<div id="problemMoreInfoThanks" style="display:none"><p>Thanks for helping to make the Unity documentation better!</p></div>
+<script>
+
+                                            var ratecontent = document.querySelector('#ratecontent'); // target element
+                                            var currentRating = 0; // initial rating
+                                            var maxRating= 5; // max rating
+
+                                            // callback to run after setting the rating
+                                            var callback = function(rating) {
+                                                document.getElementById('ratingThanks').style.display = '';
+                                                document.getElementById('ratecontent').style.display = 'none';
+                                                document.getElementById('rating').style.display = 'none';
+                                                SendFeedback("rating",window.location.href,rating);
+                                            };
+
+                                            // rating instance
+                                            var myRating = rating(ratecontent, currentRating, maxRating, callback);
+                                        </script>
+</div>
+<div class="nextprev clear">
+<div class="icon tt left mr1" data-distance="-40|-30|top">
+<span class="prev"><a href="AssetBundles-Workflow.html"></a></span><div class="tip"> AssetBundle Workflow</div>
+</div>
+<div class="icon tt right" data-distance="-40|-30|top">
+<span class="next"><a href="AssetBundles-Building.html"></a></span><div class="tip"> Building AssetBundles</div>
+</div>
+</div>
+</div>
+</body></html>

@@ -1,0 +1,232 @@
+<html><head><title>html模版</title></head><body>Unity - Manual: Animator Component</br>
+<div class="breadcrumbs clear"><ul>
+<li><a href="UnityManual.html">Unity User Manual (2018.1 beta)</a></li>
+<li><a href="AnimationSection.html">Animation</a></li>
+<li><a href="comp-AnimationGroup.html">Animation Reference</a></li>
+<li>Animator Component</li>
+</ul></div>
+<div class="mb20"><div class="nextprev clear">
+<div class="icon tt left mr1" data-distance="-40|-30|top">
+<span class="prev"><a href="class-AnimationClip.html"></a></span><div class="tip">Animation Clip</div>
+</div>
+<div class="icon tt right" data-distance="-40|-30|top">
+<span class="next"><a href="class-AnimatorController.html"></a></span><div class="tip">Animator Controller</div>
+</div>
+</div></div>
+<div class="otherversionswrapper" onmouseover="setOtherVersionsDisplay(true)" onmouseout="setOtherVersionsDisplay(false)">
+<a>Other Versions</a><div class="otherversionscontent" id="OtherVersionsContent" style="display: none;">Cannot access other versions offline!</div>
+</div>
+<div class="scrollToFeedback"><a id="scrollToFeedback">Leave feedback</a></div>
+<h1>Animator Component</h1>
+<!--BeginSwitchLink--><a href='../ScriptReference/Animator.html' title='Go to Animator page in the Scripting Reference' class='switch-link gray-btn sbtn left'>Switch to Scripting</a><!--EndSwitchLink-->
+<div class="clear"></div>
+
+<p>The Animator component is used to assign animation to a GameObject in your scene. The Animator component requires a reference to an <a href="class-AnimatorController.html">Animator Controller</a> which defines which animation clips to use, and controls when and how to blend and transition between them.</p>
+
+<p>If the GameObject is a humanoid character with an <a href="class-Avatar.html">Avatar</a> definition, the Avatar should also be assigned in this component, as seen here:</p>
+
+<figure>
+<img src="../uploads/Main/MecanimAnimatorComponent.png" alt="The Animator component with a controller and avatar assigned.">
+<figcaption>The Animator component with a controller and avatar assigned.</figcaption>
+</figure>
+
+<p>This diagram shows how the various assets (Animation Clips, an Animator Controller, and an Avatar) are all brought together in an Animator Component on a Game Object:</p>
+
+<figure>
+<img src="../uploads/Main/MecanimHowItFitsTogether.png" alt="Diagram showing how the various parts of the animation system connect together">
+<figcaption>Diagram showing how the various parts of the animation system connect together</figcaption>
+</figure>
+
+<p>See Also <a href="AnimationStateMachines.html">State Machines</a>, <a href="class-BlendTree.html">Blend Trees</a>, <a href="class-Avatar.html">Avatar</a>, <a href="class-AnimatorController.html">Animator Controller</a>
+</p>
+
+<h2>Properties</h2>
+
+<table>
+<colgroup>
+<col style="text-align:left;">
+<col style="text-align:left;">
+</colgroup>
+
+<thead>
+<tr>
+	<th style="text-align:left;"><strong><em>Property:</em></strong></th>
+	<th style="text-align:left;"><strong><em>Function:</em></strong></th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+	<td style="text-align:left;"><strong>Controller</strong></td>
+	<td style="text-align:left;">The animator controller attached to this character.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>Avatar</strong></td>
+	<td style="text-align:left;">The <a href="class-Avatar.html">Avatar</a> for this character. (If the Animator is being used to animate a humanoid character)</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>Apply Root Motion</strong></td>
+	<td style="text-align:left;">Should we control the character’s position and rotation from the animation itself or from script.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>Update Mode</strong></td>
+	<td style="text-align:left;">This allows you to select when the Animator updates, and which timescale it should use.</td>
+</tr>
+<tr>
+	<td style="text-align:left;">        <strong>Normal</strong>
+</td>
+	<td style="text-align:left;">The animator is updated in-sync with the Update call, and the animator’s speed matches the current timescale. If the timescale is slowed, animations will slow down to match.</td>
+</tr>
+<tr>
+	<td style="text-align:left;">        <strong>Animate Physics</strong>
+</td>
+	<td style="text-align:left;">The animator is updated in-sync with the FixedUpdate call (i.e. in lock-step with the physics system). You should use this mode if you are animating the motion of objects with physics interactions, such as characters which can push rigidbody objects around.</td>
+</tr>
+<tr>
+	<td style="text-align:left;">        <strong>Unscaled Time</strong>
+</td>
+	<td style="text-align:left;">The animator is updated in-sync with the Update call, but the animator’s speed ignores the current timescale and animates at 100% speed regardless. This is useful for animating a GUI system at normal speed while using modified timescales for special effects or to pause gameplay.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>Culling Mode</strong></td>
+	<td style="text-align:left;">Culling mode you can choose for animations.</td>
+</tr>
+<tr>
+	<td style="text-align:left;">        <strong>Always Animate</strong>
+</td>
+	<td style="text-align:left;">Always animate, don’t do culling even when offscreen.</td>
+</tr>
+<tr>
+	<td style="text-align:left;">        <strong>Cull Update Transforms</strong>
+</td>
+	<td style="text-align:left;">Retarget, IK and write of Transforms are disabled when renderers are not visible.</td>
+</tr>
+<tr>
+	<td style="text-align:left;">        <strong>Cull Completely</strong>
+</td>
+	<td style="text-align:left;">Animation is completely disabled when renderers are not visible.</td>
+</tr>
+</tbody>
+</table>
+
+<h2>Animation curve information</h2>
+
+<p>The information box at the bottom of the Animator component provides you with a breakdown of the data being used in all the clips used by the Animator Controller.</p>
+
+<p>An animation clip contains data in the form of “curves”, which represent how a value changes over time. These curves may describe the position or rotation of an object, the flex of a muscle in the humanoid animation system, or other animated values within the clip such as a changing material colour.</p>
+
+<p>This table explains what each item of data represents:</p>
+
+<table>
+<colgroup>
+<col style="text-align:left;">
+<col style="text-align:left;">
+</colgroup>
+
+<thead>
+<tr>
+	<th style="text-align:left;"><strong><em>Label</em></strong></th>
+	<th style="text-align:left;"><strong><em>Description</em></strong></th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+	<td style="text-align:left;"><strong>Clip Count</strong></td>
+	<td style="text-align:left;">The total number of animation clips used by the animator controller assigned to this Animator.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>Curves (Pos, Rot &amp; Scale)</strong></td>
+	<td style="text-align:left;">The total number of curves used to animate the position, rotation or scale of objects. These are for animated objects that are not part of a standard humanoid rig. When animating a humanoid avatar, these curves would show up a count for extra non-muscle bones such as a tail, flowing cloth or a dangling pendant. If you have a humanoid animation and you notice unexpected non-muscle animation curves, you mave have unnecessary animation curves in your animation files.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>Muscles</strong></td>
+	<td style="text-align:left;">The number of muscle animation curves used for humanoid animation by this Animator. These are the curves used to animate the standard humanoid avatar muscles. As well as the standard muscle movements for all the humanoid bones in Unity’s standard avatar, this also includes two “muscle curves” which store the root motion position and rotation animation.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>Generic</strong></td>
+	<td style="text-align:left;">The number of numeric (float) curves used by the animator to animate other properties such as material colour.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>PPtr</strong></td>
+	<td style="text-align:left;">The total count of sprite animation curves (used by Unity’s 2d system)</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>Curves Count</strong></td>
+	<td style="text-align:left;">The total combined number of animation curves</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>Constant</strong></td>
+	<td style="text-align:left;">The number of animation curves that are optimised as constant (unchanging) values. Unity selects this automatically if your animation files contain curves with unchanging values.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>Dense</strong></td>
+	<td style="text-align:left;">The number of animation curves that are optimised using the “dense” method of storing data (discrete values which are interpolated between linearly). This method uses less significantly less memory than the “stream” method.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>Stream</strong></td>
+	<td style="text-align:left;">The number of animation curves using the “stream” method of storing data (values with time and tangent data for curved interpolation). This data occupies significantly more memory than the “dense” method.</td>
+</tr>
+</tbody>
+</table>
+
+<p>If your animation clips are imported with “Anim Compression” set to “Optimal” in the <a href="FBXImporter-Animations.html">Animation Import Settings</a>, Unity will use a heuristic algorithm to determine whether it is best to use the dense or stream method to store the data for each curve.</p>
+<div class="feedbackbox" id="feedbackbox">
+<div id="rating"><p>Did you find this page useful? Please give it a rating:<br><div id="ratecontent" class="c-rating"></div>
+</p></div>
+<div id="ratingThanks" style="display:none"><p>Thanks for rating this page!</p></div>
+<div id="problem"><p><a name="problem" onclick="document.getElementById('problemType').style.display = '';document.getElementById('problem').style.display = 'none';">Report a problem on this page</a></p></div>
+<div id="problemType" style="display:none"><p>What kind of problem would you like to report?<ul type="problems">
+<li><a name="needcode" onclick="                                                             document.getElementById('problemType').style.display = 'none';                                                             document.getElementById('problemThanks').style.display = '';                                                             SendFeedback('problem-needcode',window.location.href,0);                                                             document.getElementById('problemFormDescription').value='Needs code samples.';                                                             document.getElementById('problemNeedCodeForm').style.display = ''                                                         ">This page needs code samples</a></li>
+<li><a name="code" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-brokencode',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Code samples do not work.';                                                         document.getElementById('problemCodeForm').style.display = ''                                                         ">Code samples do not work</a></li>
+<li><a name="missing" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-missing',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Missing information';                                                         document.getElementById('problemMissingForm').style.display = ''                                                         ">Information is missing</a></li>
+<li><a name="incorrect" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-incorrect',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Incorrect information';                                                         document.getElementById('problemIncorrectForm').style.display = ''                                                         ">Information is incorrect</a></li>
+<li><a name="unclear" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-unclear',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Unclear or confusing information';                                                         document.getElementById('problemUnclearForm').style.display = ''                                                         ">Information is unclear or confusing</a></li>
+<li><a name="language" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-language',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Spelling or grammar error';                                                         document.getElementById('problemLanguageForm').style.display = ''                                                         ">There is a spelling/grammar error on this page</a></li>
+<li><a name="other" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-other',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='This page has a problem';                                                         document.getElementById('problemOtherForm').style.display = ''                                                         ">Something else</a></li>
+</ul>
+<p><known_issues><p>Is something described here not working as you expect it to? It might be a <b>Known Issue</b>. Please check with the Issue Tracker at <a href="https://issuetracker.unity3d.com">issuetracker.unity3d.com</a>.</p></known_issues></p>
+</p></div>
+<div id="problemThanks" style="display:none"><p>Thanks for letting us know! This page has been marked for review based on your feedback.<br><br>If you have time, you can provide more information to help us fix the problem faster.<br><br><a onclick="document.getElementById('problemMoreInfo').style.display = '';document.getElementById('problemThanks').style.display = 'none';">Provide more information</a><br>
+</p></div>
+<div id="problemMoreInfo" style="display:none">
+<p id="problemNeedCodeForm" style="display:none">You've told us this page needs code samples. If you'd like to help us further, you could provide a code sample, or tell us about what kind of code sample you'd like to see:</p>
+<p id="problemCodeForm" style="display:none">You've told us there are code samples on this page which don't work. If you know how to fix it, or have something better we could use instead, please let us know:</p>
+<p id="problemMissingForm" style="display:none">You've told us there is information missing from this page. Please tell us more about what's missing:</p>
+<p id="problemIncorrectForm" style="display:none">You've told us there is incorrect information on this page. If you know what we should change to make it correct, please tell us:</p>
+<p id="problemUnclearForm" style="display:none">You've told us this page has unclear or confusing information. Please tell us more about what you found unclear or confusing, or let us know how we could make it clearer:</p>
+<p id="problemLanguageForm" style="display:none">You've told us there is a spelling or grammar error on this page. Please tell us what's wrong:</p>
+<p id="problemOtherForm" style="display:none">You've told us this page has a problem. Please tell us more about what's wrong:</p>
+<form>
+<textarea id="problemFormSuggestionField" cols="40" rows="5"></textarea><input type="hidden" id="problemFormDescription"><input type="submit" id="problemFormDescriptionSubmit" value="Submit" onclick="                                             document.getElementById('problemMoreInfo').style.display = 'none';                                             document.getElementById('problemMoreInfoThanks').style.display = '';                                             return false;                                             ">
+</form>
+</div>
+<div id="problemMoreInfoThanks" style="display:none"><p>Thanks for helping to make the Unity documentation better!</p></div>
+<script>
+
+                                            var ratecontent = document.querySelector('#ratecontent'); // target element
+                                            var currentRating = 0; // initial rating
+                                            var maxRating= 5; // max rating
+
+                                            // callback to run after setting the rating
+                                            var callback = function(rating) {
+                                                document.getElementById('ratingThanks').style.display = '';
+                                                document.getElementById('ratecontent').style.display = 'none';
+                                                document.getElementById('rating').style.display = 'none';
+                                                SendFeedback("rating",window.location.href,rating);
+                                            };
+
+                                            // rating instance
+                                            var myRating = rating(ratecontent, currentRating, maxRating, callback);
+                                        </script>
+</div>
+<div class="nextprev clear">
+<div class="icon tt left mr1" data-distance="-40|-30|top">
+<span class="prev"><a href="class-AnimationClip.html"></a></span><div class="tip">Animation Clip</div>
+</div>
+<div class="icon tt right" data-distance="-40|-30|top">
+<span class="next"><a href="class-AnimatorController.html"></a></span><div class="tip">Animator Controller</div>
+</div>
+</div>
+</div>
+</body></html>

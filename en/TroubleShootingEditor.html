@@ -1,0 +1,204 @@
+<html><head><title>html模版</title></head><body>Unity - Manual: Troubleshooting The Editor</br>
+<div class="breadcrumbs clear"><ul>
+<li><a href="UnityManual.html">Unity User Manual (2018.1 beta)</a></li>
+<li><a href="UnityOverview.html">Working in Unity</a></li>
+<li><a href="EditorFeatures.html">Editor Features</a></li>
+<li>Troubleshooting The Editor</li>
+</ul></div>
+<div class="mb20"><div class="nextprev clear">
+<div class="icon tt left mr1" data-distance="-40|-30|top">
+<span class="prev"><a href="SmartMerge.html"></a></span><div class="tip">Smart Merge</div>
+</div>
+<div class="icon tt right" data-distance="-40|-30|top">
+<span class="next"><a href="AdvancedDevelopment.html"></a></span><div class="tip">Advanced Development</div>
+</div>
+</div></div>
+<div class="otherversionswrapper" onmouseover="setOtherVersionsDisplay(true)" onmouseout="setOtherVersionsDisplay(false)">
+<a>Other Versions</a><div class="otherversionscontent" id="OtherVersionsContent" style="display: none;">Cannot access other versions offline!</div>
+</div>
+<div class="scrollToFeedback"><a id="scrollToFeedback">Leave feedback</a></div>
+<h1>Troubleshooting The Editor</h1>
+<!--BeginSwitchLink--><!--EndSwitchLink-->
+<div class="clear"></div>
+
+<p>The following sections explain how to troubleshoot and prevent problems with the Unity editor in different situations. In general, make sure your computer meets all the <a href="http://unity3d.com/unity/system-requirements">system requirements</a>, it’s up-to-date, and you have the required user permissions in your system. Also make backups regularly to protect your projects.</p>
+
+<h2>Versions</h2>
+
+<p>You can install different versions of the editor in different folders. However, make sure you backup your projects as these might be upgraded by a newer version, and you won’t be able to open them in an older version of Unity. See the manual page on <a href="InstallingUnity.html">installing Unity</a> for further information.</p>
+
+<p>Licenses of add-ons are valid only for the Unity versions that share the same major number, for example 3.x and 4.x. If you upgrade to a minor version of Unity, for example 4.0 to 4.1, the add-ons will be kept.</p>
+
+<h2>Activation</h2>
+
+<p>Internet Activation is the preferred method to generate your license of Unity. But if you are having problems follow these steps:</p>
+
+<ol>
+<li>Disconnect your computer from the network, otherwise you might get a “tx_id invalid” error.</li>
+<li>Select Manual Activation.</li>
+<li>Click on Save License Request.</li>
+<li>Choose a known save location, for example the Downloads folder.</li>
+<li>Reconnect to the network and open https://license.unity3d.com/</li>
+<li>In the file field click Browse, and select the license request file.</li>
+<li>Choose the required license for Unity and fill out the information requested.</li>
+<li>Click Download License and save the file.</li>
+<li>Go back to Unity and select Manual Activation if required.</li>
+<li>Click on Read License and then select the downloaded license file.</li>
+</ol>
+
+<p>If you still have problems with registering or logging in to your user account please contact <a href="mailto:support@unity3d.com">support@unity3d.com</a>.</p>
+
+<h2>Failure to Start</h2>
+
+<p>If Unity crashes when starting then firstly make sure that your computer meets the minimal <a href="http://unity3d.com/unity/system-requirements">system requirements</a>. Also update to the latest graphic and sound drivers.</p>
+
+<p>If you get disk write errors, you should check your user account restrictions. When in MacOS, note the “root user” is not recommended and Unity hasn’t been tested in this mode. Unity should always have write permissions for its folders, but if you are granting them manually check these folders:</p>
+
+<p>On Windows:</p>
+
+<ul>
+<li>Unity’s installation folder</li>
+<li>
+<code>%AllUsersProfile%\Unity</code> (typically C:\ProgramData\Unity)</li>
+<li><code>C:\Documents and Settings\&lt;user&gt;\Local Settings\Application Data\Unity</code></li>
+<li><code>C:\Users\&lt;user&gt;\AppData\Local\Unity</code></li>
+</ul>
+
+<p>MacOS:</p>
+
+<ul>
+<li>Package contents of Unity.app</li>
+<li><code>/Library/Application Support/Unity</code></li>
+<li><code>~/Library/Logs/Unity</code></li>
+</ul>
+
+<p>Some users have experienced difficulties when using hard disks formated with non-native partitions, and using certain software to translate data between storage devices.</p>
+
+<h3>Fonts</h3>
+
+<p>Corrupt fonts can crash Unity, you can find damaged files following these steps:</p>
+
+<p>On Windows:</p>
+
+<ol>
+<li>Open the fonts folder on your computer, located in the “Windows” folder.</li>
+<li>Select “Details” from the “View” menu.</li>
+<li>Check the “Size” column for fonts with a “0” size, which indicates a problematic file.</li>
+<li>Delete corrupt fonts and reinstall them.</li>
+</ol>
+
+<p>On MacOS:</p>
+
+<ol>
+<li>Launch your Font Book application.</li>
+<li>Select all the fonts.</li>
+<li>Open the “File” menu and choose “Validate Fonts” -&gt; problematic fonts will be shown as invalid.</li>
+<li>Delete corrupt fonts and reinstall them.</li>
+</ol>
+
+<p>The system might have resources constrained, for example running in a virtual machine. Use the Task Manager to find processes consuming lots of memory.</p>
+
+<h3>Corrupt Project or Installation</h3>
+
+<p>Unity could try to open a project that is corrupt, this might include the default sample project. In such case rename or move the folder of the project. After Unity starts correctly you can restore the project’s folder if wished.</p>
+
+<p>In the event of a corrupt installation, you may need to reinstall Unity - see the instructions below.</p>
+
+<p>In Windows, there could be problems like installation errors, registry corruption, conflicts, etc. For example, error 0xC0000005 means the program has attempted to access memory that it shouldn’t. If you added new hardware or drivers recently, remove and replace the hardware to determine if it’s causing the problem. Run diagnostics software and check information on trouble-shooting the operating system.</p>
+
+<h2>Performance and Crashes</h2>
+
+<p>If the editor runs slowly or crashes, particularly on builds, this might be caused by all of the available system resources being consumed. Close all other applications when you build the project. Clean up the system using its utilities, and consult the Task Manager (Windows) or Activity Monitor (MacOS) to find out if there are processes using lots of resources, for example memory. Sometimes virus protection software can slow down or even block the file system with its scanning process.</p>
+
+<h2>Project Loss</h2>
+
+<p>There are many factors that can destroy a project, you should <strong>constantly backup your projects</strong> to prevent unfortunate accidents. When in MacOS, activate the TimeMachine using an external hard disk reserved for this sole purpose. After a loss you can try any of the file recovery utilities that exist, but sometimes this is irreversible.</p>
+
+<h2>Re-installation</h2>
+
+<p>Follow these steps to reinstall the editor:</p>
+
+<ol>
+<li><p>Uninstall Unity. When in MacOS, drag the Unity app to trash.</p></li>
+<li>
+<p>Delete these files if present:</p>
+
+<ul>
+<li>Windows:
+
+<ul>
+<li>
+<code>%AllUsersProfile%\Unity\</code> (typically C:\ProgramData\Unity)</li>
+</ul>
+</li>
+<li>MacOS:
+
+<ul>
+<li><code>/Library/Application Support/Unity/</code></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>Restart the computer.</p></li>
+<li><p>Download the latest version from our website, since your original install might be corrupt: http://unity3d.com/unity/download/archive</p></li>
+<li><p>Reinstall Unity.</p></li>
+</ol>
+<div class="feedbackbox" id="feedbackbox">
+<div id="rating"><p>Did you find this page useful? Please give it a rating:<br><div id="ratecontent" class="c-rating"></div>
+</p></div>
+<div id="ratingThanks" style="display:none"><p>Thanks for rating this page!</p></div>
+<div id="problem"><p><a name="problem" onclick="document.getElementById('problemType').style.display = '';document.getElementById('problem').style.display = 'none';">Report a problem on this page</a></p></div>
+<div id="problemType" style="display:none"><p>What kind of problem would you like to report?<ul type="problems">
+<li><a name="needcode" onclick="                                                             document.getElementById('problemType').style.display = 'none';                                                             document.getElementById('problemThanks').style.display = '';                                                             SendFeedback('problem-needcode',window.location.href,0);                                                             document.getElementById('problemFormDescription').value='Needs code samples.';                                                             document.getElementById('problemNeedCodeForm').style.display = ''                                                         ">This page needs code samples</a></li>
+<li><a name="code" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-brokencode',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Code samples do not work.';                                                         document.getElementById('problemCodeForm').style.display = ''                                                         ">Code samples do not work</a></li>
+<li><a name="missing" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-missing',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Missing information';                                                         document.getElementById('problemMissingForm').style.display = ''                                                         ">Information is missing</a></li>
+<li><a name="incorrect" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-incorrect',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Incorrect information';                                                         document.getElementById('problemIncorrectForm').style.display = ''                                                         ">Information is incorrect</a></li>
+<li><a name="unclear" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-unclear',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Unclear or confusing information';                                                         document.getElementById('problemUnclearForm').style.display = ''                                                         ">Information is unclear or confusing</a></li>
+<li><a name="language" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-language',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Spelling or grammar error';                                                         document.getElementById('problemLanguageForm').style.display = ''                                                         ">There is a spelling/grammar error on this page</a></li>
+<li><a name="other" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-other',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='This page has a problem';                                                         document.getElementById('problemOtherForm').style.display = ''                                                         ">Something else</a></li>
+</ul>
+<p><known_issues><p>Is something described here not working as you expect it to? It might be a <b>Known Issue</b>. Please check with the Issue Tracker at <a href="https://issuetracker.unity3d.com">issuetracker.unity3d.com</a>.</p></known_issues></p>
+</p></div>
+<div id="problemThanks" style="display:none"><p>Thanks for letting us know! This page has been marked for review based on your feedback.<br><br>If you have time, you can provide more information to help us fix the problem faster.<br><br><a onclick="document.getElementById('problemMoreInfo').style.display = '';document.getElementById('problemThanks').style.display = 'none';">Provide more information</a><br>
+</p></div>
+<div id="problemMoreInfo" style="display:none">
+<p id="problemNeedCodeForm" style="display:none">You've told us this page needs code samples. If you'd like to help us further, you could provide a code sample, or tell us about what kind of code sample you'd like to see:</p>
+<p id="problemCodeForm" style="display:none">You've told us there are code samples on this page which don't work. If you know how to fix it, or have something better we could use instead, please let us know:</p>
+<p id="problemMissingForm" style="display:none">You've told us there is information missing from this page. Please tell us more about what's missing:</p>
+<p id="problemIncorrectForm" style="display:none">You've told us there is incorrect information on this page. If you know what we should change to make it correct, please tell us:</p>
+<p id="problemUnclearForm" style="display:none">You've told us this page has unclear or confusing information. Please tell us more about what you found unclear or confusing, or let us know how we could make it clearer:</p>
+<p id="problemLanguageForm" style="display:none">You've told us there is a spelling or grammar error on this page. Please tell us what's wrong:</p>
+<p id="problemOtherForm" style="display:none">You've told us this page has a problem. Please tell us more about what's wrong:</p>
+<form>
+<textarea id="problemFormSuggestionField" cols="40" rows="5"></textarea><input type="hidden" id="problemFormDescription"><input type="submit" id="problemFormDescriptionSubmit" value="Submit" onclick="                                             document.getElementById('problemMoreInfo').style.display = 'none';                                             document.getElementById('problemMoreInfoThanks').style.display = '';                                             return false;                                             ">
+</form>
+</div>
+<div id="problemMoreInfoThanks" style="display:none"><p>Thanks for helping to make the Unity documentation better!</p></div>
+<script>
+
+                                            var ratecontent = document.querySelector('#ratecontent'); // target element
+                                            var currentRating = 0; // initial rating
+                                            var maxRating= 5; // max rating
+
+                                            // callback to run after setting the rating
+                                            var callback = function(rating) {
+                                                document.getElementById('ratingThanks').style.display = '';
+                                                document.getElementById('ratecontent').style.display = 'none';
+                                                document.getElementById('rating').style.display = 'none';
+                                                SendFeedback("rating",window.location.href,rating);
+                                            };
+
+                                            // rating instance
+                                            var myRating = rating(ratecontent, currentRating, maxRating, callback);
+                                        </script>
+</div>
+<div class="nextprev clear">
+<div class="icon tt left mr1" data-distance="-40|-30|top">
+<span class="prev"><a href="SmartMerge.html"></a></span><div class="tip">Smart Merge</div>
+</div>
+<div class="icon tt right" data-distance="-40|-30|top">
+<span class="next"><a href="AdvancedDevelopment.html"></a></span><div class="tip">Advanced Development</div>
+</div>
+</div>
+</div>
+</body></html>

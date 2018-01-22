@@ -1,0 +1,162 @@
+<html><head><title>html模版</title></head><body>Unity - Manual: Managed bytecode stripping with IL2CPP</br>
+<div class="breadcrumbs clear"><ul>
+<li><a href="UnityManual.html">Unity User Manual (2018.1 beta)</a></li>
+<li><a href="ScriptingSection.html">Scripting</a></li>
+<li><a href="ScriptingTools.html">Scripting Tools</a></li>
+<li><a href="IL2CPP.html">IL2CPP</a></li>
+<li>Managed bytecode stripping with IL2CPP</li>
+</ul></div>
+<div class="mb20"><div class="nextprev clear">
+<div class="icon tt left mr1" data-distance="-40|-30|top">
+<span class="prev"><a href="IL2CPP-OptimizingBuildTimes.html"></a></span><div class="tip"> Optimizing IL2CPP build times</div>
+</div>
+<div class="icon tt right" data-distance="-40|-30|top">
+<span class="next"><a href="EventSystem.html"></a></span><div class="tip">Event System</div>
+</div>
+</div></div>
+<div class="otherversionswrapper" onmouseover="setOtherVersionsDisplay(true)" onmouseout="setOtherVersionsDisplay(false)">
+<a>Other Versions</a><div class="otherversionscontent" id="OtherVersionsContent" style="display: none;">Cannot access other versions offline!</div>
+</div>
+<div class="scrollToFeedback"><a id="scrollToFeedback">Leave feedback</a></div>
+<h1>Managed bytecode stripping with IL2CPP</h1>
+<!--BeginSwitchLink--><!--EndSwitchLink-->
+<div class="clear"></div>
+
+<p>Managed byte code stripping is always enabled when the <a href="IL2CPP.html">IL2CPP</a> scripting backend is used. In this case, the Stripping Level option is replaced with an Boolean option named Strip Engine Code. If this option is enabled, unused modules and classes in the Unity Engine code will be removed. If it is disabled, all of the modules and classes in the Unity Engine code will be preserved.</p>
+
+<p>The link.xml file (described below) can be used to effectively disable bytecode stripping by preserving both types and full assemblies. For example, to prevent the System assembly from being stripped, the following link.xml file can be used:</p>
+
+<pre><code>&lt;linker&gt;
+       &lt;assembly fullname=&quot;System&quot; preserve=&quot;all&quot;/&gt;
+&lt;/linker&gt;
+</code></pre>
+
+<h2>Tips</h2>
+
+<h3>How to deal with stripping when using reflection</h3>
+
+<p>Stripping depends highly on static code analysis and sometimes this can’t be done effectively, especially when dynamic features like reflection are used. In such cases, it is necessary to give some hints as to which classes shouldn’t be touched. Unity supports a per-project custom stripping blacklist. Using the blacklist is a simple matter of creating a link.xml file and placing it into the Assets folder (or any subdirectory of Assets). An example of the contents of the link.xml file follows. Classes marked for preservation will not be affected by stripping:</p>
+
+<pre><code>&lt;linker&gt;
+       &lt;assembly fullname=&quot;System.Web.Services&quot;&gt;
+               &lt;type fullname=&quot;System.Web.Services.Protocols.SoapTypeStubInfo&quot; preserve=&quot;all&quot;/&gt;
+       &lt;/assembly&gt;
+
+       &lt;assembly fullname=&quot;System&quot;&gt;
+               &lt;type fullname=&quot;System.Net.Configuration.WebRequestModuleHandler&quot; preserve=&quot;all&quot;/&gt;
+               &lt;type fullname=&quot;System.Net.HttpRequestCreator&quot; preserve=&quot;all&quot;/&gt;
+               &lt;type fullname=&quot;System.Net.FileWebRequestCreator&quot; preserve=&quot;all&quot;/&gt;
+       &lt;/assembly&gt;
+
+       &lt;assembly fullname=&quot;mscorlib&quot;&gt;
+               &lt;type fullname=&quot;System.AppDomain&quot; preserve=&quot;fields&quot;/&gt;
+               &lt;type fullname=&quot;System.InvalidOperationException&quot; preserve=&quot;fields&quot;&gt;
+                       &lt;method signature=&quot;System.Void .ctor()&quot;/&gt;
+               &lt;/type&gt;
+               &lt;type fullname=&quot;System.Object&quot; preserve=&quot;nothing&quot;&gt;
+                      &lt;method name=&quot;Finalize&quot;/&gt;
+               &lt;/type&gt;
+       &lt;/assembly&gt;
+&lt;/linker&gt;
+</code></pre>
+
+<p>A project can include multiple link.xml files. Each link.xml file can specify a number of different options.
+The assembly element indicates the managed assembly where the nested directives should apply.</p>
+
+<p>The type element is used to indicate how a specific type should be handled. It must be a child of the assembly element. The fullname attribute can accept the ‘*’ wild card to match one or more characters.</p>
+
+<p>The preserve attribute can take on one of three values:</p>
+
+<ul>
+<li>
+<strong>all:</strong> Keep everything from the given type (or assembly, for IL2CPP only).</li>
+<li>
+<strong>fields:</strong> Keep only the fields of the given type.</li>
+<li>
+<strong>nothing:</strong> Keep only the given type, but none of its contents.</li>
+</ul>
+
+<p>The method element is used to indicate that a specific method should be preserved. It must be a child of the type element. The method can be specified by name or by signature.</p>
+
+<p>In addition to the link.xml file, the C# <code>[Preserve]</code> attribute can be used in source code to prevent the linker from stripping that code. This attribute behaves slightly differently than corresponding entries in a link.xml file:</p>
+
+<ul>
+<li>
+<strong>Assembly:</strong> preserves all types in the assembly (as if a <code>[Preserve]</code> attribute were on each type)</li>
+<li>
+<strong>Type:</strong> preserves the type and its default constructor</li>
+<li>
+<strong>Method:</strong> preserves the method’s declaring type, return type, and the types of all of its arguments</li>
+<li>
+<strong>Property, Field, Event:</strong> preserves the declaring type and return type of the property, field, or event</li>
+</ul>
+
+<p>The stripped assemblies are output to a directory below the Temp directory in the project (the exact location varies depending on the target platform). The original, unstripped assemblies are available in the not-stripped directory in the same location as the stripped assemblies. A tool like ILSpy can be used to inspect the stripped and unstripped assemblies to determine what parts of the code were removed.</p>
+
+<hr>
+
+<ul>
+<li><p><span class="page-edit">2017–09–01 Page amended with limited <a href="DocumentationEditorialReview.html">editorial review</a>
+</span></p></li>
+<li><p><span class="page-history">2017–05–26 - Documentation-only update in Unity User Manual for Unity 5.6</span></p></li>
+<li><p><span class="page-history">2017–09–01 - Added advice on using C# <code>[Preserve]</code> attribute for Unity 2017.1</span></p></li>
+</ul>
+<div class="feedbackbox" id="feedbackbox">
+<div id="rating"><p>Did you find this page useful? Please give it a rating:<br><div id="ratecontent" class="c-rating"></div>
+</p></div>
+<div id="ratingThanks" style="display:none"><p>Thanks for rating this page!</p></div>
+<div id="problem"><p><a name="problem" onclick="document.getElementById('problemType').style.display = '';document.getElementById('problem').style.display = 'none';">Report a problem on this page</a></p></div>
+<div id="problemType" style="display:none"><p>What kind of problem would you like to report?<ul type="problems">
+<li><a name="needcode" onclick="                                                             document.getElementById('problemType').style.display = 'none';                                                             document.getElementById('problemThanks').style.display = '';                                                             SendFeedback('problem-needcode',window.location.href,0);                                                             document.getElementById('problemFormDescription').value='Needs code samples.';                                                             document.getElementById('problemNeedCodeForm').style.display = ''                                                         ">This page needs code samples</a></li>
+<li><a name="code" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-brokencode',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Code samples do not work.';                                                         document.getElementById('problemCodeForm').style.display = ''                                                         ">Code samples do not work</a></li>
+<li><a name="missing" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-missing',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Missing information';                                                         document.getElementById('problemMissingForm').style.display = ''                                                         ">Information is missing</a></li>
+<li><a name="incorrect" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-incorrect',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Incorrect information';                                                         document.getElementById('problemIncorrectForm').style.display = ''                                                         ">Information is incorrect</a></li>
+<li><a name="unclear" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-unclear',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Unclear or confusing information';                                                         document.getElementById('problemUnclearForm').style.display = ''                                                         ">Information is unclear or confusing</a></li>
+<li><a name="language" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-language',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Spelling or grammar error';                                                         document.getElementById('problemLanguageForm').style.display = ''                                                         ">There is a spelling/grammar error on this page</a></li>
+<li><a name="other" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-other',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='This page has a problem';                                                         document.getElementById('problemOtherForm').style.display = ''                                                         ">Something else</a></li>
+</ul>
+<p><known_issues><p>Is something described here not working as you expect it to? It might be a <b>Known Issue</b>. Please check with the Issue Tracker at <a href="https://issuetracker.unity3d.com">issuetracker.unity3d.com</a>.</p></known_issues></p>
+</p></div>
+<div id="problemThanks" style="display:none"><p>Thanks for letting us know! This page has been marked for review based on your feedback.<br><br>If you have time, you can provide more information to help us fix the problem faster.<br><br><a onclick="document.getElementById('problemMoreInfo').style.display = '';document.getElementById('problemThanks').style.display = 'none';">Provide more information</a><br>
+</p></div>
+<div id="problemMoreInfo" style="display:none">
+<p id="problemNeedCodeForm" style="display:none">You've told us this page needs code samples. If you'd like to help us further, you could provide a code sample, or tell us about what kind of code sample you'd like to see:</p>
+<p id="problemCodeForm" style="display:none">You've told us there are code samples on this page which don't work. If you know how to fix it, or have something better we could use instead, please let us know:</p>
+<p id="problemMissingForm" style="display:none">You've told us there is information missing from this page. Please tell us more about what's missing:</p>
+<p id="problemIncorrectForm" style="display:none">You've told us there is incorrect information on this page. If you know what we should change to make it correct, please tell us:</p>
+<p id="problemUnclearForm" style="display:none">You've told us this page has unclear or confusing information. Please tell us more about what you found unclear or confusing, or let us know how we could make it clearer:</p>
+<p id="problemLanguageForm" style="display:none">You've told us there is a spelling or grammar error on this page. Please tell us what's wrong:</p>
+<p id="problemOtherForm" style="display:none">You've told us this page has a problem. Please tell us more about what's wrong:</p>
+<form>
+<textarea id="problemFormSuggestionField" cols="40" rows="5"></textarea><input type="hidden" id="problemFormDescription"><input type="submit" id="problemFormDescriptionSubmit" value="Submit" onclick="                                             document.getElementById('problemMoreInfo').style.display = 'none';                                             document.getElementById('problemMoreInfoThanks').style.display = '';                                             return false;                                             ">
+</form>
+</div>
+<div id="problemMoreInfoThanks" style="display:none"><p>Thanks for helping to make the Unity documentation better!</p></div>
+<script>
+
+                                            var ratecontent = document.querySelector('#ratecontent'); // target element
+                                            var currentRating = 0; // initial rating
+                                            var maxRating= 5; // max rating
+
+                                            // callback to run after setting the rating
+                                            var callback = function(rating) {
+                                                document.getElementById('ratingThanks').style.display = '';
+                                                document.getElementById('ratecontent').style.display = 'none';
+                                                document.getElementById('rating').style.display = 'none';
+                                                SendFeedback("rating",window.location.href,rating);
+                                            };
+
+                                            // rating instance
+                                            var myRating = rating(ratecontent, currentRating, maxRating, callback);
+                                        </script>
+</div>
+<div class="nextprev clear">
+<div class="icon tt left mr1" data-distance="-40|-30|top">
+<span class="prev"><a href="IL2CPP-OptimizingBuildTimes.html"></a></span><div class="tip"> Optimizing IL2CPP build times</div>
+</div>
+<div class="icon tt right" data-distance="-40|-30|top">
+<span class="next"><a href="EventSystem.html"></a></span><div class="tip">Event System</div>
+</div>
+</div>
+</div>
+</body></html>

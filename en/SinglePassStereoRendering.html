@@ -1,0 +1,267 @@
+<html><head><title>html模版</title></head><body>Unity - Manual:  Single-Pass Stereo rendering</br>
+<div class="breadcrumbs clear"><ul>
+<li><a href="UnityManual.html">Unity User Manual (2018.1 beta)</a></li>
+<li><a href="XR.html">XR</a></li>
+<li> Single-Pass Stereo rendering</li>
+</ul></div>
+<div class="mb20"><div class="nextprev clear">
+<div class="icon tt left mr1" data-distance="-40|-30|top">
+<span class="prev"><a href="VRDevices-HoloLens.html"></a></span><div class="tip">HoloLens</div>
+</div>
+<div class="icon tt right" data-distance="-40|-30|top">
+<span class="next"><a href="SinglePassStereoRenderingHoloLens.html"></a></span><div class="tip">Single-Pass Stereo Rendering for HoloLens</div>
+</div>
+</div></div>
+<div class="otherversionswrapper" onmouseover="setOtherVersionsDisplay(true)" onmouseout="setOtherVersionsDisplay(false)">
+<a>Other Versions</a><div class="otherversionscontent" id="OtherVersionsContent" style="display: none;">Cannot access other versions offline!</div>
+</div>
+<div class="scrollToFeedback"><a id="scrollToFeedback">Leave feedback</a></div>
+<h1>Single-Pass Stereo rendering</h1>
+<!--BeginSwitchLink--><!--EndSwitchLink-->
+<div class="clear"></div>
+
+<p>Single-Pass Stereo rendering is a feature for PC and Playstation 4 based VR apps. It renders both eye images at the same time into one packed Render Texture, meaning that the whole Scene is only rendered once, and CPU processing time is significantly reduced. Without this feature, Unity renders the Scene twice: first to render the left-eye image, and then again for the right-eye image. </p>
+
+<p>The comparison images below show the difference between normal VR rendering and Single-Pass Stereo rendering.</p>
+
+<p><strong>Normal VR rendering</strong></p>
+
+<figure>
+<img src="../uploads/Main/SinglePassStereoRendering1.gif" alt="Left-eye image on the left, right-eye image on the right">
+<figcaption>Left-eye image on the left, right-eye image on the right</figcaption>
+</figure>
+
+<p><strong>Single-Pass Stereo VR rendering</strong></p>
+
+<figure>
+<img src="../uploads/Main/SinglePassStereoRendering2.gif" alt="Left-eye and right-eye images packed together">
+<figcaption>Left-eye and right-eye images packed together</figcaption>
+</figure>
+
+<p>To enable this feature, open <strong>PlayerSettings</strong> (menu: <strong>Edit</strong> &gt; <strong>Project Settings</strong> &gt; <strong>Player</strong>). In <strong>PlayerSettings</strong>, navigate to <strong>Other Settings</strong>, ensure the <strong>Virtual Reality Supported</strong> checkbox is ticked, then tick the <strong>Single-Pass Stereo Rendering</strong> checkbox underneath it.</p>
+
+<figure>
+<img src="../uploads/Main/SinglePassStereoRendering3.png" alt="">
+</figure>
+
+<p>Unity’s built-in rendering features and Standard Assets are all compatible with this feature. However, custom-built Shaders and Shaders downloaded from the Asset Store may need to be modified (for example, screen space coordinates might need to be scaled and offset to access the appropriate half of the packed Render Texture). </p>
+
+<h2>Authoring and modifying Shaders to support Single-Pass Stereo rendering</h2>
+
+<p>Existing helper functions in <em>UnityCG.cginc</em> support Single-Pass Stereo rendering transparently. </p>
+
+<p>
+<em>UnityCG.cginc</em> also contains the following helper functions to assist with authoring stereoscopic Shaders:</p>
+
+<table>
+<colgroup>
+<col style="text-align:left;">
+<col style="text-align:left;">
+</colgroup>
+
+<thead>
+<tr>
+	<th style="text-align:left;"><strong>Property</strong></th>
+	<th style="text-align:left;"><strong>Function</strong></th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+	<td style="text-align:left;"><strong>UnityStereoScreenSpaceUVAdjust(uv, sb)</strong></td>
+	<td style="text-align:left;">
+<strong>Parameters:</strong> <br><strong>uv</strong> - UV texture coordinates. Either a float2 for a standard UV or a float4 for a packed pair of two UVs. <br><strong>sb</strong> - A float4 containing a 2D scale and 2D bias to be applied to the UV, with scale in xy and bias in zw. <br><strong>Description:</strong> Returns the result of applying the scale and bias in sb to the texture coordinates in uv. This only occurs when UNITY_SINGLE_PASS_STEREO is defined, otherwise the texture coordinates are returned unmodified. This is often used to apply a per-eye scale and bias only when in Single-Pass Stereo rendering mode.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>UnityStereoTransformScreenSpaceTex(uv)</strong></td>
+	<td style="text-align:left;">
+<strong>Parameters:</strong> <br><strong>uv</strong> - UV texture coordinates. Either a float2 for a standard UV or a float4 for a packed pair of two UVs. <br><strong>Description:</strong> Returns the result of applying the current eye’s scale and bias to the texture coordinates in uv. This only occurs when UNITY_SINGLE_PASS_STEREO is defined, otherwise the texture coordinates are returned unaltered.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><strong>UnityStereoClamp(uv, sb)</strong></td>
+	<td style="text-align:left;">
+<strong>Parameters:</strong> <br><strong>uv</strong> - UV texture coordinates. Either a float2 for a standard UV or a float4 for a packed pair of two UVs. <br><strong>sb</strong> - A float4 containing a 2D scale and 2D bias to be applied to the UV, with scale in xy and bias in zw. <br><strong>Description:</strong> Returns the uv clamped in the x value by the width and bias provided by sb. This only occurs when UNITY_SINGLE_PASS_STEREO is defined, otherwise the texture coordinates are returned unmodified. This is often used to apply a per-eye clamping in Single-Pass Stereo rendering mode to avoid color bleeding between eyes.</td>
+</tr>
+</tbody>
+</table>
+
+<p>Additionally, the constant <code>unity_StereoEyeIndex</code> is exposed in Shaders, so eye-dependent calculations can be performed. The value of <code>unity_StereoEyeIndex</code> is 0 for rendering of the left eye, and 1 for rendering of the right eye.</p>
+
+<p>Here’s an example from <em>UnityCG.cginc</em>, demonstrating how <code>unity_StereoEyeIndex</code> is used to modify screen space coordinates:</p>
+
+<pre><code>float2 TransformStereoScreenSpaceTex(float2 uv, float w)
+{
+    float4 scaleOffset = unity_StereoScaleOffset[unity_StereoEyeIndex];
+    return uv.xy * scaleOffset.xy + scaleOffset.zw * w;
+}
+</code></pre>
+
+<p>You should not have to modify Shaders in most cases. However, there are situations in which you need to sample a monoscopic Texture as a source for Single-Pass Stereo rendering. For example, if you are creating a full-screen film grain or noise effect, the source image should be the same for both eyes, rather than packed into a stereoscopic image. In such situations, use ComputeNonStereoScreenPos() in place of ComputeScreenPos() to calculate locations from the full source Texture.</p>
+
+<h2>Post-processing Effects</h2>
+
+<p>When using Single-Pass Stereo rendering, <a href="PostProcessingOverview.html">post-processing effects</a> require some extra attention. Each post-processing effect runs once on the packed Render Texture (which contains both the left-eye and right-eye images), but all draw commands that run during the post-processing are applied twice: once to the left-eye half of the destination Render Texture, and once to the right-eye half. </p>
+
+<p>Post-processing effects do not automatically detect Single-Pass Stereo rendering, so you need to adjust any reads of packed Stereo Render Textures so that they only read from the correct side for the eye being rendered. There are two ways to do this depending on how your post-processing effect is being rendered:</p>
+
+<ul>
+<li><p>Graphics.Blit()</p></li>
+<li><p>Mesh-based drawing</p></li>
+</ul>
+
+<p>See below for more information on these methods.</p>
+
+<p>Without these adjustments, each draw command reads the whole of the source Render Texture (containing both the left- and right-eye views), and outputs the entire image pair to both the left-eye and right-eye side of the output Render Texture, resulting in incorrect duplication of the source image in each eye.</p>
+
+<p>The reason this happens is that each post-processing effect is either drawn using <code>Graphics.Blit</code> or by drawing a full-screen polygon with a Texture map. Both methods reference the entire output of the previous post-processing effect in the chain. When they are used to refer to an area in a packed Stereo Render Texture, they reference the whole packed Render Texture instead of just the relevant half of it.</p>
+
+<h2>Graphics.Blit()</h2>
+
+<p>Post-processing effects rendered with <code>Blit()</code> do not automatically reference the correct part of packed stereo Render Textures. By default, they refer to the entire Texture. This incorrectly stretches the post-processing effect across both eyes.</p>
+
+<p>For Single-Pass Stereo rendering using <code>Blit()</code>, Texture samplers in Shaders have an additional automatically-calculated variable used to refer to the correct half of a packed stereo Render Texture, depending on the eye being drawn. The variable contains scale and offset values that allow you to transform your target coordinates to the correct location.</p>
+
+<p>To access this variable, declare a <code>half4</code> in your Shader with the same name as your sampler, and add the <code>suffix _ST</code>. See below for a code example of this. To adjust UV coordinates, pass in your <code>_ST</code> variable to <code>scaleAndOffset</code> and use <code>UnityStereoScreenSpaceUVAdjust(uv, scaleAndOffset)</code>. This function compiles to nothing in non-Single-Pass Stereo builds, meaning that shaders modified to support this mode are still compatible with non-Single-Pass Stereo builds.</p>
+
+<p>The following example code demonstrates fragment shader code that has been changed to support Single-Pass Stereo rendering.</p>
+
+<p><strong>Without stereo rendering:</strong></p>
+
+<pre><code>uniform sampler2D _MainTex;
+
+fixed4 frag (v2f_img i) : SV_Target
+{   
+    fixed4 myTex = tex2D(_MainTex, i.uv);
+    
+    ...
+}
+</code></pre>
+
+<p><strong>With stereo rendering:</strong></p>
+
+<pre><code>uniform sampler2D _MainTex;
+
+half4 _MainTex_ST;
+
+fixed4 frag (v2f_img i) : SV_Target
+{   
+    fixed4 myTex = tex2D(_MainTex, UnityStereoScreenSpaceUVAdjust(i.uv, _MainTex_ST));
+    
+    ...
+}
+</code></pre>
+
+<h2>Mesh-based drawing</h2>
+
+<p>Post-processing effects rendered using Meshes (for example, by drawing a quadrilateral in immediate mode using the <a href="../ScriptReference/GL.html">low level graphics API</a>) also need to adjust the UV coordinates on the target Texture based on which eye is being rendered. To adjust your coordinates in these circumstances, use <code>UnityStereoTransformScreenSpaceTex(uv)</code>. This function adjusts correctly for packed stereo Render Textures in Single-Pass Stereo rendering mode, and automatically compiles for non-packed Render Textures if Single-Pass Stereo rendering mode is disabled. However, if you intend to use a Shader both for packed stereo Render Textures and non-packed Render Textures in the same mode, you need to have two separate Shaders.</p>
+
+<h2>Screen space effects</h2>
+
+<p>Screen space effects are visual effects that are drawn over a pre-rendered image. Examples of screen space effects include <a href="PostProcessing-AmbientOcclusion.html">ambient occlusion</a>, <a href="PostProcessing-DepthOfField.html">depth of field</a>, and <a href="PostProcessing-Bloom.html">bloom</a>.</p>
+
+<p>For example, imagine a screen space effect that requires an image to be drawn over the screen (perhaps you are drawing some kind of dirt spattered on the screen). Instead of applying the effect over the entire output display, which would stretch the dirt image across both eyes, you need to apply it twice: once for each eye. In cases like this, you need to convert from using texture coordinates that reference the whole packed Render Texture, to coordinates that reference each eye.</p>
+
+<p>The following code examples show a Surface Shader that repeats an input Texture (called _<strong>Detail</strong>) 8 x 6 times across the output image. In the second example, the destination coordinates are transformed in Single-Pass Stereo mode to refer to the part of the output Texture that represents the eye currently being rendered.</p>
+
+<p>
+<strong>Example 1:</strong> Detail Texture with no Single-Pass Stereo support</p>
+
+<pre><code>void surf(Input IN, inout SurfaceOutput o) {
+
+    o.Albedo = tex2D(_MainTex, IN.uv_MainTex).rgb;
+
+    float2 screenUV = IN.screenPos.xy / IN.screenPos.w;
+
+    screenUV *= float2(8,6);
+
+    o.Albedo *= tex2D(_Detail, screenUV).rgb * 2;
+
+}
+</code></pre>
+
+<p>
+<strong>Example 2:</strong> Detail Texture with Single-Pass Stereo support</p>
+
+<pre><code>void surf(Input IN, inout SurfaceOutput o) {
+
+    o.Albedo = tex2D(_MainTex, IN.uv_MainTex).rgb;
+
+    float2 screenUV = IN.screenPos.xy / IN.screenPos.w;
+
+    #if UNITY_SINGLE_PASS_STEREO
+
+    // If Single-Pass Stereo mode is active, transform the
+
+    // coordinates to get the correct output UV for the current eye.
+
+    float4 scaleOffset = unity_StereoScaleOffset[unity_StereoEyeIndex];
+
+    screenUV = (screenUV - scaleOffset.zw) / scaleOffset.xy;
+
+    #endif
+
+    screenUV *= float2(8,6);
+
+    o.Albedo *= tex2D(_Detail, screenUV).rgb * 2;
+}
+
+</code></pre>
+<div class="feedbackbox" id="feedbackbox">
+<div id="rating"><p>Did you find this page useful? Please give it a rating:<br><div id="ratecontent" class="c-rating"></div>
+</p></div>
+<div id="ratingThanks" style="display:none"><p>Thanks for rating this page!</p></div>
+<div id="problem"><p><a name="problem" onclick="document.getElementById('problemType').style.display = '';document.getElementById('problem').style.display = 'none';">Report a problem on this page</a></p></div>
+<div id="problemType" style="display:none"><p>What kind of problem would you like to report?<ul type="problems">
+<li><a name="needcode" onclick="                                                             document.getElementById('problemType').style.display = 'none';                                                             document.getElementById('problemThanks').style.display = '';                                                             SendFeedback('problem-needcode',window.location.href,0);                                                             document.getElementById('problemFormDescription').value='Needs code samples.';                                                             document.getElementById('problemNeedCodeForm').style.display = ''                                                         ">This page needs code samples</a></li>
+<li><a name="code" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-brokencode',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Code samples do not work.';                                                         document.getElementById('problemCodeForm').style.display = ''                                                         ">Code samples do not work</a></li>
+<li><a name="missing" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-missing',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Missing information';                                                         document.getElementById('problemMissingForm').style.display = ''                                                         ">Information is missing</a></li>
+<li><a name="incorrect" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-incorrect',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Incorrect information';                                                         document.getElementById('problemIncorrectForm').style.display = ''                                                         ">Information is incorrect</a></li>
+<li><a name="unclear" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-unclear',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Unclear or confusing information';                                                         document.getElementById('problemUnclearForm').style.display = ''                                                         ">Information is unclear or confusing</a></li>
+<li><a name="language" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-language',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Spelling or grammar error';                                                         document.getElementById('problemLanguageForm').style.display = ''                                                         ">There is a spelling/grammar error on this page</a></li>
+<li><a name="other" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-other',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='This page has a problem';                                                         document.getElementById('problemOtherForm').style.display = ''                                                         ">Something else</a></li>
+</ul>
+<p><known_issues><p>Is something described here not working as you expect it to? It might be a <b>Known Issue</b>. Please check with the Issue Tracker at <a href="https://issuetracker.unity3d.com">issuetracker.unity3d.com</a>.</p></known_issues></p>
+</p></div>
+<div id="problemThanks" style="display:none"><p>Thanks for letting us know! This page has been marked for review based on your feedback.<br><br>If you have time, you can provide more information to help us fix the problem faster.<br><br><a onclick="document.getElementById('problemMoreInfo').style.display = '';document.getElementById('problemThanks').style.display = 'none';">Provide more information</a><br>
+</p></div>
+<div id="problemMoreInfo" style="display:none">
+<p id="problemNeedCodeForm" style="display:none">You've told us this page needs code samples. If you'd like to help us further, you could provide a code sample, or tell us about what kind of code sample you'd like to see:</p>
+<p id="problemCodeForm" style="display:none">You've told us there are code samples on this page which don't work. If you know how to fix it, or have something better we could use instead, please let us know:</p>
+<p id="problemMissingForm" style="display:none">You've told us there is information missing from this page. Please tell us more about what's missing:</p>
+<p id="problemIncorrectForm" style="display:none">You've told us there is incorrect information on this page. If you know what we should change to make it correct, please tell us:</p>
+<p id="problemUnclearForm" style="display:none">You've told us this page has unclear or confusing information. Please tell us more about what you found unclear or confusing, or let us know how we could make it clearer:</p>
+<p id="problemLanguageForm" style="display:none">You've told us there is a spelling or grammar error on this page. Please tell us what's wrong:</p>
+<p id="problemOtherForm" style="display:none">You've told us this page has a problem. Please tell us more about what's wrong:</p>
+<form>
+<textarea id="problemFormSuggestionField" cols="40" rows="5"></textarea><input type="hidden" id="problemFormDescription"><input type="submit" id="problemFormDescriptionSubmit" value="Submit" onclick="                                             document.getElementById('problemMoreInfo').style.display = 'none';                                             document.getElementById('problemMoreInfoThanks').style.display = '';                                             return false;                                             ">
+</form>
+</div>
+<div id="problemMoreInfoThanks" style="display:none"><p>Thanks for helping to make the Unity documentation better!</p></div>
+<script>
+
+                                            var ratecontent = document.querySelector('#ratecontent'); // target element
+                                            var currentRating = 0; // initial rating
+                                            var maxRating= 5; // max rating
+
+                                            // callback to run after setting the rating
+                                            var callback = function(rating) {
+                                                document.getElementById('ratingThanks').style.display = '';
+                                                document.getElementById('ratecontent').style.display = 'none';
+                                                document.getElementById('rating').style.display = 'none';
+                                                SendFeedback("rating",window.location.href,rating);
+                                            };
+
+                                            // rating instance
+                                            var myRating = rating(ratecontent, currentRating, maxRating, callback);
+                                        </script>
+</div>
+<div class="nextprev clear">
+<div class="icon tt left mr1" data-distance="-40|-30|top">
+<span class="prev"><a href="VRDevices-HoloLens.html"></a></span><div class="tip">HoloLens</div>
+</div>
+<div class="icon tt right" data-distance="-40|-30|top">
+<span class="next"><a href="SinglePassStereoRenderingHoloLens.html"></a></span><div class="tip">Single-Pass Stereo Rendering for HoloLens</div>
+</div>
+</div>
+</div>
+</body></html>

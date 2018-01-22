@@ -1,0 +1,129 @@
+<html><head><title>html模版</title></head><body>Unity - Manual:  Baked lighting</br>
+<div class="breadcrumbs clear"><ul>
+<li><a href="UnityManual.html">Unity User Manual (2018.1 beta)</a></li>
+<li><a href="Graphics.html">Graphics</a></li>
+<li><a href="GraphicsOverview.html">Graphics Overview</a></li>
+<li><a href="LightingOverview.html">Lighting</a></li>
+<li><a href="LightModes.html"> Lighting Modes</a></li>
+<li> Baked lighting</li>
+</ul></div>
+<div class="mb20"><div class="nextprev clear">
+<div class="icon tt left mr1" data-distance="-40|-30|top">
+<span class="prev"><a href="LightMode-Mixed-Subtractive.html"></a></span><div class="tip"> Subtractive mode</div>
+</div>
+<div class="icon tt right" data-distance="-40|-30|top">
+<span class="next"><a href="GIIntro.html"></a></span><div class="tip">Global Illumination</div>
+</div>
+</div></div>
+<div class="otherversionswrapper" onmouseover="setOtherVersionsDisplay(true)" onmouseout="setOtherVersionsDisplay(false)">
+<a>Other Versions</a><div class="otherversionscontent" id="OtherVersionsContent" style="display: none;">Cannot access other versions offline!</div>
+</div>
+<div class="scrollToFeedback"><a id="scrollToFeedback">Leave feedback</a></div>
+<h1>Baked lighting</h1>
+<!--BeginSwitchLink--><!--EndSwitchLink-->
+<div class="clear"></div>
+
+<p>Baked Lights are <a href="class-Light.html">Light components</a> which have their <strong>Mode</strong> property set to <strong>Baked</strong>. </p>
+
+<p>Use <strong>Baked</strong> mode for Lights used for local ambience, rather than fully featured Lights. Unity pre-calculates the illumination from these Lights before run time, and does not include them in any run-time lighting calculations. This means that there is no run-time overhead for baked Lights. </p>
+
+<p>Unity bakes direct and indirect lighting from baked Lights into <a href="LightmappingDirectional.html">light maps</a> (to illuminate static GameObjects) and <a href="LightProbes.html">Light Probes</a> (to illuminate dynamic Light GameObjects). Baked Lights cannot emit specular lighting, even on dynamic GameObjects (see <a href="https://en.wikipedia.org/wiki/Specular_highlight">Wikipedia: Specular highlight</a> for more information). Baked Lights do not change in response to actions taken by the player, or events which take place in the Scene. They are mainly useful for increasing brightness in dark areas without needing to adjust all of the lighting within a Scene. </p>
+
+<p>Baked Lights are also the only Light type for which dynamic GameObjects cannot cast shadows on other dynamic GameObjects. </p>
+
+<h2>Advantages of baked lighting</h2>
+
+<ul>
+<li><p>High-quality shadows from statics GameObjects on statics GameObjects in the light map at no additional cost.</p></li>
+<li><p>Offers indirect lighting.</p></li>
+<li><p>All lighting for static GameObjects can be just one Texture fetched from the light map in the Shader.</p></li>
+</ul>
+
+<h2>Disadvantages of baked lighting</h2>
+
+<ul>
+<li><p>No real-time direct lighting (that is, no specular lighting effects).</p></li>
+<li><p>No shadows from dynamic GameObjects on static GameObjects.</p></li>
+<li><p>You only get low-resolution shadows from static GameObjects on dynamic GameObjects using Light Probes.</p></li>
+<li><p>Increased memory requirements compared to real-time lighting for the light map texture set, because light maps need to be more detailed to contain direct lighting information.</p></li>
+</ul>
+
+<h2>Technical details</h2>
+
+<p>For baked Lights, Unity precomputes the entire light path, except for the path segment from the Camera to the Surface. See documentation on <a href="LightModes.html">Light Modes</a> for more information about light paths.</p>
+
+<figure>
+<img src="../uploads/Main/LightMode-Baked-0.png" alt="Baked Mode: All light paths are precomputed">
+<figcaption>Baked Mode: All light paths are precomputed</figcaption>
+</figure>
+
+<p>Unity also precomputes direct baked lighting, which means that light direction information is not available to Unity at run time. Instead, a small number of Texture operations handle all light calculations for baked Lights in the Scene area. Without this information, Unity cannot carry out calculations for specular and glossy reflections. If you need specular reflections, use <a href="class-ReflectionProbe.html">Reflection Probes</a> or use <a href="LightMode-Mixed.html">Mixed</a> or <a href="LightMode-Realtime.html">Realtime</a> lights. See documentation on <a href="LightmappingDirectional.html">directional light maps</a> for more information. </p>
+
+<p>Baked Lights never illuminate dynamic GameObjects at run time. The only way for dynamic GameObjects to receive light from baked Lights is via <a href="LightProbes.html">Light Probes</a>. This is also the only difference between Baked Lights and any <a href="LightMode-Mixed-Subtractive.html">Subtractive mode Mixed Lights</a> (except the main directional Light) which compute direct lighting on dynamic GameObjects at run time.</p>
+
+<hr>
+
+<ul>
+<li><p><span class="page-edit"> 2017–06–08 Page published with limited <a href="DocumentationEditorialReview.html">editorial review</a>
+</span></p></li>
+<li><p><span class="page-history">Light Modes added in 5.6</span></p></li>
+</ul>
+<div class="feedbackbox" id="feedbackbox">
+<div id="rating"><p>Did you find this page useful? Please give it a rating:<br><div id="ratecontent" class="c-rating"></div>
+</p></div>
+<div id="ratingThanks" style="display:none"><p>Thanks for rating this page!</p></div>
+<div id="problem"><p><a name="problem" onclick="document.getElementById('problemType').style.display = '';document.getElementById('problem').style.display = 'none';">Report a problem on this page</a></p></div>
+<div id="problemType" style="display:none"><p>What kind of problem would you like to report?<ul type="problems">
+<li><a name="needcode" onclick="                                                             document.getElementById('problemType').style.display = 'none';                                                             document.getElementById('problemThanks').style.display = '';                                                             SendFeedback('problem-needcode',window.location.href,0);                                                             document.getElementById('problemFormDescription').value='Needs code samples.';                                                             document.getElementById('problemNeedCodeForm').style.display = ''                                                         ">This page needs code samples</a></li>
+<li><a name="code" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-brokencode',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Code samples do not work.';                                                         document.getElementById('problemCodeForm').style.display = ''                                                         ">Code samples do not work</a></li>
+<li><a name="missing" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-missing',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Missing information';                                                         document.getElementById('problemMissingForm').style.display = ''                                                         ">Information is missing</a></li>
+<li><a name="incorrect" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-incorrect',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Incorrect information';                                                         document.getElementById('problemIncorrectForm').style.display = ''                                                         ">Information is incorrect</a></li>
+<li><a name="unclear" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-unclear',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Unclear or confusing information';                                                         document.getElementById('problemUnclearForm').style.display = ''                                                         ">Information is unclear or confusing</a></li>
+<li><a name="language" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-language',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Spelling or grammar error';                                                         document.getElementById('problemLanguageForm').style.display = ''                                                         ">There is a spelling/grammar error on this page</a></li>
+<li><a name="other" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-other',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='This page has a problem';                                                         document.getElementById('problemOtherForm').style.display = ''                                                         ">Something else</a></li>
+</ul>
+<p><known_issues><p>Is something described here not working as you expect it to? It might be a <b>Known Issue</b>. Please check with the Issue Tracker at <a href="https://issuetracker.unity3d.com">issuetracker.unity3d.com</a>.</p></known_issues></p>
+</p></div>
+<div id="problemThanks" style="display:none"><p>Thanks for letting us know! This page has been marked for review based on your feedback.<br><br>If you have time, you can provide more information to help us fix the problem faster.<br><br><a onclick="document.getElementById('problemMoreInfo').style.display = '';document.getElementById('problemThanks').style.display = 'none';">Provide more information</a><br>
+</p></div>
+<div id="problemMoreInfo" style="display:none">
+<p id="problemNeedCodeForm" style="display:none">You've told us this page needs code samples. If you'd like to help us further, you could provide a code sample, or tell us about what kind of code sample you'd like to see:</p>
+<p id="problemCodeForm" style="display:none">You've told us there are code samples on this page which don't work. If you know how to fix it, or have something better we could use instead, please let us know:</p>
+<p id="problemMissingForm" style="display:none">You've told us there is information missing from this page. Please tell us more about what's missing:</p>
+<p id="problemIncorrectForm" style="display:none">You've told us there is incorrect information on this page. If you know what we should change to make it correct, please tell us:</p>
+<p id="problemUnclearForm" style="display:none">You've told us this page has unclear or confusing information. Please tell us more about what you found unclear or confusing, or let us know how we could make it clearer:</p>
+<p id="problemLanguageForm" style="display:none">You've told us there is a spelling or grammar error on this page. Please tell us what's wrong:</p>
+<p id="problemOtherForm" style="display:none">You've told us this page has a problem. Please tell us more about what's wrong:</p>
+<form>
+<textarea id="problemFormSuggestionField" cols="40" rows="5"></textarea><input type="hidden" id="problemFormDescription"><input type="submit" id="problemFormDescriptionSubmit" value="Submit" onclick="                                             document.getElementById('problemMoreInfo').style.display = 'none';                                             document.getElementById('problemMoreInfoThanks').style.display = '';                                             return false;                                             ">
+</form>
+</div>
+<div id="problemMoreInfoThanks" style="display:none"><p>Thanks for helping to make the Unity documentation better!</p></div>
+<script>
+
+                                            var ratecontent = document.querySelector('#ratecontent'); // target element
+                                            var currentRating = 0; // initial rating
+                                            var maxRating= 5; // max rating
+
+                                            // callback to run after setting the rating
+                                            var callback = function(rating) {
+                                                document.getElementById('ratingThanks').style.display = '';
+                                                document.getElementById('ratecontent').style.display = 'none';
+                                                document.getElementById('rating').style.display = 'none';
+                                                SendFeedback("rating",window.location.href,rating);
+                                            };
+
+                                            // rating instance
+                                            var myRating = rating(ratecontent, currentRating, maxRating, callback);
+                                        </script>
+</div>
+<div class="nextprev clear">
+<div class="icon tt left mr1" data-distance="-40|-30|top">
+<span class="prev"><a href="LightMode-Mixed-Subtractive.html"></a></span><div class="tip"> Subtractive mode</div>
+</div>
+<div class="icon tt right" data-distance="-40|-30|top">
+<span class="next"><a href="GIIntro.html"></a></span><div class="tip">Global Illumination</div>
+</div>
+</div>
+</div>
+</body></html>

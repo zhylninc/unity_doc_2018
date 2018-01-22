@@ -1,0 +1,159 @@
+<html><head><title>html模版</title></head><body>Unity - Manual:  DirectX 11 and OpenGL Core</br>
+<div class="breadcrumbs clear"><ul>
+<li><a href="UnityManual.html">Unity User Manual (2018.1 beta)</a></li>
+<li><a href="Graphics.html">Graphics</a></li>
+<li><a href="GraphicsOverview.html">Graphics Overview</a></li>
+<li>Advanced Rendering Features</li>
+<li> DirectX 11 and OpenGL Core</li>
+</ul></div>
+<div class="mb20"><div class="nextprev clear">
+<div class="icon tt left mr1" data-distance="-40|-30|top">
+<span class="prev"><a href="LevelOfDetail.html"></a></span><div class="tip">Level of Detail (LOD)</div>
+</div>
+<div class="icon tt right" data-distance="-40|-30|top">
+<span class="next"><a href="OpenGLCoreDetails.html"></a></span><div class="tip">OpenGL Core Details</div>
+</div>
+</div></div>
+<div class="otherversionswrapper" onmouseover="setOtherVersionsDisplay(true)" onmouseout="setOtherVersionsDisplay(false)">
+<a>Other Versions</a><div class="otherversionscontent" id="OtherVersionsContent" style="display: none;">Cannot access other versions offline!</div>
+</div>
+<div class="scrollToFeedback"><a id="scrollToFeedback">Leave feedback</a></div>
+<h1>DirectX 11 and OpenGL Core</h1>
+<!--BeginSwitchLink--><!--EndSwitchLink-->
+<div class="clear"></div>
+
+<p>Unity supports DirectX 11 (DX11) and OpenGL Core graphics APIs. This page details how to use them.</p>
+
+<h2>Enabling DirectX 11</h2>
+
+<p>DirectX 11 is enabled by default on Windows. Your games and the Unity Editor use DX11, and fall back to DX9 when DX11 is not available. </p>
+
+<p>To enable or disable DirectX 11 for your game builds and the Editor, go to <strong>Edit</strong> &gt; <strong>Project Settings</strong> &gt; <strong>Player</strong> to open the <a href="class-PlayerSettings.html">Player Settings</a>. Navigate to <strong>Other Settings</strong> and un-tick <strong>Auto Graphics API for Windows</strong>. In the panel that appears, select <strong>Direct3D11</strong> and click the minus (-) button to remove it, or click the plus (+) button and choose <strong>Direct3D11</strong> from the list to add it. </p>
+
+<figure>
+<img src="../uploads/Main/UsingDX11GL3Features-AddRemove.png" alt="Adding Direct3D11 to the Graphics APIs for Windows list">
+<figcaption>Adding <strong>Direct3D11</strong> to the <strong>Graphics APIs for Windows</strong> list</figcaption>
+</figure>
+
+<p>Once Direct3D11 is in the list, you can drag it up and down to define the priority in which the graphics API is selected - the Unity Editor and player defaults to the one at the top of the list, and uses each one after that as a fall back option, in order of how they are listed.</p>
+
+<p>
+<strong>NOTE</strong>: DX11 requires Windows Vista or later, and at least a DX10-level GPU (preferably DX11-level). The Unity Editor window title has <strong>&lt;DX11&gt;</strong> at the end when it is running in DX11 mode.</p>
+
+<h2>Enabling OpenGL Core</h2>
+
+<p>OpenGL Core is enabled by default on Mac and Linux. Your games and the Unity Editor use OpenGL Core on these platforms.</p>
+
+<p>To enable OpenGL Core on Windows and make it the default, go to <strong>Edit</strong> &gt; <strong>Project Settings</strong> &gt; <strong>Player</strong> to open the <a href="class-PlayerSettings.html">Player Settings</a>. Navigate to <strong>Other Settings</strong> and un-tick <strong>Auto Graphics API for Windows</strong>. In the panel that appears, click the plus (+) button and choose <strong>OpenGLCore</strong> from the list to add it. </p>
+
+<figure>
+<img src="../uploads/Main/UsingDX11GL3Features-AddOpenGLCore.png" alt="Adding OpenGLCore to the Graphics APIs for Windows list">
+<figcaption>Adding <strong>OpenGLCore</strong> to the <strong>Graphics APIs for Windows</strong> list</figcaption>
+</figure>
+
+<p>OpenGL Core has the following minimum requirements:</p>
+
+<ul>
+<li>Mac OS X 10.8 (OpenGL 3.2), MacOSX 10.9 (OpenGL 3.2 to 4.1)</li>
+<li>Windows with NVIDIA since 2006 (GeForce 8), AMD since 2006 (Radeon HD 2000), Intel since 2012 (HD 4000 / IvyBridge) (OpenGL 3.2 to OpenGL 4.5)</li>
+<li>Linux (OpenGL 3.2 to OpenGL 4.5)</li>
+</ul>
+
+<h2>Compute Shaders</h2>
+
+<p>Compute Shaders allow you to use GPU as a parallel processor. See documentation on <a href="ComputeShaders.html">Compute Shaders</a> for more information.</p>
+
+<h2>Tessellation &amp; Geometry Shaders</h2>
+
+<p>Surface Shaders have support for simple tessellation and displacement. See documentation on <a href="SL-SurfaceShaderTessellation.html">Surface Shader Tessellation</a> for more information.</p>
+
+<p>When manually writing <a href="SL-ShaderPrograms.html">Shader programs</a>, you can use the full set of DX11 Shader model 5.0 features, including Geometry, Hull and Domain Shaders.</p>
+
+<h2>Surface Shaders and DX11</h2>
+
+<p>Some parts of the <a href="SL-SurfaceShaders.html">Surface Shader</a> compilation pipeline do not understand DX11-specific HLSL syntax, so if you’re using HLSL features like StructuredBuffers, RWTextures and other non-DX9 syntax, you need to wrap it into a DX11-only preprocessor macro. See documentation on <a href="SL-PlatformDifferences.html">Platform-specific differences</a> for more information.</p>
+
+<h2>Examples</h2>
+
+<p>The following screenshots show examples of what you can achieve with DirectX 11 and OpenGL Core.</p>
+
+<figure>
+<img src="../uploads/Main/DX11Explosion2.png" alt="">
+</figure>
+
+<p>The volumetric explosion in the above shots is rendered using raymarching, which becomes plausible with Shader Model 5.0. Moreover, as it generates and updates depth values, it becomes fully compatible with depth-based Image Effects such as Depth of Field or Motion Blur.</p>
+
+<p>
+<img src="../uploads/Main/DX11Hair.png" alt="">
+The hair in the above shot is implemented via tessellation and geometry Shaders to dynamically generate and animate individual strands of hair. Shading is based on a model proposed by Kajiya-Kai that enables a more believable diffuse and specular behaviour.</p>
+
+<p>
+<img src="../uploads/Main/DX11Fur.png" alt="">
+Similar to the hair technique shown in the previous image, the fur on this pair of slippers is also based on generating geometry emitted from a simple base slippers Mesh.</p>
+
+<p>
+<img src="../uploads/Main/DX11Bokeh1.png" alt="">
+The blur effect in the image above (known as <strong>Bokeh</strong>) is based on stamping a Texture on top of very bright pixels. This creates very believable camera lens blurs, especially when used in conjunction with <a href="HDR.html">HDR</a> rendering.</p>
+
+<p>
+<img src="../uploads/Main/Bokeh2.png" alt="">
+This image shows an exaggerated lens blur. This is a possible result of using the <a href="PostProcessing-DepthOfField.html">Depth of Field</a> effect.</p>
+<div class="feedbackbox" id="feedbackbox">
+<div id="rating"><p>Did you find this page useful? Please give it a rating:<br><div id="ratecontent" class="c-rating"></div>
+</p></div>
+<div id="ratingThanks" style="display:none"><p>Thanks for rating this page!</p></div>
+<div id="problem"><p><a name="problem" onclick="document.getElementById('problemType').style.display = '';document.getElementById('problem').style.display = 'none';">Report a problem on this page</a></p></div>
+<div id="problemType" style="display:none"><p>What kind of problem would you like to report?<ul type="problems">
+<li><a name="needcode" onclick="                                                             document.getElementById('problemType').style.display = 'none';                                                             document.getElementById('problemThanks').style.display = '';                                                             SendFeedback('problem-needcode',window.location.href,0);                                                             document.getElementById('problemFormDescription').value='Needs code samples.';                                                             document.getElementById('problemNeedCodeForm').style.display = ''                                                         ">This page needs code samples</a></li>
+<li><a name="code" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-brokencode',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Code samples do not work.';                                                         document.getElementById('problemCodeForm').style.display = ''                                                         ">Code samples do not work</a></li>
+<li><a name="missing" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-missing',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Missing information';                                                         document.getElementById('problemMissingForm').style.display = ''                                                         ">Information is missing</a></li>
+<li><a name="incorrect" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-incorrect',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Incorrect information';                                                         document.getElementById('problemIncorrectForm').style.display = ''                                                         ">Information is incorrect</a></li>
+<li><a name="unclear" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-unclear',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Unclear or confusing information';                                                         document.getElementById('problemUnclearForm').style.display = ''                                                         ">Information is unclear or confusing</a></li>
+<li><a name="language" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-language',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Spelling or grammar error';                                                         document.getElementById('problemLanguageForm').style.display = ''                                                         ">There is a spelling/grammar error on this page</a></li>
+<li><a name="other" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-other',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='This page has a problem';                                                         document.getElementById('problemOtherForm').style.display = ''                                                         ">Something else</a></li>
+</ul>
+<p><known_issues><p>Is something described here not working as you expect it to? It might be a <b>Known Issue</b>. Please check with the Issue Tracker at <a href="https://issuetracker.unity3d.com">issuetracker.unity3d.com</a>.</p></known_issues></p>
+</p></div>
+<div id="problemThanks" style="display:none"><p>Thanks for letting us know! This page has been marked for review based on your feedback.<br><br>If you have time, you can provide more information to help us fix the problem faster.<br><br><a onclick="document.getElementById('problemMoreInfo').style.display = '';document.getElementById('problemThanks').style.display = 'none';">Provide more information</a><br>
+</p></div>
+<div id="problemMoreInfo" style="display:none">
+<p id="problemNeedCodeForm" style="display:none">You've told us this page needs code samples. If you'd like to help us further, you could provide a code sample, or tell us about what kind of code sample you'd like to see:</p>
+<p id="problemCodeForm" style="display:none">You've told us there are code samples on this page which don't work. If you know how to fix it, or have something better we could use instead, please let us know:</p>
+<p id="problemMissingForm" style="display:none">You've told us there is information missing from this page. Please tell us more about what's missing:</p>
+<p id="problemIncorrectForm" style="display:none">You've told us there is incorrect information on this page. If you know what we should change to make it correct, please tell us:</p>
+<p id="problemUnclearForm" style="display:none">You've told us this page has unclear or confusing information. Please tell us more about what you found unclear or confusing, or let us know how we could make it clearer:</p>
+<p id="problemLanguageForm" style="display:none">You've told us there is a spelling or grammar error on this page. Please tell us what's wrong:</p>
+<p id="problemOtherForm" style="display:none">You've told us this page has a problem. Please tell us more about what's wrong:</p>
+<form>
+<textarea id="problemFormSuggestionField" cols="40" rows="5"></textarea><input type="hidden" id="problemFormDescription"><input type="submit" id="problemFormDescriptionSubmit" value="Submit" onclick="                                             document.getElementById('problemMoreInfo').style.display = 'none';                                             document.getElementById('problemMoreInfoThanks').style.display = '';                                             return false;                                             ">
+</form>
+</div>
+<div id="problemMoreInfoThanks" style="display:none"><p>Thanks for helping to make the Unity documentation better!</p></div>
+<script>
+
+                                            var ratecontent = document.querySelector('#ratecontent'); // target element
+                                            var currentRating = 0; // initial rating
+                                            var maxRating= 5; // max rating
+
+                                            // callback to run after setting the rating
+                                            var callback = function(rating) {
+                                                document.getElementById('ratingThanks').style.display = '';
+                                                document.getElementById('ratecontent').style.display = 'none';
+                                                document.getElementById('rating').style.display = 'none';
+                                                SendFeedback("rating",window.location.href,rating);
+                                            };
+
+                                            // rating instance
+                                            var myRating = rating(ratecontent, currentRating, maxRating, callback);
+                                        </script>
+</div>
+<div class="nextprev clear">
+<div class="icon tt left mr1" data-distance="-40|-30|top">
+<span class="prev"><a href="LevelOfDetail.html"></a></span><div class="tip">Level of Detail (LOD)</div>
+</div>
+<div class="icon tt right" data-distance="-40|-30|top">
+<span class="next"><a href="OpenGLCoreDetails.html"></a></span><div class="tip">OpenGL Core Details</div>
+</div>
+</div>
+</div>
+</body></html>

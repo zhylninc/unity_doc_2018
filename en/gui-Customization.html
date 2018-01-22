@@ -1,0 +1,332 @@
+<html><head><title>html模版</title></head><body>Unity - Manual: Customization</br>
+<div class="breadcrumbs clear"><ul>
+<li><a href="UnityManual.html">Unity User Manual (2018.1 beta)</a></li>
+<li><a href="UISystem.html">UI</a></li>
+<li><a href="GUIScriptingGuide.html">Immediate Mode GUI (IMGUI)</a></li>
+<li>Customization</li>
+</ul></div>
+<div class="mb20"><div class="nextprev clear">
+<div class="icon tt left mr1" data-distance="-40|-30|top">
+<span class="prev"><a href="gui-Controls.html"></a></span><div class="tip">Controls</div>
+</div>
+<div class="icon tt right" data-distance="-40|-30|top">
+<span class="next"><a href="gui-Layout.html"></a></span><div class="tip">IMGUI Layout Modes</div>
+</div>
+</div></div>
+<div class="otherversionswrapper" onmouseover="setOtherVersionsDisplay(true)" onmouseout="setOtherVersionsDisplay(false)">
+<a>Other Versions</a><div class="otherversionscontent" id="OtherVersionsContent" style="display: none;">Cannot access other versions offline!</div>
+</div>
+<div class="scrollToFeedback"><a id="scrollToFeedback">Leave feedback</a></div>
+<h1>Customization</h1>
+<!--BeginSwitchLink--><!--EndSwitchLink-->
+<div class="clear"></div>
+
+<h2>Customizing your IMGUI Controls</h2>
+
+<p>Although Unity’s IMGUI system is mainly intended for creating developer tools and debugging interfaces, you can still customize and style them in many ways. In Unity’s IMGUI system, you can fine-tune the appearance of your Controls with many details. Control appearances are dictated with <strong>GUIStyles</strong>. By default, when you create a Control without defining a GUIStyle, Unity’s default GUIStyle is applied. This style is internal in Unity and can be used in published games for quick prototyping, or if you choose not to stylize your Controls.</p>
+
+<p>When you have a large number of different GUIStyles to work with, you can define them all within a single <strong>GUISkin</strong>. A GUISkin is no more than a collection of GUIStyles.</p>
+
+<h3>How Styles change the look of your GUI Controls</h3>
+
+<p>GUIStyles are designed to mimic Cascading Style Sheets (CSS) for web browsers. Many different CSS methodologies have been adapted, including differentiation of individual state properties for styling, and separation between the content and the appearance.</p>
+
+<p>Where the Control defines the content, the Style defines the appearance. This allows you to create combinations like a functional <strong>Toggle</strong> which looks like a normal <strong>Button</strong>.</p>
+
+<figure>
+<img src="../uploads/Main/gsg-ToggleStyles.png" alt="Two Toggle Controls styled differently">
+<figcaption>Two Toggle Controls styled differently</figcaption>
+</figure>
+
+<h3>The difference between Skins and Styles</h3>
+
+<p>As stated earlier, GUISkins are a collection of GUIStyles. Styles define the appearance of a GUI Control. You do not have to use a Skin if you want to use a Style.</p>
+
+<figure>
+<img src="../uploads/Main/GuiStyleInspector.png" alt="A single GUIStyle shown in the Inspector">
+<figcaption>A single GUIStyle shown in the Inspector</figcaption>
+</figure>
+
+<p>
+<img src="../uploads/Main/Inspector-GUISkin.png" alt="">
+<em>A single GUISkin shown in the Inspector - observe that it contains multiple GUIStyles</em> </p>
+
+<h2>Working with Styles</h2>
+
+<p>All GUI Control functions have an optional last parameter: the GUIStyle to use for displaying the Control. If this is omitted, Unity’s default GUIStyle will be used. This works internally by applying the name of the control type as a string, so <strong>GUI.Button()</strong> uses the “button” style, <strong>GUI.Toggle()</strong> uses the “toggle” style, etc. You can override the default GUIStyle for a control by specifying it as the last parameter.</p>
+
+<pre><code>/* Override the default Control Style with a different style in the UnityGUI default Styles */
+
+
+// JavaScript
+function OnGUI () {
+    // Make a label that uses the &quot;box&quot; GUIStyle.
+    GUI.Label (Rect (0,0,200,100), &quot;Hi - I'm a label looking like a box&quot;, &quot;box&quot;);
+
+    // Make a button that uses the &quot;toggle&quot; GUIStyle
+    GUI.Button (Rect (10,140,180,20), &quot;This is a button&quot;, &quot;toggle&quot;);
+}
+
+
+// C#
+using UnityEngine;
+using System.Collections;
+
+public class GUITest : MonoBehaviour {
+                    
+    void OnGUI () {
+        // Make a label that uses the &quot;box&quot; GUIStyle.
+        GUI.Label (new Rect (0,0,200,100), &quot;Hi - I'm a label looking like a box&quot;, &quot;box&quot;);
+    
+        // Make a button that uses the &quot;toggle&quot; GUIStyle
+        GUI.Button (new Rect (10,140,180,20), &quot;This is a button&quot;, &quot;toggle&quot;);
+    }
+
+}
+
+
+</code></pre>
+
+<figure>
+<img src="../uploads/Main/gsg-DifferentDefaultStyles.png" alt="The controls created by the code example above">
+<figcaption>The controls created by the code example above</figcaption>
+</figure>
+
+<h3>Making a public variable GUIStyle</h3>
+
+<p>When you declare a public GUIStyle variable, all elements of the Style will show up in the <strong>Inspector</strong>. You can edit all of the different values there.</p>
+
+<pre><code>/* Overriding the default Control Style with one you've defined yourself */
+
+
+// JavaScript
+var customButton : GUIStyle;
+
+function OnGUI () {
+    // Make a button. We pass in the GUIStyle defined above as the style to use
+    GUI.Button (Rect (10,10,150,20), &quot;I am a Custom Button&quot;, customButton);
+}
+
+
+// C#
+using UnityEngine;
+using System.Collections;
+
+public class GUITest : MonoBehaviour {
+                    
+    public GUIStyle customButton;
+    
+    void OnGUI () {
+        // Make a button. We pass in the GUIStyle defined above as the style to use
+        GUI.Button (new Rect (10,10,150,20), &quot;I am a Custom Button&quot;, customButton);
+    }
+    
+}
+
+
+</code></pre>
+
+<h3>Changing the different style elements</h3>
+
+<p>When you have declared a GUIStyle, you can modify that style in the Inspector. There are a great number of States you can define, and apply to any type of Control.</p>
+
+<figure>
+<img src="../uploads/Main/ModifyingStyleInInspector.png" alt="Styles are modified on a per-script, per-GameObject basis">
+<figcaption>Styles are modified on a per-script, per-GameObject basis</figcaption>
+</figure>
+
+<p>Any Control State must be assigned a <strong>Background</strong> Color before the specified <strong>Text Color</strong> will be applied.</p>
+
+<p>For more information about individual GUIStyles, please read the <a href="class-GUIStyle.html">GUIStyle Component Reference page</a>.</p>
+
+<h2>Working with Skins</h2>
+
+<p>For more complicated GUI systems, it makes sense to keep a collection of styles in one place. This is what a GUISkin does. A GUISkin contains multiple different Styles, essentially providing a complete face-lift to all GUI Controls. </p>
+
+<h3>Creating a new GUISkin</h3>
+
+<p>To create a GUISkin, select <strong>Assets-&gt;Create-&gt;GUI Skin</strong> from the menu bar. This will create a GUI Skin in your Project Folder. Select it to see all GUIStyles defined by the Skin in the Inspector.</p>
+
+<h3>Applying the skin to a GUI</h3>
+
+<p>To use a skin you’ve created, assign it to <strong>GUI.skin</strong> in your <strong>OnGUI()</strong> function.</p>
+
+<pre><code>/* Make a property containing a reference to the skin you want to use */
+
+
+// JavaScript
+var mySkin : GUISkin;
+
+function OnGUI () {
+    // Assign the skin to be the one currently used.
+    GUI.skin = mySkin;
+
+    // Make a button. This will get the default &quot;button&quot; style from the skin assigned to mySkin.
+    GUI.Button (Rect (10,10,150,20), &quot;Skinned Button&quot;);
+}
+
+
+// C#
+using UnityEngine;
+using System.Collections;
+
+public class GUITest : MonoBehaviour {
+                    
+    public GUISkin mySkin;
+    
+    void OnGUI () {
+        // Assign the skin to be the one currently used.
+        GUI.skin = mySkin;
+    
+        // Make a button. This will get the default &quot;button&quot; style from the skin assigned to mySkin.
+        GUI.Button (new Rect (10,10,150,20), &quot;Skinned Button&quot;);
+    }
+        
+}
+
+
+</code></pre>
+
+<p>You can switch skins as much as you like throughout a single <strong>OnGUI()</strong> call.</p>
+
+<pre><code>/* Example of switching skins in the same OnGUI() call */
+
+
+// JavaScript
+var mySkin : GUISkin;
+
+var toggle = true;
+
+function OnGUI () {
+    // Assign the skin to be the one currently used.
+    GUI.skin = mySkin;
+
+    // Make a toggle. This will get the &quot;button&quot; style from the skin assigned to mySkin.
+    toggle = GUI.Toggle (Rect (10,10,150,20), toggle, &quot;Skinned Button&quot;, &quot;button&quot;);
+
+    // Assign the currently skin to be Unity's default.
+    GUI.skin = null;
+
+    // Make a button. This will get the default &quot;button&quot; style from the built-in skin.
+    GUI.Button (Rect (10,35,150,20), &quot;Built-in Button&quot;);
+}
+
+
+// C#
+using UnityEngine;
+using System.Collections;
+
+public class GUITest : MonoBehaviour {
+                    
+    public GUISkin mySkin;
+    private bool toggle = true;
+    
+    void OnGUI () {
+        // Assign the skin to be the one currently used.
+        GUI.skin = mySkin;
+    
+        // Make a toggle. This will get the &quot;button&quot; style from the skin assigned to mySkin.
+        toggle = GUI.Toggle (new Rect (10,10,150,20), toggle, &quot;Skinned Button&quot;, &quot;button&quot;);
+    
+        // Assign the currently skin to be Unity's default.
+        GUI.skin = null;
+    
+        // Make a button. This will get the default &quot;button&quot; style from the built-in skin.
+        GUI.Button (new Rect (10,35,150,20), &quot;Built-in Button&quot;);
+    }
+        
+}
+
+
+</code></pre>
+
+<h3>Changing GUI Font Size</h3>
+
+<p>This example will show you how to dynamically change the font size through code. </p>
+
+<p>First create a new project in Unity. Then make a C# script called Fontsize.cs and paste the following code in:</p>
+
+<pre><code>// C# example
+using UnityEngine;
+    
+using System.Collections;
+    
+public class Fontsize : MonoBehaviour
+{
+    void OnGUI ()
+    {
+        //Set the GUIStyle style to be label
+        GUIStyle style = GUI.skin.GetStyle (&quot;label&quot;);
+        
+        //Set the style font size to increase and decrease over time
+        style.fontSize = (int)(20.0f + 10.0f * Mathf.Sin (Time.time));
+        
+        //Create a label and display with the current settings
+        GUI.Label (new Rect (10, 10, 200, 80), &quot;Hello World!&quot;);
+    }
+        
+}
+</code></pre>
+
+<p>Save the script and attach it to an empty GameObject, click play to see the font loop through increasing and decreasing in size over time. You may notice that the font does not smoothly change size, this is becauses there is not an infinite number of font sizes.</p>
+
+<p>This specific example requires that the default font (Arial) is loaded and marked as dynamic. You cannot change the size of any font that is not marked as dynamic.</p>
+<div class="feedbackbox" id="feedbackbox">
+<div id="rating"><p>Did you find this page useful? Please give it a rating:<br><div id="ratecontent" class="c-rating"></div>
+</p></div>
+<div id="ratingThanks" style="display:none"><p>Thanks for rating this page!</p></div>
+<div id="problem"><p><a name="problem" onclick="document.getElementById('problemType').style.display = '';document.getElementById('problem').style.display = 'none';">Report a problem on this page</a></p></div>
+<div id="problemType" style="display:none"><p>What kind of problem would you like to report?<ul type="problems">
+<li><a name="needcode" onclick="                                                             document.getElementById('problemType').style.display = 'none';                                                             document.getElementById('problemThanks').style.display = '';                                                             SendFeedback('problem-needcode',window.location.href,0);                                                             document.getElementById('problemFormDescription').value='Needs code samples.';                                                             document.getElementById('problemNeedCodeForm').style.display = ''                                                         ">This page needs code samples</a></li>
+<li><a name="code" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-brokencode',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Code samples do not work.';                                                         document.getElementById('problemCodeForm').style.display = ''                                                         ">Code samples do not work</a></li>
+<li><a name="missing" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-missing',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Missing information';                                                         document.getElementById('problemMissingForm').style.display = ''                                                         ">Information is missing</a></li>
+<li><a name="incorrect" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-incorrect',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Incorrect information';                                                         document.getElementById('problemIncorrectForm').style.display = ''                                                         ">Information is incorrect</a></li>
+<li><a name="unclear" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-unclear',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Unclear or confusing information';                                                         document.getElementById('problemUnclearForm').style.display = ''                                                         ">Information is unclear or confusing</a></li>
+<li><a name="language" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-language',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Spelling or grammar error';                                                         document.getElementById('problemLanguageForm').style.display = ''                                                         ">There is a spelling/grammar error on this page</a></li>
+<li><a name="other" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-other',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='This page has a problem';                                                         document.getElementById('problemOtherForm').style.display = ''                                                         ">Something else</a></li>
+</ul>
+<p><known_issues><p>Is something described here not working as you expect it to? It might be a <b>Known Issue</b>. Please check with the Issue Tracker at <a href="https://issuetracker.unity3d.com">issuetracker.unity3d.com</a>.</p></known_issues></p>
+</p></div>
+<div id="problemThanks" style="display:none"><p>Thanks for letting us know! This page has been marked for review based on your feedback.<br><br>If you have time, you can provide more information to help us fix the problem faster.<br><br><a onclick="document.getElementById('problemMoreInfo').style.display = '';document.getElementById('problemThanks').style.display = 'none';">Provide more information</a><br>
+</p></div>
+<div id="problemMoreInfo" style="display:none">
+<p id="problemNeedCodeForm" style="display:none">You've told us this page needs code samples. If you'd like to help us further, you could provide a code sample, or tell us about what kind of code sample you'd like to see:</p>
+<p id="problemCodeForm" style="display:none">You've told us there are code samples on this page which don't work. If you know how to fix it, or have something better we could use instead, please let us know:</p>
+<p id="problemMissingForm" style="display:none">You've told us there is information missing from this page. Please tell us more about what's missing:</p>
+<p id="problemIncorrectForm" style="display:none">You've told us there is incorrect information on this page. If you know what we should change to make it correct, please tell us:</p>
+<p id="problemUnclearForm" style="display:none">You've told us this page has unclear or confusing information. Please tell us more about what you found unclear or confusing, or let us know how we could make it clearer:</p>
+<p id="problemLanguageForm" style="display:none">You've told us there is a spelling or grammar error on this page. Please tell us what's wrong:</p>
+<p id="problemOtherForm" style="display:none">You've told us this page has a problem. Please tell us more about what's wrong:</p>
+<form>
+<textarea id="problemFormSuggestionField" cols="40" rows="5"></textarea><input type="hidden" id="problemFormDescription"><input type="submit" id="problemFormDescriptionSubmit" value="Submit" onclick="                                             document.getElementById('problemMoreInfo').style.display = 'none';                                             document.getElementById('problemMoreInfoThanks').style.display = '';                                             return false;                                             ">
+</form>
+</div>
+<div id="problemMoreInfoThanks" style="display:none"><p>Thanks for helping to make the Unity documentation better!</p></div>
+<script>
+
+                                            var ratecontent = document.querySelector('#ratecontent'); // target element
+                                            var currentRating = 0; // initial rating
+                                            var maxRating= 5; // max rating
+
+                                            // callback to run after setting the rating
+                                            var callback = function(rating) {
+                                                document.getElementById('ratingThanks').style.display = '';
+                                                document.getElementById('ratecontent').style.display = 'none';
+                                                document.getElementById('rating').style.display = 'none';
+                                                SendFeedback("rating",window.location.href,rating);
+                                            };
+
+                                            // rating instance
+                                            var myRating = rating(ratecontent, currentRating, maxRating, callback);
+                                        </script>
+</div>
+<div class="nextprev clear">
+<div class="icon tt left mr1" data-distance="-40|-30|top">
+<span class="prev"><a href="gui-Controls.html"></a></span><div class="tip">Controls</div>
+</div>
+<div class="icon tt right" data-distance="-40|-30|top">
+<span class="next"><a href="gui-Layout.html"></a></span><div class="tip">IMGUI Layout Modes</div>
+</div>
+</div>
+</div>
+</body></html>

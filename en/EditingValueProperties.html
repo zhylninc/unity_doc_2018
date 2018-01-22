@@ -1,0 +1,188 @@
+<html><head><title>html模版</title></head><body>Unity - Manual: Editing Properties</br>
+<div class="breadcrumbs clear"><ul>
+<li><a href="UnityManual.html">Unity User Manual (2018.1 beta)</a></li>
+<li><a href="UnityOverview.html">Working in Unity</a></li>
+<li><a href="UsingTheEditor.html">The Main Windows</a></li>
+<li><a href="UsingTheInspector.html">The Inspector window</a></li>
+<li>Editing Properties</li>
+</ul></div>
+<div class="mb20"><div class="nextprev clear">
+<div class="icon tt left mr1" data-distance="-40|-30|top">
+<span class="prev"><a href="AssigningIcons.html"></a></span><div class="tip"> Assigning icons</div>
+</div>
+<div class="icon tt right" data-distance="-40|-30|top">
+<span class="next"><a href="PresetLibraries.html"></a></span><div class="tip">Preset Libraries</div>
+</div>
+</div></div>
+<div class="otherversionswrapper" onmouseover="setOtherVersionsDisplay(true)" onmouseout="setOtherVersionsDisplay(false)">
+<a>Other Versions</a><div class="otherversionscontent" id="OtherVersionsContent" style="display: none;">Cannot access other versions offline!</div>
+</div>
+<div class="scrollToFeedback"><a id="scrollToFeedback">Leave feedback</a></div>
+<h1>Editing Properties</h1>
+<!--BeginSwitchLink--><!--EndSwitchLink-->
+<div class="clear"></div>
+
+<p>
+<strong>Properties</strong> are settings and options for components that can be edited in the inspector. </p>
+
+<figure>
+<img src="../uploads/Main/PropertiesExample.png" alt="Light component showing various value and reference properties">
+<figcaption>Light component showing various value and reference properties</figcaption>
+</figure>
+
+<p>Properties can be broadly categorized as <em>references</em> (links to other objects and assets) or <em>values</em> (numbers, checkboxes, colors, etc).</p>
+
+<h2>References</h2>
+
+<p>References can be assigned by dragging and dropping an object or asset of the appropriate type to the property in the inspector. For example, the <a href="class-MeshFilter.html">Mesh Filter</a> component needs to refer to a <a href="class-Mesh.html">Mesh</a> asset somewhere in the project. When the component is initially created, the reference is unassigned:</p>
+
+<figure>
+<img src="../uploads/Main/RefPropUnassigned.png" alt="">
+</figure>
+
+<p>…but you can assign a Mesh to it by dropping a Mesh asset onto it:</p>
+
+<figure>
+<img src="../uploads/Main/RefPropAssigned.png" alt="">
+</figure>
+
+<p>You can also use the <strong>Object Picker</strong> to select an object for a reference property. If you click the small circle icon to the right of the property in the inspector, you will see a window like this:</p>
+
+<figure>
+<img src="../uploads/Main/ObjectPicker.png" alt="">
+</figure>
+
+<p>The object picker lets you search for and select objects within the scene or project assets (the information panel at the bottom of the window can be raised and lowered as desired). Choosing an object for the reference property is simply a matter of double clicking it in the picker.</p>
+
+<p>When a reference property is of a component type (such as <a href="class-Transform.html">Transform</a>), you can drop any object onto it; Unity will locate the first component of that type on the object and assign it to the reference. If the object doesn’t have any components of the right type, the assignment will be rejected.</p>
+
+<h2>Values</h2>
+
+<p>Most values are edited using familiar text boxes, checkboxes and menus, depending on their type (as a convenience, numeric values can also be moved up or down by dragging the mouse over the property name label). However, there are some values of more complex types that have their own specific editors. These are described below.</p>
+
+<h3>Colors</h3>
+
+<p>Color properties will open the <strong>Color Picker</strong> when clicked.</p>
+
+<figure>
+<img src="../uploads/Main/ColorPicker.png" alt="The Color Picker window">
+<figcaption>The Color Picker window</figcaption>
+</figure>
+
+<figure>
+<img src="../uploads/Main/HDRColorPicker.png" alt="The HDR Color Picker window (displayed when clicking the emission color property in the standard shader or if you use the ColorUsageAttribute on a Color in your script)">
+<figcaption>The HDR Color Picker window (displayed when clicking the emission color property in the standard shader or if you use the ColorUsageAttribute on a Color in your script)</figcaption>
+</figure>
+
+<figure>
+<img src="../uploads/Main/HDRColorPickerTonemapped.png" alt="The HDR Color Picker window shown with the tonemapped option selected">
+<figcaption>The HDR Color Picker window shown with the tonemapped option selected</figcaption>
+</figure>
+
+<p>Unity uses its own color picker but on Mac OS X you can choose to use the system picker from the <a href="Preferences.html">Preferences</a> (menu: <strong>Unity &gt; Preferences</strong> and then <strong>Use OS X Color Picker</strong> from the <em>General</em> panel).</p>
+
+<h3>Gradients</h3>
+
+<p>In graphics and animation, it is often useful to be able to blend one colour gradually into another, over space or time. A <strong>gradient</strong> is a visual representation of a colour progression, which simply shows the main colours (which are called <strong>stops</strong>) and all the intermediate shades between them:</p>
+
+<figure>
+<img src="../uploads/Main/GradientDiagram.png" alt="">
+</figure>
+
+<p>The upward-pointing arrows along the bottom of the gradient bar denote the stops. You can select a stop by clicking on it; its value will be shown in the Color box which will open the standard colour picker when clicked. A new stop can be created by clicking just underneath the gradient bar. The position of any of the stops can be changed simply by clicking and dragging and a stop can be removed with <strong>ctrl/cmd + delete</strong>.</p>
+
+<p>The downward-pointing arrows above the gradient bar are also stops but they correspond to the alpha (transparency) of the gradient at that point. By default, there are two stops set to 100% alpha (ie, fully opaque) but any number of stops can be added and edited in much the same way as the colour stops.</p>
+
+<h3>Curves</h3>
+
+<p>A <strong>Curve</strong> is a line graph that shows the response (on the Y axis) to the varying value of an input (on the X axis).</p>
+
+<figure>
+<img src="../uploads/Main/CurveEditor.png" alt="Curve editor">
+<figcaption>Curve editor</figcaption>
+</figure>
+
+<p>Curves are used in a variety of different contexts within Unity, especially in animation, and have a number of different options and tools. These are explained on the <a href="EditingCurves.html">Editing Curves</a> page of the manual.</p>
+
+<h3>Arrays</h3>
+
+<p>When a script exposes an array as a public variable, the inspector will show a value editor that lets you edit both the size of the array and the values or references within it.</p>
+
+<figure>
+<img src="../uploads/Main/ArrayInspector.png" alt="Script with a Vector3 array property">
+<figcaption>Script with a Vector3 array property</figcaption>
+</figure>
+
+<p>When you decrease the <em>Size</em> property, values from the end of the array will be removed. When you increase the size, the current last value will be copied into all the new elements added. This can be useful when setting up an array whose values are mostly the same - you can set the first element and then change the size to copy it to all the other elements.</p>
+
+<h2>Editing Several Objects at Once</h2>
+
+<p>When you have two or more objects selected, the components they have in common can all be edited together (ie, the values you supply will be copied to all the selected objects).</p>
+
+<figure>
+<img src="../uploads/Main/MultiObjectEdit.svg" alt="Inspector showing a multiple selection">
+<figcaption>Inspector showing a multiple selection</figcaption>
+</figure>
+
+<p>Where property values are the same for all selected objects, the value will be shown but otherwise, it will be shown as a dash character. Only components that are common to <em>all</em> objects will be visible in the inspector. If any selected object has components that are not present on other objects, the inspector will show a message to say that some components are hidden. The context menu for a property (opened by right-clicking on its name label) also has options to allow you to set its value from any of the selected components.</p>
+
+<p>Note that you can also edit several selected instances of a prefab at once but the usual <em>Select</em>, <em>Revert</em> and <em>Apply</em> buttons will not be available.</p>
+<div class="feedbackbox" id="feedbackbox">
+<div id="rating"><p>Did you find this page useful? Please give it a rating:<br><div id="ratecontent" class="c-rating"></div>
+</p></div>
+<div id="ratingThanks" style="display:none"><p>Thanks for rating this page!</p></div>
+<div id="problem"><p><a name="problem" onclick="document.getElementById('problemType').style.display = '';document.getElementById('problem').style.display = 'none';">Report a problem on this page</a></p></div>
+<div id="problemType" style="display:none"><p>What kind of problem would you like to report?<ul type="problems">
+<li><a name="needcode" onclick="                                                             document.getElementById('problemType').style.display = 'none';                                                             document.getElementById('problemThanks').style.display = '';                                                             SendFeedback('problem-needcode',window.location.href,0);                                                             document.getElementById('problemFormDescription').value='Needs code samples.';                                                             document.getElementById('problemNeedCodeForm').style.display = ''                                                         ">This page needs code samples</a></li>
+<li><a name="code" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-brokencode',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Code samples do not work.';                                                         document.getElementById('problemCodeForm').style.display = ''                                                         ">Code samples do not work</a></li>
+<li><a name="missing" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-missing',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Missing information';                                                         document.getElementById('problemMissingForm').style.display = ''                                                         ">Information is missing</a></li>
+<li><a name="incorrect" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-incorrect',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Incorrect information';                                                         document.getElementById('problemIncorrectForm').style.display = ''                                                         ">Information is incorrect</a></li>
+<li><a name="unclear" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-unclear',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Unclear or confusing information';                                                         document.getElementById('problemUnclearForm').style.display = ''                                                         ">Information is unclear or confusing</a></li>
+<li><a name="language" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-language',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Spelling or grammar error';                                                         document.getElementById('problemLanguageForm').style.display = ''                                                         ">There is a spelling/grammar error on this page</a></li>
+<li><a name="other" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-other',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='This page has a problem';                                                         document.getElementById('problemOtherForm').style.display = ''                                                         ">Something else</a></li>
+</ul>
+<p><known_issues><p>Is something described here not working as you expect it to? It might be a <b>Known Issue</b>. Please check with the Issue Tracker at <a href="https://issuetracker.unity3d.com">issuetracker.unity3d.com</a>.</p></known_issues></p>
+</p></div>
+<div id="problemThanks" style="display:none"><p>Thanks for letting us know! This page has been marked for review based on your feedback.<br><br>If you have time, you can provide more information to help us fix the problem faster.<br><br><a onclick="document.getElementById('problemMoreInfo').style.display = '';document.getElementById('problemThanks').style.display = 'none';">Provide more information</a><br>
+</p></div>
+<div id="problemMoreInfo" style="display:none">
+<p id="problemNeedCodeForm" style="display:none">You've told us this page needs code samples. If you'd like to help us further, you could provide a code sample, or tell us about what kind of code sample you'd like to see:</p>
+<p id="problemCodeForm" style="display:none">You've told us there are code samples on this page which don't work. If you know how to fix it, or have something better we could use instead, please let us know:</p>
+<p id="problemMissingForm" style="display:none">You've told us there is information missing from this page. Please tell us more about what's missing:</p>
+<p id="problemIncorrectForm" style="display:none">You've told us there is incorrect information on this page. If you know what we should change to make it correct, please tell us:</p>
+<p id="problemUnclearForm" style="display:none">You've told us this page has unclear or confusing information. Please tell us more about what you found unclear or confusing, or let us know how we could make it clearer:</p>
+<p id="problemLanguageForm" style="display:none">You've told us there is a spelling or grammar error on this page. Please tell us what's wrong:</p>
+<p id="problemOtherForm" style="display:none">You've told us this page has a problem. Please tell us more about what's wrong:</p>
+<form>
+<textarea id="problemFormSuggestionField" cols="40" rows="5"></textarea><input type="hidden" id="problemFormDescription"><input type="submit" id="problemFormDescriptionSubmit" value="Submit" onclick="                                             document.getElementById('problemMoreInfo').style.display = 'none';                                             document.getElementById('problemMoreInfoThanks').style.display = '';                                             return false;                                             ">
+</form>
+</div>
+<div id="problemMoreInfoThanks" style="display:none"><p>Thanks for helping to make the Unity documentation better!</p></div>
+<script>
+
+                                            var ratecontent = document.querySelector('#ratecontent'); // target element
+                                            var currentRating = 0; // initial rating
+                                            var maxRating= 5; // max rating
+
+                                            // callback to run after setting the rating
+                                            var callback = function(rating) {
+                                                document.getElementById('ratingThanks').style.display = '';
+                                                document.getElementById('ratecontent').style.display = 'none';
+                                                document.getElementById('rating').style.display = 'none';
+                                                SendFeedback("rating",window.location.href,rating);
+                                            };
+
+                                            // rating instance
+                                            var myRating = rating(ratecontent, currentRating, maxRating, callback);
+                                        </script>
+</div>
+<div class="nextprev clear">
+<div class="icon tt left mr1" data-distance="-40|-30|top">
+<span class="prev"><a href="AssigningIcons.html"></a></span><div class="tip"> Assigning icons</div>
+</div>
+<div class="icon tt right" data-distance="-40|-30|top">
+<span class="next"><a href="PresetLibraries.html"></a></span><div class="tip">Preset Libraries</div>
+</div>
+</div>
+</div>
+</body></html>

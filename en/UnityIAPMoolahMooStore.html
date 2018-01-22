@@ -1,0 +1,659 @@
+<html><head><title>html模版</title></head><body>Unity - Manual: CloudMoolah MOO store </br>
+<div class="breadcrumbs clear"><ul>
+<li><a href="UnityManual.html">Unity User Manual (2018.1 beta)</a></li>
+<li><a href="UnityServices.html">Unity Services &amp; Dashboard</a></li>
+<li><a href="UnityIAP.html">﻿Unity IAP</a></li>
+<li>Store Guides</li>
+<li>CloudMoolah MOO store </li>
+</ul></div>
+<div class="mb20"><div class="nextprev clear">
+<div class="icon tt left mr1" data-distance="-40|-30|top">
+<span class="prev"><a href="UnityIAPSamsungGalaxy.html"></a></span><div class="tip"> Samsung Galaxy apps</div>
+</div>
+<div class="icon tt right" data-distance="-40|-30|top">
+<span class="next"><a href="UnityIAPXiaomi.html"></a></span><div class="tip">Unity IAP Xiaomi integration guide</div>
+</div>
+</div></div>
+<div class="otherversionswrapper" onmouseover="setOtherVersionsDisplay(true)" onmouseout="setOtherVersionsDisplay(false)">
+<a>Other Versions</a><div class="otherversionscontent" id="OtherVersionsContent" style="display: none;">Cannot access other versions offline!</div>
+</div>
+<div class="scrollToFeedback"><a id="scrollToFeedback">Leave feedback</a></div>
+<h1>CloudMoolah MOO store</h1>
+<!--BeginSwitchLink--><!--EndSwitchLink-->
+<div class="clear"></div>
+
+<p>Like the Apple App Store and the Google Play Store, the <a href="http://www.cloudmoolah.com/index.php/moo-store/">CloudMoolah MOO Store</a> is a commercial online service that enables people to buy and sell mobile apps as well buy items in the application (known as ‘in-app purchasing’ or ‘IAP’).</p>
+
+<p>The MOO Store serves Asian markets. Users maintain a digital wallet, which they can top up using a variety of payment providers, such as banks and convenience store pre-paid cards.</p>
+
+<p>Although compatible with Unity, the CloudMoolah MOO Store is not a Unity product. For more information, see documentation on configuring for CloudMoolah MOO Store or visit the CloudMoolah Developer Portal website at <a href="http://dev.cloudmoolah.com/">dev.cloudmoolah.com</a>. </p>
+
+<p>This documentation lists the functionality you need to use and describes the implementation via Scripting API using <a href="https://docs.unity3d.com/ScriptReference/index.html">Unity API</a> and <a href="http://dev.cloudmoolah.com/">CloudMoolah API</a>. </p>
+
+<h2>Sample implementation</h2>
+
+<p>Unity IAP’s default integration includes an implementation script example that demonstrates how to use both of the required - and some of the optional - CloudMoolah scripting APIs.</p>
+
+<p>To see the CloudMoolah-specific example:</p>
+
+<ol>
+<li>Go to the Assets/Plugins/UnityPurchasing/script folder.</li>
+<li>Find the example file: IAPDemo.cs and open it.</li>
+<li>In IAPDemo.cs, search for the following APIs: <code>IMoolahConfiguration</code> and <code>IMoolahExtension</code>.</li>
+</ol>
+
+<p>The <code>IMoolahConfiguration</code> API’s <code>appKey</code> and <code>hashKey</code> are set in the IAPDemo.cs file’s <code>Awake()</code> function. This connects your app with the Store backend.</p>
+
+<p>The <code>IMoolahExtension</code> API’s <code>FastRegister</code> and <code>Login</code> functions are defined in the IAPDemo.cs file’s <code>InitUI</code> function. The <code>FastRegister</code> and <code>Login</code> functions are called when a game player taps buttons on the GUI that corresponds to them.</p>
+
+<p>IAPDemo.cs file also includes optional API for configuring test mode, and for extending functionality to include transaction restoration - see the API definitions below for more information.</p>
+
+<h2>Initialization prerequisites</h2>
+
+<p>An app targeting the CloudMoolah MOO Store must configure the CloudMoolah <code>appKey</code> and <code>hashKey</code> using the <code>IMoolahConfiguration</code> via the scripting API before initializing Unity IAP. Collect these variables’ values from the app’s CloudMoolah developer dashboard.</p>
+
+<pre><code>// Configure initialization prerequisites from within an IStoreListener implementation
+var module = StandardPurchasingModule.Instance();
+var builder = ConfigurationBuilder.Instance(module);
+builder.Configure&lt;IMoolahConfiguration&gt;().appKey = &quot;d3d3cd207594ee1bd93f4564c41d463e&quot;;
+builder.Configure&lt;IMoolahConfiguration&gt;().hashKey = &quot;my-hash-key&quot;;
+// May now initialize UnityIAP with UnityPurchasing.Initialize(this, builder) 
+</code></pre>
+
+<h2>Configuration API</h2>
+
+<p>Unity IAP supports pre-initialization store-specific scripting API through a configuration mechanism.</p>
+
+<p>Access the <code>IMoolahConfiguration</code> instance with <code>IMoolahConfiguration moolahConfiguration = ConfigurationBuilder.Configure&lt;IMoolahConfiguration&gt;()</code>. See <a href="../ScriptReference/Purchasing.ConfigurationBuilder.Configure.html">Purchasing.ConfigurationBuilder.Configure</a> for more on using accessing Unity IAP configuration APIs.</p>
+
+<h3>appKey</h3>
+
+<p>The appKey is your game’s unique identifier, and is generated by the CloudMoolah server when you register a new app.</p>
+
+<p><strong>Syntax</strong></p>
+
+<pre><code>string IMoolahConfiguration.appKey
+</code></pre>
+
+<p><strong>Description</strong></p>
+
+<ul>
+<li><p>Required to initialize.</p></li>
+<li><p>Uniquely identifies the game.</p></li>
+<li><p>Apply for this on the <a href="http://dev.cloudmoolah.com/">CloudMoolah Developer Portal</a>.</p></li>
+<li><p>Set before <code>initialize</code> is called.</p></li>
+</ul>
+
+<p><strong>Example</strong></p>
+
+<pre><code>var builder = ConfigurationBuilder.Instance(StandardPurchasingModule.Instance());
+ 
+builder.Configure&lt;IMoolahConfiguration&gt;().appKey = &quot;d3d3cd207594ee1bd93f4564c41d463&quot;;
+</code></pre>
+
+<h3>hashKey</h3>
+
+<p>The hashKey uniquely identifies your game when it is defined in the CloudMoolah MOO Store, and helps to secure the connection between a client app and the server’s store.</p>
+
+<p>The appKey is your game’s unique identifier, and is generated by the CloudMoolah server when you register a new app.</p>
+
+<p><strong>Syntax</strong></p>
+
+<pre><code>string IMoolahConfiguration.hashKey
+</code></pre>
+
+<p><strong>Description</strong></p>
+
+<ul>
+<li><p>Required to initialize.</p></li>
+<li><p>Apply for this on the <a href="http://dev.cloudmoolah.com/">CloudMoolah Developer Portal</a>.</p></li>
+<li><p>Uniquely identifies the game, and is defined by the developer.</p></li>
+<li><p>Set before initialize is called.</p></li>
+</ul>
+
+<p><strong>Example</strong></p>
+
+<pre><code>var builder = ConfigurationBuilder.Instance(StandardPurchasingModule.Instance());
+ 
+builder.Configure&lt;IMoolahConfiguration&gt;().hashKey = &quot;my-hash-key&quot;;
+</code></pre>
+
+<h2>Extensions API</h2>
+
+<p>Unity IAP supports post-initialization store-specific Scripting API through an extension mechanism.</p>
+
+<p>Acquire the <code>IMoolahExtension</code> interface instance for CloudMoolah through the <a href="../ScriptReference/Purchasing.IExtensionProvider.html">IExtensionProvider</a> that the <a href="../ScriptReference/Purchasing.IStoreListener.OnInitialized.html">IStoreListener.OnInitialized</a> API returns on initialization.</p>
+
+<p>Capture the IMoolahExtension instance with:</p>
+
+<pre><code>private IMoolahExtension m_MoolahExtensions;
+public void OnInitialized(IStoreController controller, IExtensionProvider extensions)
+{
+    m_MoolahExtensions = extensions.GetExtension&lt;IMoolahExtension&gt; ();
+}
+</code></pre>
+
+<p>Note: Restore non-consumable transactions (see <a href="UnityIAPRestoringTransactions.html">documentation</a>) through this store-specific Scripting API extension.</p>
+
+<h3>Purchasing prerequisites: registration and login</h3>
+
+<p>The CloudMoolah wallet collects real currency from pre-paid cards and SMS payments. Transactions use the currency in the wallet during the payment process. </p>
+
+<p>As such, CloudMoolah must establish per-user identification through registration and login to create and access a user’s digital wallet. </p>
+
+<h4>Registration</h4>
+
+<p>There are two ways to perform user identification without user involvement: create an app that registers and logs in using computer-generated credentials, or an app that shares previously-created credentials from a third-party identity service. This results in the creation of more secure identifiers; for example, a string of randomly generated letters and numbers, rather than something less secure or possibly duplicated, such as the user’s real name.</p>
+
+<p>In some cases, standalone or offline games might not have access to an identity service from a game developer or publisher. In this instance, you may want to generate user credentials. Register using the result of Unity’s SystemInfo.deviceUniqueIdentifier API, and supply this as the user-identifying “password”. Note that when you use this API, it automatically adds the <code>android.permission.READ_PHONE_STATE</code> to an Android app’s manifest.</p>
+
+<p>Another situation is online games. A game player might have an online identity service available to them through their game server. In this case, you need to copy user-identifying credentials as the registration password.</p>
+
+<p>
+<strong>Note:</strong> The registration password must remain constant over the lifetime of the user account, serving as a permanent access token for that particular user’s wallet.</p>
+
+<h4>Login</h4>
+
+<p>Purchasing requires a successful login, which requires a user to register.</p>
+
+<p>The registration API only needs the user to provide a single password, which then creates the digital wallet. Registration also generates a username, which the API passes back to the client, and must be used in order for the user to log in.</p>
+
+<p>The user must perform login once per session, and requires the generated username and user-identifying password. After the user logs in, they can add money to the wallet through the MOO Store’s supported payment providers, and can then attempt purchases.</p>
+
+<p>For users to permanently bind a wallet to an email address, they must supply additional identifying credentials (such as a phone number) to the CloudMoolah web service during the purchase process on their Android device.</p>
+
+<h4>Register for a digital wallet</h4>
+
+<p><strong>Syntax</strong></p>
+
+<pre><code>void IMoolahExtension.FastRegister(string CMpassword, Action&lt;string&gt; registerSuccessed, Action&lt;FastRegisterError, string&gt; registerFailed)
+</code></pre>
+
+<p><strong>Parameters</strong></p>
+
+<ul>
+<li><p>
+<code>CMpassword</code>: User-defined password for signing up with the CloudMoolah user system.</p></li>
+<li><p>
+<code>registerSuccessed</code>: Passes (string cmUserName) on successful fast registration (see below).</p></li>
+<li><p>
+<code>registerFailed</code>: Passes error code and string description when fast registration fails.</p></li>
+</ul>
+
+<p><strong>Description</strong></p>
+
+<ul>
+<li><p>Required for purchase.</p></li>
+<li><p>The FastRegister function returns a username generated by CloudMoolah to access a CloudMoolah digital wallet. The user can later perform a full registration in the CloudMoolah purchasing web service to permanently bind the wallet to them through their phone number.</p></li>
+<li><p>Called after initialization.</p></li>
+</ul>
+
+<p><strong>Example</strong></p>
+
+<pre><code>// Use custom password to register a CloudMoolah acount.
+m_MoolahExtensions.FastRegister(&quot;CMPassword&quot;, registerSucceed, registerFailed);
+ 
+public void registerSucceed(string cmUserName)
+{
+    m_CloudMoolahUserName = cmUserName;
+    Debug.Log (&quot;registerSucceed : cmUserName is &quot; + cmUserName);
+}
+ 
+public void registerFailed(FastRegisterError error, string errorMsg)
+{
+    Debug.Log (&quot;registerFailed :FastRegisterError is &quot; + error.ToString() + &quot;, errorMsg is &quot; + errorMsg);
+}
+</code></pre>
+
+<h3>Log in to an existing wallet</h3>
+
+<p><strong>Syntax</strong></p>
+
+<pre><code>void IMoolahExtension.Login(string CMUserName, string CMPassword, Action&lt;LoginResultState, string&gt; LoginResult)
+</code></pre>
+
+<p><strong>Parameters</strong></p>
+
+<ul>
+<li><p>
+<code>CMUserName</code>: Returned from previous call to FastRegister (see below).</p></li>
+<li><p>
+<code>CMpassword</code>: Used in previous call to FastRegister (see below).</p></li>
+<li><p>
+<code>LoginResult</code>: Required. Passes (LoginResultState) attempt result along with (string message) diagnostic message.</p></li>
+</ul>
+
+<p><strong>Description</strong></p>
+
+<ul>
+<li><p>Required.</p></li>
+<li><p>User logs in with their CloudMoolah username.</p></li>
+<li><p>All standalone games can use the Unity GUID as a username. This allows users to make purchases without this login.</p></li>
+</ul>
+
+<p><strong>Example</strong></p>
+
+<pre><code>m_MoolahExtensions.Login(m_CloudMoolahUserName, &quot;CMPassword&quot;, loginResult);
+ 
+public void loginResult(LoginResultState state, string message)
+{
+    m_IsLoggedIn = state == LoginResultState.LoginSucceed;
+}
+</code></pre>
+
+<h2>Testing</h2>
+
+<p>CloudMoolah supports local testing for checking an app’s purchase flow error handling, and for simulating payment without making a real-currency payment.</p>
+
+<h3>Configure developer mode</h3>
+
+<p><strong>Syntax</strong></p>
+
+<pre><code>void IMoolahExtension.SetMode(CloudMoolahMode mode)
+</code></pre>
+
+<p><strong>Parameters</strong></p>
+
+<ul>
+<li>
+<code>mode</code>: Type of purchase flow to perform.</li>
+</ul>
+
+<p><strong>Description</strong></p>
+
+<ul>
+<li>Supply <code>CloudMoolahMode</code> to enable success, failure, or normal operation.</li>
+</ul>
+
+<p><strong>Example</strong></p>
+
+<pre><code>m_MoolahExtensions.SetMode(CloudMoolahMode.AlwaysFail); // TESTING: all purchases fail
+</code></pre>
+
+<h3>Additional API</h3>
+
+<h4>Restore previous purchase transactions</h4>
+
+<p><strong>Syntax</strong></p>
+
+<pre><code>void IMoolahExtension.RestoreTransactionID(Action&lt;RestoreTransactionIDState&gt; result) 
+</code></pre>
+
+<p><strong>Parameters</strong></p>
+
+<ul>
+<li>
+<code>result</code>: The status of the transaction.</li>
+</ul>
+
+<p><strong>Description</strong></p>
+
+<ul>
+<li><p>Return all unfinished transactions which have been successfully paid for but have not been paid out yet (see the <code>RequestPayOut</code> Scripting API below).</p></li>
+<li><p>Must be called after initialization.</p></li>
+<li><p>Must first call login.</p></li>
+</ul>
+
+<p><strong>Example</strong></p>
+
+<pre><code>// Retrieve transaction identifiers, when Client does not already have transaction identifiers.
+ 
+m_MoolahExtensions.RestoreTransactionID(( RestoreTransactionIDState restoreTransactionIDState)=&gt;{
+    // Restore complete, see ProcessPurchase for restored products
+};
+</code></pre>
+
+<h3>Completely finish or consume transaction</h3>
+
+<p><strong>Syntax</strong></p>
+
+<pre><code>void IMoolahExtension.RequestPayOut(string transactionId, Action&lt;string, RequestPayOutState, string&gt; result)
+</code></pre>
+
+<p><strong>Parameters</strong></p>
+
+<ul>
+<li><p>
+<code>transactionId</code>: Transaction identifier to finish.</p></li>
+<li><p>
+<code>result</code>: TransactionId, the result of payout, or any error message.</p></li>
+</ul>
+
+<p><strong>Description</strong></p>
+
+<ul>
+<li><p>This is key for the delivery of a virtual item. It is helpful or necessary for offline games. Use this API after delivery of the virtual item.</p></li>
+<li><p>Use this in instances where payment is successful but the game quits before the delivery of the virtual item is complete. The standalone game developer has no record of this, so they must call <code>IMoolahExtension.RestoreTransactionID</code> and then <code>IMoolahExtension.RequestPayOut</code> to finish the transaction.</p></li>
+<li><p>For online games, you can manage payout yourself so the client does not need to call the <code>IMoolahExtension.RequestPayOut</code> operation and restore. The client’s game server can also return the delivery status while the server makes a callback, to do the <code>IMoolahExtension.RequestPayOut</code> operation.</p></li>
+<li><p>Call this in <code>ProcessPurchase</code>.</p></li>
+</ul>
+
+<p><strong>Example</strong></p>
+
+<p>For an offline game from within ProcessPurchase:</p>
+
+<pre><code>// If platform is CloudMoolah, you should do payout on a standalone game and &quot;return PurchaseProcessingResult.Pending&quot; at the end.
+ 
+if (m_IsCloudMoolahStoreSelected) {
+    m_MoolahExtensions.RequestPayOut (m_CloudMoolahTransactionID, (string transactionID, RequestPayOutState state, string message) =&gt; {
+        msg = &quot;ProcessPurchase requestPayOut TannsationID:&quot; + transactionID + &quot;,state:&quot;+ state.ToString() + &quot;,msg:&quot; + message;
+ 
+        if (state == RequestPayOutState.RequestPayOutSucceed) {
+            // Finish Transaction
+                    m_Controller.ConfirmPendingPurchase(e.purchasedProduct);
+            //payout success, issue virtual props. 
+        } else {
+            //PayOut Failed , Don't issue virtual props.
+        }
+    });
+}
+ 
+// You should unlock the content here.
+// Indicate we have handled this purchase, we will not be informed of it again.
+// If platform is CloudMoolah, you should &quot;return PurchaseProcessingResult.Pending&quot; on a standalone game or &quot;return PurchaseProcessingResult.Complete&quot; on an online game.
+ 
+return PurchaseProcessingResult.Pending;
+</code></pre>
+
+<p>For an online game:</p>
+
+<pre><code>// You should unlock the content here.
+// Indicate we have handled this purchase, we will not be informed of it again.
+// If platform is CloudMoolah, you should &quot;return PurchaseProcessingResult.Pending&quot; on a standalone game or &quot;return PurchaseProcessingResult.Complete&quot; on an online game.
+ 
+return PurchaseProcessingResult.Complete;
+</code></pre>
+
+<h3>Validate receipt on the server</h3>
+
+<p><strong>Syntax</strong></p>
+
+<pre><code>void IMoolahExtension.ValidateReceipt(string transactionId, string receipt, Action&lt;string, ValidateReceiptState, string&gt; result
+</code></pre>
+
+<p><strong>Parameters</strong></p>
+
+<ul>
+<li><p>
+<code>transactionId</code>: The payment transaction ID.</p></li>
+<li><p>
+<code>receipt</code>: Receipt data returned through ProcessPurchase.</p></li>
+<li><p>
+<code>result</code>: transactionId, enumeration of status, or an error message. </p></li>
+</ul>
+
+<p><strong>Description</strong></p>
+
+<ul>
+<li><p>Validate a transaction on the CloudMoolah server.</p></li>
+<li><p>Call after a payment.</p></li>
+</ul>
+
+<p><strong>Example</strong></p>
+
+<pre><code>// Validate a receipt on the server.
+ 
+m_MoolahExtensions.ValidateReceipt(m_CloudMoolahTransactionID, m_CloudMoolahReceipt, (string transactionID, ValidateReceiptState state, string msg)=&gt;{
+    bool succeeded = state == ValidateReceiptState.ValidateSucceed;
+});
+</code></pre>
+
+<h2>Constants and enumerations</h2>
+
+<h3>AndroidStore: addition of CloudMoolah</h3>
+
+<p><strong>Syntax</strong></p>
+
+<pre><code>public enum AndroidStore
+</code></pre>
+
+<p><strong>New member</strong></p>
+
+<ul>
+<li>
+<code>CloudMoolah</code>: The CloudMoolah MOO Store’s Android identifier.</li>
+</ul>
+
+<p><strong>Description</strong></p>
+
+<ul>
+<li><p>Indicates the CloudMoolah MOO Store is active for Unity IAP.</p></li>
+<li><p>Gets this from the <code>standardPurchasingModule</code>’s <code>androidStore</code> field.</p></li>
+</ul>
+
+<p><strong>Example</strong></p>
+
+<pre><code>// Determine whether we are using CloudMoolah IAP. 
+ 
+bool m_IsCloudMoolahStoreSelected = Application.platform == RuntimePlatform.Android &amp;&amp; module.androidStore == AndroidStore.CloudMoolah;
+</code></pre>
+
+<h3>CloudMoolah MOO Store name</h3>
+
+<p><strong>Syntax</strong></p>
+
+<pre><code>string AndroidStore.CloudMoolah
+</code></pre>
+
+<p><strong>Description</strong></p>
+
+<ul>
+<li><p>The CloudMoolah MOO Store’s shortened, readable name. </p></li>
+<li><p>Constant <code>MoolahAppStore</code>.</p></li>
+</ul>
+
+<p><strong>Example</strong></p>
+
+<pre><code>AndroidStore.CloudMoolah;
+</code></pre>
+
+<h3>Login result codes</h3>
+
+<p><strong>Syntax</strong></p>
+
+<pre><code>public enum LoginResultState
+</code></pre>
+
+<p><strong>Members</strong></p>
+
+<ul>
+<li><p>
+<code>LoginSucceed</code>: Successful login, and session token has been generated.</p></li>
+<li><p>
+<code>UserNotExists</code>: CMUserName not found on CloudMoolah server.</p></li>
+<li><p>
+<code>PasswordError</code>: CMPassword incorrect.</p></li>
+<li><p>
+<code>LoginCallBackIsNull</code>: Callback parameter is null.</p></li>
+<li><p>
+<code>UserOrPasswordEmpty</code>: Username or Password is empty.</p></li>
+<li><p>
+<code>NetworkError</code>: Network error.</p></li>
+<li><p>
+<code>NotKnown</code>: Unknown.</p></li>
+</ul>
+
+<p><strong>Description</strong></p>
+
+<ul>
+<li>ICloudMoolahExtension.Login returns this state.</li>
+</ul>
+
+<h3>User registration result codes</h3>
+
+<p><strong>Syntax</strong></p>
+
+<pre><code>public enum FastRegisterError
+</code></pre>
+
+<p><strong>Members</strong></p>
+
+<ul>
+<li><p>
+<code>PasswordEmpty</code>: CMPassword is empty.</p></li>
+<li><p>
+<code>FastRegisterCallBackIsNull</code>: FastRegister callback parameter is null.</p></li>
+<li><p>
+<code>NetworkError</code>: Network error.</p></li>
+<li><p>
+<code>NotKnown</code>: Unknown error.</p></li>
+</ul>
+
+<p><strong>Description</strong></p>
+
+<ul>
+<li><p>CloudMoolah <code>IMoolahExtension.FastRegister</code> returns the errors or exceptions.</p></li>
+<li><p>The callback returns the <code>FastRegisterError</code> if <code>FastRegister</code> fails.</p></li>
+</ul>
+
+<h3>Receipt validation state</h3>
+
+<p><strong>Syntax</strong></p>
+
+<pre><code>public enum ValidateReceiptState
+</code></pre>
+
+<p><strong>Members</strong></p>
+
+<ul>
+<li><p>
+<code>ValidateSucceed</code>: Receipt validation succeeded.</p></li>
+<li><p>
+<code>ValidateFailed</code>: Receipt validation failed.</p></li>
+<li><p>
+<code>NotKnown</code>: Unknown error.</p></li>
+</ul>
+
+<p><strong>Description</strong></p>
+
+<ul>
+<li><p>After the purchase is done, the client queries CloudMoolah Server to find out if the receipt is valid.</p></li>
+<li><p>The callback returns the result of validation.</p></li>
+</ul>
+
+<h3>Transaction identifier restoration state</h3>
+
+<p><strong>Syntax</strong></p>
+
+<pre><code>public enum RestoreTransactionIDState
+</code></pre>
+
+<p><strong>Members</strong></p>
+
+<ul>
+<li><p>
+<code>NoTransactionRestore</code>: No transaction needed to restore.</p></li>
+<li><p>
+<code>RestoreSucceed</code>: Restore successful.</p></li>
+<li><p>
+<code>RestoreFailed</code>: Restore failed.</p></li>
+<li><p>
+<code>NotKnown</code>: Unknown error.</p></li>
+</ul>
+
+<p><strong>Description</strong></p>
+
+<ul>
+<li><p>For an offline game, the previous transactions after the login process is restored.</p></li>
+<li><p>Only recommended for offline games.</p></li>
+<li><p>Status of return.</p></li>
+</ul>
+
+<h3>Transaction completion payout request state</h3>
+
+<p><strong>Syntax</strong></p>
+
+<pre><code>public enum RequestPayOutState
+</code></pre>
+
+<p><strong>Members</strong></p>
+
+<ul>
+<li><p>
+<code>RequestPayOutSucceed</code>: Payout successful.</p></li>
+<li><p>
+<code>RequestPayOutNetworkError</code>: Network error during payout.</p></li>
+<li><p>
+<code>RequestPayOutFailed</code>: Payout failed.</p></li>
+<li><p>
+<code>NotKnown</code>: Unknown error.</p></li>
+</ul>
+
+<p><strong>Description</strong></p>
+
+<ul>
+<li><p>The result of calling the payout API.</p></li>
+<li><p>Only considered useful for offline, disconnected games - unnecessary for online, connected games.</p></li>
+</ul>
+
+<p>
+<br>
+<br>
+</p>
+
+<hr>
+
+<ul>
+<li><span class="page-edit">2017–07–03 Page amended with limited <a href="DocumentationEditorialReview.html">editorial review</a>
+</span></li>
+<li><span class="page-history">2017–07–03 - Documentation only update</span></li>
+</ul>
+<div class="feedbackbox" id="feedbackbox">
+<div id="rating"><p>Did you find this page useful? Please give it a rating:<br><div id="ratecontent" class="c-rating"></div>
+</p></div>
+<div id="ratingThanks" style="display:none"><p>Thanks for rating this page!</p></div>
+<div id="problem"><p><a name="problem" onclick="document.getElementById('problemType').style.display = '';document.getElementById('problem').style.display = 'none';">Report a problem on this page</a></p></div>
+<div id="problemType" style="display:none"><p>What kind of problem would you like to report?<ul type="problems">
+<li><a name="needcode" onclick="                                                             document.getElementById('problemType').style.display = 'none';                                                             document.getElementById('problemThanks').style.display = '';                                                             SendFeedback('problem-needcode',window.location.href,0);                                                             document.getElementById('problemFormDescription').value='Needs code samples.';                                                             document.getElementById('problemNeedCodeForm').style.display = ''                                                         ">This page needs code samples</a></li>
+<li><a name="code" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-brokencode',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Code samples do not work.';                                                         document.getElementById('problemCodeForm').style.display = ''                                                         ">Code samples do not work</a></li>
+<li><a name="missing" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-missing',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Missing information';                                                         document.getElementById('problemMissingForm').style.display = ''                                                         ">Information is missing</a></li>
+<li><a name="incorrect" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-incorrect',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Incorrect information';                                                         document.getElementById('problemIncorrectForm').style.display = ''                                                         ">Information is incorrect</a></li>
+<li><a name="unclear" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-unclear',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Unclear or confusing information';                                                         document.getElementById('problemUnclearForm').style.display = ''                                                         ">Information is unclear or confusing</a></li>
+<li><a name="language" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-language',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Spelling or grammar error';                                                         document.getElementById('problemLanguageForm').style.display = ''                                                         ">There is a spelling/grammar error on this page</a></li>
+<li><a name="other" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-other',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='This page has a problem';                                                         document.getElementById('problemOtherForm').style.display = ''                                                         ">Something else</a></li>
+</ul>
+<p><known_issues><p>Is something described here not working as you expect it to? It might be a <b>Known Issue</b>. Please check with the Issue Tracker at <a href="https://issuetracker.unity3d.com">issuetracker.unity3d.com</a>.</p></known_issues></p>
+</p></div>
+<div id="problemThanks" style="display:none"><p>Thanks for letting us know! This page has been marked for review based on your feedback.<br><br>If you have time, you can provide more information to help us fix the problem faster.<br><br><a onclick="document.getElementById('problemMoreInfo').style.display = '';document.getElementById('problemThanks').style.display = 'none';">Provide more information</a><br>
+</p></div>
+<div id="problemMoreInfo" style="display:none">
+<p id="problemNeedCodeForm" style="display:none">You've told us this page needs code samples. If you'd like to help us further, you could provide a code sample, or tell us about what kind of code sample you'd like to see:</p>
+<p id="problemCodeForm" style="display:none">You've told us there are code samples on this page which don't work. If you know how to fix it, or have something better we could use instead, please let us know:</p>
+<p id="problemMissingForm" style="display:none">You've told us there is information missing from this page. Please tell us more about what's missing:</p>
+<p id="problemIncorrectForm" style="display:none">You've told us there is incorrect information on this page. If you know what we should change to make it correct, please tell us:</p>
+<p id="problemUnclearForm" style="display:none">You've told us this page has unclear or confusing information. Please tell us more about what you found unclear or confusing, or let us know how we could make it clearer:</p>
+<p id="problemLanguageForm" style="display:none">You've told us there is a spelling or grammar error on this page. Please tell us what's wrong:</p>
+<p id="problemOtherForm" style="display:none">You've told us this page has a problem. Please tell us more about what's wrong:</p>
+<form>
+<textarea id="problemFormSuggestionField" cols="40" rows="5"></textarea><input type="hidden" id="problemFormDescription"><input type="submit" id="problemFormDescriptionSubmit" value="Submit" onclick="                                             document.getElementById('problemMoreInfo').style.display = 'none';                                             document.getElementById('problemMoreInfoThanks').style.display = '';                                             return false;                                             ">
+</form>
+</div>
+<div id="problemMoreInfoThanks" style="display:none"><p>Thanks for helping to make the Unity documentation better!</p></div>
+<script>
+
+                                            var ratecontent = document.querySelector('#ratecontent'); // target element
+                                            var currentRating = 0; // initial rating
+                                            var maxRating= 5; // max rating
+
+                                            // callback to run after setting the rating
+                                            var callback = function(rating) {
+                                                document.getElementById('ratingThanks').style.display = '';
+                                                document.getElementById('ratecontent').style.display = 'none';
+                                                document.getElementById('rating').style.display = 'none';
+                                                SendFeedback("rating",window.location.href,rating);
+                                            };
+
+                                            // rating instance
+                                            var myRating = rating(ratecontent, currentRating, maxRating, callback);
+                                        </script>
+</div>
+<div class="nextprev clear">
+<div class="icon tt left mr1" data-distance="-40|-30|top">
+<span class="prev"><a href="UnityIAPSamsungGalaxy.html"></a></span><div class="tip"> Samsung Galaxy apps</div>
+</div>
+<div class="icon tt right" data-distance="-40|-30|top">
+<span class="next"><a href="UnityIAPXiaomi.html"></a></span><div class="tip">Unity IAP Xiaomi integration guide</div>
+</div>
+</div>
+</div>
+</body></html>

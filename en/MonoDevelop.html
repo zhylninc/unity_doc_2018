@@ -1,0 +1,137 @@
+<html><head><title>html模版</title></head><body>Unity - Manual: MonoDevelop</br>
+<div class="breadcrumbs clear"><ul>
+<li><a href="UnityManual.html">Unity User Manual (2018.1 beta)</a></li>
+<li><a href="ScriptingSection.html">Scripting</a></li>
+<li><a href="ScriptingTools.html">Scripting Tools</a></li>
+<li>MonoDevelop</li>
+</ul></div>
+<div class="mb20"><div class="nextprev clear">
+<div class="icon tt left mr1" data-distance="-40|-30|top">
+<span class="prev"><a href="Console.html"></a></span><div class="tip">Console Window</div>
+</div>
+<div class="icon tt right" data-distance="-40|-30|top">
+<span class="next"><a href="AttachingMonoDevelopDebuggerToAnAndroidDevice.html"></a></span><div class="tip"> Attaching MonoDevelop Debugger To An Android Device</div>
+</div>
+</div></div>
+<div class="otherversionswrapper" onmouseover="setOtherVersionsDisplay(true)" onmouseout="setOtherVersionsDisplay(false)">
+<a>Other Versions</a><div class="otherversionscontent" id="OtherVersionsContent" style="display: none;">Cannot access other versions offline!</div>
+</div>
+<div class="scrollToFeedback"><a id="scrollToFeedback">Leave feedback</a></div>
+<h1>MonoDevelop</h1>
+<!--BeginSwitchLink--><!--EndSwitchLink-->
+<div class="clear"></div>
+
+<p>
+<strong>MonoDevelop</strong> is the <em>integrated development environment</em> (IDE) supplied with Unity. An IDE combines the familiar operation of a text editor with additional features for debugging and other project management tasks. The text editor will not be covered here since it is fairly intuitive, but the integration of the editor and debugger with Unity are described below.</p>
+
+<h2>Setting Up MonoDevelop</h2>
+
+<p>MonoDevelop is installed by default with Unity, although there is the option to exclude it from the installation on Windows. You should check that MonoDevelop is set as the external script editor in the Preferences (menu: Unity &gt; Preferences and then select the External Tools panel). With this option enabled, Unity will launch MonoDevelop and use it as the default editor for all script files.</p>
+
+<h2>Setting Up the Debugger</h2>
+
+<p>To enable MonoDevelop’s source level debugging (see below for details) you should firstly check that the <em>Editor Attaching</em> option is enabled in the Preferences on the <em>External Tools</em> panel. Then, you should synchronize the Unity project with the MonoDevelop project (menu: Assets &gt; Open C# Project). Also, make sure that the <em>Development Build</em> and <em>Script Debugging</em> options are enabled in the Build Settings for your target platform (menu: File &gt; Build Settings).</p>
+
+<p>Just before starting a debugging session, select the target you wish to debug from the target list next to the play button (Unity Editor, OSX Player, etc.). You can also select “Attach To Process”, this will show the full list of debuggable Unity processes.</p>
+
+<figure>
+<img src="../uploads/Main/MonoDevelopTargetList.png" alt="Play button and target list">
+<figcaption>Play button and target list</figcaption>
+</figure>
+
+<p>With these steps completed, you are ready to being debugging your Unity scripts by clicking the play button.</p>
+
+<h2>Source Level debugging</h2>
+
+<p>The currently open source files are shown as tabs in MonoDevelop and can be edited there with the features of a standard text editor. However, there is also a grey <em>breakpoint bar</em> to the left of the editor panel. Clicking in this bar will add a so-called <strong>breakpoint</strong> marker next to the line of code.</p>
+
+<figure>
+<img src="../uploads/Main/MonoDevelopBreakpoint.png" alt="Breakpoint being added to code on line 16">
+<figcaption>Breakpoint being added to code on line 16</figcaption>
+</figure>
+
+<p>Adding a breakpoint to a line instructs Unity to pause execution of the script just before it reaches that line during Play mode. When the script is “frozen” like this, you can use the debugger to determine exactly what the script is doing.</p>
+
+<figure>
+<img src="../uploads/Main/MonoDevelopExecPaused.png" alt="The arrow shows execution paused at the breakpoint">
+<figcaption>The arrow shows execution paused at the breakpoint</figcaption>
+</figure>
+
+<p>Information about the state of execution is shown in the tabs at the bottom of the MonoDevelop window when execution is paused at a breakpoint. Perhaps the most important of these is the <em>Locals</em> tab.</p>
+
+<figure>
+<img src="../uploads/Main/MonoDevelopVarPanel.png" alt="Tab showing variable values">
+<figcaption>Tab showing variable values</figcaption>
+</figure>
+
+<p>This shows the values of local variables in the function that is currently executing. (A pseudo-local variable called <em>“this”</em> is automatically available in every function without being explicitly defined; it is a reference to the current script instance and so all variables defined in the script can be accessed via “this”.) You can use breakpoints in combination with the <em>Locals</em> tab to get a similar effect to adding <code>print</code> statements to your code - you can interrogate the values of variables at any point you like. However, you can also edit the variable values in the <em>Locals</em> tab. This can be handy when you find a variable incorrectly set and you would like to see if the problem disappears when the value is set how it should be.</p>
+
+<p>A further useful feature of MonoDevelop is <em>single stepping</em>. When execution is paused at a breakpoint, a bar of debugging tools will become available in the top portion of the MonoDevelop window:-</p>
+
+<figure>
+<img src="../uploads/Main/MonoDevelopDebugBar.png" alt="MonoDevelop stepping tools">
+<figcaption>MonoDevelop stepping tools</figcaption>
+</figure>
+
+<p>The four buttons are known as <em>Continue</em>, <em>Step Over</em>, <em>Step In</em> and <em>Step Out</em> and can also be accessed as commands on the Run menu. <em>Continue</em> resumes execution until the next breakpoint is encountered. <em>Step Over</em> and <em>Step In</em> both execute one line of code at a time. The difference between the two is that <em>Step Over</em> executes any function calls within the line all at once, while <em>Step In</em> allows the stepwise execution to continue into the function. Since it is common to use <em>Step In</em> accidentally on a function that is known to be correct, <em>Step Out</em> continues execution to the end of the current function and then pauses again in the code that originally called it.</p>
+
+<p>A detailed description of source level debugging techniques is not appropriate here but there are various books and web resources offering wisdom on the subject. Additionally, a little experimentation will help you get a feel for the power of the technique and how you can use it to track down most common types of bugs.</p>
+<div class="feedbackbox" id="feedbackbox">
+<div id="rating"><p>Did you find this page useful? Please give it a rating:<br><div id="ratecontent" class="c-rating"></div>
+</p></div>
+<div id="ratingThanks" style="display:none"><p>Thanks for rating this page!</p></div>
+<div id="problem"><p><a name="problem" onclick="document.getElementById('problemType').style.display = '';document.getElementById('problem').style.display = 'none';">Report a problem on this page</a></p></div>
+<div id="problemType" style="display:none"><p>What kind of problem would you like to report?<ul type="problems">
+<li><a name="needcode" onclick="                                                             document.getElementById('problemType').style.display = 'none';                                                             document.getElementById('problemThanks').style.display = '';                                                             SendFeedback('problem-needcode',window.location.href,0);                                                             document.getElementById('problemFormDescription').value='Needs code samples.';                                                             document.getElementById('problemNeedCodeForm').style.display = ''                                                         ">This page needs code samples</a></li>
+<li><a name="code" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-brokencode',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Code samples do not work.';                                                         document.getElementById('problemCodeForm').style.display = ''                                                         ">Code samples do not work</a></li>
+<li><a name="missing" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-missing',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Missing information';                                                         document.getElementById('problemMissingForm').style.display = ''                                                         ">Information is missing</a></li>
+<li><a name="incorrect" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-incorrect',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Incorrect information';                                                         document.getElementById('problemIncorrectForm').style.display = ''                                                         ">Information is incorrect</a></li>
+<li><a name="unclear" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-unclear',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Unclear or confusing information';                                                         document.getElementById('problemUnclearForm').style.display = ''                                                         ">Information is unclear or confusing</a></li>
+<li><a name="language" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-language',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Spelling or grammar error';                                                         document.getElementById('problemLanguageForm').style.display = ''                                                         ">There is a spelling/grammar error on this page</a></li>
+<li><a name="other" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-other',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='This page has a problem';                                                         document.getElementById('problemOtherForm').style.display = ''                                                         ">Something else</a></li>
+</ul>
+<p><known_issues><p>Is something described here not working as you expect it to? It might be a <b>Known Issue</b>. Please check with the Issue Tracker at <a href="https://issuetracker.unity3d.com">issuetracker.unity3d.com</a>.</p></known_issues></p>
+</p></div>
+<div id="problemThanks" style="display:none"><p>Thanks for letting us know! This page has been marked for review based on your feedback.<br><br>If you have time, you can provide more information to help us fix the problem faster.<br><br><a onclick="document.getElementById('problemMoreInfo').style.display = '';document.getElementById('problemThanks').style.display = 'none';">Provide more information</a><br>
+</p></div>
+<div id="problemMoreInfo" style="display:none">
+<p id="problemNeedCodeForm" style="display:none">You've told us this page needs code samples. If you'd like to help us further, you could provide a code sample, or tell us about what kind of code sample you'd like to see:</p>
+<p id="problemCodeForm" style="display:none">You've told us there are code samples on this page which don't work. If you know how to fix it, or have something better we could use instead, please let us know:</p>
+<p id="problemMissingForm" style="display:none">You've told us there is information missing from this page. Please tell us more about what's missing:</p>
+<p id="problemIncorrectForm" style="display:none">You've told us there is incorrect information on this page. If you know what we should change to make it correct, please tell us:</p>
+<p id="problemUnclearForm" style="display:none">You've told us this page has unclear or confusing information. Please tell us more about what you found unclear or confusing, or let us know how we could make it clearer:</p>
+<p id="problemLanguageForm" style="display:none">You've told us there is a spelling or grammar error on this page. Please tell us what's wrong:</p>
+<p id="problemOtherForm" style="display:none">You've told us this page has a problem. Please tell us more about what's wrong:</p>
+<form>
+<textarea id="problemFormSuggestionField" cols="40" rows="5"></textarea><input type="hidden" id="problemFormDescription"><input type="submit" id="problemFormDescriptionSubmit" value="Submit" onclick="                                             document.getElementById('problemMoreInfo').style.display = 'none';                                             document.getElementById('problemMoreInfoThanks').style.display = '';                                             return false;                                             ">
+</form>
+</div>
+<div id="problemMoreInfoThanks" style="display:none"><p>Thanks for helping to make the Unity documentation better!</p></div>
+<script>
+
+                                            var ratecontent = document.querySelector('#ratecontent'); // target element
+                                            var currentRating = 0; // initial rating
+                                            var maxRating= 5; // max rating
+
+                                            // callback to run after setting the rating
+                                            var callback = function(rating) {
+                                                document.getElementById('ratingThanks').style.display = '';
+                                                document.getElementById('ratecontent').style.display = 'none';
+                                                document.getElementById('rating').style.display = 'none';
+                                                SendFeedback("rating",window.location.href,rating);
+                                            };
+
+                                            // rating instance
+                                            var myRating = rating(ratecontent, currentRating, maxRating, callback);
+                                        </script>
+</div>
+<div class="nextprev clear">
+<div class="icon tt left mr1" data-distance="-40|-30|top">
+<span class="prev"><a href="Console.html"></a></span><div class="tip">Console Window</div>
+</div>
+<div class="icon tt right" data-distance="-40|-30|top">
+<span class="next"><a href="AttachingMonoDevelopDebuggerToAnAndroidDevice.html"></a></span><div class="tip"> Attaching MonoDevelop Debugger To An Android Device</div>
+</div>
+</div>
+</div>
+</body></html>

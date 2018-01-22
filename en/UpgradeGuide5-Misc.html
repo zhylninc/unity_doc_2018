@@ -1,0 +1,138 @@
+<html><head><title>html模版</title></head><body>Unity - Manual: Other Upgrade Notes for Unity 5.0</br>
+<div class="breadcrumbs clear"><ul>
+<li><a href="UnityManual.html">Unity User Manual (2018.1 beta)</a></li>
+<li><a href="UnityOverview.html">Working in Unity</a></li>
+<li><a href="UpgradeGuides.html">Upgrade Guides</a></li>
+<li><a href="UpgradeGuide5.html">Upgrading to Unity 5.0</a></li>
+<li>Other Upgrade Notes for Unity 5.0</li>
+</ul></div>
+<div class="mb20"><div class="nextprev clear">
+<div class="icon tt left mr1" data-distance="-40|-30|top">
+<span class="prev"><a href="UpgradeGuide5-Shaders.html"></a></span><div class="tip">Shaders in Unity 5.0</div>
+</div>
+<div class="icon tt right" data-distance="-40|-30|top">
+<span class="next"><a href="UpgradeGuide3540.html"></a></span><div class="tip">Upgrading to Unity 4.0</div>
+</div>
+</div></div>
+<div class="otherversionswrapper" onmouseover="setOtherVersionsDisplay(true)" onmouseout="setOtherVersionsDisplay(false)">
+<a>Other Versions</a><div class="otherversionscontent" id="OtherVersionsContent" style="display: none;">Cannot access other versions offline!</div>
+</div>
+<div class="scrollToFeedback"><a id="scrollToFeedback">Leave feedback</a></div>
+<h1>Other Upgrade Notes for Unity 5.0</h1>
+<!--BeginSwitchLink--><!--EndSwitchLink-->
+<div class="clear"></div>
+
+<p>More information about features that have changed and may affect your project when upgrading from Unity 4 to Unity 5</p>
+
+<h2>Locking / Hiding the Cursor</h2>
+
+<p>Cursor lock and cursor visibility are now independent of each other.</p>
+
+<pre><code>// Unity 4.x
+Screen.lockCursor = true;
+</code></pre>
+
+<pre><code>// Becomes this in Unity 5.0
+Cursor.visible = false;
+Cursor.lockState = CursorLockMode.Locked;
+</code></pre>
+
+<hr>
+
+<h2>Linux</h2>
+
+<p>Gamepad handling has been reworked for Unity 5.</p>
+
+<p>Unity is now capable of “configuring” gamepads - either via a database of known models, or using the SDL_GAMECONTROLLERCONFIG environment variable, which is set by Steam Big Picture / SteamOS for gamepads detected or configured with its interface.</p>
+
+<p>Configured gamepads present a consistent layout: left stick uses axes 0/1, right stick uses axes 3/4, buttons on the face of the gamepad are 0–3, etc. To determine whether a gamepad has been configured, call Input.IsJoystickPreconfigured().</p>
+
+<hr>
+
+<h2>Windows Store Apps</h2>
+
+<p>‘Metro’ keyword was replaced to ‘WSA’ in most APIs, for example: BuildTarget.MetroPlayer became BuildTarget.WSAPlayer, PlayerSettings.Metro became PlayerSettings.WSA.</p>
+
+<p>Defines in scripts like UNITY_METRO, UNITY_METRO_8_0, UNITY_METRO_8_1 are still there, but along with them there will be newer defines UNITY_WSA, UNITY_WSA_8_0, UNITY_WSA_8_1.</p>
+
+<hr>
+
+<h2>Other script API changes that cannot be upgraded automatically</h2>
+
+<ul>
+<li><p>UnityEngine.AnimationEvent is now a struct. Comparisons to ‘null’ will result in compile errors.</p></li>
+<li><p>AddComponent(string), when called with a variable cannot be automatically updated to the generic version AddComponent&lt;T&gt;(). In such cases the API Updater will replace the call with a call to APIUpdaterRuntimeServices.AddComponent(). This method is meant to allow you to test your game in editor mode (they do a best effort to try to resolve the type at runtime) but it is not meant to be used in production, so it is an error to build a game with calls to such method). On platforms that support Type.GetType(string) you can try to use GetComponent(Type.GetType(typeName)) as a workaround.</p></li>
+<li><p>AssetBundle.Load, AssetBundle.LoadAsync and AssetBundle.LoadAll have been deprecated. Use AssetBundle.LoadAsset, AssetBundle.LoadAssetAsync and AssetBundle.LoadAllAssets instead. Script updater cannot update them as the loading behaviors have changed a little. In 5.0 all the loading APIs will not load components any more, please use the new loading APIs to load the game object first, then look up the component on the object.</p></li>
+</ul>
+
+<hr>
+
+<h2>Unity Package changes</h2>
+
+<p>The internal package format of .unityPackages has changed, along with some behaviour of how packages are imported into unity and how conflicts are resolved.</p>
+
+<ul>
+<li><p>Packages are now only constructed with the source asset and the .meta text file that contains all the importer settings for the asset.</p></li>
+<li><p>Packages will always require asset importing now.</p></li>
+<li><p>Packages will be reduced in size significantly, because the imported data (for example texture and audio data) will not be doubled up.</p></li>
+<li><p>Packages with file names that already exist in the project, but with different GUIDs will have these files imported with a unique file name. This is done to prevent overriding files in the project that actually came from different packages or were created by the user.</p></li>
+</ul>
+<div class="feedbackbox" id="feedbackbox">
+<div id="rating"><p>Did you find this page useful? Please give it a rating:<br><div id="ratecontent" class="c-rating"></div>
+</p></div>
+<div id="ratingThanks" style="display:none"><p>Thanks for rating this page!</p></div>
+<div id="problem"><p><a name="problem" onclick="document.getElementById('problemType').style.display = '';document.getElementById('problem').style.display = 'none';">Report a problem on this page</a></p></div>
+<div id="problemType" style="display:none"><p>What kind of problem would you like to report?<ul type="problems">
+<li><a name="needcode" onclick="                                                             document.getElementById('problemType').style.display = 'none';                                                             document.getElementById('problemThanks').style.display = '';                                                             SendFeedback('problem-needcode',window.location.href,0);                                                             document.getElementById('problemFormDescription').value='Needs code samples.';                                                             document.getElementById('problemNeedCodeForm').style.display = ''                                                         ">This page needs code samples</a></li>
+<li><a name="code" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-brokencode',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Code samples do not work.';                                                         document.getElementById('problemCodeForm').style.display = ''                                                         ">Code samples do not work</a></li>
+<li><a name="missing" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-missing',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Missing information';                                                         document.getElementById('problemMissingForm').style.display = ''                                                         ">Information is missing</a></li>
+<li><a name="incorrect" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-incorrect',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Incorrect information';                                                         document.getElementById('problemIncorrectForm').style.display = ''                                                         ">Information is incorrect</a></li>
+<li><a name="unclear" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-unclear',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Unclear or confusing information';                                                         document.getElementById('problemUnclearForm').style.display = ''                                                         ">Information is unclear or confusing</a></li>
+<li><a name="language" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-language',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='Spelling or grammar error';                                                         document.getElementById('problemLanguageForm').style.display = ''                                                         ">There is a spelling/grammar error on this page</a></li>
+<li><a name="other" onclick="document.getElementById('problemType').style.display = 'none';                                                         document.getElementById('problemThanks').style.display = '';                                                         SendFeedback('problem-other',window.location.href,0);                                                         document.getElementById('problemFormDescription').value='This page has a problem';                                                         document.getElementById('problemOtherForm').style.display = ''                                                         ">Something else</a></li>
+</ul>
+<p><known_issues><p>Is something described here not working as you expect it to? It might be a <b>Known Issue</b>. Please check with the Issue Tracker at <a href="https://issuetracker.unity3d.com">issuetracker.unity3d.com</a>.</p></known_issues></p>
+</p></div>
+<div id="problemThanks" style="display:none"><p>Thanks for letting us know! This page has been marked for review based on your feedback.<br><br>If you have time, you can provide more information to help us fix the problem faster.<br><br><a onclick="document.getElementById('problemMoreInfo').style.display = '';document.getElementById('problemThanks').style.display = 'none';">Provide more information</a><br>
+</p></div>
+<div id="problemMoreInfo" style="display:none">
+<p id="problemNeedCodeForm" style="display:none">You've told us this page needs code samples. If you'd like to help us further, you could provide a code sample, or tell us about what kind of code sample you'd like to see:</p>
+<p id="problemCodeForm" style="display:none">You've told us there are code samples on this page which don't work. If you know how to fix it, or have something better we could use instead, please let us know:</p>
+<p id="problemMissingForm" style="display:none">You've told us there is information missing from this page. Please tell us more about what's missing:</p>
+<p id="problemIncorrectForm" style="display:none">You've told us there is incorrect information on this page. If you know what we should change to make it correct, please tell us:</p>
+<p id="problemUnclearForm" style="display:none">You've told us this page has unclear or confusing information. Please tell us more about what you found unclear or confusing, or let us know how we could make it clearer:</p>
+<p id="problemLanguageForm" style="display:none">You've told us there is a spelling or grammar error on this page. Please tell us what's wrong:</p>
+<p id="problemOtherForm" style="display:none">You've told us this page has a problem. Please tell us more about what's wrong:</p>
+<form>
+<textarea id="problemFormSuggestionField" cols="40" rows="5"></textarea><input type="hidden" id="problemFormDescription"><input type="submit" id="problemFormDescriptionSubmit" value="Submit" onclick="                                             document.getElementById('problemMoreInfo').style.display = 'none';                                             document.getElementById('problemMoreInfoThanks').style.display = '';                                             return false;                                             ">
+</form>
+</div>
+<div id="problemMoreInfoThanks" style="display:none"><p>Thanks for helping to make the Unity documentation better!</p></div>
+<script>
+
+                                            var ratecontent = document.querySelector('#ratecontent'); // target element
+                                            var currentRating = 0; // initial rating
+                                            var maxRating= 5; // max rating
+
+                                            // callback to run after setting the rating
+                                            var callback = function(rating) {
+                                                document.getElementById('ratingThanks').style.display = '';
+                                                document.getElementById('ratecontent').style.display = 'none';
+                                                document.getElementById('rating').style.display = 'none';
+                                                SendFeedback("rating",window.location.href,rating);
+                                            };
+
+                                            // rating instance
+                                            var myRating = rating(ratecontent, currentRating, maxRating, callback);
+                                        </script>
+</div>
+<div class="nextprev clear">
+<div class="icon tt left mr1" data-distance="-40|-30|top">
+<span class="prev"><a href="UpgradeGuide5-Shaders.html"></a></span><div class="tip">Shaders in Unity 5.0</div>
+</div>
+<div class="icon tt right" data-distance="-40|-30|top">
+<span class="next"><a href="UpgradeGuide3540.html"></a></span><div class="tip">Upgrading to Unity 4.0</div>
+</div>
+</div>
+</div>
+</body></html>
